@@ -1,0 +1,48 @@
+{
+    "Mock": false,
+    "DefaultTimeout": 10,
+    "ScreenshotsFolder": "utils/screenshots",
+    "TestScreenshotsFolder": "helpers/screenshots",
+    "XmlFolder": "utils/xml",
+    "CsvFolder": "utils/csv",
+    "ColorsFolder": "utils",
+    "URL": "http://10.3.1.165:4723/wd/hub",
+    "Accounts": {
+        "R2d2User": {
+            "UserId": "2001",
+            "UserName": "Jessica",
+            "DomainName": "customer4",
+            "Password": "2001",
+            "AllContacts": [
+                "2200",
+                "2201",
+                "2202",
+                "2203",
+                "2204"
+            ],
+            "CoworkerContacts": [
+                "2200",
+                "2201",
+                "2202",
+                "2203",
+                "2204",
+                "2205"
+            ],
+            "FavoriteContacts": [
+                "2200",
+                "2201",
+                "2202"
+            ]
+        },
+        "SoftphoneUser": {
+            "UserId": "2021",
+            "UserName": "Jessica Softphone",
+            "UserNameIncoming": "Jessica Softphone",
+            "DomainName": "customer4",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "Password": "WI1Z56f7",
+            "dns_list": ["10.0.50.156"],
+            "pbfile": "wav/2021.wav"
+        }
+    }
+}

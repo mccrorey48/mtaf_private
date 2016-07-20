@@ -1,0 +1,206 @@
+{
+    "alpha": [
+        {
+            "answering_rules": {
+                "add_rule": "id('content')/div[3]/div[2]/a[2]",
+                "del_yes": "//body/div[2]/div[2]/div/a[1]"
+            },
+            "conferences": {
+                "extension": "extension"
+            },
+            "timeframes": {
+                "delete_yes": "//div[2]/div[2]/div/a[1]",
+                "first_row_delete": "//tbody/tr[1]/td[4]/a[2]/i"
+            },
+            "type": "xpath"
+        },
+        {
+            "type": "javascript",
+            "user_phones": {
+                "add_button": {
+                    "script": "return window.document.getElementById('content').getElementsByTagName('div')[4].getElementsByClassName('btn')[0].textContent",
+                    "value": "Add Phone"
+                }
+            }
+        }
+    ],
+    "alpha.svlab": [
+        {
+            "answering_rules": {
+                "add_rule": "id('content')/div[5]/a[2]",
+                "del_yes": "//body/div[7]/div[2]/div/a[1]"
+            },
+            "conferences": {
+                "extension": "extension"
+            },
+            "timeframes": {
+                "delete_yes": "//div[7]/div[2]/div/a[1]",
+                "first_row_delete": "//tbody/tr[1]/td[4]/a[2]/i"
+            },
+            "type": "xpath",
+            "users": {
+                "first_name": "id('UserFirstName')",
+                "last_name": "id('UserLastName')"
+            }
+        }
+    ],
+    "beta": [
+        {
+            "answering_rules": {
+                "add_rule": "id('content')/div[3]/div[2]/a[2]",
+                "del_yes": "//body/div[2]/div[2]/div/a[1]"
+            },
+            "conferences": {
+                "extension": "extension"
+            },
+            "timeframes": {
+                "delete_yes": "//div[2]/div[2]/div/a[1]",
+                "first_row_delete": "//tbody/tr[1]/td[4]/a[2]/i"
+            },
+            "type": "xpath"
+        },
+        {
+            "type": "javascript",
+            "user_phones": {
+                "add_button": {
+                    "script": "return window.document.getElementById('content').getElementsByTagName('div')[4].getElementsByClassName('btn')[0].textContent",
+                    "value": "Add Phone"
+                }
+            }
+        }
+    ],
+    "default": [
+        {
+            "answering_rules": {
+                "add_form_save": "id('AnswerruleAddForm')/div[3]/input",
+                "del_rule": "//tbody/tr[${row}]/td[4]/a[2]/i"
+            },
+            "type": "xpath",
+            "users": {
+                "first_name": "id('first_name')",
+                "last_name": "id('last_name')"
+            }
+        },
+        {
+            "answering_rules": {
+                "click_delete_yes": {
+                    "script": "return window.document.getElementsByClassName('popover-content')[0].getElementsByClassName('btn')[0].click()"
+                },
+                "popover_present": {
+                    "script": "return window.document.getElementsByClassName('popover-content').length == 1"
+                },
+                "row_count_ok": {
+                    "script": "return ((${desired_count} == 0) && (window.document.getElementsByTagName('tbody').length == 0)) || ((window.document.getElementsByTagName('tbody').length > 0) && (window.document.getElementsByTagName('tbody')[0].getElementsByTagName('tr').length == ${desired_count}))"
+                }
+            },
+            "timeframes": {
+                "row_count_ok": {
+                    "script": "return ((${desired_count} == 0) && (window.document.getElementsByTagName('tbody').length == 0)) || ((window.document.getElementsByTagName('tbody').length > 0) && (window.document.getElementsByTagName('tbody')[0].getElementsByTagName('tr').length == ${desired_count}))"
+                }
+            },
+            "type": "javascript",
+            "user_phones": {
+                "add_button": {
+                    "script": "return window.document.getElementById('content').getElementsByTagName('div')[3].getElementsByClassName('btn')[0].textContent",
+                    "value": "Add Phone"
+                }
+            },
+            "users": {
+                "ext_in_table": {
+                    "script": "return [for (tr of window.document.getElementsByTagName('tbody')[0].getElementsByTagName('tr')) tr.getElementsByTagName('td')[1].textContent].indexOf('${desired_ext}') > -1"
+                }
+            }
+        }
+    ],
+    "dev": [
+        {
+            "answering_rules": {
+                "add_rule": "id('content')/div[3]/div[2]/a[2]",
+                "del_yes": "//body/div[2]/div[2]/div/a[1]"
+            },
+            "conferences": {
+                "extension": "extension"
+            },
+            "timeframes": {
+                "delete_yes": "//div[2]/div[2]/div/a[1]",
+                "first_row_delete": "//tbody/tr[1]/td[4]/a[2]/i"
+            },
+            "type": "xpath"
+        },
+        {
+            "type": "javascript",
+            "user_phones": {
+                "add_button": {
+                    "script": "return window.document.getElementById('content').getElementsByTagName('div')[4].getElementsByClassName('btn')[0].textContent",
+                    "value": "Add Phone"
+                }
+            }
+        }
+    ],
+    "gamma": [
+        {
+            "answering_rules": {
+                "add_rule": "id('content')/div[3]/div[2]/a[2]",
+                "del_yes": "//body/div[2]/div[2]/div/a[1]"
+            },
+            "conferences": {
+                "extension": "extension"
+            },
+            "timeframes": {
+                "delete_yes": "//div[2]/div[2]/div/a[1]",
+                "first_row_delete": "//tbody/tr[1]/td[4]/a[2]/i"
+            },
+            "type": "xpath"
+        },
+        {
+            "type": "javascript",
+            "user_phones": {
+                "add_button": {
+                    "script": "return window.document.getElementById('content').getElementsByTagName('div')[4].getElementsByClassName('btn')[0].textContent",
+                    "value": "Add Phone"
+                }
+            }
+        }
+    ],
+    "my2": [
+        {
+            "answering_rules": {
+                "add_rule": "id('content')/div[5]/a[2]",
+                "del_yes": "//body/div[7]/div[2]/div/a[1]"
+            },
+            "conferences": {
+                "extension": "extension"
+            },
+            "timeframes": {
+                "delete_yes": "//div[8]/div[2]/div/a[1]",
+                "first_row_delete": "//tbody/tr[1]/td[4]/a[2]"
+            },
+            "type": "xpath"
+        }
+    ],
+    "test": [
+        {
+            "answering_rules": {
+                "add_rule": "id('content')/div[3]/div[2]/a[2]",
+                "del_yes": "//body/div[2]/div[2]/div/a[1]"
+            },
+            "conferences": {
+                "extension": "extension"
+            },
+            "timeframes": {
+                "delete_yes": "//div[2]/div[2]/div/a[1]",
+                "first_row_delete": "//tbody/tr[1]/td[4]/a[2]/i"
+            },
+            "type": "xpath"
+        },
+        {
+            "type": "javascript",
+            "user_phones": {
+                "add_button": {
+                    "script": "return window.document.getElementById('content').getElementsByTagName('div')[4].getElementsByClassName('btn')[0].textContent",
+                    "value": "Add Phone"
+                }
+            }
+        }
+    ]
+}
