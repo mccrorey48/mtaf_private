@@ -11,12 +11,12 @@ from time import sleep
 PjsuaError = pj.Error
 wav_dir = 'wav/'
 current_calls = {}
-gui_cmd_q = None
+cmd_q = None
 
 log = logging.get_logger('esi.pjsua_lib')
 log.spaces = 0
 recorder_call_cbs = {}
-pbfile_strings = None
+pbfile_strings = {}
 monitor_uri = None
 
 
@@ -269,8 +269,8 @@ class MyCallCallback(pj.CallCallback):
         call_uri = re.match('<?([^>]+)', self.call.info().uri).group(1)
         log.debug("%s: ci.uri=%s ci.remote_uri=%s state %s media_state %s" % (
             my_uri, call_uri, remote_uri, self.call.info().state_text, media_state_text[self.call.info().media_state]))
-        if gui_cmd_q is not None:
-            gui_cmd_q.put("call %s %s ==> %s" % (call_state_text[self.call.info().state], my_uri, remote_uri))
+        if cmd_q is not None:
+            cmd_q.put("call %s %s ==> %s" % (call_state_text[self.call.info().state], my_uri, remote_uri))
             # if self.call.info().state == pj.CallState.CALLING:
             #     current_calls[my_uri] = self.call
         cmstate = (self.call.info().state == pj.CallState.CONFIRMED, self.call.info().media_state == pj.MediaState.ACTIVE)
@@ -303,16 +303,16 @@ class MyCallCallback(pj.CallCallback):
             }
         }
         new_call_state = new_call_states[self.call_state][cmstate]
-        if gui_cmd_q is not None:
-            gui_cmd_q.put("%s state=%s remote=%s" % (my_uri, new_call_state, remote_uri))
+        if cmd_q is not None:
+            cmd_q.put("%s state=%s remote=%s" % (my_uri, new_call_state, remote_uri))
         transition = (self.call_state, new_call_state)
         log.debug("%s: transition %s --> %s" % (my_uri, transition[0], transition[1]))
         if transition == ('idle', 'call') or transition == ('pending', 'call'):
             self.create_media()
             self.connect_media()
             # current_calls[my_uri] = self.call
-            if gui_cmd_q is not None:
-                gui_cmd_q.put("call start %s ==> %s" % (my_uri, remote_uri))
+            if cmd_q is not None:
+                cmd_q.put("call start %s ==> %s" % (my_uri, remote_uri))
         elif transition == ('call', 'hold'):
             self.media_call_slot = None
         elif transition == ('hold', 'call') or transition == ('call', 'call'):
@@ -324,11 +324,11 @@ class MyCallCallback(pj.CallCallback):
             self.media_call_slot = None
             # if my_uri in current_calls:
             #     del current_calls[my_uri]
-            if gui_cmd_q is None:
-                log.debug("%s: gui_cmd_q is None"%my_uri)
+            if cmd_q is None:
+                log.debug("%s: cmd_q is None"%my_uri)
             else:
                 log.debug("%s: putting call end %s ==> %s into queue" % (my_uri, my_uri, remote_uri))
-                gui_cmd_q.put("call end %s ==> %s" % (my_uri, remote_uri))
+                cmd_q.put("call end %s ==> %s" % (my_uri, remote_uri))
         self.call_state = new_call_state
 
     @Trace(log)
@@ -357,31 +357,6 @@ class PjsuaLib(pj.Lib):
 
     def __del__(self):
         pass
-
-    def set_pbfile_strings(self, pbfs):
-        global pbfile_strings
-        pbfile_strings = pbfs
-
-    def get_pbfile_strings(self):
-        return pbfile_strings
-
-    def set_current_calls(self, cc):
-        global current_calls
-        current_calls = cc
-
-    def get_current_calls(self):
-        return current_calls
-
-    def set_gui_cmd_q(self, q):
-        global gui_cmd_q
-        gui_cmd_q = q
-
-    def get_gui_cmd_q(self):
-        return gui_cmd_q
-
-    def set_wav_dir(self, dir):
-        global wav_dir
-        wav_dir = dir
 
     @Trace(log)
     def connect_monitor(self, new_monitor_uri):

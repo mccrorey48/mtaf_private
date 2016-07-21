@@ -34,9 +34,8 @@
                 "2202"
             ]
         },
-        "SoftphoneUser": {
+        "Auto TesterC": {
             "UserId": "2202",
-            "UserName": "Auto TesterC",
             "UserNameIncoming": "Auto Testerc",
             "DomainName": "customer4",
             "Proxy": "nr5.cpbx.esihs.net",
@@ -45,6 +44,17 @@
                 "10.0.50.156"
             ],
             "pbfile": "wav/2202.wav"
+        },
+        "Auto TesterD": {
+            "UserId": "2203",
+            "UserNameIncoming": "Auto Testerd",
+            "DomainName": "customer4",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "Password": "wv6ocUgT",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "pbfile": "wav/2203.wav"
         }
     }
 }
