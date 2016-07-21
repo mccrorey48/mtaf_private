@@ -37,7 +37,7 @@ class VoicemailView(UserView):
     @Trace(log)
     def call_first_vm_caller(self):
         from lib.softphone.softphone import get_softphone
-        # expects the current display to be the detail screen for a voicemail from SoftphoneUser
+        # expects the current display to be the detail screen for a voicemail from Auto TesterC
         softphone = get_softphone()
         self.actions.click_element_by_key('VmCallButton')
         softphone.wait_for_call_status('start', 20)

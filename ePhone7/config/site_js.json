@@ -1,12 +1,13 @@
 {
     "Mock": false,
     "DefaultTimeout": 10,
-    "ScreenshotsFolder": "utils/screenshots",
-    "TestScreenshotsFolder": "helpers/screenshots",
-    "XmlFolder": "utils/xml",
-    "CsvFolder": "utils/csv",
-    "ColorsFolder": "utils",
+    "ScreenshotsFolder": "ePhone7/utils/screenshots",
+    "TestScreenshotsFolder": "ePhone7/screenshots",
+    "XmlFolder": "ePhone7/utils/xml",
+    "CsvFolder": "ePhone7/utils/csv",
+    "ColorsFolder": "ePhone7/utils",
     "URL": "http://10.3.1.165:4723/wd/hub",
+    "DefaultSoftphoneUser": "Jessica Softphone",
     "Accounts": {
         "R2d2User": {
             "UserId": "2001",
