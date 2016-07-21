@@ -22,22 +22,22 @@ with logging_esi.msg_src_cm('importing modules'):
     from lib.common.wrappers import TestCase
 
 run_list = []
-# run_list.append('test_030_contact_lists')
-# run_list.append('test_040_user_tabs')
-# run_list.append('test_050_active_contacts_tabs')
-# run_list.append('test_060_active_history_tabs')
-# run_list.append('test_070_active_voicemail_tabs')
-# run_list.append('test_080_incoming_call_screen')
-# run_list.append('test_090_incoming_auto_answer')
-# run_list.append('test_100_incoming_answer')
-# run_list.append('test_110_incoming_ignore')
-# run_list.append('test_120_call_from_contacts')
-# run_list.append('test_130_clear_favorites_list')
-# run_list.append('test_140_add_favorites')
-# run_list.append('test_150_call_from_favorites')
-# run_list.append('test_160_call_from_history')
-# run_list.append('test_170_call_from_voicemail')
-# run_list.append('test_180_call_from_keypad')
+run_list.append('test_030_contact_lists')
+run_list.append('test_040_user_tabs')
+run_list.append('test_050_active_contacts_tabs')
+run_list.append('test_060_active_history_tabs')
+run_list.append('test_070_active_voicemail_tabs')
+run_list.append('test_080_incoming_call_screen')
+run_list.append('test_090_incoming_auto_answer')
+run_list.append('test_100_incoming_answer')
+run_list.append('test_110_incoming_ignore')
+run_list.append('test_120_call_from_contacts')
+run_list.append('test_130_clear_favorites_list')
+run_list.append('test_140_add_favorites')
+run_list.append('test_150_call_from_favorites')
+run_list.append('test_160_call_from_history')
+run_list.append('test_170_call_from_voicemail')
+run_list.append('test_180_call_from_keypad')
 run_list.append('test_190_save_voicemail')
 run_list.append('test_200_trash_saved_voicemail')
 run_list.append('test_210_trash_new_voicemail')
@@ -284,7 +284,7 @@ class SmokeTests(unittest.TestCase):
         user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Coworkers')
-        contact_number = cfg.site['Accounts']['SoftphoneUser']['UserId']
+        contact_number = cfg.site['Accounts']['Auto TesterC']['UserId']
         list_element = contacts_view.get_contact_list_element(contact_number)
         contacts_view.call_contact_from_list_element(list_element)
 
@@ -307,7 +307,7 @@ class SmokeTests(unittest.TestCase):
         user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
-        contact_number = cfg.site['Accounts']['SoftphoneUser']['UserId']
+        contact_number = cfg.site['Accounts']['Auto TesterC']['UserId']
         list_element = contacts_view.get_contact_list_element(contact_number)
         contacts_view.call_contact_from_list_element(list_element)
 

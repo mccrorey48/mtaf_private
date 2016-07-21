@@ -107,7 +107,9 @@ class Softphone:
         pjl.lib.connect_monitor(None)
 
 
-def get_softphone(user_name='Auto TesterC', null_snd=False, tcp=False):
+def get_softphone(user_name=None, null_snd=False, tcp=False):
+    if user_name is None:
+        user_name = cfg.site["DefaultSoftphoneUser"]
     if user_name in softphones:
         return softphones[user_name]
     else:
