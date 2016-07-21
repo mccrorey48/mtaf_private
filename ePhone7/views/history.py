@@ -20,7 +20,7 @@ class HistoryView(UserView):
 
     @Trace(log)
     def call_contact_test(self):
-        src_cfg = cfg.site['Accounts']['Auto TesterC']
+        src_cfg = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]
         elems = self.actions.find_elements_by_key('CallerName')
         self.actions.assertGreater(len(elems), 0, 'No CallerName elements found')
         name_elem = elems[0]

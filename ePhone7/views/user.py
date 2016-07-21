@@ -118,7 +118,7 @@ class UserView:
     def incoming_call_screen_test(self):
         from lib.softphone.softphone import get_softphone
         softphone = get_softphone()
-        src_cfg = cfg.site['Accounts']['Auto TesterC']
+        src_cfg = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]
         dst_cfg = cfg.site['Accounts']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
