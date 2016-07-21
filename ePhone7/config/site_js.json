@@ -35,9 +35,8 @@
                 "2202"
             ]
         },
-        "SoftphoneUser": {
+        "Jessica Softphone": {
             "UserId": "2021",
-            "UserName": "Jessica Softphone",
             "UserNameIncoming": "Jessica Softphone",
             "DomainName": "customer4",
             "Proxy": "nr5.cpbx.esihs.net",
