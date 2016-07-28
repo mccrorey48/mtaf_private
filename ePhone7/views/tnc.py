@@ -19,6 +19,8 @@ class TncView:
     def accept_tnc(self):
         self.actions.click_element_by_key('Accept')
         self.actions.click_element_by_key('Continue')
-        self.actions.wait_for_condition_true(self.not_tnc_activity)
+        testfn = lambda: remote.driver.current_activity != '.settings.ui.TernsAndConditionsScreen'
+        failmsg = 'failed to leave activity .settings.ui.TermsAndConditioinsScreen'
+        self.actions.wait_for_condition_true(testfn, failmsg)
 
 tnc_view = TncView()

@@ -18,12 +18,12 @@ class UserView:
         self.active_tab = None
         self.call_status_wait = 30
 
-    @Trace(log)
-    def logout(self):
-        self.goto_prefs()
-        prefs_view.logout()
-        prefs_view.logout_confirm()
-        self.actions.wait_for_condition_true(lambda: remote.current_activity == '.settings.ui.LoginActivity')
+    # @Trace(log)
+    # def logout(self):
+    #     self.goto_prefs()
+    #     prefs_view.logout()
+    #     prefs_view.logout_confirm()
+    #     self.actions.wait_for_condition_true(lambda: remote.current_activity == '.settings.ui.LoginActivity')
 
     @Trace(log)
     def set_dnd(self, on=True):
@@ -77,8 +77,8 @@ class UserView:
     @Trace(log)
     def goto_tab(self, tab_name):
         self.expected_tab = tab_name
-        if not self.actions.wait_for_condition_true(self.verify_active_tab, 30):
-            raise Ux("Expect active tab to be %s, got %s" % (self.expected_tab, self.active_tab))
+        failmsg = "Expect active tab to be %s, got %s" % (self.expected_tab, self.active_tab)
+        self.actions.wait_for_condition_true(self.verify_active_tab, failmsg)
 
     @Trace(log)
     def goto_prefs(self):
@@ -125,10 +125,8 @@ class UserView:
         softphone.wait_for_call_status('early', self.call_status_wait)
         self.actions.find_element_by_key('IncomingCallAnswerToHeadset')
         self.actions.find_element_by_key('IncomingCallAnswerToSpeaker')
-        elem = self.actions.find_element_by_key('IncomingCallCallerName')
-        self.actions.assert_element_text(elem, src_cfg['UserNameIncoming'])
-        elem = self.actions.find_element_by_key('IncomingCallCallerNumber')
-        self.actions.assert_element_text(elem, src_cfg['UserId'])
+        self.actions.wait_for_element_text_by_key('IncomingCallCallerName', src_cfg['UserNameIncoming'])
+        self.actions.wait_for_element_text_by_key('IncomingCallCallerNumber', src_cfg['UserId'])
         softphone.teardown_call()
 
     @Trace(log)

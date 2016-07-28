@@ -72,8 +72,7 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def get_first_vm_parent(self):
-        if not self.actions.wait_for_condition_true(self.swipe_get_vm_parents, seconds=60):
-            raise Ux('timed out with no voicemails displayed')
+        self.actions.wait_for_condition_true(self.swipe_get_vm_parents, 'timed out with no voicemails displayed', 60)
         elem = self.elems[0]
         self.new_vals = {
             'caller_name': self.actions.find_sub_element_by_key(elem, 'CallerName').text,
@@ -118,7 +117,8 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def verify_first_vm(self):
-        self.actions.wait_for_condition_true(self.vm_match, seconds=120)
+        failmsg = 'first voicemail not a match'
+        self.actions.wait_for_condition_true(self.vm_match, failmsg, seconds=120)
 
     @Trace(log)
     def clear_all_vm(self):

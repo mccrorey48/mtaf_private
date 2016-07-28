@@ -1,5 +1,6 @@
 from lib.common.configure import cfg
 from lib.android.actions import Actions
+from lib.common.remote import remote
 from lib.common.wrappers import Trace
 import lib.common.logging_esi as logging
 log = logging.get_logger('esi.login_view')
@@ -26,6 +27,8 @@ class LoginView:
         self.actions.find_element_by_key('Username').set_text(login_id)
         self.actions.find_element_by_key('Password').set_text(passwd)
         self.actions.click_element_by_key('Login')
-        self.actions.wait_for_condition_true(lambda: remote.current_activity == '.activities.MainViewActivity')
+        failmsg = 'timed out waiting for current activity to become .activities.MainViewActivity'
+        testfn = lambda: remote.current_activity == '.activities.MainViewActivity'
+        self.actions.wait_for_condition_true(testfn, failmsg)
 
 login_view = LoginView()

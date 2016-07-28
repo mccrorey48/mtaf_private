@@ -325,7 +325,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('New')
         voicemail_view.clear_all_vm()
         voicemail_view.receive_voicemail()
-        voicemail_view.get_first_vm()
+        voicemail_view.get_first_vm_parent().click()
         voicemail_view.call_first_vm_caller()
 
     @TestCase(log, run_list, except_screenshot)

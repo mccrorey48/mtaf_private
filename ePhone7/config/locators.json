@@ -50,10 +50,10 @@
     "ContactsView": {
         "Coworkers": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/ephone_contacts"
+            "value": "com.esi_estech.ditto:id/ephone_contacts",
+            "text": "Coworkers"
         },
         "ContactCallIcon": {
-            "parent": "ContactParent",
             "by": "id",
             "value": "com.esi_estech.ditto:id/call_button"
         },
@@ -80,7 +80,8 @@
         },
         "Favorites": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/favorites"
+            "value": "com.esi_estech.ditto:id/favorites",
+            "text": "Favorites"
         },
         "FavoriteIndicator": {
             "by": "id",
@@ -92,11 +93,13 @@
         },
         "Groups": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/contact_groups"
+            "value": "com.esi_estech.ditto:id/contact_groups",
+            "text": "Groups"
         },
         "Personal": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/all_contacts"
+            "value": "com.esi_estech.ditto:id/all_contacts",
+            "text": "Personal"
         },
         "ScrollHandle": {
             "by": "id",
@@ -128,11 +131,13 @@
     "HistoryView": {
         "All": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/history_timeline"
+            "value": "com.esi_estech.ditto:id/history_timeline",
+            "text": "All"
         },
         "Missed": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/history_missed"
+            "value": "com.esi_estech.ditto:id/history_missed",
+            "text": "Missed"
         },
         "HistoryEntry": {
             "by": "zpath",
@@ -260,21 +265,28 @@
             "by": "id",
             "value": "com.esi_estech.ditto:id/confirm_button"
         },
+        "ListItemTitle": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/settings_list_item_title"
+        },
         "Personal": {
             "by": "zpath",
             "value": "//lv/ll[1]"
         },
         "SignInWithGoogle": {
             "by": "zpath",
-            "value": "//lv/ll[2]"
+            "value": "//lv/ll[2]/tv",
+            "text": "Sign in with Google"
         },
         "CallForwardingOptions": {
             "by": "zpath",
-            "value": "//lv/ll[3]"
+            "value": "//lv/ll[3]/tv",
+            "text": "Call Forwarding Options"
         },
         "eHelp": {
             "by": "zpath",
-            "value": "//lv/ll[4]"
+            "value": "//lv/ll[4]/tv",
+            "text": "eHelp"
         },
         "Phone": {
             "by": "zpath",
@@ -282,35 +294,43 @@
         },
         "VolumeSettings": {
             "by": "zpath",
-            "value": "//lv/ll[6]"
+            "value": "//lv/ll[6]/tv",
+            "text": "Volume Settings"
         },
         "Ringtones": {
             "by": "zpath",
-            "value": "//lv/ll[7]"
+            "value": "//lv/ll[7]/tv",
+            "text": "Ringtones"
         },
         "DisplayBrightness": {
             "by": "zpath",
-            "value": "//lv/ll[8]"
+            "value": "//lv/ll[8]/tv",
+            "text": "Display Brightness"
         },
         "DisplaySleepTimer": {
             "by": "zpath",
-            "value": "//lv/ll[9]"
+            "value": "//lv/ll[9]/tv",
+            "text": "Display Sleep Timer"
         },
         "PhoneUpdates": {
             "by": "zpath",
-            "value": "//lv/ll[10]"
+            "value": "//lv/ll[10]/tv",
+            "text": "Phone Updates"
         },
         "AdditionalOptions": {
             "by": "zpath",
-            "value": "//lv/ll[11]"
+            "value": "//lv/ll[11]/tv",
+            "text": "Additional Options"
         },
         "LogoutAccount": {
             "by": "zpath",
-            "value": "//lv/ll[12]"
+            "value": "//lv/ll[12]/tv",
+            "text": "Logout Account"
         },
         "AboutEphone7": {
             "by": "zpath",
-            "value": "//lv/ll[13]"
+            "value": "//lv/ll[13]/tv",
+            "text": "About ePhone7"
         },
         "Close": {
             "by": "id",
@@ -353,7 +373,8 @@
         },
         "Contacts": {
             "by": "zpath",
-            "value": "//tw/rl[1]"
+            "value": "//tw/rl[1]/ll/tv",
+            "text": "Contacts"
         },
         "DndButton": {
             "by": "accessibility id",
@@ -369,11 +390,14 @@
         },
         "History": {
             "by": "zpath",
-            "value": "//tw/rl[2]"
+            "value": "//tw/rl[2]/ll/tv",
+            "text": "History"
         },
         "Keypad": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/keypad_tab"
+            "parent": "com.esi_estech.ditto:id/keypad_tab",
+            "value": "com.esi_estech.ditto:id/keypad_text",
+            "text": "Dial"
         },
         "IncomingCallAnswerToHeadset": {
             "by": "id",
@@ -429,21 +453,25 @@
         },
         "Voicemail": {
             "by": "zpath",
-            "value": "//tw/rl[3]"
+            "value": "//tw/rl[3]/ll/tv",
+            "text": "Voicemail"
         }
     },
     "VoicemailView": {
         "New": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/voicemail_new"
+            "value": "com.esi_estech.ditto:id/voicemail_new",
+            "text": "NEW"
         },
         "Saved": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/voicemail_saved"
+            "value": "com.esi_estech.ditto:id/voicemail_saved",
+            "text": "SAVED"
         },
         "Trash": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/voicemail_trash"
+            "value": "com.esi_estech.ditto:id/voicemail_trash",
+            "text": "TRASH"
         },
         "VoicemailParent": {
             "by": "id",

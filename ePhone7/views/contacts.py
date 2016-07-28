@@ -62,8 +62,8 @@ class ContactsView(UserView):
 
     @Trace(log)
     def wait_for_no_duplicate_numbers(self):
-        if not self.actions.wait_for_condition_true(self.no_duplicate_numbers, seconds=30):
-            raise Ux('failed to get unique contact number list, last list was %s' % repr(self.displayed_numbers))
+        failmsg = 'failed to get unique contact number list, last list was %s' % repr(self.displayed_numbers)
+        self.actions.wait_for_condition_true(self.no_duplicate_numbers, failmsg, 30)
 
     @Trace(log)
     def get_contact_list_element(self, contact_number):
