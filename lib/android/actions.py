@@ -98,8 +98,20 @@ class Actions(Tc):
         remote.driver.tap([center], duration)
 
     @Trace(log)
-    def click_element_by_key(self, key):
-        self.find_element_by_key(key).click()
+    def click_element_by_key(self, key, seconds=60):
+        locator = cfg.get_locator(key, self.leaf_view)
+        if "text" in locator:
+            start_time = time()
+            while time() < start_time + seconds:
+                elem = self.find_element_by_key(key)
+                found_text = elem.text
+                if found_text == locator["text"]:
+                    log.debug("found element with text = %s" % found_text)
+                    elem.click()
+                    return
+            raise Ux('element text did not match, expected "%s", found "%s"' % (locator["text"], found_text))
+        else:
+            self.find_element_by_key(key).click()
 
     @staticmethod
     @Trace(log)
@@ -159,7 +171,7 @@ class Actions(Tc):
 
     # key is a locator name
     @Trace(log)
-    def find_element_by_key(self, key, timeout=20):
+    def find_element_by_key(self, key, timeout=30):
         locator = cfg.get_locator(key, self.leaf_view)
         try:
             if 'parent_key' in locator:
@@ -201,15 +213,34 @@ class Actions(Tc):
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
+    @Trace(log)
+    def test_element_text_by_key(self, key, expected_text):
+        try:
+            self.actual_text = self.find_element_by_key(key, 10).text
+        except Ux:
+            self.actual_text = 'not found'
+            return False
+        return self.actual_text == expected_text
+
+    @Trace(log)
+    def wait_for_element_text_by_key(self, key, expected_text, seconds=30):
+        start_time = time()
+        while time() < start_time + seconds:
+            if self.test_element_text_by_key(key, expected_text):
+                return
+            sleep(1.0)
+        raise Ux('actual element text = "%s", expected "%s" after %d seconds' %
+                 (self.actual_text, expected_text, seconds))
+
     @staticmethod
     @Trace(log)
-    def wait_for_condition_true(condition_fn, seconds=30):
+    def wait_for_condition_true(condition_fn, failmsg, seconds=30):
         start_time = time()
         while time() < start_time + seconds:
             if condition_fn():
                 return True
             sleep(1.0)
-        return False
+        raise Ux(failmsg)
 
     @staticmethod
     @Trace(log)

@@ -114,29 +114,28 @@ class MyCallCallback(pj.CallCallback):
     # so the logical condition of "media exists" depends on the status of the recorder only
     @Trace(log)
     def create_media(self):
-        with logging.msg_src_cm('MyCallCallback:create_media()'):
-            if self.rec_id is not None:
-                # the callback functions shouldn't call create_media if media already exists
-                raise Ux("create_media: media already exists")
-            my_uri = self.call.info().account.info().uri
-            log.debug("%s: creating media" % my_uri)
-            rec_file = "%srec_%s.wav" % (wav_dir, lib.uri_number(my_uri))
-            log.debug("%s: pwd = %s" % (my_uri, getcwd()))
-            log.debug("%s: rec file = %s" % (my_uri, rec_file))
-            self.rec_id = lib.create_recorder(rec_file)
-            self.rec_slot = lib.recorder_get_slot(self.rec_id)
-            log.debug("%s: created recorder %s at slot %d" % (my_uri, self.rec_id, self.rec_slot))
-            log.debug("%s: getting pbfile" % my_uri)
-            if type(pbfile_strings) == dict and my_uri in pbfile_strings:
-                pbfile = pbfile_strings[my_uri]
-                log.debug("%s: got pbfile %s" % (my_uri, pbfile))
-                log.debug("%s: creating player with pbfile = %s" % (my_uri, pbfile))
-                self.player_id = lib.create_player(pbfile, loop=True)
-                self.pb_slot = lib.player_get_slot(self.player_id)
-                log.debug("%s: creating player %s at slot %d" % (my_uri, self.player_id, self.pb_slot))
-                self.old_pbfile = pbfile
-            else:
-                log.debug("%s: pbfile not defined, no player created" % my_uri)
+        if self.rec_id is not None:
+            # the callback functions shouldn't call create_media if media already exists
+            raise Ux("create_media: media already exists")
+        my_uri = self.call.info().account.info().uri
+        log.debug("%s: creating media" % my_uri)
+        rec_file = "%srec_%s.wav" % (wav_dir, lib.uri_number(my_uri))
+        log.debug("%s: pwd = %s" % (my_uri, getcwd()))
+        log.debug("%s: rec file = %s" % (my_uri, rec_file))
+        self.rec_id = lib.create_recorder(rec_file)
+        self.rec_slot = lib.recorder_get_slot(self.rec_id)
+        log.debug("%s: created recorder %s at slot %d" % (my_uri, self.rec_id, self.rec_slot))
+        log.debug("%s: getting pbfile" % my_uri)
+        if type(pbfile_strings) == dict and my_uri in pbfile_strings:
+            pbfile = pbfile_strings[my_uri]
+            log.debug("%s: got pbfile %s" % (my_uri, pbfile))
+            log.debug("%s: creating player with pbfile = %s" % (my_uri, pbfile))
+            self.player_id = lib.create_player(pbfile, loop=True)
+            self.pb_slot = lib.player_get_slot(self.player_id)
+            log.debug("%s: creating player %s at slot %d" % (my_uri, self.player_id, self.pb_slot))
+            self.old_pbfile = pbfile
+        else:
+            log.debug("%s: pbfile not defined, no player created" % my_uri)
 
     @Trace(log)
     def patch_recfile(self, rec_file_name):
