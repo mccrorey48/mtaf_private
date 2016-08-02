@@ -155,7 +155,7 @@
     "KeypadView": {
         "NumKeyAll": {
             "by": "zpath",
-            "value": "//tl/tr/fl"
+            "value": "//gv/rl"
         },
         "FuncKeyAll": {
             "by": "zpath",
