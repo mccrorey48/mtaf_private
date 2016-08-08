@@ -22,26 +22,28 @@ with logging_esi.msg_src_cm('importing modules'):
     from lib.common.wrappers import TestCase
 
 run_list = []
-run_list.append('test_030_contact_lists')
-run_list.append('test_040_user_tabs')
-run_list.append('test_050_active_contacts_tabs')
-run_list.append('test_060_active_history_tabs')
-run_list.append('test_070_active_voicemail_tabs')
-run_list.append('test_080_incoming_call_screen')
-run_list.append('test_090_incoming_auto_answer')
-run_list.append('test_100_incoming_answer')
-run_list.append('test_110_incoming_ignore')
-run_list.append('test_120_call_from_contacts')
-run_list.append('test_130_clear_favorites_list')
-run_list.append('test_140_add_favorites')
-run_list.append('test_150_call_from_favorites')
-run_list.append('test_160_call_from_history')
+# run_list.append('test_030_contact_lists')
+# run_list.append('test_040_user_tabs')
+# run_list.append('test_050_active_contacts_tabs')
+# run_list.append('test_060_active_history_tabs')
+# run_list.append('test_070_active_voicemail_tabs')
+# run_list.append('test_080_incoming_call_screen')
+# run_list.append('test_090_incoming_auto_answer')
+# run_list.append('test_100_incoming_answer')
+# run_list.append('test_110_incoming_ignore')
+# run_list.append('test_120_call_from_contacts')
+# run_list.append('test_130_clear_favorites_list')
+# run_list.append('test_140_add_favorites')
+# run_list.append('test_150_call_from_favorites')
+# run_list.append('test_160_call_from_history')
 run_list.append('test_170_call_from_voicemail')
 run_list.append('test_180_call_from_keypad')
-run_list.append('test_190_save_voicemail')
+run_list.append('test_190_save_new_voicemail')
 run_list.append('test_200_trash_saved_voicemail')
 run_list.append('test_210_trash_new_voicemail')
 run_list.append('test_220_save_deleted_voicemail')
+run_list.append('test_230_forward_new_voicemail')
+run_list.append('test_240_forward_saved_voicemail')
 
 
 def except_screenshot(type, value, traceback):
@@ -335,14 +337,16 @@ class SmokeTests(unittest.TestCase):
 
     # run with test_200_delete_save_voicemail for better results
     @TestCase(log, run_list, except_screenshot)
-    def test_190_save_voicemail(self):
+    def test_190_save_new_voicemail(self):
         user_view.goto_tab('Voicemail')
+        voicemail_view.goto_tab('Saved')
+        voicemail_view.clear_all_vm()
         voicemail_view.goto_tab('New')
         voicemail_view.clear_all_vm()
         voicemail_view.receive_voicemail()
         voicemail_view.get_first_vm_parent().click()
         voicemail_view.save_first_vm_vals()
-        voicemail_view.save_voicemail()
+        voicemail_view.save_voicemail_button()
         voicemail_view.goto_tab('Saved')
         voicemail_view.verify_first_vm()
 
@@ -350,9 +354,17 @@ class SmokeTests(unittest.TestCase):
     def test_200_trash_saved_voicemail(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('Saved')
+        voicemail_view.clear_all_vm()
+        voicemail_view.goto_tab('New')
+        voicemail_view.clear_all_vm()
+        voicemail_view.receive_voicemail()
         voicemail_view.get_first_vm_parent().click()
         voicemail_view.save_first_vm_vals()
-        voicemail_view.delete_voicemail()
+        voicemail_view.save_voicemail_button()
+        voicemail_view.goto_tab('Saved')
+        voicemail_view.get_first_vm_parent().click()
+        voicemail_view.save_first_vm_vals()
+        voicemail_view.delete_voicemail_button()
         voicemail_view.goto_tab('Trash')
         voicemail_view.verify_first_vm()
 
@@ -365,20 +377,68 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.receive_voicemail()
         voicemail_view.get_first_vm_parent().click()
         voicemail_view.save_first_vm_vals()
-        voicemail_view.delete_voicemail()
+        voicemail_view.delete_voicemail_button()
         voicemail_view.goto_tab('Trash')
         voicemail_view.verify_first_vm()
 
     @TestCase(log, run_list, except_screenshot)
     def test_220_save_deleted_voicemail(self):
         user_view.goto_tab('Voicemail')
+        voicemail_view.goto_tab('Saved')
+        voicemail_view.clear_all_vm()
+        #
+        # technically the commented lines should be run to make this work as a standalone test case,
+        # but since trash is usually going to be full of messages from previous runs, it's a waste
+        # of time - unless somehow the trash is empty when it is run standalone
+        #
+        # voicemail_view.goto_tab('New')
+        # voicemail_view.clear_all_vm()
+        # voicemail_view.receive_voicemail()
+        # voicemail_view.get_first_vm_parent().click()
+        # voicemail_view.save_first_vm_vals()
+        # voicemail_view.delete_voicemail_button()
         voicemail_view.goto_tab('Trash')
+        # voicemail_view.verify_first_vm()
         voicemail_view.get_first_vm_parent().click()
         voicemail_view.save_first_vm_vals()
-        voicemail_view.save_voicemail()
+        voicemail_view.save_voicemail_button()
         voicemail_view.goto_tab('Saved')
         voicemail_view.verify_first_vm()
         voicemail_view.clear_all_vm()
+
+    @TestCase(log, run_list, except_screenshot)
+    def test_230_forward_new_voicemail(self):
+        user_view.goto_tab('Voicemail')
+        voicemail_view.goto_tab('New')
+        voicemail_view.clear_all_vm()
+        voicemail_view.receive_voicemail()
+        voicemail_view.get_first_vm_parent().click()
+        voicemail_view.save_first_vm_vals()
+        voicemail_view.forward_voicemail_button()
+        voicemail_view.forward_voicemail()
+        # need a way to verify the forward
+
+    @TestCase(log, run_list, except_screenshot)
+    def test_240_forward_saved_voicemail(self):
+        self.test_190_save_new_voicemail()
+        user_view.goto_tab('Voicemail')
+        voicemail_view.goto_tab('Saved')
+        voicemail_view.clear_all_vm()
+        voicemail_view.goto_tab('New')
+        voicemail_view.clear_all_vm()
+        voicemail_view.receive_voicemail()
+        voicemail_view.get_first_vm_parent().click()
+        voicemail_view.save_voicemail_button()
+        voicemail_view.save_first_vm_vals()
+        voicemail_view.goto_tab('Saved')
+        voicemail_view.get_first_vm_parent().click()
+        voicemail_view.forward_voicemail_button()
+        voicemail_view.forward_voicemail()
+        # need a way to verify the forward
+
+    # #function disable for the moment
+    # @TestCase(log)
+    # def test_250_share_voicemail(self):
 
     # @TestCase(log, run_list, except_screenshot)
     # def test_230_contact_search_by_number(self):

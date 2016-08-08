@@ -55,12 +55,16 @@ class VoicemailView(UserView):
         return True
 
     @Trace(log)
-    def save_voicemail(self):
+    def save_voicemail_button(self):
         self.actions.click_element_by_key('SaveButton')
 
     @Trace(log)
-    def delete_voicemail(self):
+    def delete_voicemail_button(self):
         self.actions.click_element_by_key('DeleteButton')
+
+    @Trace(log)
+    def forward_voicemail_button(self):
+        self.actions.click_element_by_key('ForwardButton')
 
     @Trace(log)
     def swipe_get_vm_parents(self):
@@ -108,7 +112,7 @@ class VoicemailView(UserView):
         if self.new_vals['caller_number'] != self.saved_vals['caller_number']:
             return False
         if m1 and m2:
-            if abs(int(m1.group(1)) - int(m2.group(1))) > 1:
+            if abs(int(m1.group(1)) - int(m2.group(1))) > 2:
                 return False
             if m1.group(2) != m2.group(2):
                 return False
@@ -131,5 +135,12 @@ class VoicemailView(UserView):
             self.actions.find_element_by_key('DeleteButton').click()
             self.swipe_down()
             sleep(5)
+
+    @Trace(log)
+    def forward_voicemail(self):
+        for n in list('2203'):
+            self.actions.send_keycode("KEYCODE_%s" % n)
+        self.actions.click_element_by_key('Ok_Forward_Button')
+
 
 voicemail_view = VoicemailView()

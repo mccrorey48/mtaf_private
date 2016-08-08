@@ -520,6 +520,10 @@
         "No_Voicemails": {
             "by": "id",
             "value": "com.esi_estech.ditto:id/call_log_empty"
+        },
+        "Ok_Forward_Button": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/forward_dialog_ok_button"
         }
     }
 }

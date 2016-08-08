@@ -15,6 +15,7 @@ log = logging.get_logger('esi.action')
 test_screenshot_folder = cfg.test_screenshot_folder
 keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
 
+
 # get access to test case assert methods
 class Tc(unittest.TestCase):
     def runTest(self):
