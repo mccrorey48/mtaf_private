@@ -77,8 +77,9 @@ class UserView:
     @Trace(log)
     def goto_tab(self, tab_name):
         self.expected_tab = tab_name
-        failmsg = "Expect active tab to be %s, got %s" % (self.expected_tab, self.active_tab)
-        self.actions.wait_for_condition_true(self.verify_active_tab, failmsg)
+        failmsg_fmt = 'Expect active tab to be %s, got %s'
+        self.actions.wait_for_condition_true(self.verify_active_tab,
+                                             lambda: failmsg_fmt % (self.expected_tab, self.active_tab))
 
     @Trace(log)
     def goto_prefs(self):
@@ -86,33 +87,29 @@ class UserView:
         self.actions.click_element_by_key('PrefsButtonz')
 
     @Trace(log)
-    def get_active_tab(self):
-        return self.get_active_tab_by_name(self.png_file_base, self.tab_names)
-
-    @Trace(log)
     def wait_for_view(self):
         return self.actions.find_element_by_key(self.tab_names[0], timeout=30)
 
     @Trace(log)
-    def get_active_tab_by_name(self, file_base, names):
-        self.actions.get_screenshot_as_png(file_base, cfg.test_screenshot_folder)
-        for tab_name in names:
-            tab_color = self.actions.get_tab_color(file_base, tab_name)
-            log.debug("get_tab_color(%s, %s) returned %s" % (file_base, tab_name, tab_color))
-            if tab_color == 'active_color':
-                return tab_name
-        raise Ux('no active tab found')
-
-    @Trace(log)
     def verify_active_tab(self):
-        el = self.actions.find_element_by_key(self.expected_tab)
-        try:
-            el.click()
-            sleep(5)
-            self.active_tab = self.get_active_tab()
-            return self.active_tab == self.expected_tab
-        except:
-            return False
+        # for use with wait_for_condition_true
+        # click the tab expected to become active
+        # after a few seconds, test to see if it has become the active tab by looking at its color
+        # if it is active, return true
+        # if another tab is active, return false
+        # if no tab is active, raise an exception
+        self.actions.click_element_by_key(self.expected_tab)
+        sleep(5)
+        self.actions.get_screenshot_as_png(self.png_file_base, cfg.test_screenshot_folder)
+        for tab_name in self.tab_names:
+            tab_color = self.actions.get_tab_color(self.png_file_base, tab_name)
+            log.debug("get_tab_color(%s, %s) returned %s" % (self.png_file_base, tab_name, tab_color))
+            if tab_color == 'active_color':
+                self.active_tab = tab_name
+                break
+        else:
+            raise Ux('no active tab found')
+        return self.active_tab == self.expected_tab
 
     @Trace(log)
     def incoming_call_screen_test(self):

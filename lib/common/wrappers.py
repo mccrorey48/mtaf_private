@@ -4,10 +4,11 @@ import re
 import sys
 import traceback
 import inspect
+import appium
 
 log = logging_esi.get_logger('esi.wrappers')
 log.spaces = 0
-re_web_elem = re.compile('appium.webdriver.webelement.WebElement[^,]*, element="(\d+)"\)')
+# re_web_elem = re.compile('<appium\.webdriver\.webelement\.WebElement[^>]*>')
 
 
 # decorator for test cases that puts the test method name in log messages
@@ -57,14 +58,16 @@ class Trace(object):
             else:
                 logger = self.logger
                 logger.spaces = log.spaces
-            called = "%s%s" % (f.func_name, repr(args))
-            called = re_web_elem.sub(r'\1', called)
-            if called[-2:] == ',)':
-                called = called[:-2] + ')'
+            arg_reprs = []
+            for arg in args:
+                if type(arg) == appium.webdriver.webelement.WebElement:
+                    arg_reprs.append('<%s>' % arg._id)
+                else:
+                    arg_reprs.append(repr(arg))
+            called = "%s%s" % (f.func_name, '(%s)' % ','.join(arg_reprs))
             logger.trace("%10s %s%s" % ('TRACE:', ' '*logger.spaces, called))
-            if logging_esi.console_handler.level <= logging_esi.TRACE:
-                logger.spaces += 1
-                log.spaces += 1
+            logger.spaces += 1
+            log.spaces += 1
             retval = None
             try:
                 retval = f(*args, **kwargs)
@@ -88,11 +91,22 @@ class Trace(object):
                         pass
                 raise Ux('calling %s from %s' % (f.func_name, "%s:%s" % tuple(inspect.stack()[1][1:3])), False)
             finally:
-                if logging_esi.console_handler.level <= logging_esi.TRACE:
-                    logger.spaces -= 1
-                    log.spaces -= 1
+                logger.spaces -= 1
+                log.spaces -= 1
+                val_reprs = []
                 if retval is not None:
-                    returned = re_web_elem.sub(r'\1', repr(retval))
+                    if type(retval) == list:
+                        for val in retval:
+                            if type(val) == appium.webdriver.webelement.WebElement:
+                                val_reprs.append('<%s>' % val._id)
+                            else:
+                                val_reprs.append(repr(val))
+                        returned = '[%s]' % ','.join(val_reprs)
+                    else:
+                        if type(retval) == appium.webdriver.webelement.WebElement:
+                            returned = '<%s>' % retval._id
+                        else:
+                            returned = repr(retval)
                     if len(returned) > 160:
                         returned = returned[:160] + "..."
                     logger.trace('%10s %s%s returned %s' % ('TRACE:', ' '*logger.spaces, f.func_name, returned))

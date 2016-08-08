@@ -235,13 +235,13 @@ class Actions(Tc):
 
     @staticmethod
     @Trace(log)
-    def wait_for_condition_true(condition_fn, failmsg, seconds=30):
+    def wait_for_condition_true(condition_fn, failmsg_fn, seconds=30):
         start_time = time()
         while time() < start_time + seconds:
             if condition_fn():
                 return True
             sleep(1.0)
-        raise Ux(failmsg)
+        raise Ux(failmsg_fn())
 
     @staticmethod
     @Trace(log)

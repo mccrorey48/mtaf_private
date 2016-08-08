@@ -35,6 +35,8 @@ TRACE = (DEBUG + INFO) / 2
 
 
 class EsiLogger(getLoggerClass()):
+    spaces = 0
+
     def __init__(self, name, level=NOTSET):
         super(EsiLogger, self).__init__(name, level)
         addLevelName(TRACE, 'TRACE')
