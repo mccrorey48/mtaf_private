@@ -25,7 +25,7 @@ class ContactsView(UserView):
         softphone = get_softphone()
         icon = self.actions.find_sub_element_by_key(list_element, 'ContactCallIcon')
         # wait for handset picture to turn green
-        timeout = 120
+        timeout = 20
         start_time = time()
         current_time = start_time
         desired_color = cfg.colors['ContactsView']['handset_online_color'][:-1]
@@ -35,10 +35,9 @@ class ContactsView(UserView):
             if current_color == desired_color:
                 break
             current_time = time()
-            if not current_time - start_time < timeout:
-                raise Ux('timed out waiting for handset color to be %s, current color is %s' %
-                         (desired_color, current_color))
-            sleep(2)
+        else:
+            log.warn('handset icon color is not green (%s) within %s seconds, current color is %s' %
+                         (desired_color, timeout, current_color))
         icon.click()
         softphone.wait_for_call_status('start', 20)
         sleep(10)

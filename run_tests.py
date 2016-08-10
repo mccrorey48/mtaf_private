@@ -1,7 +1,10 @@
 import lib.common.logging_esi as logging_esi
 from lib.common.esi_result import EsiResult
 import argparse
+import time
 log = logging_esi.get_logger('esi.run_tests')
+
+log.set_db('localhost', 'results_ePhone7', time.strftime('%m_%d_%y-%H_%M_%S', time.localtime()))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("dir_name", choices=['ePhone7', 'ePhonego-android', 'ePhoneGo-iOS'], help="dir name, selects mtaf subdirectory")

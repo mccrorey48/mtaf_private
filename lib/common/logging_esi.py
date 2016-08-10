@@ -25,6 +25,8 @@ from logging import getLoggerClass, addLevelName, setLoggerClass, NOTSET, DEBUG,
 from logging import Formatter, FileHandler, getLogger, StreamHandler
 from contextlib import contextmanager
 from time import sleep
+from pymongo import MongoClient
+import re
 
 msg_len_max = 33
 msg_src_stack = []
@@ -33,9 +35,15 @@ root_name = 'esi'
 
 TRACE = (DEBUG + INFO) / 2
 
+current_formatter = None
+trace_indent = 0
 
 class EsiLogger(getLoggerClass()):
-    spaces = 0
+
+    db = None
+    db_host = None
+    db_client = None
+    db_collection = None
 
     def __init__(self, name, level=NOTSET):
         super(EsiLogger, self).__init__(name, level)
@@ -44,6 +52,20 @@ class EsiLogger(getLoggerClass()):
     def trace(self, msg, *args, **kwargs):
         if self.isEnabledFor(TRACE):
             self._log(TRACE, msg, args, **kwargs)
+
+    def handle(self, record):
+        if self.db_collection and current_formatter:
+            txt = current_formatter.format(record)
+            msg_dict = parse_msg_to_dict(txt)
+            if msg_dict:
+                self.db_collection.insert_one(msg_dict)
+        super(EsiLogger, self).handle(record)
+
+    @classmethod
+    def set_db(cls, host_name, db_name, collection_name):
+        cls.db_client = MongoClient(host_name)
+        cls.db = cls.db_client[db_name]
+        cls.db_collection = cls.db[collection_name]
 
 setLoggerClass(EsiLogger)
 
@@ -55,8 +77,10 @@ def msg_src_cm(src):
 
 
 def update_handler_formatters(f):
+    global current_formatter
     for handler in _log.handlers:
         handler.setFormatter(f)
+        current_formatter = f
 
 
 def push_msg_src(src):
@@ -94,6 +118,67 @@ def set_msg_src(src='', set_linefeed=False, show_lineno=True):
         print
         sleep(1)
 
+def get_logger(name):
+    return getLogger(name)
+
+re_common = re.compile(
+    '(?P<date>\S+)\s+'
+    + '(?P<time>\S+)\s+\['
+    + '(?P<src>[^\s\]]+)[\s\]]+'
+    + '(?P<level>\S+)[\s\-\]\[]+'
+    + '(?P<tc>\S[^\]]+\S)\s*\]\s+'
+    + '((?P<type>[A-Z ^:]+):\s+)?'
+    + '(?P<tail>.*)'
+)
+
+re_tc = re.compile(
+    '(?P<tc>\S+)\s+'
+    + '(?P<status>\S+)\s*'
+    + '([- ]+)?(?P<msg>.+)?'
+)
+
+re_trace = re.compile(
+    '(?P<func>[^(\s]+)'
+    + '((?P<arglist>\((?P<args>.*)\))?\s*|\s*)'
+    + '((?P<event>returned|EXCEPTION)?:?\s+|)(?P<msg>.+)?'
+)
+
+def parse_msg_to_dict(msg):
+    m = re_common.match(msg)
+    if not m:
+        print 'Unknown log message format:\n%s' % msg
+        return None
+    names = ['date', 'time', 'src', 'level', 'tc', 'type']
+    # names = ['date', 'time', 'src', 'level', 'tc', 'type', 'tail']
+    values = [m.group(name) for name in names]
+    # # print "tail = " + m.group('tail')
+    if m.group('type') == 'TEST CASE':
+        mt = re_tc.match(m.group('tail'))
+        if not mt:
+            print 'Unknown log message tail format: "%s"' % m.group('tail')
+            return None
+        for name in ['tc', 'status', 'msg']:
+            names.append(name)
+            values.append(mt.group(name))
+    elif m.group('type') == 'TRACE':
+        mt = re_trace.match(m.group('tail'))
+        if not mt:
+            print 'Unknown log message tail format: "%s"' % m.group('tail')
+            return None
+        for name in ('func', 'args', 'event', 'msg'):
+            names.append(name)
+            if name == 'event' and mt.group('arglist') is not None:
+                values.append('call')
+            else:
+                values.append(mt.group(name))
+    else:
+        names.append('msg')
+        values.append(m.group('tail'))
+    all_values = dict(zip(names, values))
+    all_values['trace_indent'] = trace_indent
+    # print '  ' + ', '.join(['%s: %s' % (name, all_values[name]) for name in names])
+    return all_values
+
 _log = getLogger(root_name)
 _log.setLevel(DEBUG)
 # file logging for info, debug, trace and warn levels, each with its own output file
@@ -114,10 +199,6 @@ console_handler = StreamHandler()
 console_handler.setLevel(INFO)
 _log.addHandler(console_handler)
 push_msg_src('logging_init')
-
-
-def get_logger(name):
-    return getLogger(name)
 
 
 if __name__ == '__main__':

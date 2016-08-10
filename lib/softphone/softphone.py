@@ -50,7 +50,9 @@ class Softphone:
     def wait_for_call_status(self, desired_status, timeout):
         start = time()
         while time() - start < timeout:
-            if not self.cmd_q.empty():
+            if self.cmd_q.empty():
+                sleep(0.1)
+            else:
                 txt = self.cmd_q.get()
                 log.debug("[wait_for_call_status] cmd_q: " + txt)
                 m = re.match('call\s+(\S+)\s.*(sip:\d+@\S+).*(sip:\d+@\S+)', txt)
@@ -65,7 +67,6 @@ class Softphone:
                     if self.status == 'call' and desired_status == 'early':
                         self.teardown_call()
                         raise Ux('wait for call status "early" terminated call because status was "call"')
-                sleep(0.1)
         else:
             raise Ux('wait for call status "%s" timed out after %s seconds' % (desired_status, timeout))
 

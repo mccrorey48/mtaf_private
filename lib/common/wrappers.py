@@ -7,8 +7,6 @@ import inspect
 import appium
 
 log = logging_esi.get_logger('esi.wrappers')
-# re_web_elem = re.compile('<appium\.webdriver\.webelement\.WebElement[^>]*>')
-
 
 # decorator for test cases that puts the test method name in log messages
 # that are generated within a test method, and catches Ux exceptions to put
@@ -34,7 +32,7 @@ class TestCase(object):
         return wrapped
 
 
-spaces = 0
+# spaces = 0
 
 class Trace(object):
 
@@ -54,7 +52,7 @@ class Trace(object):
         """
 
         def wrapped_f(*args, **kwargs):
-            global spaces
+            # global spaces
             if self.logger is None:
                 logger = log
             else:
@@ -66,23 +64,23 @@ class Trace(object):
                 else:
                     arg_reprs.append(repr(arg))
             called = "%s%s" % (f.func_name, '(%s)' % ','.join(arg_reprs))
-            logger.trace("%10s %s%s" % ('TRACE:', ' '*spaces, called))
-            spaces += 1
+            logger.trace("%10s %s%s" % ('TRACE:', ' '*logging_esi.trace_indent, called))
+            logging_esi.trace_indent += 1
             retval = None
             try:
                 retval = f(*args, **kwargs)
             except Fx as e:
-                logger.warn(('%%10s %%s%%-%ds FAIL - %%s' % (35 - spaces))
-                            % ('TRACE:', ' '*spaces, f.func_name, "%s %s" % (sp(), e.get_msg())))
+                logger.warn(('%%10s %%s%%-%ds FAIL - %%s' % (35 - logging_esi.trace_indent))
+                            % ('TRACE:', ' '*logging_esi.trace_indent, f.func_name, "%s %s" % (sp(), e.get_msg())))
                 raise Fx('calling %s' % f.func_name)
             except:
                 (exc_type, value, tb) = sys.exc_info()
                 if exc_type == Ux:
-                    logger.warn(('%%10s %%s%%-%ds EXCEPTION:      %%s: %%s' % (35 - spaces))
-                                % ('TRACE:', ' '*spaces, f.func_name, value.__class__.__name__, value))
+                    logger.warn(('%%10s %%s%%-%ds EXCEPTION:      %%s: %%s' % (35 - logging_esi.trace_indent))
+                                % ('TRACE:', ' '*logging_esi.trace_indent, f.func_name, value.__class__.__name__, value))
                 else:
-                    logger.warn(('%%10s %%s%%-%ds EXCEPTION:      %%s: %%s [%%s]' % (35 - spaces))
-                                % ('TRACE:', ' '*spaces, f.func_name, value.__class__.__name__,
+                    logger.warn(('%%10s %%s%%-%ds EXCEPTION:      %%s: %%s [%%s]' % (35 - logging_esi.trace_indent))
+                                % ('TRACE:', ' '*logging_esi.trace_indent, f.func_name, value.__class__.__name__,
                                    '%s line %s in %s attempting "%s"' % traceback.extract_tb(tb)[1], value))
                 if self.except_cb:
                     try:
@@ -91,7 +89,7 @@ class Trace(object):
                         pass
                 raise Ux('calling %s from %s' % (f.func_name, "%s:%s" % tuple(inspect.stack()[1][1:3])), False)
             finally:
-                spaces -= 1
+                logging_esi.trace_indent -= 1
                 val_reprs = []
                 if retval is not None:
                     if type(retval) == list:
@@ -108,6 +106,6 @@ class Trace(object):
                             returned = repr(retval)
                     if len(returned) > 160:
                         returned = returned[:160] + "..."
-                    logger.trace('%10s %s%s returned %s' % ('TRACE:', ' '*spaces, f.func_name, returned))
+                    logger.trace('%10s %s%s returned %s' % ('TRACE:', ' '*logging_esi.trace_indent, f.func_name, returned))
             return retval
         return wrapped_f
