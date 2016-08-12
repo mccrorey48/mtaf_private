@@ -27,7 +27,7 @@ class LoginView:
         self.actions.find_element_by_key('Username').set_text(login_id)
         self.actions.find_element_by_key('Password').set_text(passwd)
         self.actions.click_element_by_key('Login')
-        failmsg = 'timed out waiting for current activity to become .activities.MainViewActivity'
+        failmsg = 'current activity is not .activities.MainViewActivity'
         testfn = lambda: remote.current_activity == '.activities.MainViewActivity'
         self.actions.wait_for_condition_true(testfn, failmsg)
 

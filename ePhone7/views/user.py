@@ -77,7 +77,7 @@ class UserView:
     @Trace(log)
     def goto_tab(self, tab_name):
         self.expected_tab = tab_name
-        failmsg_fmt = 'Expect active tab to be %s, got %s'
+        failmsg_fmt = 'expect active tab to be %s, got %s'
         self.actions.wait_for_condition_true(self.verify_active_tab,
                                              lambda: failmsg_fmt % (self.expected_tab, self.active_tab))
 

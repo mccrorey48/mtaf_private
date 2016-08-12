@@ -458,58 +458,66 @@
         }
     },
     "VoicemailView": {
+        "CalledTime": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/calledTime"
+        },
+        "CallerName": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/callerName"
+        },
+        "CallerNumber": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/callerNumber"
+        },
+        "DeleteButton": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/delete_voicemail"
+        },
+        "ForwardButton": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/forward_voicemail"
+        },
         "New": {
             "by": "id",
             "value": "com.esi_estech.ditto:id/voicemail_new",
             "text": "NEW"
+        },
+        "NoVoicemails": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/call_log_empty"
+        },
+        "OkForwardButton": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/forward_dialog_ok_button"
+        },
+        "PlaybackStartStop": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/playback_start_stop"
+        },
+        "SaveButton": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/save_voicemail"
         },
         "Saved": {
             "by": "id",
             "value": "com.esi_estech.ditto:id/voicemail_saved",
             "text": "SAVED"
         },
+        "ShareButton": {
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/share_voicemail"
+        },
         "Trash": {
             "by": "id",
             "value": "com.esi_estech.ditto:id/voicemail_trash",
             "text": "TRASH"
         },
-        "VoicemailParent": {
-            "by": "id",
-            "value": "com.esi_estech.ditto:id/voicemail_card"
-        },
-        "CallerName": {
-            "by": "id",
-            "value": "com.esi_estech.ditto:id/callerName"
-        },
         "VmDuration": {
             "by": "id",
             "value": "com.esi_estech.ditto:id/vmDuration"
         },
-        "CallerNumber": {
-            "by": "id",
-            "value": "com.esi_estech.ditto:id/callerNumber"
-        },
-        "CalledTime": {
-            "by": "id",
-            "value": "com.esi_estech.ditto:id/calledTime"
-        },
-        "SaveButton": {
-            "by": "id",
-            "value": "com.esi_estech.ditto:id/save_voicemail"
-        },
-        "DeleteButton": {
-            "by": "id",
-            "value": "com.esi_estech.ditto:id/delete_voicemail"
-        },
-        "ShareButton": {
-            "by": "id",
-            "value": "com.esi_estech.ditto:id/share_voicemail"
-        },
-        "ForwardButton": {
-            "by": "id",
-            "value": "com.esi_estech.ditto:id/forward_voicemail"
-        },
-        "VM_Button": {
+        "VmButton": {
             "by": "id",
             "value": "com.esi_estech.ditto:id/vm_button"
         },
@@ -517,13 +525,13 @@
             "by": "id",
             "value": "com.esi_estech.ditto:id/vm_call_button"
         },
-        "No_Voicemails": {
+        "VmDetailHeader": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/call_log_empty"
+            "value": "com.esi_estech.ditto:id/vm_user_header_layout"
         },
-        "Ok_Forward_Button": {
+        "VmParent": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/forward_dialog_ok_button"
+            "value": "com.esi_estech.ditto:id/voicemail_card"
         }
     }
 }

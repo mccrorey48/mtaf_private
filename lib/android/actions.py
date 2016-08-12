@@ -235,13 +235,17 @@ class Actions(Tc):
 
     @staticmethod
     @Trace(log)
-    def wait_for_condition_true(condition_fn, failmsg_fn, seconds=30):
+    def wait_for_condition_true(condition_fn, failmsg_fn, timeout=30, poll_time=1.0, warn_time=5.0):
         start_time = time()
-        while time() < start_time + seconds:
+        while True:
+            elapsed_time = time() - start_time
+            if elapsed_time > timeout:
+                raise Ux("%s after %.1f seconds" % (failmsg_fn(), elapsed_time))
+            if elapsed_time > warn_time:
+                log.warn("%s after %.1f seconds" % (failmsg_fn(), elapsed_time))
             if condition_fn():
                 return True
-            sleep(1.0)
-        raise Ux(failmsg_fn())
+            sleep(poll_time)
 
     @staticmethod
     @Trace(log)

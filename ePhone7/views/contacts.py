@@ -61,9 +61,9 @@ class ContactsView(UserView):
 
     @Trace(log)
     def wait_for_no_duplicate_numbers(self):
-        failmsg_fmt = 'failed to get unique contact number list, last list was %s'
+        failmsg_fmt = 'contact number list %s not unique'
         self.actions.wait_for_condition_true(self.no_duplicate_numbers,
-                                             lambda: failmsg_fmt % repr(self.displayed_numbers), 30)
+                                             lambda: failmsg_fmt % repr(self.displayed_numbers), timeout=30)
 
     @Trace(log)
     def get_contact_list_element(self, contact_number):
@@ -175,7 +175,7 @@ class ContactsView(UserView):
     @Trace(log)
     def get_contact_detail_view(self):
         self.actions.wait_for_condition_true(self.contact_detail_view_visible,
-                                             lambda: 'contact detail view failed to become visible')
+                                             lambda: 'no contact detail view')
 
     @Trace(log)
     def add_favorites_from_coworkers(self):
