@@ -1,54 +1,52 @@
 import re
 import time
 from matplotlib import pyplot as pl
+
 get_new_data = False
+send_180 = True
+
 if get_new_data:
     import lib.softphone.simple_pj as pj
     import lib.common.logging_esi as logging_esi
     log = logging_esi.get_logger('esi.simple_pj_test')
     # set console log level
     logging_esi.console_handler.setLevel(logging_esi.INFO)
+
+    def on_incoming_call_cb(acct_info):
+        uri = acct_info.account.info().uri
+        log.info('on_incoming_call_cb: uri=%s, answering with 200' % uri)
+        acct_info.call.answer(200)
+
+    def on_state_cb(acct_info):
+        state = pj.call_state_text[acct_info.state]
+        media_state = pj.media_state_text[acct_info.media_state]
+        uri = acct_info.account.info().uri
+        log.info('on_state_cb: uri=%s, state=%s, media_state=%s' % (uri, state, media_state))
+
     lib = pj.PjsuaLib()
     lib.start(dns_list=['10.0.50.156', '10.0.50.157'])
     lib.add_account('2202', 'customer4', 'nr5.cpbx.esihs.net', '1W6Rowrb')
     lib.add_account('2203', 'customer4', 'nr5.cpbx.esihs.net', 'wv6ocUgT')
     caller_info = lib.acct_infos['sip:2202@customer4']
+    caller_info.on_state_cb = on_state_cb
+    called_info = lib.acct_infos['sip:2203@customer4']
+    called_info.on_state_cb = on_state_cb
+    called_info.on_incoming_call_cb = on_incoming_call_cb
     caller_info.call = caller_info.account.make_call('sip:2203@customer4')
     caller_info.call.set_callback(pj.MyCallCallback(caller_info))
-    called_info = lib.acct_infos['sip:2203@customer4']
-    send_180 = True
-    for i in range(20):
-        # if caller_info.call:
-        #     log.info('call %s local %s remote %s' % (pj.call_state_text[caller_info.state],
-        #                                              re.match('("[^"]*"\s+)?<?([^>]+)',
-        #                                                       caller_info.call.info().uri).group(2),
-        #                                              re.match('("[^"]*"\s+)?<?([^>]+)',
-        #                                                       caller_info.call.info().remote_uri).group(2)))
-        # else:
-        #     log.info('no outgoing call')
-        if called_info.call:
-            # log.info('call %s local %s remote %s' % (pj.call_state_text[called_info.state],
-            #                                          re.match('("[^"]*"\s+)?<?([^>]+)',
-            #                                                   called_info.call.info().uri).group(2),
-            #                                          re.match('("[^"]*"\s+)?<?([^>]+)',
-            #                                                   called_info.call.info().remote_uri).group(2)))
-            if send_180:
-                # log.info('called answer(180)')
-                called_info.call.answer(180)
-                send_180 = False
-            if i == 10:
-                # log.info('called answer(200)')
-                called_info.call.answer(200)
-            if i == 15:
-                # log.info('caller hanging up')
-                caller_info.call.hangup()
-        # else:
-        #     log.info('no incoming call')
+    for i in range(10):
+        # if called_info.call:
+            # if send_180:
+            #     # log.info('called answer(180)')
+            #     called_info.call.answer(180)
+            #     send_180 = False
+            # if i == 10:
+            #     called_info.call.answer(200)
+            # if i == 15:
+            #     caller_info.call.hangup()
         time.sleep(1)
-        # log.info('')
+    caller_info.call.hangup()
     lib.destroy()
-    # x = range(1000)
-    # y = range(1000)
 
 dtms = '(?P<dt>\S+\s+[^.]+)\.(?P<ms>\S+)'
 re_trans = re.compile(dtms + '.*sip:([^@]+).*(call|media) transition .*-->\s+(.*)')
@@ -100,10 +98,11 @@ with open('log/esi_debug.log', 'r') as f:
                 start_secs = float(time.mktime(start)) + (float(m.group(2))/1000.0)
                 print "%.3f %s %s" % (start_secs, m.group(3), m.group(4))
 
-max_t = 20000
-x = range(max_t)
+max_ms = 20000
+max_secs = max_ms/1000
+x = [float(ms)/1000 for ms in range(max_ms)]
 inv_offsets = {'INV': 0.5, '407': 0.4, '100': 0.3, '180': 0.2, '200': 0.1, 'ACK': 0.0}
-bye_offsets = {'BYE': 0.1, '200': 0.0}
+bye_offsets = {'BYE': 0.5, '200': 0.0}
 print start_timestamp
 base_y = 0
 for cseq in cseq_ds:
@@ -126,10 +125,10 @@ for cseq in cseq_ds:
             # print "setting %d at ms %d" % (i, ms)
             d_indices_by_ms[ms] = [i]
     for ms in d_indices_by_ms:
-        add_ms = 1
+        add_ms = 5
         for i in d_indices_by_ms[ms][1:]:
             cseq_ds[cseq][i]['ms'] += add_ms
-            add_ms += 1
+            add_ms += 5
     for d in cseq_ds[cseq]:
         print "    %s %s %6.3f  %8s  %28s %s" % (d['ms'], d['timestamp'], d['secs'], d['type'], d['dir'], d['desc'])
         # get ms for start of new y value
@@ -137,19 +136,32 @@ for cseq in cseq_ds:
             y_offsets[d['ms']] = inv_offsets[d['desc'][:3]]
         elif req_desc[:3] == 'BYE':
             y_offsets[d['ms']] = bye_offsets[d['desc'][:3]]
-    for ms in range(max_t):
+    for ms in range(max_ms):
         if ms in y_offsets:
             cur_y = base_y + y_offsets[ms]
             print "cseq %s: changing y to %.2f at ms=%d" % (cseq, cur_y, ms)
         y.append(cur_y)
         # in case two events happen on the same millisecond for this cseq, put one point so the first event will show
         # up on the plot
-    pl.plot(x, y, label='hello')
-    pl.text(max_t - 4000, base_y + 0.1, "%s %s" % (req_desc[:3], req_dir + ' PBX'))
+    label = "%s %s" % (req_desc[:3], req_dir + ' PBX')
+    # to use with pl.legend()
+    # pl.plot(x, y, label=label)
+    pl.plot(x, y)
+    pl.text(max_secs - 4, base_y + 0.1, label)
+    pl.text(max_secs + 0.1, base_y + 0.06, '200', fontsize=6)
+    pl.text(max_secs + 0.1, base_y + 0.16, '180', fontsize=6)
+    pl.text(max_secs + 0.1, base_y + 0.26, '100', fontsize=6)
+    pl.text(max_secs + 0.1, base_y + 0.36, '407', fontsize=6)
+    pl.text(max_secs + 0.1, base_y + 0.46, 'Req', fontsize=6)
+pl.suptitle('SIP Call Timing')
 pl.grid(True)
-pl.axis([0, max_t, 0, base_y + 1])
-pl.grid(True)
-pl.xlabel("Time in milliseconds")
+# pl.legend()
+pl.axis([0, max_secs, 0, base_y + 1])
+pl.grid(True, which='major', linestyle='dashed')
+pl.grid(True, which='minor', color='pink', linestyle='solid')
+pl.xlabel("Time in seconds")
 pl.yticks( range(1, len(cseq_ds) + 1), cseq_ds)
+pl.xticks(range(0, max_secs, 1))
 pl.ylabel("cseqs")
+pl.minorticks_on()
 pl.show()

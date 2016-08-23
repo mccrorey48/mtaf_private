@@ -55,6 +55,8 @@ class MyAccountCallback(pj.AccountCallback):
         log.debug('on_incoming_call: acct_info = %s' % self.acct_info)
         self.acct_info.call = call
         call.set_callback(MyCallCallback(self.acct_info))
+        if self.acct_info.on_incoming_call_cb:
+            self.acct_info.on_incoming_call_cb(self.acct_info)
 
 
 class MyCallCallback(pj.CallCallback):
@@ -90,6 +92,8 @@ class MyCallCallback(pj.CallCallback):
                 if self.acct_info.hold != new_hold_state:
                     log.debug("%s: hold transition %s --> %s" % (_info.uri, self.acct_info.hold, new_hold_state))
                     self.acct_info.hold = new_hold_state
+        if self.acct_info.on_state_cb:
+            self.acct_info.on_state_cb(self.acct_info)
 
     def on_media_state(self):
         self.on_state()
@@ -102,6 +106,7 @@ class AccountInfo:
     media_state = pj.MediaState.NULL
     call = None
     hold = False
+    on_state_cb = None
 
     def __init__(self, account, account_cb=None):
         self.account = account
