@@ -57,6 +57,7 @@ lines = []
 start = None
 start_secs = 0
 start_timestamp = ''
+cseqs = []
 cseq_ds = {}
 cseq_descs = {}
 with open('log/esi_debug.log', 'r') as f:
@@ -75,6 +76,8 @@ with open('log/esi_debug.log', 'r') as f:
                 ms = int(secs * 1000)
                 if m_req or m_resp:
                     cseq = m.group('cseq')
+                    if cseq not in cseqs:
+                        cseqs.insert(0, cseq)
                     if cseq not in cseq_descs:
                         cseq_descs[cseq] = [m.group('desc')]
                     elif m.group('desc') in cseq_descs[cseq]:
@@ -82,7 +85,7 @@ with open('log/esi_debug.log', 'r') as f:
                         continue
                     else:
                         cseq_descs[cseq].append(m.group('desc'))
-                    print "%s %6.3f, %s, %s, %s, %s" % (m.group('dt'), secs, m.group('type'), m.group('desc'), m.group('cseq'), m.group('dir'))
+                    # print "%s %6.3f, %s, %s, %s, %s" % (m.group('dt'), secs, m.group('type'), m.group('desc'), m.group('cseq'), m.group('dir'))
                     d = {'ms': ms, 'timestamp': timestamp, 'secs': secs, 'type': m.group('type'), 'desc': m.group('desc'), 'dir': m.group('dir')}
                     if cseq in cseq_ds:
                         cseq_ds[cseq].append(d)
@@ -96,23 +99,23 @@ with open('log/esi_debug.log', 'r') as f:
                 start_timestamp = m.group(1)
                 start = time.strptime(start_timestamp, "%m/%d/%y %H:%M:%S")
                 start_secs = float(time.mktime(start)) + (float(m.group(2))/1000.0)
-                print "%.3f %s %s" % (start_secs, m.group(3), m.group(4))
+                # print "%.3f %s %s" % (start_secs, m.group(3), m.group(4))
 
 max_ms = 20000
 max_secs = max_ms/1000
 x = [float(ms)/1000 for ms in range(max_ms)]
 inv_offsets = {'INV': 0.5, '407': 0.4, '100': 0.3, '180': 0.2, '200': 0.1, 'ACK': 0.0}
 bye_offsets = {'BYE': 0.5, '200': 0.0}
-print start_timestamp
+# print start_timestamp
 base_y = 0
-for cseq in cseq_ds:
+for cseq in cseqs:
     base_y += 1
     cur_y = base_y
     y = []
     y_offsets = {}
     req_desc = cseq_ds[cseq][0]['desc']
     req_dir = cseq_ds[cseq][0]['dir']
-    print "cseq %s" % cseq
+    # print "cseq %s" % cseq
     # if there are multiple d's for this cseq with the same timestamps, tweak the timestamps to space them at
     # 1 ms intervals so they will show up on the plot
     d_indices_by_ms = {}
@@ -130,7 +133,7 @@ for cseq in cseq_ds:
             cseq_ds[cseq][i]['ms'] += add_ms
             add_ms += 5
     for d in cseq_ds[cseq]:
-        print "    %s %s %6.3f  %8s  %28s %s" % (d['ms'], d['timestamp'], d['secs'], d['type'], d['dir'], d['desc'])
+        # print "    %s %s %6.3f  %8s  %28s %s" % (d['ms'], d['timestamp'], d['secs'], d['type'], d['dir'], d['desc'])
         # get ms for start of new y value
         if req_desc[:6] == 'INVITE':
             y_offsets[d['ms']] = inv_offsets[d['desc'][:3]]
@@ -139,7 +142,7 @@ for cseq in cseq_ds:
     for ms in range(max_ms):
         if ms in y_offsets:
             cur_y = base_y + y_offsets[ms]
-            print "cseq %s: changing y to %.2f at ms=%d" % (cseq, cur_y, ms)
+            # print "cseq %s: changing y to %.2f at ms=%d" % (cseq, cur_y, ms)
         y.append(cur_y)
         # in case two events happen on the same millisecond for this cseq, put one point so the first event will show
         # up on the plot
