@@ -80,9 +80,7 @@
             "uri": "sip:1001@test2.tigerteam.esihs.net"
         },
         {
-            "contexts": [
-                "callgui"
-            ],
+            "contexts": [],
             "delete": "false",
             "name2": "testerC",
             "phone_type": "soft",
@@ -92,9 +90,7 @@
             "uri": "sip:2202@customer4"
         },
         {
-            "contexts": [
-                "callgui"
-            ],
+            "contexts": [],
             "delete": "false",
             "name2": "testerD",
             "phone_type": "soft",
@@ -104,9 +100,7 @@
             "uri": "sip:2203@customer4"
         },
         {
-            "contexts": [
-                "callgui"
-            ],
+            "contexts": [],
             "delete": "false",
             "name2": "testerE",
             "phone_type": "soft",
@@ -116,9 +110,7 @@
             "uri": "sip:2204@customer4"
         },
         {
-            "contexts": [
-                "callgui"
-            ],
+            "contexts": [],
             "delete": "false",
             "name2": "testerF",
             "phone_type": "soft",
@@ -126,6 +118,54 @@
             "scope": "premier",
             "type": "account",
             "uri": "sip:2205@customer4"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerG",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2206@customer4"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerH",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2207@customer4"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerI",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2208@customer4"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerJ",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2209@customer4"
         },
         {
             "contexts": [
