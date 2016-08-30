@@ -1,9 +1,11 @@
 from time import sleep
-from lib.android.actions import Actions
-from lib.common.wrappers import Trace
-from lib.common.user_exception import UserException as Ux
+
 import lib.common.logging_esi as logging_esi
-from lib.common.configure import cfg
+from ePhone7.utils.configure import cfg
+from lib.android.actions import Actions
+from lib.common.user_exception import UserException as Ux
+from lib.common.wrappers import Trace
+
 log = logging_esi.get_logger('esi.user_view')
 
 

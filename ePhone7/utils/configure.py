@@ -31,8 +31,8 @@ class Cfg:
     locators = {}
     colors = {}
 
-    def set_site(self, dir_name, site_tag):
-        self.cfg_folder_path = os.path.join(self.exec_dir, dir_name, 'config')
+    def set_site(self, site_tag):
+        self.cfg_folder_path = os.path.join(self.exec_dir, 'ePhone7', 'config')
         self.caps = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'caps.json'))))
         self.locators = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'locators.json'))))
         self.colors = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'colors_generated.json'))))

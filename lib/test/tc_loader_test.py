@@ -1,12 +1,12 @@
-import unittest
 import argparse
+import unittest
 
 parser = argparse.ArgumentParser()
 parser.add_argument("dir_name", choices=['ePhone7', 'ePhonego-android', 'ePhoneGo-iOS'], help="dir name, selects mtaf subdirectory")
 parser.add_argument("site_tag", choices=['mm', 'js', 'local'], help="site tag, selects config/site_<tag>.json file")
 args = parser.parse_args()
 
-from lib.common.configure import cfg
+from ePhone7.utils.configure import cfg
 
 cfg.set_site(args.dir_name, args.site_tag)
 

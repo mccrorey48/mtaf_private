@@ -1,8 +1,10 @@
-from appium import webdriver
-from lib.common.configure import cfg
-import lib.common.logging_esi as logging
-from lib.common.user_exception import UserException as Ux
 from time import time
+
+from appium import webdriver
+
+import lib.common.logging_esi as logging
+from ePhone7.utils.configure import cfg
+from lib.common.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.remote')
 

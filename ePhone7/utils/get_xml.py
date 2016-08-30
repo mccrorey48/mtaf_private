@@ -1,7 +1,10 @@
-import os
-from selenium.common.exceptions import NoSuchElementException
-from lib.common.configure import cfg
 import argparse
+import os
+
+from selenium.common.exceptions import NoSuchElementException
+
+from ePhone7.utils.configure import cfg
+
 parser = argparse.ArgumentParser()
 parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="specify site tag")
 args = parser.parse_args()

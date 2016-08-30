@@ -1,11 +1,13 @@
+from time import time, sleep
+
+import lib.common.logging_esi as logging
+from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
 from lib.android.actions import Actions
-import lib.common.logging_esi as logging
 from lib.common.user_exception import UserException as Ux
-from lib.common.configure import cfg
 from lib.common.wrappers import Trace
 from lib.softphone.softphone import get_softphone
-from time import time, sleep
+
 log = logging.get_logger('esi.contacts_view')
 
 

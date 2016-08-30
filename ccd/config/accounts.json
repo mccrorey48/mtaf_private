@@ -1,49 +1,4 @@
 {
-    "asterisk": [
-        {
-            "type": "ini_tags",
-            "values": [
-                "ast_local"
-            ]
-        },
-        {
-            "contexts": [
-                "callgui"
-            ],
-            "domain": "127.0.0.1",
-            "number": "1002",
-            "phone_type": "soft",
-            "proxy": "localhost",
-            "type": "account",
-            "uri": "sip:UserTesterA"
-        },
-        {
-            "contexts": [
-                "callgui"
-            ],
-            "domain": "127.0.0.1",
-            "number": "1003",
-            "phone_type": "soft",
-            "proxy": "localhost",
-            "type": "account",
-            "uri": "sip:UserTesterB"
-        },
-        {
-            "name": "127.0.0.1",
-            "rs_domain": "127.0.0.1",
-            "rs_password": "",
-            "rs_user": "",
-            "type": "domain"
-        },
-        {
-            "cust_dom": "127.0.0.1",
-            "cust_dom_name": "127.0.0.1",
-            "dns_list": [
-                "127.0.1.1"
-            ],
-            "type": "platform"
-        }
-    ],
     "production": [
         {
             "type": "ini_tags",

@@ -5,7 +5,7 @@ with logging_esi.msg_src_cm('importing modules'):
     import unittest
     from lib.android.actions import Actions
     from lib.common.remote import remote
-    from lib.common.configure import cfg
+    from ePhone7.utils.configure import cfg
     from selenium.common.exceptions import WebDriverException
     from ePhone7.views.contacts import contacts_view
     from ePhone7.views.history import history_view

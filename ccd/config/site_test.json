@@ -1,12 +1,7 @@
 {
     "Mock": false,
     "DefaultTimeout": 10,
-    "ScreenshotsFolder": "utils/screenshots",
-    "TestScreenshotsFolder": "helpers/screenshots",
-    "XmlFolder": "utils/xml",
-    "CsvFolder": "utils/csv",
-    "ColorsFolder": "utils",
-    "URL": "http://10.3.1.165:4723/wd/hub",
+    "PortalUrl": "http://test.svlab.esihs.net",
     "Accounts": {
         "R2d2User": {
             "UserId": "2001",

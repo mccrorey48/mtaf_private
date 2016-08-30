@@ -1,13 +1,12 @@
-import Image
+import json
 import os
-
-from lib.common.configure import cfg
 from csv import DictReader
+
+import Image
 from svauto.user_exception import UserException as Ux
 
-# cfg.site['Mock'] = True
+from ePhone7.utils.configure import cfg
 from ePhone7.utils.view_info import view_info
-import json
 
 
 def get_tab_maxcolors(version):

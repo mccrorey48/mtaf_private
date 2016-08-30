@@ -1,19 +1,13 @@
-from PIL import Image
-import os
 import unittest
-from time import time, sleep, strftime, localtime
+from time import time, sleep
+
+from selenium.common.exceptions import WebDriverException
 
 import lib.common.logging_esi as logging
-from lib.common.configure import cfg
-from lib.common.remote import remote
-from lib.android.zpath import expand_zpath
-from lib.common.wrappers import Trace
-from selenium.common.exceptions import WebDriverException
 from lib.common.user_exception import UserException as Ux, UserFailException as Fx
+from lib.common.wrappers import Trace
 
-log = logging.get_logger('esi.action')
-test_screenshot_folder = cfg.test_screenshot_folder
-keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
+log = logging.get_logger('esi.selenium_actions')
 
 
 # get access to test case assert methods
@@ -24,10 +18,12 @@ class Tc(unittest.TestCase):
 
 class SeleniumActions(Tc):
 
-    def __init__(self, leaf_view=None):
+    def __init__(self, driver, cfg, leaf_view=None):
         Tc.__init__(self)
         self.leaf_view = leaf_view
         self.failureException = Fx
+        self.driver = driver
+        self.cfg = cfg
 
     @Trace(log)
     def assert_element_text(self, elem, expected, elem_name='element'):
@@ -58,19 +54,17 @@ class SeleniumActions(Tc):
         self.assertGreaterEqual(len(elems), mincount, "Expect %s length >= %d, got %d" %
                                 (elem_name, mincount, len(elems)))
 
-    @staticmethod
     @Trace(log)
-    def get_source():
-        return remote.driver.page_source
+    def get_source(self):
+        return self.driver.page_source
 
-    @staticmethod
     @Trace(log)
-    def quit():
-        remote.driver.quit()
+    def quit(self):
+        self.driver.quit()
 
     @Trace(log)
     def click_element_by_key(self, key, seconds=60):
-        locator = cfg.get_locator(key, self.leaf_view)
+        locator = self.cfg.get_locator(key, self.leaf_view)
         if "text" in locator:
             start_time = time()
             while time() < start_time + seconds:
@@ -84,55 +78,35 @@ class SeleniumActions(Tc):
         else:
             self.find_element_by_key(key).click()
 
-    @staticmethod
     @Trace(log)
-    def find_element_by_locator(locator, timeout=10):
-        if locator['by'] == 'zpath':
-            xpath = expand_zpath(locator['value'])
-            log.debug("xpath = " + xpath)
-            return remote.find_element_with_timeout("xpath", xpath, timeout=timeout)
-        else:
-            log.debug("%s = %s" % (locator['by'], locator['value']))
-            return remote.find_element_with_timeout(locator['by'], locator['value'], timeout=timeout)
+    def find_element_by_locator(self, locator, timeout=10):
+        log.debug("%s = %s" % (locator['by'], locator['value']))
+        return self.find_element_with_timeout(locator['by'], locator['value'], timeout=timeout)
 
-    @staticmethod
     @Trace(log)
-    def find_elements_by_locator(locator):
-        if locator['by'] == 'zpath':
-            xpath = expand_zpath(locator['value'])
-            log.debug("xpath = " + xpath)
-            return remote.driver.find_elements_by_xpath(xpath)
+    def find_elements_by_locator(self, locator):
         if locator['by'] == 'xpath':
             log.debug("xpath = " + locator['value'])
-            return remote.driver.find_elements_by_xpath(locator['value'])
+            return self.driver.find_elements_by_xpath(locator['value'])
         if locator['by'] == 'id':
             log.debug("id = " + locator['value'])
-            return remote.driver.find_elements_by_id(locator['value'])
+            return self.driver.find_elements_by_id(locator['value'])
         if locator['by'] == 'accessibility id':
             log.debug("accessibility id = " + locator['value'])
-            return remote.driver.find_elements_by_accessibility_id(locator['value'])
+            return self.driver.find_elements_by_accessibility_id(locator['value'])
 
-    @staticmethod
     @Trace(log)
-    def find_sub_element_by_locator(parent, locator, timeout=10):
-        if locator['by'] == 'zpath':
-            xpath = expand_zpath(locator['value'])
-            log.debug("xpath = " + xpath)
-            return remote.find_element_with_timeout('xpath', xpath, parent=parent, timeout=timeout)
+    def find_sub_element_by_locator(self, parent, locator, timeout=10):
         if locator['by'] == 'xpath':
             log.debug("xpath = " + locator['value'])
-            return remote.find_element_with_timeout('xpath', locator['value'], parent=parent, timeout=timeout)
+            return self.find_element_with_timeout('xpath', locator['value'], parent=parent, timeout=timeout)
         if locator['by'] == 'id':
             log.debug("id = " + locator['value'])
-            return remote.find_element_with_timeout('id', locator['value'], parent=parent, timeout=timeout)
+            return self.find_element_with_timeout('id', locator['value'], parent=parent, timeout=timeout)
 
     @staticmethod
     @Trace(log)
     def find_sub_elements_by_locator(parent, locator, timeout=20):
-        if locator['by'] == 'zpath':
-            xpath = expand_zpath(locator['value'])
-            log.debug("xpath = " + xpath)
-            return parent.find_elements_by_xpath(xpath)
         if locator['by'] == 'xpath':
             log.debug("xpath = " + locator['value'])
             return parent.find_elements_by_xpath(locator['value'])
@@ -143,7 +117,7 @@ class SeleniumActions(Tc):
     # key is a locator name
     @Trace(log)
     def find_element_by_key(self, key, timeout=30):
-        locator = cfg.get_locator(key, self.leaf_view)
+        locator = self.cfg.get_locator(key, self.leaf_view)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -158,7 +132,7 @@ class SeleniumActions(Tc):
     # is passed in as the "parent" argument
     @Trace(log)
     def find_sub_element_by_key(self, parent, key, timeout=20):
-        locator = cfg.get_locator(key, self.leaf_view)
+        locator = self.cfg.get_locator(key, self.leaf_view)
         try:
             return self.find_sub_element_by_locator(parent, locator, timeout)
         except WebDriverException as e:
@@ -170,7 +144,7 @@ class SeleniumActions(Tc):
     # filter_fn must take a list of elements and returns a filtered list of elements
     @Trace(log)
     def find_elements_by_key(self, key, filter_fn=None):
-        locator = cfg.get_locator(key, self.leaf_view)
+        locator = self.cfg.get_locator(key, self.leaf_view)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -217,3 +191,30 @@ class SeleniumActions(Tc):
                 return True
             sleep(poll_time)
 
+    @Trace(log)
+    def find_element_with_timeout(self, method, value, parent=None, timeout=10):
+        if method == 'xpath':
+            if parent is None:
+                finder_fn = self.driver.find_elements_by_xpath
+            else:
+                finder_fn = parent.find_elements_by_xpath
+        elif method == 'id':
+            if parent is None:
+                finder_fn = self.driver.find_elements_by_id
+            else:
+                finder_fn = parent.find_elements_by_id
+        elif method == 'accessibility id':
+            if parent is None:
+                finder_fn = self.driver.find_elements_by_accessibility_id
+            else:
+                finder_fn = parent.find_elements_by_accessibility_id
+        else:
+            raise Ux("Unknown finder method %s" % method)
+        start_time = time()
+        while time() - start_time < timeout:
+            elems = finder_fn(value)
+            if len(elems) > 1:
+                raise Ux("Multiple elements match %s = %s, parent = %s" % (method, value, parent))
+            if len(elems) == 1:
+                return elems[0]
+        raise Ux("No matching elements found with %s = %s, timeout = %s, parent = %s" % (method, value, timeout, parent))

@@ -1,6 +1,7 @@
 import argparse
 import pprint
-from lib.common.configure import cfg
+
+from ePhone7.utils.configure import cfg
 
 parser = argparse.ArgumentParser()
 parser.add_argument("dir_name", type=str, choices=['ePhone7', 'ePhoneGo-android', 'ePhoneGo-iOS'],

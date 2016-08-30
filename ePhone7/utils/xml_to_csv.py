@@ -1,9 +1,10 @@
-import xml.etree.ElementTree as ET
-import re
-import os
-import lib.android.zpath
-from lib.common.configure import cfg
 import argparse
+import os
+import re
+import xml.etree.ElementTree as ET
+
+import lib.android.zpath
+from ePhone7.utils.configure import cfg
 
 parser = argparse.ArgumentParser()
 parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="specify site tag")

@@ -1,15 +1,16 @@
-from PIL import Image
 import os
 import unittest
-from time import time, sleep, strftime, localtime
+from time import time, sleep
+
+from PIL import Image
+from selenium.common.exceptions import WebDriverException
 
 import lib.common.logging_esi as logging
-from lib.common.configure import cfg
-from lib.common.remote import remote
+from ePhone7.utils.configure import cfg
 from lib.android.zpath import expand_zpath
-from lib.common.wrappers import Trace
-from selenium.common.exceptions import WebDriverException
+from lib.common.remote import remote
 from lib.common.user_exception import UserException as Ux, UserFailException as Fx
+from lib.common.wrappers import Trace
 
 log = logging.get_logger('esi.action')
 test_screenshot_folder = cfg.test_screenshot_folder
@@ -49,18 +50,6 @@ class Actions(Tc):
         log.debug('%s count = %d should be %d' % (elem_name, len(elems), expected_count))
         self.assertEqual(len(elems), expected_count, "Expect %s length %d, got %d" %
                          (elem_name, expected_count, len(elems)))
-
-    @Trace(log)
-    def assert_elements_count_less_equal(self, elems, maxcount, elem_name='elements'):
-        log.debug('%s count = %d should be <= %d' % (elem_name, len(elems), maxcount))
-        self.assertLessEqual(len(elems), maxcount, "Expect %s length <= %d, got %d" %
-                             (elem_name, maxcount, len(elems)))
-
-    @Trace(log)
-    def assert_elements_count_greater_equal(self, elems, mincount, elem_name='elements'):
-        log.debug('%s count = %d should be >= %d' % (elem_name, len(elems), mincount))
-        self.assertGreaterEqual(len(elems), mincount, "Expect %s length >= %d, got %d" %
-                                (elem_name, mincount, len(elems)))
 
     @staticmethod
     @Trace(log)

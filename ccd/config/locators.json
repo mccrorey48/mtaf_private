@@ -1,0 +1,18 @@
+{
+    "default": {
+        "LoginView": {
+            "UserName": {
+                "type": "id",
+                "value": "LoginUsername"
+            },
+            "Password": {
+                "type": "id",
+                "value": "LoginPassword"
+            },
+            "LoginButton": {
+                "type": "xpath",
+                "value": "//input[@value='Log In']"
+            }
+        }
+    }
+}

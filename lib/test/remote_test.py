@@ -1,7 +1,8 @@
 # from time import sleep
 # from svauto.user_exception import UserException as Ux
 import argparse
-from lib.common.configure import cfg
+
+from ePhone7.utils.configure import cfg
 
 parser = argparse.ArgumentParser()
 parser.add_argument("dir_name", type=str, choices=['ePhone7', 'ePhoneGo-android', 'ePhoneGo-iOS'],
@@ -12,8 +13,6 @@ cfg.set_site(args.dir_name, args.site_tag)
 
 from ePhone7.views.user import user_view
 from lib.common.remote import remote
-from ePhone7.views.login import login_view
-from ePhone7.views.tnc import tnc_view
 
 remote.update_remote('main')
 user_view.goto_prefs()

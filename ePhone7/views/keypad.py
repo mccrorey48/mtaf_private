@@ -1,10 +1,12 @@
+from time import sleep
+
+import lib.common.logging_esi as logging
+from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
 from lib.android.actions import Actions
-from lib.common.configure import cfg
-from time import sleep
 from lib.common.wrappers import Trace
 from lib.softphone.softphone import get_softphone
-import lib.common.logging_esi as logging
+
 log = logging.get_logger('esi.keypad_view')
 
 
