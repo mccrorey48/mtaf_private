@@ -18,12 +18,13 @@ class Tc(unittest.TestCase):
 
 class SeleniumActions(Tc):
 
-    def __init__(self, driver, cfg, leaf_view=None):
+    def __init__(self, driver, view=None):
         Tc.__init__(self)
-        self.leaf_view = leaf_view
+        self.view = view
+        if view is not None:
+            self.cfg = view.cfg
         self.failureException = Fx
         self.driver = driver
-        self.cfg = cfg
 
     @Trace(log)
     def assert_element_text(self, elem, expected, elem_name='element'):
@@ -64,7 +65,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def click_element_by_key(self, key, seconds=60):
-        locator = self.cfg.get_locator(key, self.leaf_view)
+        locator = self.cfg.get_locator(key, self.view)
         if "text" in locator:
             start_time = time()
             while time() < start_time + seconds:
@@ -117,7 +118,7 @@ class SeleniumActions(Tc):
     # key is a locator name
     @Trace(log)
     def find_element_by_key(self, key, timeout=30):
-        locator = self.cfg.get_locator(key, self.leaf_view)
+        locator = self.cfg.get_locator(key, self.view)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -132,7 +133,7 @@ class SeleniumActions(Tc):
     # is passed in as the "parent" argument
     @Trace(log)
     def find_sub_element_by_key(self, parent, key, timeout=20):
-        locator = self.cfg.get_locator(key, self.leaf_view)
+        locator = self.cfg.get_locator(key, self.view)
         try:
             return self.find_sub_element_by_locator(parent, locator, timeout)
         except WebDriverException as e:
@@ -144,7 +145,7 @@ class SeleniumActions(Tc):
     # filter_fn must take a list of elements and returns a filtered list of elements
     @Trace(log)
     def find_elements_by_key(self, key, filter_fn=None):
-        locator = self.cfg.get_locator(key, self.leaf_view)
+        locator = self.cfg.get_locator(key, self.view)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])

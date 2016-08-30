@@ -4,7 +4,6 @@ log = logging_esi.get_logger('esi.smoke')
 with logging_esi.msg_src_cm('importing modules'):
     import unittest
     from lib.android.actions import Actions
-    from lib.common.remote import remote
     from ePhone7.utils.configure import cfg
     from selenium.common.exceptions import WebDriverException
     from ePhone7.views.contacts import contacts_view
@@ -13,37 +12,32 @@ with logging_esi.msg_src_cm('importing modules'):
     from ePhone7.views.keypad import keypad_view
     from ePhone7.views.user import user_view
     from ePhone7.views.prefs import prefs_view
-    from ePhone7.views.login import login_view
-    from ePhone7.views.settings import settings_view
-    from ePhone7.views.apps import apps_view
-    from ePhone7.views.ephone_storage import ephone_storage_view
-    from ePhone7.views.contacts_storage import contacts_storage_view
-    from ePhone7.views.tnc import tnc_view
     from lib.common.wrappers import TestCase
 
-run_list = []
-run_list.append('test_030_contact_lists')
-run_list.append('test_040_user_tabs')
-run_list.append('test_050_active_contacts_tabs')
-run_list.append('test_060_active_history_tabs')
-run_list.append('test_070_active_voicemail_tabs')
-run_list.append('test_080_incoming_call_screen')
-run_list.append('test_090_incoming_auto_answer')
-run_list.append('test_100_incoming_answer')
-run_list.append('test_110_incoming_ignore')
-run_list.append('test_120_call_from_contacts')
-run_list.append('test_130_clear_favorites_list')
-run_list.append('test_140_add_favorites')
-run_list.append('test_150_call_from_favorites')
-run_list.append('test_160_call_from_history')
-run_list.append('test_170_call_from_voicemail')
-run_list.append('test_180_call_from_keypad')
-run_list.append('test_190_save_new_voicemail')
-run_list.append('test_200_trash_saved_voicemail')
-run_list.append('test_210_trash_new_voicemail')
-run_list.append('test_220_save_deleted_voicemail')
-run_list.append('test_230_forward_new_voicemail')
-run_list.append('test_240_forward_saved_voicemail')
+run_list = [
+    'test_030_contact_lists',
+    'test_040_user_tabs',
+    'test_050_active_contacts_tabs',
+    'test_060_active_history_tabs',
+    'test_070_active_voicemail_tabs',
+    'test_080_incoming_call_screen',
+    'test_090_incoming_auto_answer',
+    'test_100_incoming_answer',
+    'test_110_incoming_ignore',
+    'test_120_call_from_contacts',
+    'test_130_clear_favorites_list',
+    'test_140_add_favorites',
+    'test_150_call_from_favorites',
+    'test_160_call_from_history',
+    'test_170_call_from_voicemail',
+    'test_180_call_from_keypad',
+    'test_190_save_new_voicemail',
+    'test_200_trash_saved_voicemail',
+    'test_210_trash_new_voicemail',
+    'test_220_save_deleted_voicemail',
+    'test_230_forward_new_voicemail',
+    'test_240_forward_saved_voicemail',
+]
 
 
 def except_screenshot(type, value, traceback):
@@ -55,120 +49,6 @@ class SmokeTests(unittest.TestCase):
     actions = Actions()
 
     @classmethod
-    def setUpClass(cls):
-        with logging_esi.msg_src_cm('setUpClass'):
-            if not cfg.site['Mock']:
-                try:
-                    # r2d2 bug, app crashes when you are logging in and enter password
-                    # so log in manually, and call goto_main_activity with assume_logged_in=True
-                    # so it won't run the state machine that logs in
-                    cls.goto_main_activity(assume_logged_in=True)
-                    cls.classInitialized = True
-                except WebDriverException as e:
-                    log.info('WebDriverException in setUpClass: ' + e.msg)
-                    cls.classInitialized = False
-
-    @classmethod
-    def logged_in_start(cls):
-        remote.update_remote('main')
-
-    @classmethod
-    def goto_main_activity(cls, assume_logged_in=False):
-        # webdriver.Remote() normally requires desired_caps with the correct
-        # current activity specified or it won't connect to the Appium server.
-        #
-        # At the start, or when the current activity changes and needs to be
-        # verified, we use (default) 'nolaunch' option so we can connect and find
-        # the current activity
-        #
-        # once we know the current activity we run
-        # remote.update_remote(<activity name>) to reconnect
-
-        if not assume_logged_in:
-            state = 'start'
-            while state != 'logged_in':
-                remote.update_remote('nolaunch')
-                activity_tag = remote.get_current_activity(state)
-                log.info("state: %s, activity_tag: %s" % (state, activity_tag))
-                remote.update_remote(activity_tag)
-                if activity_tag == 'main':
-                    state = 'logged_in'
-                elif activity_tag == 'login':
-                    login_view.login()
-                    state = 'test_for_tnc'
-                elif activity_tag == 'tnc':
-                    tnc_view.accept_tnc()
-                    state = 'tnc_accepted'
-            cls.actions.assertEqual(state, 'logged_in', 'Program Error: incorrect state')
-        remote.update_remote('main')
-
-        #
-        # this version of the state machine was used in setUpClass() to log in if
-        # necessary, then do a hard-logout/login/accept-tnc to make sure the
-        # contact list reloaded for the logged-in user.
-        #
-        # since r2d2 now has a better logout procedure that clears user data,
-        # the hard logout (still the only way to get a tnc screen) has been
-        # moved to a test case
-        #
-        # state = 'start'
-        # while state != 'hard_logged_out':
-        #     remote.update_remote('nolaunch')
-        #     activity_tag = remote.get_current_activity(state)
-        #     log.info("state: %s, activity_tag: %s" % (state, activity_tag))
-        #     remote.update_remote(activity_tag)
-        #     if state == 'start':
-        #         if activity_tag == 'login':
-        #             login_view.login()
-        #             state = 'logged_in'
-        #         elif activity_tag == 'tnc':
-        #             tnc_view.accept_tnc()
-        #             state = 'tnc_accepted'
-        #         elif activity_tag == 'main':
-        #             cls.hard_logout()
-        #             state = 'hard_logged_out'
-        #     elif state == 'logged_in':
-        #         if activity_tag == 'tnc':
-        #             tnc_view.accept_tnc()
-        #             state = 'tnc_accepted'
-        #         elif activity_tag == 'main':
-        #             cls.hard_logout()
-        #             state = 'hard_logged_out'
-        #     elif state == 'tnc_accepted':
-        #         cls.hard_logout()
-        #         state = 'hard_logged_out'
-        # cls.actions.assertEqual(state, 'hard_logged_out', 'Program Error: incorrect state')
-        # remote.update_remote('login')
-        # login_view.login()
-        # remote.update_remote('tnc')
-        # tnc_view.accept_tnc()
-        # remote.update_remote('main')
-
-    @classmethod
-    def soft_logout(cls):
-        user_view.goto_prefs()
-        prefs_view.logout()
-        prefs_view.logout_confirm()
-        remote.update_remote('login')
-
-    @classmethod
-    def hard_logout(cls):
-        contacts_view.goto_settings()
-        settings_view.goto_apps()
-        apps_view.goto_all_apps()
-        apps_view.goto_ephone_storage()
-        ephone_storage_view.delete_data()
-        ephone_storage_view.goto_apps()
-        apps_view.goto_settings()
-        settings_view.goto_apps()
-        apps_view.goto_all_apps()
-        apps_view.goto_contacts_storage()
-        contacts_storage_view.delete_data()
-        contacts_storage_view.goto_apps()
-        apps_view.goto_settings()
-        remote.update_remote('login')
-
-    @classmethod
     def tearDownClass(cls):
         cls.actions.quit()
 
@@ -176,31 +56,6 @@ class SmokeTests(unittest.TestCase):
         if not cfg.site['Mock']:
             self.assertTrue(self.classInitialized, 'setUpClass() failed, %s not run' % self._testMethodName)
 
-    # # r2d2 bug, app crashes when you are logging in and enter password
-    # @TestCase(log, run_list)
-    # def test_010_soft_logout_login(self):
-    #     self.soft_logout()
-    #     login_view.login()
-    #     remote.update_remote('main')
-    #
-    # @TestCase(log, run_list)
-    # def test_015_hard_logout_login(self):
-    #     self.hard_logout()
-    #     login_view.login()
-    #     remote.update_remote('tnc')
-    #     tnc_view.accept_tnc()
-    #     remote.update_remote('main')
-    #
-    # @TestCase(log, run_list)
-    # def test_020_show_registered(self):
-    #     pass
-    #
-    # the verify_contacts_list("FavoriteContacts") call fails because r2d2 does not
-    # yet display the favorites for the account
-
-    #
-    #        030 - 095 tested with 0.16.2 6/7/16
-    #
     @TestCase(log, run_list, except_screenshot)
     def test_030_contact_lists(self):
         # works for coworker contacts, need to define requirements and setup for others
@@ -214,10 +69,6 @@ class SmokeTests(unittest.TestCase):
         # contacts_view.goto_tab('Favorites')
         # contacts_view.verify_contacts_list('FavoriteContacts')
 
-    # # there is currently (2/1/2016) a bug in r2d2 that keeps this from passing
-    # # if contacts_view.goto_all() is executed
-    # # (clicking the tab when already on the "All" view leaves it in the correct
-    # # view, but the "Coworkers" tab is given the "active" color
     @TestCase(log, run_list, except_screenshot)
     def test_040_user_tabs(self):
         user_view.goto_tab('Contacts')

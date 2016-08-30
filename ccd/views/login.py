@@ -12,26 +12,28 @@ class LoginView:
 
     @Trace(log)
     def __init__(self):
-        self.actions = Actions(self, cfg)
+        self.actions = Actions(self)
 
     @Trace(log)
-    def login(self):
-        version_re = re.compile('.*<!-- ESI Cloud Communication Dashboard (v\.\d+\.\d+\.\d+) build (\d+) Date: ([^-]*) -- (\S*)', re.MULTILINE | re.DOTALL)
-        portal_url = cfg.site['PortalUrl']
+    def login_with_good_credentials(self):
         user_cfg = cfg.site['Accounts']['ResellerUser']
         username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
         password = user_cfg['Password']
+        self.login(username, password)
+
+    def login_with_bad_username(self):
+        user_cfg = cfg.site['Accounts']['ResellerUser']
+        username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
+        password = user_cfg['Password']
+        self.login(username, password)
+
+    def login(self, username, password):
+        portal_url = cfg.site['PortalUrl']
         self.actions.driver.get(portal_url)
-        self.actions.driver.find_element_by_id('LoginUsername').send_keys(username)
-        self.actions.driver.find_element_by_id('LoginPassword').send_keys(password)
+        if len(username):
+            self.actions.driver.find_element_by_id('LoginUsername').send_keys(username)
+        if len(password):
+            self.actions.driver.find_element_by_id('LoginPassword').send_keys(password)
         self.actions.driver.find_element_by_id('loginBtn').click()
-        sleep(10)
-        source = self.actions.driver.page_source
-        m = version_re.match(source)
-        if m:
-            print 'version %s' % m.group(1)
-            print 'build %s' % m.group(2)
-            print 'date %s' % m.group(3)
-            print 'time %s' % m.group(4)
 
 login_view = LoginView()

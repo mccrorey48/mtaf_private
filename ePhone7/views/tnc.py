@@ -1,7 +1,8 @@
-from lib.android.actions import Actions
-from lib.common.remote import remote
-from lib.common.wrappers import Trace
 import lib.common.logging_esi as logging
+from lib.android.actions import Actions
+from lib.android.remote import remote
+from lib.common.wrappers import Trace
+
 log = logging.get_logger('esi.tnc_view')
 
 

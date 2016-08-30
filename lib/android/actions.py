@@ -7,8 +7,8 @@ from selenium.common.exceptions import WebDriverException
 
 import lib.common.logging_esi as logging
 from ePhone7.utils.configure import cfg
+from lib.android.remote import remote
 from lib.android.zpath import expand_zpath
-from lib.common.remote import remote
 from lib.common.user_exception import UserException as Ux, UserFailException as Fx
 from lib.common.wrappers import Trace
 
@@ -25,9 +25,9 @@ class Tc(unittest.TestCase):
 
 class Actions(Tc):
 
-    def __init__(self, leaf_view=None):
+    def __init__(self, view=None):
         Tc.__init__(self)
-        self.leaf_view = leaf_view
+        self.view = view
         self.failureException = Fx
 
     @Trace(log)
@@ -89,7 +89,7 @@ class Actions(Tc):
 
     @Trace(log)
     def click_element_by_key(self, key, seconds=60):
-        locator = cfg.get_locator(key, self.leaf_view)
+        locator = cfg.get_locator(key, self.view)
         if "text" in locator:
             start_time = time()
             while time() < start_time + seconds:
@@ -162,7 +162,7 @@ class Actions(Tc):
     # key is a locator name
     @Trace(log)
     def find_element_by_key(self, key, timeout=30):
-        locator = cfg.get_locator(key, self.leaf_view)
+        locator = cfg.get_locator(key, self.view)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -177,7 +177,7 @@ class Actions(Tc):
     # is passed in as the "parent" argument
     @Trace(log)
     def find_sub_element_by_key(self, parent, key, timeout=20):
-        locator = cfg.get_locator(key, self.leaf_view)
+        locator = cfg.get_locator(key, self.view)
         try:
             return self.find_sub_element_by_locator(parent, locator, timeout)
         except WebDriverException as e:
@@ -189,7 +189,7 @@ class Actions(Tc):
     # filter_fn must take a list of elements and returns a filtered list of elements
     @Trace(log)
     def find_elements_by_key(self, key, filter_fn=None):
-        locator = cfg.get_locator(key, self.leaf_view)
+        locator = cfg.get_locator(key, self.view)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -258,7 +258,7 @@ class Actions(Tc):
         image_filename = os.path.join(cfg.test_screenshot_folder, filebase + '.png')
         log.debug('getting tab color from file %s' % image_filename)
         im = Image.open(image_filename)
-        view_classname = self.leaf_view.__class__.__name__
+        view_classname = self.view.__class__.__name__
         active_color = cfg.colors[view_classname]['active_color'][:-1]
         inactive_color = cfg.colors[view_classname]['inactive_color'][:-1]
         # print "active_color: " + repr(active_color)

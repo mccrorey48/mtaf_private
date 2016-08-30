@@ -11,7 +11,7 @@ args = parser.parse_args()
 
 cfg.set_site('ePhone7', args.site_tag)
 from lib.android.actions import Actions
-from lib.common.remote import remote
+from lib.android.remote import remote
 from lib.softphone.softphone import get_softphone
 import re
 from ePhone7.views.user import user_view

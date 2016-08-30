@@ -25,7 +25,7 @@ class Remote:
         # else:
         #     self.update_remote('nolaunch')
         self.timeout = timeout
-        self.update_remote('nolaunch')
+        self.update_remote('main')
 
     def update_remote(self, caps_tag, timeout=cfg.site['DefaultTimeout']):
         # if not cfg.site['Mock']:

@@ -1,7 +1,7 @@
 import lib.common.logging_esi as logging
 from ePhone7.utils.configure import cfg
 from lib.android.actions import Actions
-from lib.common.remote import remote
+from lib.android.remote import remote
 from lib.common.wrappers import Trace
 
 log = logging.get_logger('esi.login_view')

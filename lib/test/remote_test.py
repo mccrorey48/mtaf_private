@@ -12,7 +12,7 @@ args = parser.parse_args()
 cfg.set_site(args.dir_name, args.site_tag)
 
 from ePhone7.views.user import user_view
-from lib.common.remote import remote
+from lib.android.remote import remote
 
 remote.update_remote('main')
 user_view.goto_prefs()
