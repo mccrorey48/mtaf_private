@@ -22,5 +22,6 @@ with logging_esi.msg_src_cm('run_tests'):
     import ccd.suites.cron as cron
 
     suite = unittest.TestSuite()
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.CronTests))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.LoginTests))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.ResellerTests))
     unittest.TextTestRunner(verbosity=0, resultclass=EsiResult, failfast=args.failfast).run(suite)

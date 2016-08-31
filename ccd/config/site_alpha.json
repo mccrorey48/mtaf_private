@@ -2,37 +2,23 @@
     "Mock": false,
     "DefaultTimeout": 10,
     "PortalUrl": "http://alpha.esihs.net/portal",
+    "Version": "v.1.2.5",
+    "Build": "0",
+    "Date": "August 29, 2016",
+    "Time": "3:30pm",
     "Accounts": {
         "ResellerUser": {
             "UserId": "jsabugo",
             "DomainName": "tigerteam.esihs.net",
-            "Password": "1986"
+            "Password": "1986",
+            "BadUserId": "jsabug",
+            "BadPassword": "1987"
         },
-        "R2d2User": {
+        " Tester": {
             "UserId": "2001",
             "UserName": "Jessica",
             "DomainName": "customer4",
-            "Password": "2001",
-            "AllContacts": [
-                "2200",
-                "2201",
-                "2202",
-                "2203",
-                "2204"
-            ],
-            "CoworkerContacts": [
-                "2200",
-                "2201",
-                "2202",
-                "2203",
-                "2204",
-                "2205"
-            ],
-            "FavoriteContacts": [
-                "2200",
-                "2201",
-                "2202"
-            ]
+            "Password": "2001"
         },
         "SoftphoneUser": {
             "UserId": "2021",

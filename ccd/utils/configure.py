@@ -34,7 +34,13 @@ class Cfg:
     def set_site(self, svr_tag):
         self.cfg_folder_path = os.path.join(self.exec_dir, 'ccd', 'config')
         self.site = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'site_%s.json' % svr_tag))))
-        self.locators = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'locators.json'))))
+        all_locators = json.load(open(os.path.join(self.cfg_folder_path, 'locators.json')))
+        locators = all_locators['default']
+        if self.site['Version'] in all_locators:
+            version_locators = all_locators[self.site['Version']]
+            for key in version_locators:
+                locators[key] = version_locators[key]
+        self.locators = stringify(locators)
 
     def get_locator(self, key, actions_instantiator):
         view_chain = [c.__name__ for c in inspect.getmro(actions_instantiator.__class__)]

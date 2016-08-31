@@ -1,3 +1,3 @@
-import helpers.zpath
-print helpers.zpath.get_path('bt')
-print helpers.zpath.get_abbrev('android.widget.Button')
+import lib.android.zpath
+print lib.android.zpath.get_path('bt')
+print lib.android.zpath.get_abbrev('android.widget.Button')

@@ -1,17 +1,41 @@
 {
     "default": {
+        "ResellerView": {
+            "DomainsTab": {
+                "by": "id",
+                "value": "nav-domains"
+            },
+            "InventoryTab": {
+                "by": "id",
+                "value": "nav-inventory"
+            },
+            "HomeTab": {
+                "by": "id",
+                "value": "nav-home-reseller"
+            }
+        },
+        "ResellerHomeView": {
+            "Logout": {
+                "by": "id",
+                "value": "logout"
+            }
+        },
         "LoginView": {
-            "UserName": {
-                "type": "id",
-                "value": "LoginUsername"
+            "LoginButton": {
+                "by": "xpath",
+                "value": "//input[@value='Log In']"
             },
             "Password": {
-                "type": "id",
+                "by": "id",
                 "value": "LoginPassword"
             },
-            "LoginButton": {
-                "type": "xpath",
-                "value": "//input[@value='Log In']"
+            "PasswordAlert": {
+                "by": "css",
+                "value": ".alert"
+            },
+            "UserName": {
+                "by": "id",
+                "value": "LoginUsername"
             }
         }
     }

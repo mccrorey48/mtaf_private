@@ -95,6 +95,9 @@ class SeleniumActions(Tc):
         if locator['by'] == 'accessibility id':
             log.debug("accessibility id = " + locator['value'])
             return self.driver.find_elements_by_accessibility_id(locator['value'])
+        if locator['by'] == 'css':
+            log.debug("css selector = " + locator['value'])
+            return self.driver.find_elements_by_css_selector(locator['value'])
 
     @Trace(log)
     def find_sub_element_by_locator(self, parent, locator, timeout=10):
@@ -114,6 +117,9 @@ class SeleniumActions(Tc):
         if locator['by'] == 'id':
             log.debug("id = " + locator['value'])
             return parent.find_elements_by_id(locator['value'])
+        if locator['by'] == 'css':
+            log.debug("css selector= " + locator['value'])
+            return parent.find_elements_by_css_selector(locator['value'])
 
     # key is a locator name
     @Trace(log)
@@ -209,6 +215,11 @@ class SeleniumActions(Tc):
                 finder_fn = self.driver.find_elements_by_accessibility_id
             else:
                 finder_fn = parent.find_elements_by_accessibility_id
+        elif method == 'css':
+            if parent is None:
+                finder_fn = self.driver.find_elements_by_css_selector
+            else:
+                finder_fn = parent.find_elements_by_css_selector
         else:
             raise Ux("Unknown finder method %s" % method)
         start_time = time()
