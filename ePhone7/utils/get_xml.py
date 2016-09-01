@@ -51,6 +51,7 @@ def get_version():
         user_view.goto_prefs()
         # arbitrary sleep to give the screen time to switch
         sleep(5)
+        save_xml_and_screenshot('prefs_%s' % 'no_version', 'no_version')
         source = prefs_view.get_app_version()
         prefs_view.exit_prefs()
         m = re.match('App Version : (\S*)', source.encode('utf8'))

@@ -239,13 +239,9 @@
     "PrefsView": {
         "About": {
             "by": "zpath",
-            "value": "//lv[1]/ll[13]/tv[1]"
+            "value": "//lv[1]/ll[17]/tv[1]"
         },
         "AboutOk": {
-            "by": "id",
-            "value": "android:id/button1"
-        },
-        "AdditionalOptionsExit": {
             "by": "id",
             "value": "android:id/button1"
         },
@@ -255,7 +251,7 @@
         },
         "AutoAnswerSwitch": {
             "by": "id",
-            "value": "com.esi_estech.ditto:id/auto_answer_switch"
+            "value": "com.esi_estech.ditto:id/settings_list_auto_answer_switch"
         },
         "LogoutCancel": {
             "by": "id",
@@ -316,11 +312,6 @@
             "by": "zpath",
             "value": "//lv/ll[10]/tv",
             "text": "Phone Updates"
-        },
-        "AdditionalOptions": {
-            "by": "zpath",
-            "value": "//lv/ll[11]/tv",
-            "text": "Additional Options"
         },
         "LogoutAccount": {
             "by": "zpath",

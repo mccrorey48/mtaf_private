@@ -16,7 +16,6 @@ class PrefsView:
 
     @Trace(log)
     def set_auto_answer(self, on=True):
-        self.actions.click_element_by_key('AdditionalOptions')
         elem = self.actions.find_element_by_key('AutoAnswerSwitch')
         y = elem.location['y'] + (elem.size['height'] / 2)
         left = elem.location['x']
@@ -25,7 +24,6 @@ class PrefsView:
             self.actions.swipe(left, y, right, y, 1000)
         else:
             self.actions.swipe(right, y, left, y, 1000)
-        self.actions.click_element_by_key('AdditionalOptionsExit')
 
     @Trace(log)
     def logout(self):
