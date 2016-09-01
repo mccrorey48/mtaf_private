@@ -6,7 +6,7 @@
     "XmlFolder": "ePhone7/utils/xml",
     "CsvFolder": "ePhone7/utils/csv",
     "ColorsFolder": "ePhone7/utils",
-    "URL": "http://10.3.1.216:4723/wd/hub",
+    "SeleniumUrl": "http://10.3.1.216:4723/wd/hub",
     "DefaultSoftphoneUser": "Auto TesterC",
     "Accounts": {
         "R2d2User": {

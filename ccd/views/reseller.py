@@ -32,7 +32,7 @@ class ResellerView(BaseView):
 
     @Trace(log)
     def version_should_be_correct(self):
-        source = self.actions.driver.page_source
+        source = self.actions.get_source()
         m = re.match('.*<!-- ESI Cloud Communication Dashboard (v\.\d+\.\d+\.\d+) build (\d+) Date: ([^-]*) -- (\S*)',
                  source, re.MULTILINE | re.DOTALL)
         if m:

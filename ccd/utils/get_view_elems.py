@@ -26,4 +26,6 @@ for elem in elems:
     if id:
         print id
 
+reseller_home_view.logout()
+login_view.actions.close_browser()
 

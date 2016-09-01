@@ -4,7 +4,7 @@ from time import time, sleep
 from selenium.common.exceptions import WebDriverException
 
 import lib.common.logging_esi as logging
-from lib.common.user_exception import UserException as Ux, UserFailException as Fx
+from lib.common.user_exception import UserException as Ux
 from lib.common.wrappers import Trace
 
 log = logging.get_logger('esi.selenium_actions')
@@ -18,13 +18,13 @@ class Tc(unittest.TestCase):
 
 class SeleniumActions(Tc):
 
-    def __init__(self, driver, view=None):
+    def __init__(self, remote, view=None):
         Tc.__init__(self)
-        self.view = view
         if view is not None:
-            self.cfg = view.cfg
-        self.failureException = Fx
-        self.driver = driver
+            self.view = view
+        if self.view is None:
+            raise Ux('Actions instantiation must include view parameter')
+        self.remote = remote
 
     @Trace(log)
     def assert_element_text(self, elem, expected, elem_name='element'):
@@ -57,15 +57,15 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def get_source(self):
-        return self.driver.page_source
+        return self.remote.driver.page_source
 
     @Trace(log)
     def quit(self):
-        self.driver.quit()
+        self.remote.driver.quit()
 
     @Trace(log)
     def click_element_by_key(self, key, seconds=60):
-        locator = self.cfg.get_locator(key, self.view)
+        locator = self.view.cfg.get_locator(key, self.view)
         if "text" in locator:
             start_time = time()
             while time() < start_time + seconds:
@@ -88,16 +88,16 @@ class SeleniumActions(Tc):
     def find_elements_by_locator(self, locator):
         if locator['by'] == 'xpath':
             log.debug("xpath = " + locator['value'])
-            return self.driver.find_elements_by_xpath(locator['value'])
+            return self.remote.driver.find_elements_by_xpath(locator['value'])
         if locator['by'] == 'id':
             log.debug("id = " + locator['value'])
-            return self.driver.find_elements_by_id(locator['value'])
+            return self.remote.driver.find_elements_by_id(locator['value'])
         if locator['by'] == 'accessibility id':
             log.debug("accessibility id = " + locator['value'])
-            return self.driver.find_elements_by_accessibility_id(locator['value'])
+            return self.remote.driver.find_elements_by_accessibility_id(locator['value'])
         if locator['by'] == 'css':
             log.debug("css selector = " + locator['value'])
-            return self.driver.find_elements_by_css_selector(locator['value'])
+            return self.remote.driver.find_elements_by_css_selector(locator['value'])
 
     @Trace(log)
     def find_sub_element_by_locator(self, parent, locator, timeout=10):
@@ -121,10 +121,9 @@ class SeleniumActions(Tc):
             log.debug("css selector= " + locator['value'])
             return parent.find_elements_by_css_selector(locator['value'])
 
-    # key is a locator name
     @Trace(log)
     def find_element_by_key(self, key, timeout=30):
-        locator = self.cfg.get_locator(key, self.view)
+        locator = self.view.cfg.get_locator(key, self.view)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -133,25 +132,17 @@ class SeleniumActions(Tc):
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
-    # "key" is the element whose locator is specified as a sub-element to
-    # a parent key; in this case a specific parent element has been identified
-    # from a list of candidates that match the parent key, and this element
-    # is passed in as the "parent" argument
     @Trace(log)
     def find_sub_element_by_key(self, parent, key, timeout=20):
-        locator = self.cfg.get_locator(key, self.view)
+        locator = self.view.cfg.get_locator(key, self.view)
         try:
             return self.find_sub_element_by_locator(parent, locator, timeout)
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
-    # find all elements that match a locator named "key", put them in a list,
-    # filter the list if filter_fn is not None
-    #
-    # filter_fn must take a list of elements and returns a filtered list of elements
     @Trace(log)
     def find_elements_by_key(self, key, filter_fn=None):
-        locator = self.cfg.get_locator(key, self.view)
+        locator = self.view.cfg.get_locator(key, self.view)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -202,22 +193,22 @@ class SeleniumActions(Tc):
     def find_element_with_timeout(self, method, value, parent=None, timeout=10):
         if method == 'xpath':
             if parent is None:
-                finder_fn = self.driver.find_elements_by_xpath
+                finder_fn = self.remote.driver.find_elements_by_xpath
             else:
                 finder_fn = parent.find_elements_by_xpath
         elif method == 'id':
             if parent is None:
-                finder_fn = self.driver.find_elements_by_id
+                finder_fn = self.remote.driver.find_elements_by_id
             else:
                 finder_fn = parent.find_elements_by_id
         elif method == 'accessibility id':
             if parent is None:
-                finder_fn = self.driver.find_elements_by_accessibility_id
+                finder_fn = self.remote.driver.find_elements_by_accessibility_id
             else:
                 finder_fn = parent.find_elements_by_accessibility_id
         elif method == 'css':
             if parent is None:
-                finder_fn = self.driver.find_elements_by_css_selector
+                finder_fn = self.remote.driver.find_elements_by_css_selector
             else:
                 finder_fn = parent.find_elements_by_css_selector
         else:

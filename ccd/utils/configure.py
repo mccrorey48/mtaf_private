@@ -42,8 +42,10 @@ class Cfg:
                 locators[key] = version_locators[key]
         self.locators = stringify(locators)
 
-    def get_locator(self, key, actions_instantiator):
-        view_chain = [c.__name__ for c in inspect.getmro(actions_instantiator.__class__)]
+    def get_locator(self, key, view):
+        if view is None:
+            raise Ux('view parameter not initialized')
+        view_chain = [c.__name__ for c in inspect.getmro(view.__class__)]
         for view_name in view_chain:
             if view_name in self.locators and key in self.locators[view_name]:
                 return self.locators[view_name][key]

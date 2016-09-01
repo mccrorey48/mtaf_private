@@ -12,12 +12,16 @@
             "HomeTab": {
                 "by": "id",
                 "value": "nav-home-reseller"
-            }
-        },
-        "ResellerHomeView": {
+            },
             "Logout": {
                 "by": "id",
                 "value": "logout"
+            }
+        },
+        "ResellerHomeView": {
+            "DomainQuickLaunch": {
+                "by": "id",
+                "value": "domains"
             }
         },
         "LoginView": {

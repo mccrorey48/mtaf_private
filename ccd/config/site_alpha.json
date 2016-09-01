@@ -1,11 +1,14 @@
 {
     "Mock": false,
+    "SeleniumUrl": "http://localhost:4444/wd/hub",
     "DefaultTimeout": 10,
-    "PortalUrl": "http://alpha.esihs.net/portal",
+    "PortalUrl": "https://alpha.esihs.net/portal/",
     "Version": "v.1.2.5",
     "Build": "0",
     "Date": "August 29, 2016",
     "Time": "3:30pm",
+    "TestDomainMin": "test1",
+    "TestDomain": "test1.tigerteam.esihs.net",
     "Accounts": {
         "ResellerUser": {
             "UserId": "jsabugo",

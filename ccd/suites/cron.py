@@ -1,9 +1,8 @@
 import lib.common.logging_esi as logging_esi
 logging_esi.console_handler.setLevel(logging_esi.INFO)
-log = logging_esi.get_logger('esi.ccd_cron')
+log = logging_esi.get_logger('esi.cron')
 with logging_esi.msg_src_cm('importing modules'):
     import unittest
-    from lib.chrome.actions import Actions
     from ccd.views.base import base_view
     from ccd.views.login import login_view
     from ccd.views.reseller import reseller_view
@@ -12,29 +11,21 @@ with logging_esi.msg_src_cm('importing modules'):
     from ccd.views.reseller_inventory import reseller_inventory_view
     from lib.common.wrappers import TestCase
 
-run_list = [
-    'test_001_login_check_version',
-    'test_002_login_bad_password_should_fail',
-    'test_003_login_no_password_should_fail',
-    'test_004_login_bad_username_should_fail',
-    'test_005_login_no_username_should_fail',
-    'test_101_goto_home',
-    'test_102_goto_domains',
-    'test_103_goto_inventory'
-    ]
-
+debug = False
 
 class LoginTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        base_view.open_browser()
         base_view.get_portal_url()
 
     @classmethod
     def tearDownClass(cls):
-        Actions.closeDriver()
+        base_view.close_browser()
 
-    @TestCase(log, run_list)
+    # @unittest.skipIf(debug, 'debug')
+    @TestCase(log)
     def test_001_login_check_version(self):
         login_view.login_with_good_credentials()
         reseller_home_view.wait_for_view()
@@ -42,23 +33,27 @@ class LoginTests(unittest.TestCase):
         reseller_home_view.logout()
         login_view.wait_for_view()
 
-    @TestCase(log, run_list)
-    def test_002_login_bad_password_should_fail(self):
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log)
+    def test_002_login_bad_password(self):
         login_view.login_bad_password()
         login_view.wait_for_password_alert()
 
-    @TestCase(log, run_list)
-    def test_003_login_no_password_should_fail(self):
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log)
+    def test_003_login_no_password(self):
         login_view.login_no_password()
         login_view.wait_for_password_alert()
 
-    @TestCase(log, run_list)
-    def test_004_login_bad_username_should_fail(self):
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log)
+    def test_004_login_bad_username(self):
         login_view.login_bad_username()
         login_view.wait_for_password_alert()
 
-    @TestCase(log, run_list)
-    def test_004_login_no_username_should_fail(self):
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log)
+    def test_005_login_no_username(self):
         login_view.login_no_username()
         login_view.wait_for_password_alert()
 
@@ -66,22 +61,24 @@ class LoginTests(unittest.TestCase):
 
 class ResellerTests(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        base_view.open_browser()
+
+    @classmethod
+    def tearDownClass(cls):
+        base_view.close_browser()
+
     def setUp(self):
+        base_view.get_portal_url()
         login_view.login_with_good_credentials()
         reseller_home_view.wait_for_view()
 
     def tearDown(self):
         reseller_view.logout()
 
-    def tearDownClass(self):
-        Actions.closeDriver()
-
-    @classmethod
-    def setUp(cls):
-        login_view.login_with_good_credentials()
-        reseller_home_view.wait_for_view()
-
-    @TestCase(log, run_list)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log)
     def test_101_goto_home(self):
         reseller_view.goto_domains()
         reseller_domains_view.wait_for_view()
@@ -92,7 +89,8 @@ class ResellerTests(unittest.TestCase):
         reseller_view.goto_home()
         reseller_home_view.wait_for_view()
 
-    @TestCase(log, run_list)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log)
     def test_102_goto_domains(self):
         reseller_view.goto_home()
         reseller_home_view.wait_for_view()
@@ -103,7 +101,8 @@ class ResellerTests(unittest.TestCase):
         reseller_view.goto_domains()
         reseller_domains_view.wait_for_view()
 
-    @TestCase(log, run_list)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log)
     def test_103_goto_inventory(self):
         reseller_view.goto_home()
         reseller_home_view.wait_for_view()
@@ -113,3 +112,57 @@ class ResellerTests(unittest.TestCase):
         reseller_inventory_view.wait_for_view()
         reseller_view.goto_inventory()
         reseller_inventory_view.wait_for_view()
+
+    # @unittest.skipIf(debug, 'debug')
+    # @TestCase(log)
+    # def test_104_goto_test_domain_from_home(self):
+    #     reseller_view.goto_home()
+    #     reseller_home_view.wait_for_view()
+    #     reseller_home_view.goto_test_domain()
+    #     pass
+
+    @unittest.skip('debug')
+    @TestCase(log)
+    def test_105_goto_test_domain_from_list_scrolled(self):
+        reseller_view.goto_home()
+        reseller_home_view.wait_for_view()
+        reseller_home_view.goto_test_domain()
+
+    @unittest.skip('debug')
+    @TestCase(log)
+    def test_106_goto_test_domain_from_list_filtered(self):
+        reseller_view.goto_home()
+        reseller_home_view.wait_for_view()
+        reseller_home_view.goto_test_domain()
+
+
+class DomainTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        base_view.open_browser()
+
+    @classmethod
+    def tearDownClass(cls):
+        base_view.close_browser()
+
+    def setUp(self):
+        base_view.get_portal_url()
+        login_view.login_with_good_credentials()
+        reseller_home_view.wait_for_view()
+
+    def tearDown(self):
+        reseller_view.logout()
+
+    @unittest.skip('debug')
+    @TestCase(log)
+    def test_101_goto_domain(self):
+        reseller_view.goto_domains()
+        reseller_domains_view.wait_for_view()
+        reseller_view.goto_home()
+        reseller_home_view.wait_for_view()
+        reseller_view.goto_inventory()
+        reseller_inventory_view.wait_for_view()
+        reseller_view.goto_home()
+        reseller_home_view.wait_for_view()
+

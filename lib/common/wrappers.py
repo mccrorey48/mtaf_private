@@ -8,6 +8,7 @@ import appium
 
 log = logging_esi.get_logger('esi.wrappers')
 
+
 # decorator for test cases that puts the test method name in log messages
 # that are generated within a test method, and catches Ux exceptions to put
 # the message in a "fail" call that unittest will display

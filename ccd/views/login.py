@@ -13,6 +13,7 @@ class LoginView(BaseView):
         super(LoginView, self).__init__()
         self.view_name = "login"
         self.page_title = "Manager Portal"
+        self.get_portal_url()
 
     @Trace(log)
     def login_with_good_credentials(self):

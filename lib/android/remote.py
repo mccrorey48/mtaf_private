@@ -32,7 +32,7 @@ class Remote:
         if caps_tag != self.caps_tag:
             if self.caps_tag != 'not initialized':
                 self.driver.quit()
-            self.driver = webdriver.Remote(cfg.site["URL"], cfg.caps[caps_tag])
+            self.driver = webdriver.Remote(cfg.site["SeleniumUrl"], cfg.caps[caps_tag])
             self.caps_tag = caps_tag
             self.driver.implicitly_wait(timeout)
             self.current_implicit_wait = timeout

@@ -1,5 +1,6 @@
 {
     "Mock": false,
+    "SeleniumUrl": "http://localhost:4444/wd/hub",
     "DefaultTimeout": 10,
     "PortalUrl": "http://test.svlab.esihs.net",
     "Accounts": {

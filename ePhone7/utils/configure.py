@@ -2,6 +2,7 @@ import json
 import os
 import inspect
 from lib.common.user_exception import UserException as Ux
+from lib.android.zpath import expand_zpath
 
 
 def stringify(thing):
@@ -47,11 +48,18 @@ class Cfg:
         self.csv_folder = os.path.join(self.exec_dir, self.site['CsvFolder'])
         self.colors_folder = os.path.join(self.exec_dir, self.site['ColorsFolder'])
 
-    def get_locator(self, key, actions_instantiator):
+    def get_locator(self, locator_name, actions_instantiator):
         view_chain = [c.__name__ for c in inspect.getmro(actions_instantiator.__class__)]
         for view_name in view_chain:
-            if view_name in self.locators and key in self.locators[view_name]:
-                return self.locators[view_name][key]
+            if view_name in self.locators and locator_name in self.locators[view_name]:
+                locator = self.locators[view_name][locator_name]
+                locator_copy = {}
+                for key in locator.keys():
+                    locator_copy[key] = locator[key]
+                if locator_copy["by"] == "zpath":
+                    locator_copy["by"] = "xpath"
+                    locator_copy["value"] = expand_zpath(locator["value"])
+                return locator_copy
         raise Ux('locator for key %s is not in views: %s' % (key, ','.join(view_chain)))
 
 cfg = Cfg()

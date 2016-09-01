@@ -6,7 +6,7 @@
     "XmlFolder": "ePhone7/utils/xml",
     "CsvFolder": "ePhone7/utils/csv",
     "ColorsFolder": "ePhone7/utils",
-    "URL": "http://127.0.0.1:4723/wd/hub",
+    "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
     "Accounts": {
         "R2d2User": {
             "UserId": "2012",
