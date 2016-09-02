@@ -20,7 +20,7 @@ class Remote:
         if self.driver is None:
             log.debug('remote driver is already closed')
         else:
-            self.driver.close()
+            self.driver.quit()
             self.driver = None
 
 remote = Remote()

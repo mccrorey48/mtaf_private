@@ -3,32 +3,19 @@
     "SeleniumUrl": "http://localhost:4444/wd/hub",
     "DefaultTimeout": 10,
     "PortalUrl": "http://test.svlab.esihs.net",
+    "Version": "v.1.2.5",
+    "Build": "0",
+    "Date": "August 29, 2016",
+    "Time": "3:30pm",
+    "TestDomainMin": "SVAutoCu",
+    "TestDomain": "SVAutoCustomer",
     "Accounts": {
-        "R2d2User": {
-            "UserId": "2001",
-            "UserName": "Jessica",
-            "DomainName": "customer4",
-            "Password": "2001",
-            "AllContacts": [
-                "2200",
-                "2201",
-                "2202",
-                "2203",
-                "2204"
-            ],
-            "CoworkerContacts": [
-                "2200",
-                "2201",
-                "2202",
-                "2203",
-                "2204",
-                "2205"
-            ],
-            "FavoriteContacts": [
-                "2200",
-                "2201",
-                "2202"
-            ]
+        "ResellerUser": {
+            "UserId": "mmccroreyrs",
+            "DomainName": "SVAutoManage",
+            "Password": "0222",
+            "BadUserId": "mmccroreyr",
+            "BadPassword": "2222"
         },
         "SoftphoneUser": {
             "UserId": "2021",

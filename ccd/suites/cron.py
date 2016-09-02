@@ -11,7 +11,7 @@ with logging_esi.msg_src_cm('importing modules'):
     from ccd.views.reseller_inventory import reseller_inventory_view
     from lib.common.wrappers import TestCase
 
-debug = False
+debug = True
 
 class LoginTests(unittest.TestCase):
 
@@ -24,14 +24,14 @@ class LoginTests(unittest.TestCase):
     def tearDownClass(cls):
         base_view.close_browser()
 
-    # @unittest.skipIf(debug, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log)
     def test_001_login_check_version(self):
         login_view.login_with_good_credentials()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
         reseller_home_view.version_should_be_correct()
         reseller_home_view.logout()
-        login_view.wait_for_view()
+        login_view.wait_for_page_title()
 
     @unittest.skipIf(debug, 'debug')
     @TestCase(log)
@@ -58,7 +58,6 @@ class LoginTests(unittest.TestCase):
         login_view.wait_for_password_alert()
 
 
-
 class ResellerTests(unittest.TestCase):
 
     @classmethod
@@ -72,7 +71,7 @@ class ResellerTests(unittest.TestCase):
     def setUp(self):
         base_view.get_portal_url()
         login_view.login_with_good_credentials()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
 
     def tearDown(self):
         reseller_view.logout()
@@ -81,59 +80,59 @@ class ResellerTests(unittest.TestCase):
     @TestCase(log)
     def test_101_goto_home(self):
         reseller_view.goto_domains()
-        reseller_domains_view.wait_for_view()
+        reseller_domains_view.wait_for_page_title()
         reseller_view.goto_home()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
         reseller_view.goto_inventory()
-        reseller_inventory_view.wait_for_view()
+        reseller_inventory_view.wait_for_page_title()
         reseller_view.goto_home()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
 
     @unittest.skipIf(debug, 'debug')
     @TestCase(log)
     def test_102_goto_domains(self):
         reseller_view.goto_home()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
         reseller_view.goto_domains()
-        reseller_domains_view.wait_for_view()
+        reseller_domains_view.wait_for_page_title()
         reseller_view.goto_inventory()
-        reseller_inventory_view.wait_for_view()
+        reseller_inventory_view.wait_for_page_title()
         reseller_view.goto_domains()
-        reseller_domains_view.wait_for_view()
+        reseller_domains_view.wait_for_page_title()
 
     @unittest.skipIf(debug, 'debug')
     @TestCase(log)
     def test_103_goto_inventory(self):
         reseller_view.goto_home()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
         reseller_view.goto_inventory()
-        reseller_inventory_view.wait_for_view()
+        reseller_inventory_view.wait_for_page_title()
         reseller_view.goto_inventory()
-        reseller_inventory_view.wait_for_view()
+        reseller_inventory_view.wait_for_page_title()
         reseller_view.goto_inventory()
-        reseller_inventory_view.wait_for_view()
+        reseller_inventory_view.wait_for_page_title()
 
     # @unittest.skipIf(debug, 'debug')
-    # @TestCase(log)
-    # def test_104_goto_test_domain_from_home(self):
-    #     reseller_view.goto_home()
-    #     reseller_home_view.wait_for_view()
-    #     reseller_home_view.goto_test_domain()
-    #     pass
-
-    @unittest.skip('debug')
     @TestCase(log)
-    def test_105_goto_test_domain_from_list_scrolled(self):
+    def test_104_goto_test_domain_quick(self):
         reseller_view.goto_home()
-        reseller_home_view.wait_for_view()
-        reseller_home_view.goto_test_domain()
+        reseller_home_view.wait_for_page_title()
+        reseller_home_view.goto_test_domain_quick()
+        pass
 
-    @unittest.skip('debug')
+    # @unittest.skip('debug')
     @TestCase(log)
-    def test_106_goto_test_domain_from_list_filtered(self):
-        reseller_view.goto_home()
-        reseller_home_view.wait_for_view()
-        reseller_home_view.goto_test_domain()
+    def test_105_goto_test_domain_select(self):
+        reseller_view.goto_domains()
+        reseller_domains_view.wait_for_page_title()
+        reseller_domains_view.goto_test_domain_select()
+
+    # @unittest.skip('debug')
+    @TestCase(log)
+    def test_106_goto_test_domain_filter(self):
+        reseller_view.goto_domains()
+        reseller_domains_view.wait_for_page_title()
+        reseller_domains_view.goto_test_domain_filter()
 
 
 class DomainTests(unittest.TestCase):
@@ -149,7 +148,7 @@ class DomainTests(unittest.TestCase):
     def setUp(self):
         base_view.get_portal_url()
         login_view.login_with_good_credentials()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
 
     def tearDown(self):
         reseller_view.logout()
@@ -158,11 +157,11 @@ class DomainTests(unittest.TestCase):
     @TestCase(log)
     def test_101_goto_domain(self):
         reseller_view.goto_domains()
-        reseller_domains_view.wait_for_view()
+        reseller_domains_view.wait_for_page_title()
         reseller_view.goto_home()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
         reseller_view.goto_inventory()
-        reseller_inventory_view.wait_for_view()
+        reseller_inventory_view.wait_for_page_title()
         reseller_view.goto_home()
-        reseller_home_view.wait_for_view()
+        reseller_home_view.wait_for_page_title()
 

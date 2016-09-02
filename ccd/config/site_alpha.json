@@ -17,12 +17,6 @@
             "BadUserId": "jsabug",
             "BadPassword": "1987"
         },
-        " Tester": {
-            "UserId": "2001",
-            "UserName": "Jessica",
-            "DomainName": "customer4",
-            "Password": "2001"
-        },
         "SoftphoneUser": {
             "UserId": "2021",
             "UserName": "Jessica Softphone",

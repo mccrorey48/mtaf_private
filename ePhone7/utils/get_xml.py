@@ -87,7 +87,7 @@ def get_page_sources(version):
         save_xml_and_screenshot('prefs_%s' % version, version)
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         # call the R2D2 from the softphone and capture the incoming call screen
         softphone = get_softphone()
         dst_cfg = cfg.site['Accounts']['R2d2User']

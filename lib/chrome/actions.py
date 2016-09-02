@@ -2,6 +2,7 @@ from lib.common.user_exception import UserException as Ux, UserFailException as 
 import lib.common.logging_esi as logging
 from lib.selenium.selenium_actions import SeleniumActions
 from lib.chrome.remote import remote
+from selenium.webdriver.common.keys import Keys
 
 log = logging.get_logger('esi.chrome_actions')
 
@@ -26,6 +27,9 @@ class Actions(SeleniumActions):
             log.debug('getting url %s' % url)
             remote.driver.get(url)
             self.current_url =  remote.driver.current_url
+
+    def send_tab_to_element(self, elem):
+        elem.send_keys(Keys.TAB)
 
     @staticmethod
     def get_title():

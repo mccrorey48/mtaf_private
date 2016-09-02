@@ -30,7 +30,7 @@ class BaseView(object):
         self.actions.close_browser()
 
     @Trace(log)
-    def wait_for_view(self, timeout=20):
+    def wait_for_page_title(self, timeout=20):
 
         def condition_fn():
             return self.actions.get_title() == self.page_title

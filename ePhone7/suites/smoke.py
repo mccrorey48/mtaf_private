@@ -99,7 +99,7 @@ class SmokeTests(unittest.TestCase):
 
     @TestCase(log, run_list, except_screenshot)
     def test_080_incoming_call_screen(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
@@ -107,7 +107,7 @@ class SmokeTests(unittest.TestCase):
 
     @TestCase(log, run_list, except_screenshot)
     def test_090_incoming_auto_answer(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.goto_prefs()
         prefs_view.set_auto_answer()
         prefs_view.exit_prefs()
@@ -118,7 +118,7 @@ class SmokeTests(unittest.TestCase):
 
     @TestCase(log, run_list, except_screenshot)
     def test_100_incoming_answer(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
@@ -126,7 +126,7 @@ class SmokeTests(unittest.TestCase):
 
     @TestCase(log, run_list, except_screenshot)
     def test_110_incoming_ignore(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
@@ -134,7 +134,7 @@ class SmokeTests(unittest.TestCase):
 
     @TestCase(log, run_list, except_screenshot)
     def test_120_call_from_contacts(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Coworkers')
         contact_number = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']
@@ -143,21 +143,21 @@ class SmokeTests(unittest.TestCase):
 
     @TestCase(log, run_list, except_screenshot)
     def test_130_clear_favorites_list(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
         contacts_view.clear_favorites()
 
     @TestCase(log, run_list, except_screenshot)
     def test_140_add_favorites(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Coworkers')
         contacts_view.add_favorites_from_coworkers()
 
     @TestCase(log, run_list, except_screenshot)
     def test_150_call_from_favorites(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
         contact_number = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']
@@ -166,7 +166,7 @@ class SmokeTests(unittest.TestCase):
 
     @TestCase(log, run_list, except_screenshot)
     def test_160_call_from_history(self):
-        user_view.wait_for_view()
+        user_view.wait_for_page_title()
         user_view.incoming_call_screen_test()
         user_view.goto_tab('History')
         history_view.goto_tab('All')

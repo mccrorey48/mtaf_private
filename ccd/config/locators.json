@@ -1,6 +1,10 @@
 {
     "default": {
         "ResellerView": {
+            "DomainMessage": {
+                "by": "id",
+                "value": "domain-message"
+            },
             "DomainsTab": {
                 "by": "id",
                 "value": "nav-domains"
@@ -16,6 +20,16 @@
             "Logout": {
                 "by": "id",
                 "value": "logout"
+            }
+        },
+        "ResellerDomainsView": {
+            "DomainFilter": {
+                "by": "id",
+                "value": "domains"
+            },
+            "DomainName": {
+                "by": "xpath",
+                "value": "//tbody/tr/td[1]/a"
             }
         },
         "ResellerHomeView": {
