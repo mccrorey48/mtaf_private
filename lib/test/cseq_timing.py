@@ -4,7 +4,8 @@ import subprocess
 
 args = (
     '/usr/local/bin/tshark',
-    '-r', '/home/mmccrorey/callgui_sip.pcapng',
+    # '-r', '/home/mmccrorey/callgui_sip.pcapng',
+    '-r', '/home/mmccrorey/callgui.pcapng',
     '-T', 'fields',
     '-e', 'frame.time_relative',
     '-e', 'ip.src',
@@ -54,6 +55,7 @@ for line in lines:
     else:
         cseq_descs[cseq].append(cseq_desc)
     ms = int(secs * 1000)
+    max_ms = 2000 * (int(secs))
     if msg_type == 'request':
         # print fmt % (float(pkt_time), secs, src, dst, sip_method, cseq, cseq_method)
         d = {'msg_type': msg_type, 'ms': ms, 'secs': secs, 'desc': cseq_desc, 'src': src, 'dst': dst,
@@ -109,7 +111,7 @@ for line in lines:
 #                 start_secs = float(time.mktime(start)) + (float(m.group(2))/1000.0)
 #                 # print "%.3f %s %s" % (start_secs, m.group(3), m.group(4))
 #
-max_ms = 20000
+# max_ms = 20000
 max_secs = max_ms/1000
 x = [float(ms)/1000 for ms in range(max_ms)]
 inv_offsets = {'INV': 0.5, '407': 0.4, '100': 0.3, '180': 0.2, '200': 0.1, 'ACK': 0.0}
@@ -165,7 +167,7 @@ for cseq in cseqs:
     # to use with pl.legend()
     # pl.plot(x, y, label=label)
     pl.plot(x, y)
-    pl.text(max_secs * 0.5, base_y + 0.1, label)
+    pl.text(max_secs * 0.55, base_y + 0.1, label, fontsize=10)
     pl.text(max_secs + 0.1, base_y + 0.06, '200', fontsize=6)
     pl.text(max_secs + 0.1, base_y + 0.16, '180', fontsize=6)
     pl.text(max_secs + 0.1, base_y + 0.26, '100', fontsize=6)
