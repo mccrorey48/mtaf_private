@@ -1,14 +1,14 @@
-from lib.android.actions import Actions
 from lib.common.wrappers import Trace
 import lib.common.logging_esi as logging
+from ePhone7.views.base import BaseView
 log = logging.get_logger('esi.app_storage_view')
 
 
-class AppStorageView:
+class AppStorageView(BaseView):
 
     @Trace(log)
     def __init__(self):
-        self.actions = Actions(self)
+        super(AppStorageView, self).__init__()
 
     @Trace(log)
     def delete_data(self):

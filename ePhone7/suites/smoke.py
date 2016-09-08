@@ -5,7 +5,7 @@ with logging_esi.msg_src_cm('importing modules'):
     import unittest
     from lib.android.actions import Actions
     from ePhone7.utils.configure import cfg
-    from selenium.common.exceptions import WebDriverException
+    from ePhone7.views.base import base_view
     from ePhone7.views.contacts import contacts_view
     from ePhone7.views.history import history_view
     from ePhone7.views.voicemail import voicemail_view
@@ -14,30 +14,8 @@ with logging_esi.msg_src_cm('importing modules'):
     from ePhone7.views.prefs import prefs_view
     from lib.common.wrappers import TestCase
 
-run_list = [
-    'test_030_contact_lists',
-    'test_040_user_tabs',
-    'test_050_active_contacts_tabs',
-    'test_060_active_history_tabs',
-    'test_070_active_voicemail_tabs',
-    'test_080_incoming_call_screen',
-    'test_090_incoming_auto_answer',
-    'test_100_incoming_answer',
-    'test_110_incoming_ignore',
-    'test_120_call_from_contacts',
-    'test_130_clear_favorites_list',
-    'test_140_add_favorites',
-    'test_150_call_from_favorites',
-    'test_160_call_from_history',
-    'test_170_call_from_voicemail',
-    'test_180_call_from_keypad',
-    'test_190_save_new_voicemail',
-    'test_200_trash_saved_voicemail',
-    'test_210_trash_new_voicemail',
-    'test_220_save_deleted_voicemail',
-    'test_230_forward_new_voicemail',
-    'test_240_forward_saved_voicemail',
-]
+debug = False
+no_favorites = True
 
 
 def except_screenshot(type, value, traceback):
@@ -46,17 +24,12 @@ def except_screenshot(type, value, traceback):
 
 class SmokeTests(unittest.TestCase):
 
-    actions = Actions()
-
     @classmethod
     def tearDownClass(cls):
-        cls.actions.quit()
+        base_view.actions.quit()
 
-    def setUp(self):
-        if not cfg.site['Mock']:
-            self.assertTrue(self.classInitialized, 'setUpClass() failed, %s not run' % self._testMethodName)
-
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_030_contact_lists(self):
         # works for coworker contacts, need to define requirements and setup for others
         user_view.goto_tab('Contacts')
@@ -69,14 +42,16 @@ class SmokeTests(unittest.TestCase):
         # contacts_view.goto_tab('Favorites')
         # contacts_view.verify_contacts_list('FavoriteContacts')
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_040_user_tabs(self):
         user_view.goto_tab('Contacts')
         user_view.goto_tab('History')
         user_view.goto_tab('Voicemail')
         user_view.goto_tab('Keypad')
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_050_active_contacts_tabs(self):
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Personal')
@@ -84,30 +59,34 @@ class SmokeTests(unittest.TestCase):
         contacts_view.goto_tab('Favorites')
         contacts_view.goto_tab('Groups')
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_060_active_history_tabs(self):
         user_view.goto_tab('History')
         history_view.goto_tab('All')
         history_view.goto_tab('Missed')
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_070_active_voicemail_tabs(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('New')
         voicemail_view.goto_tab('Saved')
         voicemail_view.goto_tab('Trash')
 
-    @TestCase(log, run_list, except_screenshot)
+    # @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_080_incoming_call_screen(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
         user_view.incoming_call_screen_test()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_090_incoming_auto_answer(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.goto_prefs()
         prefs_view.set_auto_answer()
         prefs_view.exit_prefs()
@@ -116,63 +95,71 @@ class SmokeTests(unittest.TestCase):
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_100_incoming_answer(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
         user_view.answer_call_test()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_110_incoming_ignore(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
         user_view.ignore_call_test()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_120_call_from_contacts(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Coworkers')
         contact_number = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']
         list_element = contacts_view.get_contact_list_element(contact_number)
         contacts_view.call_contact_from_list_element(list_element)
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug or no_favorites, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_130_clear_favorites_list(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
         contacts_view.clear_favorites()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug or no_favorites, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_140_add_favorites(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Coworkers')
         contacts_view.add_favorites_from_coworkers()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug or no_favorites, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_150_call_from_favorites(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
         contact_number = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']
         list_element = contacts_view.get_contact_list_element(contact_number)
         contacts_view.call_contact_from_list_element(list_element)
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_160_call_from_history(self):
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         user_view.incoming_call_screen_test()
         user_view.goto_tab('History')
         history_view.goto_tab('All')
         history_view.call_contact_test()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_170_call_from_voicemail(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('New')
@@ -181,13 +168,15 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.open_first_vm()
         voicemail_view.call_first_vm_caller()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_180_call_from_keypad(self):
         user_view.goto_tab('Keypad')
         keypad_view.make_call()
 
     # run with test_200_delete_save_voicemail for better results
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_190_save_new_voicemail(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('Saved')
@@ -201,7 +190,8 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('Saved')
         voicemail_view.verify_first_vm()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_200_trash_saved_voicemail(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('Saved')
@@ -221,7 +211,8 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.verify_first_vm()
 
     # run with test_220_save_deleted_voicemail for better results
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_210_trash_new_voicemail(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('New')
@@ -233,7 +224,8 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('Trash')
         voicemail_view.verify_first_vm()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_220_save_deleted_voicemail(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('Saved')
@@ -258,7 +250,8 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.verify_first_vm()
         voicemail_view.clear_all_vm()
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_230_forward_new_voicemail(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('New')
@@ -270,7 +263,8 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.forward_voicemail()
         # need a way to verify the forward
 
-    @TestCase(log, run_list, except_screenshot)
+    @unittest.skipIf(debug, 'debug')
+    @TestCase(log, except_cb=except_screenshot)
     def test_240_forward_saved_voicemail(self):
         self.test_190_save_new_voicemail()
         user_view.goto_tab('Voicemail')
@@ -289,29 +283,36 @@ class SmokeTests(unittest.TestCase):
         # need a way to verify the forward
 
     # #function disable for the moment
+    # @unittest.skipIf(debug, 'debug')
     # @TestCase(log)
     # def test_250_share_voicemail(self):
 
-    # @TestCase(log, run_list, except_screenshot)
+    # @unittest.skipIf(debug, 'debug')
+    # @TestCase(log, except_cb=except_screenshot)
     # def test_230_contact_search_by_number(self):
     #     pass
     #
-    # @TestCase(log, run_list, except_screenshot)
+    # @unittest.skipIf(debug, 'debug')
+    # @TestCase(log, except_cb=except_screenshot)
     # def test_240_contact_search_by_name(self):
     #     pass
     #
-    # @TestCase(log, run_list, except_screenshot)
+    # @unittest.skipIf(debug, 'debug')
+    # @TestCase(log, except_cb=except_screenshot)
     # def test_250_call_forward_busy(self):
     #     pass
     #
-    # @TestCase(log, run_list, except_screenshot)
+    # @unittest.skipIf(debug, 'debug')
+    # @TestCase(log, except_cb=except_screenshot)
     # def test_260_call_forward_unanswered(self):
     #     pass
     #
-    # @TestCase(log, run_list, except_screenshot)
+    # @unittest.skipIf(debug, 'debug')
+    # @TestCase(log, except_cb=except_screenshot)
     # def test_270_delete_google_account(self):
     #     pass
     #
-    # @TestCase(log, run_list, except_screenshot)
+    # @unittest.skipIf(debug, 'debug')
+    # @TestCase(log, except_cb=except_screenshot)
     # def test_280_add_google_account(self):
     #     pass

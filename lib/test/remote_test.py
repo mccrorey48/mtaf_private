@@ -9,7 +9,7 @@ parser.add_argument("dir_name", type=str, choices=['ePhone7', 'ePhoneGo-android'
                     help="specify name of product directory")
 parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="specify site tag")
 args = parser.parse_args()
-cfg.set_site(args.dir_name, args.site_tag)
+cfg.set_site(args.site_tag)
 
 from ePhone7.views.user import user_view
 from lib.android.remote import remote

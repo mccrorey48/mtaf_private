@@ -15,8 +15,7 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def __init__(self):
-        UserView.__init__(self)
-        self.actions = Actions(self)
+        super(VoicemailView, self).__init__()
         self.tab_names = ('New', 'Saved', 'Trash')
         self.png_file_base = 'voicemail'
         self.elems = []

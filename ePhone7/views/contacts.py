@@ -1,9 +1,7 @@
 from time import time, sleep
-
 import lib.common.logging_esi as logging
 from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
-from lib.android.actions import Actions
 from lib.common.user_exception import UserException as Ux
 from lib.common.wrappers import Trace
 from lib.softphone.softphone import get_softphone
@@ -15,8 +13,7 @@ class ContactsView(UserView):
 
     @Trace(log)
     def __init__(self):
-        UserView.__init__(self)
-        self.actions = Actions(self)
+        super(ContactsView, self).__init__()
         self.tab_names = ('Personal', 'Coworkers', 'Favorites', 'Groups')
         self.png_file_base = 'contacts'
         self.displayed_elems = []

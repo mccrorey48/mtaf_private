@@ -1,16 +1,16 @@
-from lib.android.actions import Actions
 from time import sleep
 import lib.common.filters as filters
 from lib.common.wrappers import Trace
 import lib.common.logging_esi as logging
+from ePhone7.views.base import BaseView
 log = logging.get_logger('esi.apps_view')
 
 
-class AppsView:
+class AppsView(BaseView):
 
     @Trace(log)
     def __init__(self):
-        self.actions = Actions(self)
+        super(AppsView, self).__init__()
 
     @Trace(log)
     def swipe_up(self):

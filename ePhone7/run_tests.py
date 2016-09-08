@@ -9,7 +9,7 @@ log = logging_esi.get_logger('esi.run_tests')
 log.set_db('localhost', 'results_ePhone7', time.strftime('%m_%d_%y-%H_%M_%S', time.localtime()))
 
 parser = argparse.ArgumentParser()
-parser.add_argument("site_tag", choices=['mm', 'js', 'local'], help="site tag, selects config/site_<tag>.json file")
+parser.add_argument("site_tag", choices=['mm', 'js', 'local', 'ds'], help="site tag, selects config/site_<tag>.json file")
 parser.add_argument("--failfast", help="stop testing when a test case fails", action="store_true")
 parser.add_argument("--mock", help="use mock driver", action="store_true")
 args = parser.parse_args()

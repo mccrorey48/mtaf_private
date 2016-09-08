@@ -1,24 +1,26 @@
 from time import sleep
-
 import lib.common.logging_esi as logging_esi
 from ePhone7.utils.configure import cfg
 from lib.android.actions import Actions
 from lib.common.user_exception import UserException as Ux
 from lib.common.wrappers import Trace
+from ePhone7.views.base import BaseView
 
 log = logging_esi.get_logger('esi.user_view')
 
 
-class UserView:
+class UserView(BaseView):
 
     @Trace(log)
     def __init__(self):
-        self.actions = Actions(self)
+        super(UserView, self).__init__()
+        self.cfg = cfg
         self.tab_names = ('Contacts', 'History', 'Voicemail', 'Keypad')
         self.png_file_base = 'user'
         self.expected_tab = None
         self.active_tab = None
         self.call_status_wait = 30
+        self.actions = Actions(self)
 
     # @Trace(log)
     # def logout(self):

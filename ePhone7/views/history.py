@@ -3,7 +3,6 @@ from time import sleep
 import lib.common.logging_esi as logging
 from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
-from lib.android.actions import Actions
 from lib.common.user_exception import UserException as Ux
 from lib.common.wrappers import Trace
 from lib.softphone.softphone import get_softphone
@@ -15,19 +14,18 @@ class HistoryView(UserView):
 
     @Trace(log)
     def __init__(self):
-        UserView.__init__(self)
-        self.actions = Actions(self)
+        super(HistoryView, self).__init__()
         self.tab_names = ('All', 'Missed')
         self.png_file_base = 'history'
 
     @Trace(log)
     def call_contact_test(self):
-        src_cfg = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]
+        src_name = cfg.site['DefaultSoftphoneUser']
         elems = self.actions.find_elements_by_key('CallerName')
         self.actions.assertGreater(len(elems), 0, 'No CallerName elements found')
         name_elem = elems[0]
         name = name_elem.text
-        expected = src_cfg['UserNameIncoming']
+        expected = src_name
         self.actions.assertEqual(name, expected, "First caller name expected %s, actual %s" % (expected, name))
         loc_y = name_elem.location['y']
         log.debug("first name location y = %s" % loc_y)

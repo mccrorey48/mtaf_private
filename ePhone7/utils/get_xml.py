@@ -6,16 +6,17 @@ from selenium.common.exceptions import NoSuchElementException
 from ePhone7.utils.configure import cfg
 
 parser = argparse.ArgumentParser()
-parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="specify site tag")
+parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local', 'ds'], help="specify site tag")
 args = parser.parse_args()
 
-cfg.set_site('ePhone7', args.site_tag)
+cfg.set_site(args.site_tag)
 from lib.android.actions import Actions
 from lib.android.remote import remote
 from lib.softphone.softphone import get_softphone
 import re
 from ePhone7.views.user import user_view
 from ePhone7.views.prefs import prefs_view
+from ePhone7.views.base import base_view
 from ePhone7.utils.xml_to_csv import xml_folder_to_csv
 from time import sleep
 import lib.common.logging_esi as logging_esi
@@ -29,7 +30,7 @@ logging_esi.console_handler.setLevel(logging_esi.TRACE)
 @Trace(log)
 def save_xml_and_screenshot(basename, version):
     with logging_esi.msg_src_cm('save_xml_and_screenshot()'):
-        xml = Actions.get_source()
+        xml = base_view.actions.get_source()
         xml_dir = os.path.join(cfg.xml_folder, 'xml_%s' % version)
         try:
             os.makedirs(xml_dir)
@@ -87,7 +88,7 @@ def get_page_sources(version):
         save_xml_and_screenshot('prefs_%s' % version, version)
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
-        user_view.wait_for_page_title()
+        user_view.wait_for_view()
         # call the R2D2 from the softphone and capture the incoming call screen
         softphone = get_softphone()
         dst_cfg = cfg.site['Accounts']['R2d2User']

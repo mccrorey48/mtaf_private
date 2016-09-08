@@ -1,14 +1,14 @@
-from lib.android.actions import Actions
 import lib.common.logging_esi as logging
 from lib.common.wrappers import Trace
+from ePhone7.views.base import BaseView
 log = logging.get_logger('esi.prefs_view')
 
 
-class PrefsView:
+class PrefsView(BaseView):
 
     @Trace(log)
     def __init__(self):
-        self.actions = Actions(self)
+        super(PrefsView, self).__init__()
 
     @Trace(log)
     def set_auto_answer_off(self):
@@ -16,7 +16,7 @@ class PrefsView:
 
     @Trace(log)
     def set_auto_answer(self, on=True):
-        self.actions.click_element_by_key('AdditionalOptions')
+        self.actions.click_element_by_key('Phone')
         elem = self.actions.find_element_by_key('AutoAnswerSwitch')
         y = elem.location['y'] + (elem.size['height'] / 2)
         left = elem.location['x']
@@ -25,7 +25,7 @@ class PrefsView:
             self.actions.swipe(left, y, right, y, 1000)
         else:
             self.actions.swipe(right, y, left, y, 1000)
-        self.actions.click_element_by_key('AdditionalOptionsExit')
+        self.actions.click_element_by_key('Phone')
 
     @Trace(log)
     def logout(self):
@@ -45,6 +45,7 @@ class PrefsView:
 
     @Trace(log)
     def get_app_version(self):
+        self.actions.click_element_by_key('System')
         self.actions.click_element_by_key('About')
         about_popup = self.actions.find_element_by_key('AppVersion')
         about_text = about_popup.text

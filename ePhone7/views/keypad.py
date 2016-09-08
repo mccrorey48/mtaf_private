@@ -3,7 +3,6 @@ from time import sleep
 import lib.common.logging_esi as logging
 from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
-from lib.android.actions import Actions
 from lib.common.wrappers import Trace
 from lib.softphone.softphone import get_softphone
 
@@ -14,8 +13,7 @@ class KeypadView(UserView):
 
     @Trace(log)
     def __init__(self):
-        UserView.__init__(self)
-        self.actions = Actions(self)
+        super(KeypadView, self).__init__()
         self.png_file_base = 'keypad'
 
     @Trace(log)

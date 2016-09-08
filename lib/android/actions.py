@@ -21,7 +21,7 @@ class Actions(SeleniumActions):
         if view is None:
             raise Ux('Actions instantiation must include view parameter')
         self.view = view
-        super(Actions, self).__init__(self, remote)
+        super(Actions, self).__init__(remote)
         self.failureException = Fx
 
     @Trace(log)

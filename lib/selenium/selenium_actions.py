@@ -66,16 +66,24 @@ class SeleniumActions(Tc):
     @Trace(log)
     def click_element_by_key(self, key, seconds=60):
         locator = self.view.cfg.get_locator(key, self.view)
+        msg = ''
         if "text" in locator:
             start_time = time()
             while time() < start_time + seconds:
-                elem = self.find_element_by_key(key)
-                found_text = elem.text
-                if found_text == locator["text"]:
-                    log.debug("found element with text = %s" % found_text)
-                    elem.click()
-                    return
-            raise Ux('element text did not match, expected "%s", found "%s"' % (locator["text"], found_text))
+                try:
+                    elem = self.find_element_by_key(key)
+                    found_text = elem.text
+                except WebDriverException as e:
+                    msg = "WebDriverException: %s" % e.message
+                    continue
+                if found_text != locator["text"]:
+                    msg = "element text did not match, expected %s, found %s" % (locator["text"], found_text)
+                    continue
+                log.debug("found element with text = %s" % found_text)
+                elem.click()
+                break
+            else:
+                raise Ux(msg)
         else:
             self.find_element_by_key(key).click()
 
