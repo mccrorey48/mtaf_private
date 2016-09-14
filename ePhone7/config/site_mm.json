@@ -1,5 +1,6 @@
 {
     "Mock": false,
+    "Quiet": true,
     "DefaultTimeout": 10,
     "ScreenshotsFolder": "ePhone7/utils/screenshots",
     "TestScreenshotsFolder": "ePhone7/screenshots",

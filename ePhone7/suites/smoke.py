@@ -74,7 +74,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('Saved')
         voicemail_view.goto_tab('Trash')
 
-    # @unittest.skipIf(debug, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_080_incoming_call_screen(self):
         user_view.wait_for_view()
@@ -178,6 +178,9 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_190_save_new_voicemail(self):
+        self.save_new_voicemail()
+
+    def save_new_voicemail(self):
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('Saved')
         voicemail_view.clear_all_vm()
@@ -266,7 +269,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_240_forward_saved_voicemail(self):
-        self.test_190_save_new_voicemail()
+        self.save_new_voicemail()
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('Saved')
         voicemail_view.clear_all_vm()

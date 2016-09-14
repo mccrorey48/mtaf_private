@@ -28,7 +28,7 @@ class Softphone:
     def __init__(self, user_name, null_snd, tcp):
         user_cfg = cfg.site['Accounts'][user_name]
         pbfile = user_cfg['pbfile']
-        create_wav_file(pbfile)
+        create_wav_file(pbfile, cfg.site['Quiet'])
         uri = 'sip:%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
         proxy = user_cfg['Proxy']
         passwd = user_cfg['Password']

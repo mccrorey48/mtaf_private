@@ -1,12 +1,13 @@
 {
     "Mock": false,
+    "Quiet": true,
     "DefaultTimeout": 10,
     "ScreenshotsFolder": "ePhone7/utils/screenshots",
     "TestScreenshotsFolder": "ePhone7/screenshots",
     "XmlFolder": "ePhone7/utils/xml",
     "CsvFolder": "ePhone7/utils/csv",
     "ColorsFolder": "ePhone7/utils",
-    "SeleniumUrl": "http://10.3.1.216:4723/wd/hub",
+    "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
     "DefaultSoftphoneUser": "Auto TesterD",
     "Accounts": {
         "R2d2User": {

@@ -185,7 +185,7 @@ def search_wav_for_seq(frames, framerate, seq, verbose):
     return False
 
 
-def create_wav_file(path):
+def create_wav_file(path, quiet=False):
     dtmf_match = re.match('dtmf_([\d\*#]+)\.wav', os.path.basename(path))
     voice_match = re.match('([\d\*#]+)\.wav', os.path.basename(path))
     if dtmf_match:
@@ -204,7 +204,10 @@ def create_wav_file(path):
     frame_count = 0
     for source_key in source_keys:
         if source_key == 'a':
-            source_wav = 'a440.wav'
+            if quiet:
+                source_wav = 'a440q.wav'
+            else:
+                source_wav = 'a440.wav'
         elif source_key == 's':
             source_wav = 'silence_120ms.wav'
         else:
@@ -221,7 +224,10 @@ def create_wav_file(path):
                 elif source_key == '*':
                     source_wav = 'star.wav'
                 else:
-                    source_wav = '%s.wav' % source_key
+                    if quiet:
+                        source_wav = '%sq.wav' % source_key
+                    else:
+                        source_wav = '%s.wav' % source_key
         w = wave.open(os.path.join(source_wav_dir, source_wav), 'rb')
         params = w.getparams()
         frame_count += params[3]

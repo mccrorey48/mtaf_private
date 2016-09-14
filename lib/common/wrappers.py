@@ -92,7 +92,9 @@ class Trace(object):
             finally:
                 logging_esi.trace_indent -= 1
                 val_reprs = []
-                if retval is not None:
+                if retval is None:
+                    logger.trace('%10s %s%s returned' % ('TRACE:', ' '*logging_esi.trace_indent, f.func_name))
+                else:
                     if type(retval) == list:
                         for val in retval:
                             if type(val) == appium.webdriver.webelement.WebElement:

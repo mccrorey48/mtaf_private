@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("site_tag", choices=['mm', 'js', 'local', 'ds'], help="site tag, selects config/site_<tag>.json file")
 parser.add_argument("--failfast", help="stop testing when a test case fails", action="store_true")
 parser.add_argument("--mock", help="use mock driver", action="store_true")
+parser.add_argument("--quiet", help="use -20db wave files", action="store_true")
 args = parser.parse_args()
 
 with logging_esi.msg_src_cm('run_tests'):
@@ -20,11 +21,8 @@ with logging_esi.msg_src_cm('run_tests'):
 
     cfg.set_site(args.site_tag)
 
-    if args.mock:
-        cfg.site['Mock'] = True
-        log.debug("Using Mock Driver")
-    else:
-        log.debug("Using Webdriver")
+    cfg.site['Mock'] = args.mock
+    cfg.site['Quiet'] = args.quiet
 
     import ePhone7.suites.smoke as smoke
 
