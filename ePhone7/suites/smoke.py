@@ -14,7 +14,7 @@ with logging_esi.msg_src_cm('importing modules'):
     from ePhone7.views.prefs import prefs_view
     from lib.common.wrappers import TestCase
 
-debug = False
+debug = True
 no_favorites = True
 
 
@@ -42,7 +42,7 @@ class SmokeTests(unittest.TestCase):
         # contacts_view.goto_tab('Favorites')
         # contacts_view.verify_contacts_list('FavoriteContacts')
 
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_040_user_tabs(self):
         user_view.goto_tab('Contacts')
