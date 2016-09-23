@@ -17,6 +17,7 @@ class Actions(SeleniumActions):
         self.failureException = Fx
         self.driver = None
         self.current_url = None
+        self.keys = Keys
 
     def get_url(self, url):
         if self.driver is None:
@@ -26,10 +27,17 @@ class Actions(SeleniumActions):
         else:
             log.debug('getting url %s' % url)
             remote.driver.get(url)
-            self.current_url =  remote.driver.current_url
+            self.current_url = remote.driver.current_url
 
-    def send_tab_to_element(self, elem):
-        elem.send_keys(Keys.TAB)
+    def select_by_unique_substring(self, input_key, substring):
+        input_elem = self.find_element_by_key(input_key)
+        input_elem.send_keys(substring)
+        link_elem = self.find_element_with_timeout("partial link text", substring, parent=input_elem.parent)
+        link_elem.click()
+
+    @staticmethod
+    def send_key_to_element(elem, key):
+        elem.send_keys(key)
 
     @staticmethod
     def get_title():
@@ -43,4 +51,3 @@ class Actions(SeleniumActions):
         remote.close()
         self.driver = None
         self.current_url = None
-

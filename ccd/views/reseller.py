@@ -11,7 +11,6 @@ class ResellerView(BaseView):
     @Trace(log)
     def __init__(self):
         super(ResellerView, self).__init__()
-        self.version_info = None
         self.view_name = "reseller"
 
     @Trace(log)

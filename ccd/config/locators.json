@@ -1,5 +1,40 @@
 {
     "default": {
+        "DomainView": {
+            "CallQueuesTab": {
+                "by": "id",
+                "value": "nav-callqueues"
+            },
+            "ConferencesTab": {
+                "by": "id",
+                "value": "nav-conferences"
+            },
+            "HomeTab": {
+                "by": "id",
+                "value": "nav-home-manager"
+            },
+            "InventoryTab": {
+                "by": "id",
+                "value": "nav-inventory"
+            },
+            "NavBanner": {
+                "by": "id",
+                "value": "navigation-subbar"
+            },
+            "NavBannerTitle": {
+                "parent": "NavBanner",
+                "by": "css selector",
+                "value": ".navigation-title"
+            },
+            "SettingsTab": {
+                "by": "id",
+                "value": "nav-settings"
+            },
+            "UsersTab": {
+                "by": "id",
+                "value": "nav-users"
+            }
+        },
         "ResellerView": {
             "DomainMessage": {
                 "by": "id",
@@ -48,7 +83,7 @@
                 "value": "LoginPassword"
             },
             "PasswordAlert": {
-                "by": "css",
+                "by": "css selector",
                 "value": ".alert"
             },
             "UserName": {

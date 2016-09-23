@@ -1,6 +1,5 @@
-from time import time
-
 from appium import webdriver
+from appium.webdriver.common.mobileby import MobileBy
 
 import lib.common.logging_esi as logging
 from ePhone7.utils.configure import cfg
@@ -26,6 +25,7 @@ class Remote:
         #     self.update_remote('nolaunch')
         self.timeout = timeout
         self.update_remote('main')
+        self.By = MobileBy
 
     def update_remote(self, caps_tag, timeout=cfg.site['DefaultTimeout']):
         # if not cfg.site['Mock']:
@@ -71,32 +71,5 @@ class Remote:
             return activity_tags_by_state[state][self.current_activity]
         else:
             raise Ux('unknown activity for state %s: %s' % (state, self.current_activity))
-
-    def find_element_with_timeout(self, method, value, parent=None, timeout=10):
-        if method == 'xpath':
-            if parent is None:
-                finder_fn = self.driver.find_elements_by_xpath
-            else:
-                finder_fn = parent.find_elements_by_xpath
-        elif method == 'id':
-            if parent is None:
-                finder_fn = self.driver.find_elements_by_id
-            else:
-                finder_fn = parent.find_elements_by_id
-        elif method == 'accessibility id':
-            if parent is None:
-                finder_fn = self.driver.find_elements_by_accessibility_id
-            else:
-                finder_fn = parent.find_elements_by_accessibility_id
-        else:
-            raise Ux("Unknown finder method %s" % method)
-        start_time = time()
-        while time() - start_time < timeout:
-            elems = finder_fn(value)
-            if len(elems) > 1:
-                raise Ux("Multiple elements match %s = %s, parent = %s" % (method, value, parent))
-            if len(elems) == 1:
-                return elems[0]
-        raise Ux("No matching elements found with %s = %s, timeout = %s, parent = %s" % (method, value, timeout, parent))
 
 remote = Remote()

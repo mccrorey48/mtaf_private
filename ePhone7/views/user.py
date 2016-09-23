@@ -39,7 +39,7 @@ class UserView(BaseView):
         self.actions.get_screenshot_as_png('set_dnd', cfg.test_screenshot_folder)
         current_color = self.actions.get_element_color('set_dnd', elem)
         if current_color != desired_color:
-            elem.click()
+            self.actions.click_element(elem)
             sleep(5)
         self.actions.get_screenshot_as_png('set_dnd', cfg.test_screenshot_folder)
         current_color = self.actions.get_element_color('set_dnd', elem)

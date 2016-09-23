@@ -13,7 +13,6 @@ class ResellerDomainsView(ResellerView):
     @Trace(log)
     def __init__(self):
         super(ResellerDomainsView, self).__init__()
-        self.version_info = None
         self.view_name = "reseller domains"
         self.page_title = "Manager Portal - Domains"
 
@@ -24,7 +23,7 @@ class ResellerDomainsView(ResellerView):
         for elem in elems:
             # print "elem text = %s" % elem.text
             if elem.text == cfg.site["TestDomain"]:
-                elem.click()
+                self.actions.click_element(elem)
                 break
         else:
             raise Ux("Domain %s not found in table" % cfg.site["TestDomain"])
@@ -33,18 +32,7 @@ class ResellerDomainsView(ResellerView):
 
     @Trace(log)
     def goto_test_domain_filter(self):
-        elem = self.actions.find_element_by_key("DomainFilter")
-        filter_text = cfg.site["TestDomainMin"]
-        sleep(1)
-        elem.send_keys(filter_text)
-        sleep(1)
-        self.actions.send_tab_to_element(elem)
-        sleep(1)
-        elems = self.actions.find_elements_by_key("DomainName")
-        self.actions.assert_elements_count(elems, 1, "Filtered domain list")
-        if elems[0].text != cfg.site["TestDomain"]:
-            raise Ux("Incorrect domain %s selected, expected %s" % (elems[0].text, cfg.site["TestDomain"]))
-        elems[0].click()
+        self.actions.select_by_unique_substring("DomainFilter", cfg.site["TestDomainMin"])
         self.actions.find_element_by_key("DomainMessage")
 
 reseller_domains_view = ResellerDomainsView()

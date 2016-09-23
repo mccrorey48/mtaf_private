@@ -10,143 +10,27 @@
         },
         {
             "contexts": [
-                "callgui",
-                "ccd"
-            ],
-            "delete": "true",
-            "name2": "testerC",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:1000@test2.tigerteam.esihs.net"
-        },
-        {
-            "contexts": [
-                "callgui",
-                "ccd"
-            ],
-            "delete": "true",
-            "name2": "testerD",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:1001@test2.tigerteam.esihs.net"
-        },
-        {
-            "contexts": [],
-            "delete": "false",
-            "name2": "testerC",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:2202@customer4"
-        },
-        {
-            "contexts": [],
-            "delete": "false",
-            "name2": "testerD",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:2203@customer4"
-        },
-        {
-            "contexts": [],
-            "delete": "false",
-            "name2": "testerE",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:2204@customer4"
-        },
-        {
-            "contexts": [],
-            "delete": "false",
-            "name2": "testerF",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:2205@customer4"
-        },
-        {
-            "contexts": [
                 "callgui"
             ],
             "delete": "false",
-            "name2": "testerG",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:2206@customer4"
-        },
-        {
-            "contexts": [
-                "callgui"
-            ],
-            "delete": "false",
-            "name2": "testerH",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:2207@customer4"
-        },
-        {
-            "contexts": [
-                "callgui"
-            ],
-            "delete": "false",
-            "name2": "testerI",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:2208@customer4"
-        },
-        {
-            "contexts": [
-                "callgui"
-            ],
-            "delete": "false",
-            "name2": "testerJ",
-            "phone_type": "soft",
-            "proxy": "nr5.cpbx.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:2209@customer4"
-        },
-        {
-            "contexts": [
-                "callgui",
-                "ccd"
-            ],
-            "delete": "true",
             "name2": "testerA",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
-            "uri": "sip:1200@test1.tigerteam.esihs.net"
+            "uri": "sip:1000@test1.test-eng.com"
         },
         {
             "contexts": [
-                "callgui",
-                "ccd"
+                "callgui"
             ],
-            "delete": "true",
+            "delete": "false",
             "name2": "testerB",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
-            "uri": "sip:1201@test1.tigerteam.esihs.net"
+            "uri": "sip:1001@test1.test-eng.com"
         },
         {
             "contexts": [
@@ -159,7 +43,7 @@
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
-            "uri": "sip:1202@test1.tigerteam.esihs.net"
+            "uri": "sip:1002@test1.test-eng.com"
         },
         {
             "contexts": [
@@ -172,7 +56,46 @@
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
-            "uri": "sip:1203@test1.tigerteam.esihs.net"
+            "uri": "sip:1003@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerE",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1004@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerF",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1005@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerG",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1006@test1.test-eng.com"
         },
         {
             "conf_password": "1234",
@@ -181,37 +104,102 @@
                 "ccd"
             ],
             "delete": "true",
-            "name2": "testerE",
+            "name2": "testerH",
             "phone_type": "conference",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
-            "uri": "sip:3000@test1.tigerteam.esihs.net"
+            "uri": "sip:3000@test1.test-eng.com"
         },
         {
-            "name": "customer4",
-            "rs_domain": "customer4",
-            "rs_password": "2002",
-            "rs_user": "2002",
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerA",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2200@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerB",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2201@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerC",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2202@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerD",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2203@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerE",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2204@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerF",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2205@test2.test-eng.com"
+        },
+        {
+            "name": "test1.test-eng.com",
+            "rs_domain": "test-eng.com",
+            "rs_password": "0222",
+            "rs_user": "mmccroreyrs",
             "type": "domain"
         },
         {
-            "name": "test1.tigerteam.esihs.net",
-            "rs_domain": "tigerteam.esihs.net",
-            "rs_password": "1986",
-            "rs_user": "jsabugo",
+            "name": "test2.test-eng.com",
+            "rs_domain": "test-eng.com",
+            "rs_password": "0222",
+            "rs_user": "mmccroreyrs",
             "type": "domain"
         },
         {
-            "name": "test2.tigerteam.esihs.net",
-            "rs_domain": "tigerteam.esihs.net",
-            "rs_password": "1986",
-            "rs_user": "jsabugo",
-            "type": "domain"
-        },
-        {
-            "cust_dom": "test1.tigerteam.esihs.net",
-            "cust_dom_name": "Tiger Team Test Domain 1",
+            "cust_dom": "test1.test-eng.com",
+            "cust_dom_name": "Test Engineering Test Domain 1",
             "dns_list": [
                 "10.0.50.156",
                 "10.0.50.157"
@@ -219,8 +207,8 @@
             "type": "platform"
         },
         {
-            "cust_dom": "test2.tigerteam.esihs.net",
-            "cust_dom_name": "Tiger Team Test Domain 2",
+            "cust_dom": "test2.test-eng.com",
+            "cust_dom_name": "Test Engineering Test Domain 2",
             "dns_list": [
                 "10.0.50.156",
                 "10.0.50.157"

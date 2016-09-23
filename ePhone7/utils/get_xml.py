@@ -97,7 +97,7 @@ def get_page_sources(version):
         softphone.wait_for_call_status('early', 30)
         answer_to_speaker_icon = user_view.actions.find_element_by_key('IncomingCallAnswerToSpeaker')
         save_xml_and_screenshot('incoming_call_%s' % version, version)
-        answer_to_speaker_icon.click()
+        user_view.actions.click_element(answer_to_speaker_icon)
         softphone.wait_for_call_status('start', 30)
         sleep(5)
         # end_active_call = user_view.actions.find_element_by_key('EndActiveCall')

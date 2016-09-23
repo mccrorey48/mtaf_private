@@ -10,7 +10,6 @@ class ResellerInventoryView(ResellerView):
     @Trace(log)
     def __init__(self):
         super(ResellerInventoryView, self).__init__()
-        self.version_info = None
         self.view_name = "reseller inventory"
         self.page_title = "Manager Portal - Inventory"
 

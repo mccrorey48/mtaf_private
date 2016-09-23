@@ -53,7 +53,7 @@ class AppsView(BaseView):
                 break
             self.swipe_up()
         self.actions.assert_elements_count(elems, 1, 'ePhone menu item')
-        elems[0].click()
+        self.actions.click_element(elems[0])
 
     @Trace(log)
     def goto_contacts_storage(self):
@@ -68,6 +68,6 @@ class AppsView(BaseView):
                 break
             self.swipe_up()
         self.actions.assert_elements_count(elems, 1, 'Contacts Storage menu item')
-        elems[0].click()
+        self.actions.click_element(elems[0])
 
 apps_view = AppsView()

@@ -2,6 +2,7 @@ import unittest
 from time import time, sleep
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.support.wait import WebDriverWait
 
 import lib.common.logging_esi as logging
 from lib.common.user_exception import UserException as Ux
@@ -64,28 +65,35 @@ class SeleniumActions(Tc):
         self.remote.driver.quit()
 
     @Trace(log)
+    def click_element(self, elem):
+        elem.click()
+
+    @Trace(log)
     def click_element_by_key(self, key, seconds=60):
         locator = self.view.cfg.get_locator(key, self.view)
         msg = ''
-        if "text" in locator:
-            start_time = time()
-            while time() < start_time + seconds:
-                try:
-                    elem = self.find_element_by_key(key)
-                    found_text = elem.text
-                except WebDriverException as e:
-                    msg = "WebDriverException: %s" % e.message
-                    continue
+        start_time = time()
+        while time() < start_time + seconds:
+            try:
+                elem = self.find_element_by_key(key)
+            except WebDriverException as e:
+                msg = "WebDriverException: %s" % e.message
+                continue
+            if "text" in locator:
+                found_text = elem.text
                 if found_text != locator["text"]:
                     msg = "element text did not match, expected %s, found %s" % (locator["text"], found_text)
                     continue
                 log.debug("found element with text = %s" % found_text)
-                elem.click()
-                break
+            if elem.is_displayed() and elem.is_enabled():
+                log.debug("element found and clickable, clicking")
+                self.click_element(elem)
             else:
-                raise Ux(msg)
+                log.debug("element found but is not clickable, waiting")
+                continue
+            break
         else:
-            self.find_element_by_key(key).click()
+            raise Ux(msg)
 
     @Trace(log)
     def find_element_by_locator(self, locator, timeout=10):
@@ -103,7 +111,7 @@ class SeleniumActions(Tc):
         if locator['by'] == 'accessibility id':
             log.debug("accessibility id = " + locator['value'])
             return self.remote.driver.find_elements_by_accessibility_id(locator['value'])
-        if locator['by'] == 'css':
+        if locator['by'] == 'css selector':
             log.debug("css selector = " + locator['value'])
             return self.remote.driver.find_elements_by_css_selector(locator['value'])
 
@@ -199,31 +207,14 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_element_with_timeout(self, method, value, parent=None, timeout=10):
-        if method == 'xpath':
-            if parent is None:
-                finder_fn = self.remote.driver.find_elements_by_xpath
-            else:
-                finder_fn = parent.find_elements_by_xpath
-        elif method == 'id':
-            if parent is None:
-                finder_fn = self.remote.driver.find_elements_by_id
-            else:
-                finder_fn = parent.find_elements_by_id
-        elif method == 'accessibility id':
-            if parent is None:
-                finder_fn = self.remote.driver.find_elements_by_accessibility_id
-            else:
-                finder_fn = parent.find_elements_by_accessibility_id
-        elif method == 'css':
-            if parent is None:
-                finder_fn = self.remote.driver.find_elements_by_css_selector
-            else:
-                finder_fn = parent.find_elements_by_css_selector
-        else:
+        if not self.remote.By.is_valid(method):
             raise Ux("Unknown finder method %s" % method)
         start_time = time()
         while time() - start_time < timeout:
-            elems = finder_fn(value)
+            if parent:
+                elems = parent.find_elements(method, value)
+            else:
+                elems = self.remote.driver.find_elements(method, value)
             if len(elems) > 1:
                 raise Ux("Multiple elements match %s = %s, parent = %s" % (method, value, parent))
             if len(elems) == 1:

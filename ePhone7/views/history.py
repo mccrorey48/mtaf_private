@@ -40,7 +40,7 @@ class HistoryView(UserView):
         call_icon = history_view.actions.find_sub_element_by_key(entry_elem, 'CallIcon')
         log.debug("call icon location y = %s" % call_icon.location['y'])
         softphone = get_softphone()
-        call_icon.click()
+        self.actions.click_element(call_icon.click)
         softphone.wait_for_call_status('start', 20)
         sleep(10)
         self.actions.click_element_by_key('EndActiveCall')

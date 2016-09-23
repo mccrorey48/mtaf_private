@@ -24,4 +24,5 @@ with logging_esi.msg_src_cm('run_tests'):
     suite = unittest.TestSuite()
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.LoginTests))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.ResellerTests))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.DomainTests))
     unittest.TextTestRunner(verbosity=0, resultclass=EsiResult, failfast=args.failfast).run(suite)

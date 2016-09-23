@@ -9,9 +9,20 @@ with logging_esi.msg_src_cm('importing modules'):
     from ccd.views.reseller_home import reseller_home_view
     from ccd.views.reseller_domains import reseller_domains_view
     from ccd.views.reseller_inventory import reseller_inventory_view
+    from ccd.views.domain import domain_view
+    from ccd.views.domain_home import domain_home_view
+    from ccd.views.domain_conferences import domain_conferences_view
+    from ccd.views.domain_call_queues import domain_call_queues_view
+    from ccd.views.domain_inventory import domain_inventory_view
+    from ccd.views.domain_users import domain_users_view
+    from ccd.views.domain_auto_attendants import domain_auto_attendants_view
+    from ccd.views.domain_time_frames import domain_time_frames_view
+    from ccd.views.domain_music_on_hold import domain_music_on_hold_view
+    from ccd.views.domain_locations import domain_locations_view
     from lib.common.wrappers import TestCase
 
-debug = True
+debug = False
+
 
 class LoginTests(unittest.TestCase):
 
@@ -112,7 +123,7 @@ class ResellerTests(unittest.TestCase):
         reseller_view.goto_inventory()
         reseller_inventory_view.wait_for_page_title()
 
-    # @unittest.skipIf(debug, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log)
     def test_104_goto_test_domain_quick(self):
         reseller_view.goto_home()
@@ -120,14 +131,14 @@ class ResellerTests(unittest.TestCase):
         reseller_home_view.goto_test_domain_quick()
         pass
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     @TestCase(log)
     def test_105_goto_test_domain_select(self):
         reseller_view.goto_domains()
         reseller_domains_view.wait_for_page_title()
         reseller_domains_view.goto_test_domain_select()
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     @TestCase(log)
     def test_106_goto_test_domain_filter(self):
         reseller_view.goto_domains()
@@ -149,19 +160,64 @@ class DomainTests(unittest.TestCase):
         base_view.get_portal_url()
         login_view.login_with_good_credentials()
         reseller_home_view.wait_for_page_title()
+        reseller_home_view.goto_test_domain_quick()
+        domain_home_view.wait_for_page_title()
 
     def tearDown(self):
         reseller_view.logout()
 
     @unittest.skip('debug')
     @TestCase(log)
-    def test_101_goto_domain(self):
-        reseller_view.goto_domains()
-        reseller_domains_view.wait_for_page_title()
-        reseller_view.goto_home()
-        reseller_home_view.wait_for_page_title()
-        reseller_view.goto_inventory()
-        reseller_inventory_view.wait_for_page_title()
-        reseller_view.goto_home()
-        reseller_home_view.wait_for_page_title()
+    def test_201_goto_home(self):
+        domain_view.goto_inventory()
+        domain_inventory_view.wait_for_page_title()
+        domain_inventory_view.goto_home()
+        domain_home_view.wait_for_page_title()
 
+    @unittest.skip('debug')
+    @TestCase(log)
+    def test_202_goto_users(self):
+        domain_home_view.goto_users()
+        domain_users_view.wait_for_page_title()
+
+    @unittest.skip('debug')
+    @TestCase(log)
+    def test_203_goto_conferences(self):
+        domain_home_view.goto_conferences()
+        domain_conferences_view.wait_for_page_title()
+
+    @unittest.skip('debug')
+    @TestCase(log)
+    def test_204_goto_call_queues(self):
+        domain_home_view.goto_call_queues()
+        domain_call_queues_view.wait_for_page_title()
+
+    @unittest.skip('debug')
+    @TestCase(log)
+    def test_205_goto_inventory(self):
+        domain_home_view.goto_inventory()
+        domain_inventory_view.wait_for_page_title()
+
+    # @unittest.skip('debug')
+    @TestCase(log)
+    def test_206_goto_auto_attendants(self):
+        domain_home_view.goto_auto_attendants()
+        domain_auto_attendants_view.wait_for_page_title()
+
+    # @unittest.skip('debug')
+    @TestCase(log)
+    def test_207_goto_time_frames(self):
+        domain_home_view.goto_time_frames()
+        domain_time_frames_view.wait_for_page_title()
+
+    # @unittest.skip('debug')
+    @TestCase(log)
+    def test_208_goto_music_on_hold(self):
+        domain_home_view.goto_music_on_hold()
+        domain_music_on_hold_view.wait_for_page_title()
+
+    # @unittest.skip('debug')
+    @TestCase(log)
+    def test_209_goto_locations(self):
+        domain_home_view.goto_locations()
+        domain_locations_view.wait_for_page_title()

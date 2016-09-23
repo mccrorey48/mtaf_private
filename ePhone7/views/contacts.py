@@ -37,7 +37,7 @@ class ContactsView(UserView):
         else:
             log.warn('handset icon color is not green (%s) within %s seconds, current color is %s' %
                          (desired_color, timeout, current_color))
-        icon.click()
+        self.actions.click_element(icon)
         softphone.wait_for_call_status('start', 20)
         sleep(10)
         self.actions.click_element_by_key('EndActiveCall')
@@ -160,8 +160,8 @@ class ContactsView(UserView):
             elems = self.actions.find_elements_by_key('ContactParent')
             if len(elems) == 0:
                 break
-            elems[0].click()
-            self.actions.find_element_by_key('FavoriteIndicator').click()
+            self.actions.click_element(elems[0])
+            self.actions.click_element_by_key('FavoriteIndicator')
             sleep(5)
 
     def contact_detail_view_visible(self):
@@ -182,7 +182,7 @@ class ContactsView(UserView):
         # get each contact element containing a name in the new_favorites list
         # and if it is not already a favorite, toggle the favorites selector
         for number in new_favorites:
-            self.get_contact_list_element(number).click()
+            self.actions.click_element(self.get_contact_list_element(number))
             # desired_color = cfg.colors['ContactsView']['handset_online_color'][:-1]
             filebase = 'contact_%s' %  number
             self.actions.get_screenshot_as_png(filebase, cfg.test_screenshot_folder)
@@ -190,8 +190,8 @@ class ContactsView(UserView):
             current_color = self.actions.get_element_color(filebase, icon)
             desired_color = cfg.colors['ContactsView']['favorite_on_color'][:-1]
             if current_color != desired_color:
-                icon.click()
-            self.actions.find_element_by_key('ContactClose').click()
+                self.actions.click_element(icon)
+            self.actions.click_element_by_key('ContactClose')
 
 
 contacts_view = ContactsView()
