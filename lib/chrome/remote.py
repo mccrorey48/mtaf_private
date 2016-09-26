@@ -16,8 +16,9 @@ class Remote:
         if self.driver is not None:
             log.debug('remote driver is already open')
         else:
-            self.driver = webdriver.Remote(desired_capabilities=webdriver.DesiredCapabilities.CHROME,
-                                           command_executor=cfg.site["SeleniumUrl"])
+            self.driver = webdriver.Chrome()
+            # self.driver = webdriver.Remote(desired_capabilities=webdriver.DesiredCapabilities.CHROME,
+            #                                command_executor=cfg.site["SeleniumUrl"])
 
     def close(self):
         if self.driver is None:
