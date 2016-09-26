@@ -32,7 +32,8 @@ class ResellerDomainsView(ResellerView):
 
     @Trace(log)
     def goto_test_domain_filter(self):
-        self.actions.select_by_unique_substring("DomainFilter", cfg.site["TestDomainMin"])
+        self.actions.filter_dropdown_and_click_result_by_link_text("DomainFilter", cfg.site["TestDomainMin"],
+                                                                   cfg.site["TestDomainExtended"])
         self.actions.find_element_by_key("DomainMessage")
 
 reseller_domains_view = ResellerDomainsView()

@@ -29,10 +29,10 @@ class Actions(SeleniumActions):
             remote.driver.get(url)
             self.current_url = remote.driver.current_url
 
-    def select_by_unique_substring(self, input_key, substring):
+    def filter_dropdown_and_click_result_by_link_text(self, input_key, filter_text, link_text):
         input_elem = self.find_element_by_key(input_key)
-        input_elem.send_keys(substring)
-        link_elem = self.find_element_with_timeout("partial link text", substring, parent=input_elem.parent)
+        input_elem.send_keys(filter_text)
+        link_elem = self.find_element_with_timeout("partial link text", link_text, parent=input_elem.parent)
         link_elem.click()
 
     @staticmethod

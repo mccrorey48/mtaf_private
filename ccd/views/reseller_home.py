@@ -16,7 +16,8 @@ class ResellerHomeView(ResellerView):
 
     @Trace(log)
     def goto_test_domain_quick(self):
-        self.actions.select_by_unique_substring("DomainQuickLaunch", cfg.site["TestDomainMin"])
+        self.actions.filter_dropdown_and_click_result_by_link_text("DomainQuickLaunch", cfg.site["TestDomainMin"],
+                                                                   cfg.site["TestDomainExtended"])
         self.actions.find_element_by_key("DomainMessage")
 
 reseller_home_view = ResellerHomeView()
