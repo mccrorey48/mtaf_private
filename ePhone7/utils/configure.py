@@ -60,6 +60,6 @@ class Cfg:
                     locator_copy["by"] = "xpath"
                     locator_copy["value"] = expand_zpath(locator["value"])
                 return locator_copy
-        raise Ux('locator for key %s is not in views: %s' % (key, ','.join(view_chain)))
+        raise Ux('locator with name %s is not in views: %s' % (locator_name, ','.join(view_chain)))
 
 cfg = Cfg()

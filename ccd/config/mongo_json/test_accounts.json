@@ -13,6 +13,7 @@
                 "callgui"
             ],
             "delete": "false",
+            "name1": "User",
             "name2": "testerA",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
@@ -25,6 +26,7 @@
                 "callgui"
             ],
             "delete": "false",
+            "name1": "User",
             "name2": "testerB",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
@@ -38,6 +40,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerC",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
@@ -51,6 +54,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerD",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
@@ -64,6 +68,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerE",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
@@ -77,6 +82,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerF",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
@@ -90,6 +96,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerG",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
@@ -104,6 +111,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerH",
             "phone_type": "conference",
             "proxy": "nr5.cpbx.esihs.net",
@@ -116,8 +124,35 @@
                 "callgui"
             ],
             "delete": "false",
+            "name1": "Jessica",
+            "name2": "ePhone7",
+            "phone_type": "hard",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2001@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name1": "David",
+            "name2": "ePhone7",
+            "phone_type": "hard",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2016@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name1": "Auto",
             "name2": "testerA",
-            "phone_type": "soft",
+            "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
@@ -128,8 +163,9 @@
                 "callgui"
             ],
             "delete": "false",
+            "name1": "Auto",
             "name2": "testerB",
-            "phone_type": "soft",
+            "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
@@ -140,6 +176,7 @@
                 "callgui"
             ],
             "delete": "false",
+            "name1": "Auto",
             "name2": "testerC",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
@@ -152,6 +189,7 @@
                 "callgui"
             ],
             "delete": "false",
+            "name1": "Auto",
             "name2": "testerD",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
@@ -164,6 +202,7 @@
                 "callgui"
             ],
             "delete": "false",
+            "name1": "Auto",
             "name2": "testerE",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
@@ -176,12 +215,39 @@
                 "callgui"
             ],
             "delete": "false",
+            "name1": "Auto",
             "name2": "testerF",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
             "uri": "sip:2205@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name1": "Auto",
+            "name2": "testerG",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2206@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name1": "Auto",
+            "name2": "testerH",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2207@test2.test-eng.com"
         },
         {
             "name": "test1.test-eng.com",
@@ -231,6 +297,7 @@
                 "callgui"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerA",
             "phone_type": "hard",
             "proxy": "svlab.esihs.net",
@@ -243,6 +310,7 @@
                 "callgui"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerB",
             "phone_type": "hard",
             "proxy": "svlab.esihs.net",
@@ -256,6 +324,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerC",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
@@ -269,6 +338,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerD",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
@@ -282,6 +352,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerE",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
@@ -295,6 +366,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerF",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
@@ -309,6 +381,7 @@
                 "ccd"
             ],
             "delete": "true",
+            "name1": "User",
             "name2": "testerG",
             "phone_type": "conference",
             "proxy": "svlab.esihs.net",

@@ -300,8 +300,8 @@
             "value": "com.esi_estech.ditto:id/confirm_button"
         },
         "MenuCategories": {
-            "by": "xpath",
-            "value": "//el/rl"
+            "by": "id",
+            "value": "com.esi_estech.ditto:id/settings_header_label"
         },
         "MenuItems": {
             "by": "xpath",

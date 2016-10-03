@@ -13,7 +13,7 @@
         "R2d2User": {
             "UserId": "2016",
             "UserName": "David ePhone7",
-            "DomainName": "customer4",
+            "DomainName": "test2.test-eng.com",
             "Password": "2016",
             "AllContacts": [
                 "2200",
@@ -39,9 +39,9 @@
         "Auto TesterG": {
             "UserId": "2206",
             "UserNameIncoming": "Auto Testerg",
-            "DomainName": "customer4",
+            "DomainName": "test2.test-eng.com",
             "Proxy": "nr5.cpbx.esihs.net",
-            "Password": "jFAL3V2s",
+            "Password": "Lp0PLwJk",
             "dns_list": [
                 "10.0.50.156"
             ],
@@ -50,9 +50,9 @@
         "Auto TesterH": {
             "UserId": "2207",
             "UserNameIncoming": "Auto Testerh",
-            "DomainName": "customer4",
+            "DomainName": "test2.test-eng.com",
             "Proxy": "nr5.cpbx.esihs.net",
-            "Password": "f9m1grXa",
+            "Password": "61M46JUi",
             "dns_list": [
                 "10.0.50.156"
             ],

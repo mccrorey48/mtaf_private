@@ -12,7 +12,7 @@
         "R2d2User": {
             "UserId": "2001",
             "UserName": "Jessica",
-            "DomainName": "customer4",
+            "DomainName": "test2.test-eng.com",
             "Password": "2001",
             "AllContacts": [
                 "2200",
@@ -38,9 +38,9 @@
         "Jessica Softphone": {
             "UserId": "2021",
             "UserNameIncoming": "Jessica Softphone",
-            "DomainName": "customer4",
+            "DomainName": "test2.test-eng.com",
             "Proxy": "nr5.cpbx.esihs.net",
-            "Password": "WI1Z56f7",
+            "Password": "sAi8P9nQ",
             "dns_list": ["10.0.50.156"],
             "pbfile": "wav/2021.wav"
         }

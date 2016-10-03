@@ -11,9 +11,7 @@ args = parser.parse_args()
 
 cfg.set_site(args.site_tag)
 from lib.android.actions import Actions
-from lib.android.remote import remote
 from lib.softphone.softphone import get_softphone
-import re
 from ePhone7.views.user import user_view
 from ePhone7.views.prefs import prefs_view
 from ePhone7.views.base import base_view
@@ -47,37 +45,6 @@ def save_xml_and_screenshot(basename, version):
 
 
 @Trace(log)
-def get_version():
-    with logging_esi.msg_src_cm('get_page_sources()'):
-        # set up communication with the Appium server
-        remote.update_remote('main')
-        # go to the prefs screen to get the xml source to extract the current version
-        user_view.goto_prefs()
-        # arbitrary sleep to give the screen time to switch
-        sleep(5)
-        source = prefs_view.get_app_version()
-        prefs_view.exit_prefs()
-        m = re.match('App Version : (\S*)', source.encode('utf8'))
-        if m is None:
-            return "Unknown Version"
-        version = re.sub('\.', '_', m.group(1))
-        # make the xml and csv directories for this version (or if it already exists, ignore the resulting exception)
-        return version
-
-
-@Trace(log)
-def make_softphone_call():
-    with logging_esi.msg_src_cm('make_softphone_call()'):
-        softphone = get_softphone()
-        dst_cfg = cfg.site['Accounts']['R2d2User']
-        dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
-        softphone.make_call(dst_uri)
-        softphone.wait_for_call_status('early', 30)
-        sleep(5)
-        softphone.teardown_call()
-
-
-@Trace(log)
 def get_page_sources(version):
     with logging_esi.msg_src_cm('get_page_sources()'):
         # get the source for the prefs screen
@@ -86,9 +53,9 @@ def get_page_sources(version):
         except BaseException as e:
             raise Ux("goto_prefs got exception, %s" % e)
         save_xml_and_screenshot('prefs_%s' % version, version)
-        prefs_view.set_auto_answer_off()
+        # prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         # call the R2D2 from the softphone and capture the incoming call screen
         softphone = get_softphone()
         dst_cfg = cfg.site['Accounts']['R2d2User']
@@ -133,11 +100,15 @@ def get_page_sources(version):
 if __name__ == '__main__':
     _version = 'not_retrieved'
     try:
-        _version = get_version()
+        user_view.goto_prefs()
+        _version = prefs_view.get_app_version()
+        prefs_view.exit_prefs()
         get_page_sources(_version)
     except Ux as _e:
         save_xml_and_screenshot('user_exception_handler', _version)
         log.warn('UserException: %s' % _e)
+        softphone = None
+        pass
     except NoSuchElementException as _e:
         save_xml_and_screenshot('no_such_element_exception_handler', _version)
         log.warn('NoSuchElementException: %s' % _e)

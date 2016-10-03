@@ -14,7 +14,7 @@ with logging_esi.msg_src_cm('importing modules'):
     from ePhone7.views.prefs import prefs_view
     from lib.common.wrappers import TestCase
 
-debug = True
+debug = False
 no_favorites = True
 
 
@@ -42,7 +42,7 @@ class SmokeTests(unittest.TestCase):
         # contacts_view.goto_tab('Favorites')
         # contacts_view.verify_contacts_list('FavoriteContacts')
 
-    # @unittest.skipIf(debug, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_040_user_tabs(self):
         user_view.goto_tab('Contacts')
@@ -77,7 +77,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_080_incoming_call_screen(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
@@ -86,7 +86,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_090_incoming_auto_answer(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         user_view.goto_prefs()
         prefs_view.set_auto_answer()
         prefs_view.exit_prefs()
@@ -98,7 +98,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_100_incoming_answer(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
@@ -107,7 +107,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_110_incoming_ignore(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         user_view.goto_prefs()
         prefs_view.set_auto_answer_off()
         prefs_view.exit_prefs()
@@ -116,7 +116,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_120_call_from_contacts(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Coworkers')
         contact_number = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']
@@ -126,7 +126,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug or no_favorites, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_130_clear_favorites_list(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
         contacts_view.clear_favorites()
@@ -134,7 +134,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug or no_favorites, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_140_add_favorites(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Coworkers')
         contacts_view.add_favorites_from_coworkers()
@@ -142,7 +142,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug or no_favorites, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_150_call_from_favorites(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
         contact_number = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']
@@ -152,7 +152,10 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_160_call_from_history(self):
-        user_view.wait_for_view()
+        # user_view.wait_for_view()
+        user_view.goto_prefs()
+        prefs_view.set_auto_answer_off()
+        prefs_view.exit_prefs()
         user_view.incoming_call_screen_test()
         user_view.goto_tab('History')
         history_view.goto_tab('All')
@@ -178,6 +181,9 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_190_save_new_voicemail(self):
+        user_view.goto_prefs()
+        prefs_view.set_auto_answer_off()
+        prefs_view.exit_prefs()
         self.save_new_voicemail()
 
     def save_new_voicemail(self):
@@ -196,17 +202,7 @@ class SmokeTests(unittest.TestCase):
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_200_trash_saved_voicemail(self):
-        user_view.goto_tab('Voicemail')
-        voicemail_view.goto_tab('Saved')
-        voicemail_view.clear_all_vm()
-        voicemail_view.goto_tab('New')
-        voicemail_view.clear_all_vm()
-        voicemail_view.receive_voicemail()
-        voicemail_view.open_first_vm()
-        voicemail_view.save_first_vm_vals()
-        voicemail_view.save_voicemail_button()
-        voicemail_view.goto_tab('Saved')
-        voicemail_view.verify_first_vm()
+        self.save_new_voicemail()
         voicemail_view.open_first_vm()
         voicemail_view.save_first_vm_vals()
         voicemail_view.delete_voicemail_button()

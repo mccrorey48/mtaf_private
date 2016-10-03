@@ -1,5 +1,6 @@
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
+from lib.android.mock_driver import MockDriver
 
 import lib.common.logging_esi as logging
 from ePhone7.utils.configure import cfg
@@ -19,13 +20,12 @@ class Remote:
     timeout = None
 
     def __init__(self, timeout=default_timeout):
-        # if cfg.site['Mock']:
-        #     self.driver = MockDriver()
-        # else:
-        #     self.update_remote('nolaunch')
         self.timeout = timeout
-        self.update_remote('main')
         self.By = MobileBy
+        if cfg.site['Mock']:
+            self.driver = MockDriver()
+        else:
+            self.update_remote('main')
 
     def update_remote(self, caps_tag, timeout=cfg.site['DefaultTimeout']):
         # if not cfg.site['Mock']:

@@ -131,7 +131,7 @@ class VoicemailView(UserView):
         if self.new_vals['caller_number'] != self.saved_vals['caller_number']:
             return False
         if m1 and m2:
-            if abs(int(m1.group(1)) - int(m2.group(1))) > 2:
+            if abs(int(m1.group(1)) - int(m2.group(1))) > 4:
                 return False
             if m1.group(2) != m2.group(2):
                 return False

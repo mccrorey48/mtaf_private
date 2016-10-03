@@ -1,21 +1,56 @@
 # from time import sleep
 # from svauto.user_exception import UserException as Ux
 import argparse
+from lib.softphone.softphone import get_softphone
+import lib.common.logging_esi as logging_esi
+from time import sleep
 
 from ePhone7.utils.configure import cfg
 
 parser = argparse.ArgumentParser()
-parser.add_argument("dir_name", type=str, choices=['ePhone7', 'ePhoneGo-android', 'ePhoneGo-iOS'],
-                    help="specify name of product directory")
 parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="specify site tag")
 args = parser.parse_args()
 cfg.set_site(args.site_tag)
 
+from ePhone7.views.prefs import prefs_view
 from ePhone7.views.user import user_view
 from lib.android.remote import remote
 
+
+def make_softphone_call():
+    with logging_esi.msg_src_cm('make_softphone_call()'):
+        softphone = get_softphone()
+        dst_cfg = cfg.site['Accounts']['R2d2User']
+        dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
+        softphone.make_call(dst_uri)
+        softphone.wait_for_call_status('early', 30)
+        sleep(5)
+        softphone.teardown_call()
+
+
+def make_softphone_call_and_answer():
+    with logging_esi.msg_src_cm('make_softphone_call()'):
+        softphone = get_softphone()
+        dst_cfg = cfg.site['Accounts']['R2d2User']
+        dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
+        softphone.make_call(dst_uri)
+        softphone.wait_for_call_status('early', 30)
+        user_view.actions.click_element_by_key('IncomingCallAnswerToSpeaker')
+        softphone.wait_for_call_status('start', 30)
+        sleep(5)
+        # user_view.actions.click_element_by_key('EndActiveCall')
+        # sleep(5)
+        softphone.teardown_call()
+
 remote.update_remote('main')
+# user_view.wait_for_view()
 user_view.goto_prefs()
+prefs_view.exit_prefs()
+# user_view.wait_for_view()
+make_softphone_call_and_answer()
+# make_softphone_call()
+# user_view.wait_for_view()
+user_view.goto_tab('Contacts')
 
 # if remote.driver.current_activity == ".activities.MainViewActivity":
 #     user_view.logout()

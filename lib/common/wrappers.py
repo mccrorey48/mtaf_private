@@ -3,7 +3,7 @@ import lib.common.logging_esi as logging_esi
 import sys
 import traceback
 import inspect
-import appium
+from appium import webdriver
 from time import time
 
 log = logging_esi.get_logger('esi.wrappers')
@@ -45,7 +45,8 @@ class Trace(object):
         self.logger = logger
         self.except_cb = except_cb
 
-    def prefix(self):
+    @staticmethod
+    def prefix():
         indent = logging_esi.trace_indent
         return 'TRACE%d:%s' % (indent, ' '*indent)
 
@@ -64,7 +65,7 @@ class Trace(object):
                 logger = self.logger
             arg_reprs = []
             for arg in args:
-                if type(arg) == appium.webdriver.webelement.WebElement:
+                if type(arg) == webdriver.webelement.WebElement:
                     arg_reprs.append('<%s>' % arg._id)
                 else:
                     arg_reprs.append(repr(arg))
@@ -72,11 +73,11 @@ class Trace(object):
             logger.trace("%s %s" % (self.prefix(), called))
             logging_esi.trace_indent += 1
             retval = None
-            elapsed_time = 0.0
+            self.elapsed_time = 0.0
             try:
                 start_time = time()
                 retval = f(*args, **kwargs)
-                elapsed_time = time() - start_time
+                self.elapsed_time = time() - start_time
             except Fx as e:
                 logger.warn(('%%s %%s%%-%ds FAIL - %%s' % (35 - logging_esi.trace_indent))
                             % (self.prefix(), f.func_name, "%s %s" % (sp(), e.get_msg())))
@@ -100,22 +101,22 @@ class Trace(object):
                 logging_esi.trace_indent -= 1
                 val_reprs = []
                 if retval is None:
-                    logger.trace('%s %s returned [%.3fs]' % (self.prefix(), f.func_name, elapsed_time))
+                    logger.trace('%s %s returned [%.3fs]' % (self.prefix(), f.func_name, self.elapsed_time))
                 else:
                     if type(retval) == list:
                         for val in retval:
-                            if type(val) == appium.webdriver.webelement.WebElement:
+                            if type(val) == webdriver.webelement.WebElement:
                                 val_reprs.append('<%s>' % val._id)
                             else:
                                 val_reprs.append(repr(val))
                         returned = '[%s]' % ','.join(val_reprs)
                     else:
-                        if type(retval) == appium.webdriver.webelement.WebElement:
+                        if type(retval) == webdriver.webelement.WebElement:
                             returned = '<%s>' % retval._id
                         else:
                             returned = repr(retval)
                     if len(returned) > 160:
                         returned = returned[:160] + "..."
-                    logger.trace('%s %s returned %s [%.3fs]' % (self.prefix(), f.func_name, returned, elapsed_time))
+                    logger.trace('%s %s returned %s [%.3fs]' % (self.prefix(), f.func_name, returned, self.elapsed_time))
             return retval
         return wrapped_f
