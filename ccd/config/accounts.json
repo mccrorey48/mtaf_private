@@ -1,0 +1,336 @@
+{
+    "production": [
+        {
+            "type": "ini_tags",
+            "values": [
+                "alpha",
+                "beta",
+                "gamma"
+            ]
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerA",
+            "phone_type": "hard",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1000@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerB",
+            "phone_type": "hard",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1001@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerC",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1002@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerD",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1003@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerE",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1004@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerF",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1005@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerG",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1006@test1.test-eng.com"
+        },
+        {
+            "conf_password": "1234",
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerH",
+            "phone_type": "conference",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:3000@test1.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerA",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2200@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerB",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2201@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerC",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2202@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerD",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2203@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerE",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2204@test2.test-eng.com"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "false",
+            "name2": "testerF",
+            "phone_type": "soft",
+            "proxy": "nr5.cpbx.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:2205@test2.test-eng.com"
+        },
+        {
+            "name": "test1.test-eng.com",
+            "rs_domain": "test-eng.com",
+            "rs_password": "0222",
+            "rs_user": "mmccroreyrs",
+            "type": "domain"
+        },
+        {
+            "name": "test2.test-eng.com",
+            "rs_domain": "test-eng.com",
+            "rs_password": "0222",
+            "rs_user": "mmccroreyrs",
+            "type": "domain"
+        },
+        {
+            "cust_dom": "test1.test-eng.com",
+            "cust_dom_name": "Test Engineering Test Domain 1",
+            "dns_list": [
+                "10.0.50.156",
+                "10.0.50.157"
+            ],
+            "type": "platform"
+        },
+        {
+            "cust_dom": "test2.test-eng.com",
+            "cust_dom_name": "Test Engineering Test Domain 2",
+            "dns_list": [
+                "10.0.50.156",
+                "10.0.50.157"
+            ],
+            "type": "platform"
+        }
+    ],
+    "svlab": [
+        {
+            "type": "ini_tags",
+            "values": [
+                "my2",
+                "dev",
+                "test",
+                "alpha.svlab"
+            ]
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "true",
+            "name2": "testerA",
+            "phone_type": "hard",
+            "proxy": "svlab.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1000@SVAutoCustomer"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "true",
+            "name2": "testerB",
+            "phone_type": "hard",
+            "proxy": "svlab.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1001@SVAutoCustomer"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerC",
+            "phone_type": "soft",
+            "proxy": "svlab.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1002@SVAutoCustomer"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerD",
+            "phone_type": "soft",
+            "proxy": "svlab.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1003@SVAutoCustomer"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerE",
+            "phone_type": "soft",
+            "proxy": "svlab.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1004@SVAutoCustomer"
+        },
+        {
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerF",
+            "phone_type": "soft",
+            "proxy": "svlab.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1005@SVAutoCustomer"
+        },
+        {
+            "conf_password": "1234",
+            "contexts": [
+                "callgui",
+                "ccd"
+            ],
+            "delete": "true",
+            "name2": "testerG",
+            "phone_type": "conference",
+            "proxy": "svlab.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:3000@SVAutoCustomer"
+        },
+        {
+            "name": "SVAutoCustomer",
+            "rs_domain": "SVAutoManage",
+            "rs_password": "0222",
+            "rs_user": "mmccroreyrs",
+            "type": "domain"
+        },
+        {
+            "cust_dom": "SVAutoCustomer",
+            "cust_dom_name": "SVAuto Customer",
+            "dns_list": [
+                "10.0.50.156",
+                "10.0.50.157"
+            ],
+            "type": "platform"
+        }
+    ]
+}

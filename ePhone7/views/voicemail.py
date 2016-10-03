@@ -1,10 +1,12 @@
+from time import sleep
+
+import lib.common.logging_esi as logging
+from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
 from lib.android.actions import Actions
-from lib.common.configure import cfg
 from lib.common.user_exception import UserException as Ux
 from lib.common.wrappers import Trace
-from time import sleep
-import lib.common.logging_esi as logging
+
 log = logging.get_logger('esi.voicemail_view')
 import re
 
@@ -13,8 +15,7 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def __init__(self):
-        UserView.__init__(self)
-        self.actions = Actions(self)
+        super(VoicemailView, self).__init__()
         self.tab_names = ('New', 'Saved', 'Trash')
         self.png_file_base = 'voicemail'
         self.elems = []
@@ -94,7 +95,7 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def first_vm_opened(self):
-        self.get_first_vm_parent().click()
+        self.actions.click_element(self.get_first_vm_parent())
         try:
             self.actions.find_element_by_key('DeleteButton')
         except:
@@ -104,14 +105,7 @@ class VoicemailView(UserView):
     @Trace(log)
     def open_first_vm(self):
         self.actions.wait_for_condition_true(self.first_vm_opened, lambda: 'first vm not opened', timeout=30)
-        elem = self.actions.find_element_by_key('PlaybackStartStop')
-        # self.actions.get_screenshot_as_png('vm_pause', cfg.test_screenshot_folder)
-        # color1 = self.actions.get_element_color('vm_pause', elem)
-        elem.click()
-        # self.actions.get_screenshot_as_png('vm_play', cfg.test_screenshot_folder)
-        # color2 = self.actions.get_element_color('vm_play', elem)
-        # print "color1: " + repr(color1)
-        # print "color2: " + repr(color2)
+        self.actions.click_element_by_key('PlaybackStartStop')
 
 
 
@@ -137,7 +131,7 @@ class VoicemailView(UserView):
         if self.new_vals['caller_number'] != self.saved_vals['caller_number']:
             return False
         if m1 and m2:
-            if abs(int(m1.group(1)) - int(m2.group(1))) > 2:
+            if abs(int(m1.group(1)) - int(m2.group(1))) > 4:
                 return False
             if m1.group(2) != m2.group(2):
                 return False
@@ -154,9 +148,9 @@ class VoicemailView(UserView):
             elems = self.actions.find_elements_by_key('VmParent')
             if len(elems) == 0:
                 break
-            elems[0].click()
+            self.actions.click_element(elems[0])
             sleep(5)
-            self.actions.find_element_by_key('DeleteButton').click()
+            self.actions.click_element_by_key('DeleteButton')
             self.swipe_down()
             sleep(5)
 

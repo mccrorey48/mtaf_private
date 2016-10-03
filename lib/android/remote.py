@@ -1,8 +1,10 @@
 from appium import webdriver
-from lib.common.configure import cfg
+from appium.webdriver.common.mobileby import MobileBy
+from lib.android.mock_driver import MockDriver
+
 import lib.common.logging_esi as logging
+from ePhone7.utils.configure import cfg
 from lib.common.user_exception import UserException as Ux
-from time import time
 
 log = logging.get_logger('esi.remote')
 
@@ -18,19 +20,19 @@ class Remote:
     timeout = None
 
     def __init__(self, timeout=default_timeout):
-        # if cfg.site['Mock']:
-        #     self.driver = MockDriver()
-        # else:
-        #     self.update_remote('nolaunch')
         self.timeout = timeout
-        self.update_remote('nolaunch')
+        self.By = MobileBy
+        if cfg.site['Mock']:
+            self.driver = MockDriver()
+        else:
+            self.update_remote('main')
 
     def update_remote(self, caps_tag, timeout=cfg.site['DefaultTimeout']):
         # if not cfg.site['Mock']:
         if caps_tag != self.caps_tag:
             if self.caps_tag != 'not initialized':
                 self.driver.quit()
-            self.driver = webdriver.Remote(cfg.site["URL"], cfg.caps[caps_tag])
+            self.driver = webdriver.Remote(cfg.site["SeleniumUrl"], cfg.caps[caps_tag])
             self.caps_tag = caps_tag
             self.driver.implicitly_wait(timeout)
             self.current_implicit_wait = timeout
@@ -69,32 +71,5 @@ class Remote:
             return activity_tags_by_state[state][self.current_activity]
         else:
             raise Ux('unknown activity for state %s: %s' % (state, self.current_activity))
-
-    def find_element_with_timeout(self, method, value, parent=None, timeout=10):
-        if method == 'xpath':
-            if parent is None:
-                finder_fn = self.driver.find_elements_by_xpath
-            else:
-                finder_fn = parent.find_elements_by_xpath
-        elif method == 'id':
-            if parent is None:
-                finder_fn = self.driver.find_elements_by_id
-            else:
-                finder_fn = parent.find_elements_by_id
-        elif method == 'accessibility id':
-            if parent is None:
-                finder_fn = self.driver.find_elements_by_accessibility_id
-            else:
-                finder_fn = parent.find_elements_by_accessibility_id
-        else:
-            raise Ux("Unknown finder method %s" % method)
-        start_time = time()
-        while time() - start_time < timeout:
-            elems = finder_fn(value)
-            if len(elems) > 1:
-                raise Ux("Multiple elements match %s = %s, parent = %s" % (method, value, parent))
-            if len(elems) == 1:
-                return elems[0]
-        raise Ux("No matching elements found with %s = %s, timeout = %s, parent = %s" % (method, value, timeout, parent))
 
 remote = Remote()

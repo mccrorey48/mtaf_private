@@ -107,7 +107,7 @@
             },
             "users": {
                 "ext_in_table": {
-                    "script": "return [for (tr of window.document.getElementsByTagName('tbody')[0].getElementsByTagName('tr')) tr.getElementsByTagName('td')[1].textContent].indexOf('${desired_ext}') > -1"
+                    "script": "return $('td').filter(function(){return $(this).text()=='${desired_ext}';}).length==1"
                 }
             }
         }

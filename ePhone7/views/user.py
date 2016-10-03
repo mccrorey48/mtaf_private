@@ -1,22 +1,27 @@
 from time import sleep
-from lib.android.actions import Actions
-from lib.common.wrappers import Trace
-from lib.common.user_exception import UserException as Ux
 import lib.common.logging_esi as logging_esi
-from lib.common.configure import cfg
+from ePhone7.utils.configure import cfg
+from lib.android.actions import Actions
+from lib.common.user_exception import UserException as Ux
+from lib.common.wrappers import Trace
+from ePhone7.views.base import BaseView
+from ePhone7.views.prefs import prefs_view
+
 log = logging_esi.get_logger('esi.user_view')
 
 
-class UserView:
+class UserView(BaseView):
 
     @Trace(log)
     def __init__(self):
-        self.actions = Actions(self)
+        super(UserView, self).__init__()
+        self.cfg = cfg
         self.tab_names = ('Contacts', 'History', 'Voicemail', 'Keypad')
         self.png_file_base = 'user'
         self.expected_tab = None
         self.active_tab = None
         self.call_status_wait = 30
+        self.actions = Actions(self)
 
     # @Trace(log)
     # def logout(self):
@@ -35,7 +40,7 @@ class UserView:
         self.actions.get_screenshot_as_png('set_dnd', cfg.test_screenshot_folder)
         current_color = self.actions.get_element_color('set_dnd', elem)
         if current_color != desired_color:
-            elem.click()
+            self.actions.click_element(elem)
             sleep(5)
         self.actions.get_screenshot_as_png('set_dnd', cfg.test_screenshot_folder)
         current_color = self.actions.get_element_color('set_dnd', elem)
@@ -79,16 +84,17 @@ class UserView:
         self.expected_tab = tab_name
         failmsg_fmt = 'expect active tab to be %s, got %s'
         self.actions.wait_for_condition_true(self.verify_active_tab,
-                                             lambda: failmsg_fmt % (self.expected_tab, self.active_tab))
+                                             lambda: failmsg_fmt % (self.expected_tab, self.active_tab), timeout=120)
 
     @Trace(log)
     def goto_prefs(self):
-        # have to use the zpath locator here because "by id" and "by accessibility id" versions don't click reliably
-        self.actions.click_element_by_key('PrefsButtonz')
+        self.actions.wait_for_condition_true(self.verify_prefs_view,
+                                             lambda: "prefs view not present", timeout=60)
 
     @Trace(log)
-    def wait_for_view(self):
-        return self.actions.find_element_by_key(self.tab_names[0], timeout=30)
+    def verify_prefs_view(self):
+        self.actions.click_element_by_key('PrefsButton')
+        return prefs_view.verify_view()
 
     @Trace(log)
     def verify_active_tab(self):
@@ -101,14 +107,13 @@ class UserView:
         self.actions.click_element_by_key(self.expected_tab)
         sleep(5)
         self.actions.get_screenshot_as_png(self.png_file_base, cfg.test_screenshot_folder)
+        self.active_tab = None
         for tab_name in self.tab_names:
             tab_color = self.actions.get_tab_color(self.png_file_base, tab_name)
             log.debug("get_tab_color(%s, %s) returned %s" % (self.png_file_base, tab_name, tab_color))
             if tab_color == 'active_color':
                 self.active_tab = tab_name
                 break
-        else:
-            raise Ux('no active tab found')
         return self.active_tab == self.expected_tab
 
     @Trace(log)

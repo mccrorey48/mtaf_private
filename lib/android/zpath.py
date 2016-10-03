@@ -4,6 +4,7 @@ from lib.common.user_exception import UserException as Ux
 path_by_abbrev = {
     "": "",
     "bt": "android.widget.Button",
+    "el": "android.widget.ExpandableListView",
     "fl": "android.widget.FrameLayout",
     "gl": "android.widget.GridLayout",
     "gv": "android.widget.GridView",

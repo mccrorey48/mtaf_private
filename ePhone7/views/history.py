@@ -1,11 +1,12 @@
-from ePhone7.views.user import UserView
-from lib.android.actions import Actions
-import lib.common.logging_esi as logging
-from lib.common.configure import cfg
-from lib.common.wrappers import Trace
 from time import sleep
-from lib.common.user_exception import UserException as Ux, UserFailException as Fx
+
+import lib.common.logging_esi as logging
+from ePhone7.utils.configure import cfg
+from ePhone7.views.user import UserView
+from lib.common.user_exception import UserException as Ux
+from lib.common.wrappers import Trace
 from lib.softphone.softphone import get_softphone
+
 log = logging.get_logger('esi.contacts_view')
 
 
@@ -13,19 +14,18 @@ class HistoryView(UserView):
 
     @Trace(log)
     def __init__(self):
-        UserView.__init__(self)
-        self.actions = Actions(self)
+        super(HistoryView, self).__init__()
         self.tab_names = ('All', 'Missed')
         self.png_file_base = 'history'
 
     @Trace(log)
     def call_contact_test(self):
-        src_cfg = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]
+        src_name = cfg.site['DefaultSoftphoneUser']
         elems = self.actions.find_elements_by_key('CallerName')
         self.actions.assertGreater(len(elems), 0, 'No CallerName elements found')
         name_elem = elems[0]
         name = name_elem.text
-        expected = src_cfg['UserNameIncoming']
+        expected = src_name
         self.actions.assertEqual(name, expected, "First caller name expected %s, actual %s" % (expected, name))
         loc_y = name_elem.location['y']
         log.debug("first name location y = %s" % loc_y)
@@ -40,7 +40,7 @@ class HistoryView(UserView):
         call_icon = history_view.actions.find_sub_element_by_key(entry_elem, 'CallIcon')
         log.debug("call icon location y = %s" % call_icon.location['y'])
         softphone = get_softphone()
-        call_icon.click()
+        self.actions.click_element(call_icon)
         softphone.wait_for_call_status('start', 20)
         sleep(10)
         self.actions.click_element_by_key('EndActiveCall')

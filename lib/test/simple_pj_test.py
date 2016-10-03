@@ -85,7 +85,7 @@ with open('log/esi_debug.log', 'r') as f:
                         continue
                     else:
                         cseq_descs[cseq].append(m.group('desc'))
-                    # print "%s %6.3f, %s, %s, %s, %s" % (m.group('dt'), secs, m.group('type'), m.group('desc'), m.group('cseq'), m.group('dir'))
+                    print "%s %6.3f, %s, %s, %s, %s" % (m.group('dt'), secs, m.group('type'), m.group('desc'), m.group('cseq'), m.group('dir'))
                     d = {'ms': ms, 'timestamp': timestamp, 'secs': secs, 'type': m.group('type'), 'desc': m.group('desc'), 'dir': m.group('dir')}
                     if cseq in cseq_ds:
                         cseq_ds[cseq].append(d)

@@ -1,13 +1,14 @@
-import lib.softphone.pjsua_lib as pjl
-from lib.common.user_exception import UserException as Ux
 import Queue
-import lib.common.logging_esi as logging_esi
-from lib.common.wrappers import Trace
-from time import time, sleep
-from lib.softphone.wav_audio import create_wav_file
-from lib.common.configure import cfg
-import re
 import random
+import re
+from time import time, sleep
+
+import lib.common.logging_esi as logging_esi
+import lib.softphone.pjsua_lib as pjl
+from ePhone7.utils.configure import cfg
+from lib.common.user_exception import UserException as Ux
+from lib.common.wrappers import Trace
+from lib.softphone.wav_audio import create_wav_file
 
 log = logging_esi.get_logger('esi.softphone')
 softphones = {}
@@ -27,7 +28,7 @@ class Softphone:
     def __init__(self, user_name, null_snd, tcp):
         user_cfg = cfg.site['Accounts'][user_name]
         pbfile = user_cfg['pbfile']
-        create_wav_file(pbfile)
+        create_wav_file(pbfile, cfg.site['Quiet'])
         uri = 'sip:%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
         proxy = user_cfg['Proxy']
         passwd = user_cfg['Password']

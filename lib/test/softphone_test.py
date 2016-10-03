@@ -1,5 +1,6 @@
 import argparse
-from lib.common.configure import cfg
+
+from ePhone7.utils.configure import cfg
 
 parser = argparse.ArgumentParser()
 parser.add_argument("dir_name", type=str, choices=['ePhone7', 'ePhoneGo-android', 'ePhoneGo-iOS'],
@@ -11,7 +12,7 @@ cfg.set_site(args.dir_name, args.site_tag)
 from lib.softphone.softphone import get_softphone
 from time import sleep
 import lib.common.logging_esi as logging_esi
-from lib.common.configure import cfg
+from ePhone7.utils.configure import cfg
 
 log = logging_esi.get_logger('esi.softphone_test')
 logging_esi.console_handler.setLevel(logging_esi.TRACE)

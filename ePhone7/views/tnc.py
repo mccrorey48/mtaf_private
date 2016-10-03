@@ -1,15 +1,16 @@
-from lib.android.actions import Actions
-from lib.common.remote import remote
-from lib.common.wrappers import Trace
 import lib.common.logging_esi as logging
+from lib.android.remote import remote
+from lib.common.wrappers import Trace
+from ePhone7.views.base import BaseView
+
 log = logging.get_logger('esi.tnc_view')
 
 
-class TncView:
+class TncView(BaseView):
 
     @Trace(log)
     def __init__(self):
-        self.actions = Actions(self)
+        super(TncView, self).__init__()
 
     @Trace(log)
     def not_tnc_activity(self):

@@ -1,14 +1,11 @@
-import xml.etree.ElementTree as ET
-import re
-import os
-import lib.android.zpath
-from lib.common.configure import cfg
 import argparse
+import os
+import re
+import xml.etree.ElementTree as ET
 
-parser = argparse.ArgumentParser()
-parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="specify site tag")
-args = parser.parse_args()
-cfg.set_site('ePhone7', args.site_tag)
+import lib.android.zpath
+from ePhone7.utils.configure import cfg
+
 
 tagre = re.compile('([^\[]+)(.*)')
 
@@ -104,4 +101,8 @@ def xml_folder_to_csv():
     os.path.walk(cfg.xml_folder, visit, '')
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local', 'ds'], help="specify site tag")
+    args = parser.parse_args()
+    cfg.set_site(args.site_tag)
     xml_folder_to_csv()

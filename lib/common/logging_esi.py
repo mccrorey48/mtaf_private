@@ -118,6 +118,7 @@ def set_msg_src(src='', set_linefeed=False, show_lineno=True):
         print
         sleep(1)
 
+
 def get_logger(name):
     return getLogger(name)
 
@@ -142,6 +143,7 @@ re_trace = re.compile(
     + '((?P<arglist>\((?P<args>.*)\))?\s*|\s*)'
     + '((?P<event>returned|EXCEPTION)?:?\s+|)(?P<msg>.+)?'
 )
+
 
 def parse_msg_to_dict(msg):
     m = re_common.match(msg)

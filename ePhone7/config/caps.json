@@ -43,6 +43,7 @@
         "platformName": "Android",
         "platformVersion": "4.4",
         "newCommandTimeout": 1200,
+        "appWaitPackage": "com.esi_estech.ditto",
         "appPackage": "com.esi_estech.ditto",
         "automationName": "Appium",
         "deviceName": "r2d2",

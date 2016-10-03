@@ -1,16 +1,17 @@
-from lib.common.configure import cfg
-from lib.android.actions import Actions
-from lib.common.remote import remote
-from lib.common.wrappers import Trace
 import lib.common.logging_esi as logging
+from ePhone7.utils.configure import cfg
+from ePhone7.views.base import BaseView
+from lib.android.remote import remote
+from lib.common.wrappers import Trace
+
 log = logging.get_logger('esi.login_view')
 
 
-class LoginView:
+class LoginView(BaseView):
 
     @Trace(log)
     def __init__(self):
-        self.actions = Actions(self)
+        super(LoginView, self).__init__()
 
     # def not_login_view(self):
     #     current_activity = remote.get_current_activity()
