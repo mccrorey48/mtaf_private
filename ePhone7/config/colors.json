@@ -37,6 +37,30 @@
       42,
       68,
       106
+    ],
+    "handset_online_color": [
+      79,
+      187,
+      110,
+      253
+    ],
+    "handset_offline_color": [
+      86,
+      86,
+      86,
+      253
+    ],
+    "favorite_off_color": [
+      255,
+      255,
+      255,
+      375
+    ],
+    "favorite_on_color": [
+      255,
+      203,
+      5,
+      372
     ]
   },
   "HistoryView": {
@@ -105,6 +129,18 @@
       23,
       27,
       109
+    ],
+    "dnd_on_color": [
+      229,
+      83,
+      83,
+      541
+    ],
+    "dnd_off_color": [
+      99,
+      139,
+      237,
+      545
     ]
   },
   "VoicemailView": {

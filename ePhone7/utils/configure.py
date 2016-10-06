@@ -36,11 +36,7 @@ class Cfg:
         self.cfg_folder_path = os.path.join(self.exec_dir, 'ePhone7', 'config')
         self.caps = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'caps.json'))))
         self.locators = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'locators.json'))))
-        self.colors = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'colors_generated.json'))))
-        colors_manual = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'colors_manual.json'))))
-        for view in colors_manual:
-            for color_name in colors_manual[view]:
-                self.colors[view][color_name] = colors_manual[view][color_name]
+        self.colors = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'colors.json'))))
         self.site = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'site_%s.json' % site_tag))))
         self.test_screenshot_folder = os.path.join(self.exec_dir, self.site['TestScreenshotsFolder'])
         self.screenshot_folder = os.path.join(self.exec_dir, self.site['ScreenshotsFolder'])

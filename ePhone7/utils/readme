@@ -12,22 +12,12 @@ run the utilities in the order listed:
   xml_to_csv.py - converts the xml files to a concise csv format including element id's, xpaths (in
                   condensed zpath format) and element coordinates
 
-  get_colors.py - uses the element locators from view_info.py (zpath or id) to look up element
-                  coordinates from the csv file and inspect the colors in a portion of each element
+Screenshot files are collected for each view with each of the possible tabs selected in
+that view (for example, there are 4 screenshots for the contacts view, one for each of
+the tabs: Personal, Coworkers, Favorites and Groups).
 
-The output of get_colors.txt includes colors.txt (which shows the most common color in
-the inspected portion of each tab for each view. Screenshot files are collected for
-each view with each of the possible tabs selected in that view (for example, there are 4
-screenshots for the contacts view, one for each of the tabs: Personal, Coworkers, Favorites
-and Groups). For each screenshot, each tab is inspected for color, so (in this example) there
-are 16 color values associated with the contacts view.
-
-To help make sure the right portion of each element is being evaluated for color, get_colors.py saves
-a screenshot for each tab inspection with the inspected area colored yellow.
-
-The result of all this is that a characteristic color value is calculated for each tab
-in each view, for each possible tab-selection state of the view. By carefully selecting the
-portion of the tabs to be inspected, these values can be made to be consistent for all
-views. Once that is done, the automated test can use these values to determine whether
-a tab is displayed as active (selected) or inactive (unselected).
+Screenshots are used during test operations to determine if a tab is in the selected or unselected state.
+Tabs are colored with a gradient backround, so there is a specific, narrow horizontal line that is evaluated
+to make this determination. The crop points that define this line are determined by trial and error to get a
+reliable result; the color values and crop points are saved in config/colors.json for use during the test.
 

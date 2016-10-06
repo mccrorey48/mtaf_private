@@ -40,7 +40,6 @@ def save_xml_and_screenshot(basename, version):
         log.info("saving xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
-        # log.info("saving screenshot %s/%s.png" % (cfg.screenshot_folder, basename))
         Actions.get_screenshot_as_png(basename, cfg.screenshot_folder)
 
 

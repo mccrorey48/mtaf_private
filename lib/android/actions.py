@@ -1,6 +1,5 @@
 import os
-from time import sleep
-
+from time import sleep, time, strftime, localtime
 from PIL import Image
 
 import lib.common.logging_esi as logging
@@ -53,12 +52,19 @@ class Actions(SeleniumActions):
     def get_screenshot_as_png(filebase, screenshot_folder):
         sleep(5)
         fullpath = os.path.join(screenshot_folder, filebase + '.png')
-        log.debug("saving %s" % fullpath)
+        log.debug("saving screenshot to %s" % fullpath)
         remote.driver.get_screenshot_as_file(fullpath)
+        im = Image.open(fullpath)
+        if im.getbbox()[2] == 1024:
+            log.debug("rotating screenshot -90 degrees")
+            im = im.rotate(-90, expand=True)
+            log.debug("saving rotated screenshot to %s" % fullpath)
+            im.save(fullpath)
 
-    def color_match(self, c1, c2, tolerance = 5):
+    @staticmethod
+    def color_match(c1, c2, tolerance = 5):
         for i in range(3):
-            if c2[i]  > c1[i] + tolerance or c2[i] < c1[i] - tolerance:
+            if c2[i] > c1[i] + tolerance or c2[i] < c1[i] - tolerance:
                 return False
         return True
 
@@ -106,7 +112,8 @@ class Actions(SeleniumActions):
         lim_x = min_x + size['width']
         lim_y = min_y + size['height']
         # print "min_x = %s, min_y = %s, lim_x = %s, lim_y = %s" % (min_x, min_y, lim_x, lim_y)
-        (x1, y1, x2, y2) = (min_y, 600-lim_x, lim_y, 600-min_x)
+        # (x1, y1, x2, y2) = (min_y, 600-lim_x, lim_y, 600-min_x)
+        (x1, y1, x2, y2) = (min_x, min_y, lim_x, lim_y)
         crop_points = [int(i) for i in (x1, y1, x2, y2)]
         # print "crop_points: " + repr(crop_points)
         cropped = im.crop(crop_points)
