@@ -3,22 +3,7 @@ logging_esi.console_handler.setLevel(logging_esi.INFO)
 log = logging_esi.get_logger('esi.cron')
 with logging_esi.msg_src_cm('importing modules'):
     import unittest
-    from ccd.views.base import base_view
-    from ccd.views.login import login_view
-    from ccd.views.reseller import reseller_view
-    from ccd.views.reseller_home import reseller_home_view
-    from ccd.views.reseller_domains import reseller_domains_view
-    from ccd.views.reseller_inventory import reseller_inventory_view
-    from ccd.views.domain import domain_view
-    from ccd.views.domain_home import domain_home_view
-    from ccd.views.domain_conferences import domain_conferences_view
-    from ccd.views.domain_call_queues import domain_call_queues_view
-    from ccd.views.domain_inventory import domain_inventory_view
-    from ccd.views.domain_users import domain_users_view
-    from ccd.views.domain_auto_attendants import domain_auto_attendants_view
-    from ccd.views.domain_time_frames import domain_time_frames_view
-    from ccd.views.domain_music_on_hold import domain_music_on_hold_view
-    from ccd.views.domain_locations import domain_locations_view
+    from ccd.views import *
     from lib.common.wrappers import TestCase
 
 debug = False
@@ -74,13 +59,13 @@ class ResellerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         base_view.open_browser()
+        base_view.get_portal_url()
 
     @classmethod
     def tearDownClass(cls):
         base_view.close_browser()
 
     def setUp(self):
-        base_view.get_portal_url()
         login_view.login_with_good_credentials()
         reseller_home_view.wait_for_page_title()
 

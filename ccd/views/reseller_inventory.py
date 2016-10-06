@@ -7,7 +7,6 @@ log = logging.get_logger('esi.reseller_inventory_view')
 
 class ResellerInventoryView(ResellerView):
 
-    @Trace(log)
     def __init__(self):
         super(ResellerInventoryView, self).__init__()
         self.view_name = "reseller inventory"

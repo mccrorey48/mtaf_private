@@ -7,7 +7,6 @@ log = logging.get_logger('esi.domain_inventory_view')
 
 class DomainInventoryView(DomainView):
 
-    @Trace(log)
     def __init__(self):
         super(DomainInventoryView, self).__init__()
         self.view_name = "domain_inventory"

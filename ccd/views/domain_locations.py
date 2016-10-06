@@ -7,7 +7,6 @@ log = logging.get_logger('esi.domain_locations_view')
 
 class DomainLocationsView(DomainView):
 
-    @Trace(log)
     def __init__(self):
         super(DomainLocationsView, self).__init__()
         self.view_name = "domain_locations"

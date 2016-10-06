@@ -8,14 +8,27 @@ log = logging.get_logger('esi.login_view')
 
 class LoginView(BaseView):
 
-    @Trace(log)
     def __init__(self):
         super(LoginView, self).__init__()
         self.view_name = "login"
         self.page_title = "Manager Portal"
-        self.get_portal_url()
 
     @Trace(log)
+    def input_reseller_username(self):
+        user_cfg = cfg.site['Accounts']['ResellerUser']
+        username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
+        self.find_element_by_key('UserName').send_keys(username)
+
+    @Trace(log)
+    def input_reseller_password(self):
+        user_cfg = cfg.site['Accounts']['ResellerUser']
+        password = user_cfg['Password']
+        self.find_element_by_key('Password').send_keys(password)
+
+    @Trace(log)
+    def click_login(self):
+        self.click_element_by_key('LoginButton')
+
     def login_with_good_credentials(self):
         user_cfg = cfg.site['Accounts']['ResellerUser']
         username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
@@ -48,14 +61,14 @@ class LoginView(BaseView):
 
     def login(self, username, password):
         if len(username):
-            self.actions.find_element_by_key('UserName').send_keys(username)
+            self.find_element_by_key('UserName').send_keys(username)
         if len(password):
-            self.actions.find_element_by_key('Password').send_keys(password)
-        self.actions.click_element_by_key('LoginButton')
+            self.find_element_by_key('Password').send_keys(password)
+        self.click_element_by_key('LoginButton')
 
     def wait_for_password_alert(self, timeout=10):
-        el = self.actions.find_element_by_key("PasswordAlert", timeout)
-        self.actions.assert_element_text(elem=el, expected="Username or password is invalid. Please try again.",
-                                         elem_name="alert")
+        el = self.find_element_by_key("PasswordAlert", timeout)
+        self.assert_element_text(elem=el, expected="Username or password is invalid. Please try again.",
+                                 elem_name="alert")
 
 login_view = LoginView()

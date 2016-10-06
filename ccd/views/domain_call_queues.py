@@ -7,7 +7,6 @@ log = logging.get_logger('esi.domain_call_queues_view')
 
 class DomainCallQueuesView(DomainView):
 
-    @Trace(log)
     def __init__(self):
         super(DomainCallQueuesView, self).__init__()
         self.view_name = "domain_call_queues"

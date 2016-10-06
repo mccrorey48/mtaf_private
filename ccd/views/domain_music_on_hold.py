@@ -7,7 +7,6 @@ log = logging.get_logger('esi.domain_music_on_hold_view')
 
 class DomainMusicOnHoldView(DomainView):
 
-    @Trace(log)
     def __init__(self):
         super(DomainMusicOnHoldView, self).__init__()
         self.view_name = "domain_music_on_hold"

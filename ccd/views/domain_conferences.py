@@ -7,7 +7,6 @@ log = logging.get_logger('esi.domain_conferences_view')
 
 class DomainConferencesView(DomainView):
 
-    @Trace(log)
     def __init__(self):
         super(DomainConferencesView, self).__init__()
         self.view_name = "domain_conferences"
