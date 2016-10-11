@@ -1,4 +1,4 @@
-from lib.common.user_exception import UserException as Ux
+from lib.user_exception import UserException as Ux
 
 
 def outerfunc(parm1):

@@ -1,5 +1,5 @@
+import lib.logging_esi as logging_esi
 from logging_esi_test2 import logit
-import lib.common.logging_esi as logging_esi
 
 if __name__ == '__main__':
     log = logging_esi.get_logger('esi.mm')

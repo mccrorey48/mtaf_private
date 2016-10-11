@@ -3,9 +3,8 @@ import os
 import re
 import xml.etree.ElementTree as ET
 
-import lib.android.zpath
+import lib.android
 from ePhone7.utils.configure import cfg
-
 
 tagre = re.compile('([^\[]+)(.*)')
 
@@ -15,7 +14,7 @@ def printall(ofile, node, tag_index, pfx):
         tag = node.attrib['class']
     else:
         tag = node.tag
-    tag = lib.android.zpath.get_abbrev(tag)
+    tag = lib.android.get_abbrev(tag)
     if tag_index == 0:
         new_prefix = pfx + tag
     else:

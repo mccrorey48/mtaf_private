@@ -1,7 +1,10 @@
-import pjsua as pj
 import re
 import threading
-import lib.common.logging_esi as logging_esi
+
+import pjsua as pj
+
+import lib.logging_esi as logging_esi
+
 log = logging_esi.get_logger('esi.simple_pj')
 # set console log level
 logging_esi.console_handler.setLevel(logging_esi.INFO)

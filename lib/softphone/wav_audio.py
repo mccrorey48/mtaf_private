@@ -6,15 +6,15 @@ for all the DTMF frequencies. The method run() will return a numeric
 representation of the DTMF tone.
 """
 
-import wave
-import struct
 import math
+import os
+import re
+import struct
+import wave
 from shutil import copy
 from time import time
-import os
-from pkg_resources import Requirement, resource_filename
-from lib.common.user_exception import UserException as Ux
-import re
+
+from lib.user_exception import UserException as Ux
 
 hi = [1209.0, 1336.0, 1477.0, 1633.0]
 lo = [697.0, 770.0, 852.0, 941.0]

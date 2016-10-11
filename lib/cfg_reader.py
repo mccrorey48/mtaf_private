@@ -11,12 +11,14 @@
         goertzel -   to detect DTMF audio sequences in recorded audio
         
 """
-import re
-import lib.common.logging_esi as logging
-from pymongo import MongoClient
-from lib.common.user_exception import UserException as Ux
 import os
+import re
+
+import lib.logging_esi as logging
+from pymongo import MongoClient
+
 from lib.softphone.wav_audio import create_wav_file
+from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.cfg_reader')
 

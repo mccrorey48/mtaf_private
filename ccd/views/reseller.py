@@ -1,13 +1,21 @@
-import lib.common.logging_esi as logging
-from lib.common.wrappers import Trace
-from lib.common.user_exception import UserException as Ux
-from ccd.views.base import BaseView
 import re
+import lib.logging_esi as logging
+from lib.wrappers import Trace
+from ccd.views.base import BaseView
+from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.reseller_view')
 
 
 class ResellerView(BaseView):
+
+    locators = {
+        "DomainsTab": {"by": "id", "value": "nav-domains"},
+        "InventoryTab": {"by": "id", "value": "nav-inventory"},
+        "HomeTab": {"by": "id", "value": "nav-home-reseller"},
+        "Logout": {"by": "id", "value": "logout"}
+    }
+
     def __init__(self):
         super(ResellerView, self).__init__()
         self.view_name = "reseller"

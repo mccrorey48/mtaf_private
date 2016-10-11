@@ -1,8 +1,8 @@
-import lib.common.logging_esi as logging
+import lib.logging_esi as logging
+
 from ePhone7.utils.configure import cfg
 from ePhone7.views.base import BaseView
-from lib.android.remote import remote
-from lib.common.wrappers import Trace
+from lib.wrappers import Trace
 
 log = logging.get_logger('esi.login_view')
 
@@ -29,7 +29,7 @@ class LoginView(BaseView):
         self.find_element_by_key('Password').set_text(passwd)
         self.click_element_by_key('Login')
         failmsg = 'current activity is not .activities.MainViewActivity'
-        testfn = lambda: remote.current_activity == '.activities.MainViewActivity'
+        testfn = lambda: self.current_activity == '.activities.MainViewActivity'
         self.wait_for_condition_true(testfn, failmsg)
 
 login_view = LoginView()

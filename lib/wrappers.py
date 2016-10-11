@@ -1,10 +1,12 @@
-from lib.common.user_exception import UserException as Ux, UserFailException as Fx, stat_prefix as sp
-import lib.common.logging_esi as logging_esi
+import inspect
 import sys
 import traceback
-import inspect
-from appium import webdriver
 from time import time
+
+import lib.logging_esi as logging_esi
+from appium import webdriver
+
+from lib.user_exception import UserException as Ux, UserFailException as Fx, stat_prefix as sp
 
 log = logging_esi.get_logger('esi.wrappers')
 

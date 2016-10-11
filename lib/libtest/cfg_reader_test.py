@@ -1,9 +1,11 @@
 """
 test the cfg_reader module installed from svauto_shared
 """
-from lib.common.cfg_reader import CfgReader
-import pprint
 import argparse
+import pprint
+
+from lib.cfg_reader import CfgReader
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-m", "--mongo_host", type=str, default='vqda',
                     help="(optional) specify mongodb host, default 'vqda'")

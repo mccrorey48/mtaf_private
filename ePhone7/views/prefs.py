@@ -1,8 +1,11 @@
-import lib.common.logging_esi as logging
 import re
-from lib.common.wrappers import Trace
+
+import lib.logging_esi as logging
+from lib.wrappers import Trace
+
 from ePhone7.views.base import BaseView
-from lib.common.user_exception import UserException as Ux
+from lib.user_exception import UserException as Ux
+
 log = logging.get_logger('esi.prefs_view')
 
 list_items = {

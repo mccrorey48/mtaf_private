@@ -14,12 +14,12 @@ from lib.softphone.softphone import get_softphone
 from ePhone7.views.user import user_view
 from ePhone7.views.prefs import prefs_view
 from ePhone7.views.base import base_view
-from ePhone7.utils.xml_to_csv import xml_folder_to_csv
+from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 from time import sleep
-import lib.common.logging_esi as logging_esi
+import lib.logging_esi as logging_esi
 from ePhone7.utils.view_info import view_info
-from lib.common.wrappers import Trace
-from lib.common.user_exception import UserException as Ux
+from lib.wrappers import Trace
+from lib.user_exception import UserException as Ux
 log = logging_esi.get_logger('esi.get_xml')
 logging_esi.console_handler.setLevel(logging_esi.TRACE)
 

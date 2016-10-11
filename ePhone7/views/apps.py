@@ -1,8 +1,11 @@
 from time import sleep
-import lib.common.filters as filters
-from lib.common.wrappers import Trace
-import lib.common.logging_esi as logging
+
+import lib.logging_esi as logging
+from lib.wrappers import Trace
+
+import lib.filters as filters
 from ePhone7.views.base import BaseView
+
 log = logging.get_logger('esi.apps_view')
 
 
@@ -46,7 +49,7 @@ class AppsView(BaseView):
         elems = None
         while tries < 4:
             elems = self.find_elements_by_key('AllVisible',
-                                                      filters.get_filter('text_start', 'ePhone'))
+                                              filters.get_filter('text_start', 'ePhone'))
             tries += 1
             if len(elems) > 0:
                 break
@@ -61,7 +64,7 @@ class AppsView(BaseView):
         elems = None
         while tries < 4:
             elems = self.find_elements_by_key('AllVisible',
-                                                      filters.get_filter('text_all', 'Contacts Storage'))
+                                              filters.get_filter('text_all', 'Contacts Storage'))
             tries += 1
             if len(elems) > 0:
                 break

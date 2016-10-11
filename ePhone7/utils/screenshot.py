@@ -1,7 +1,9 @@
 import argparse
 import os
-from ePhone7.utils.configure import cfg
+
 from PIL import Image
+
+from ePhone7.utils.configure import cfg
 
 parser = argparse.ArgumentParser()
 parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local', 'ds'], help="specify site tag")
@@ -10,7 +12,7 @@ args = parser.parse_args()
 cfg.set_site(args.site_tag)
 
 from lib.android.actions import Actions
-import lib.common.logging_esi as logging_esi
+import lib.logging_esi as logging_esi
 log = logging_esi.get_logger('esi.screenshot')
 logging_esi.console_handler.setLevel(logging_esi.TRACE)
 

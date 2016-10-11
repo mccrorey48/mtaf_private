@@ -6,7 +6,7 @@ args = parser.parse_args()
 from ccd.utils.configure import cfg
 cfg.set_site(args.svr_tag)
 
-import lib.common.logging_esi as logging_esi
+import lib.logging_esi as logging_esi
 log = logging_esi.get_logger('esi.get_view_elems')
 
 from ccd.views.login import login_view

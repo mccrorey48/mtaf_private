@@ -1,12 +1,25 @@
-import lib.common.logging_esi as logging
-from lib.common.wrappers import Trace
-from ccd.views.base import BaseView
 from time import sleep
+
+import lib.logging_esi as logging
+
+from ccd.views.base import BaseView
+from lib.wrappers import Trace
 
 log = logging.get_logger('esi.domain_view')
 
 
 class DomainView(BaseView):
+
+    locators = {
+        "CallQueuesTab": {"by": "id", "value": "nav-callqueues"},
+        "HomeTab": {"by": "id", "value": "nav-home-manager"},
+        "InventoryTab": {"by": "id", "value": "nav-inventory"},
+        "NavBanner": {"by": "id", "value": "navigation-subbar"},
+        "NavBannerTitle": {"by": "css selector", "value": ".navigation-title", "parent": "NavBanner"},
+        "SettingsTab": {"by": "id", "value": "nav-settings"},
+        "UsersTab": {"by": "id", "value": "nav-users"},
+        "ConferencesTab": {"by": "id", "value": "nav-conferences"}
+    }
 
     def __init__(self):
         super(DomainView, self).__init__()

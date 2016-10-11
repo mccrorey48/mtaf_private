@@ -1,6 +1,7 @@
-from logging_esi_test2 import logit
-import lib.common.logging_esi as logging_esi
 import logging
+
+import lib.logging_esi as logging_esi
+from logging_esi_test2 import logit
 
 # log = logging_esi.get_logger('esi.mm')
 log = logging.getLogger('esi.mm')

@@ -1,5 +1,5 @@
-import lib.common.logging_esi as logging
-from lib.common.wrappers import Trace
+import lib.logging_esi as logging
+
 from ccd.views.domain import DomainView
 
 log = logging.get_logger('esi.domain_locations_view')

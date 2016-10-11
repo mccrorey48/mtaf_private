@@ -11,7 +11,7 @@ cfg.set_site(args.dir_name, args.site_tag)
 
 from lib.softphone.softphone import get_softphone
 from time import sleep
-import lib.common.logging_esi as logging_esi
+import lib.logging_esi as logging_esi
 from ePhone7.utils.configure import cfg
 
 log = logging_esi.get_logger('esi.softphone_test')

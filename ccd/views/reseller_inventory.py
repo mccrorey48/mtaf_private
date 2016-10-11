@@ -1,5 +1,5 @@
-import lib.common.logging_esi as logging
-from lib.common.wrappers import Trace
+import lib.logging_esi as logging
+
 from ccd.views.reseller import ResellerView
 
 log = logging.get_logger('esi.reseller_inventory_view')

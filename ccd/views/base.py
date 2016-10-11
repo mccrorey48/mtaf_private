@@ -1,21 +1,32 @@
-import lib.common.logging_esi as logging
+import lib.logging_esi as logging
+from lib.wrappers import Trace
+from selenium.webdriver import Chrome, Firefox
+from selenium.webdriver.common.keys import Keys
+
 from ccd.utils.configure import cfg
-from lib.browser.actions import Actions
-from lib.common.wrappers import Trace
+from lib.selenium_actions import SeleniumActions
+from lib.user_exception import UserException as Ux, UserFailException as Fx
 
 log = logging.get_logger('esi.base_view')
 
 
-class BaseView(Actions):
+class BaseView(SeleniumActions):
+
+    locators = {
+        "TestDomainMessage": {"by": "id", "value": "domain-message"}
+    }
 
     def __init__(self):
         self.cfg = cfg
         self.page_title = 'Page title not initialized'
+        self.failureException = Fx
+        self.keys = Keys
+        self.current_browser = None
+        self.log_file = None
         super(BaseView, self).__init__()
 
     def get_portal_url(self):
         self.get_url(cfg.site['PortalUrl'])
-
 
     @Trace(log)
     def wait_for_page_title(self):
@@ -25,4 +36,43 @@ class BaseView(Actions):
     def test_domain_message_is_displayed(self):
         self.find_element_by_key("TestDomainMessage")
 
+    @staticmethod
+    def get_url(url):
+        if SeleniumActions.driver is None:
+            raise Ux('remote is not open')
+        log.debug('getting url %s' % url)
+        SeleniumActions.driver.get(url)
+
+    def filter_dropdown_and_click_result_by_link_text(self, input_key, filter_text, link_text):
+        input_elem = self.find_element_by_key(input_key)
+        input_elem.send_keys(filter_text)
+        link_elem = self.find_element_with_timeout("partial link text", link_text, parent=input_elem.parent)
+        link_elem.click()
+
+    @staticmethod
+    def send_key_to_element(elem, key):
+        elem.send_keys(key)
+
+    def open_browser(self, browser='chrome'):
+        if self.current_browser is not None:
+            log.debug('browser is already open')
+        else:
+            if browser.lower() == 'chrome':
+                SeleniumActions.driver = Chrome()
+            elif browser.lower() == 'firefox':
+                self.log_file = open('/home/mmccrorey/firefox.log', 'w')
+                SeleniumActions.driver = Firefox()
+            else:
+                raise Ux ('Unknown browser %s' % browser)
+            self.current_browser = browser
+
+    def close_browser(self):
+        if self.current_browser is None:
+            log.debug('browser is already closed')
+        else:
+            SeleniumActions.driver.quit()
+            SeleniumActions.driver = None
+            self.current_browser = None
+            if self.log_file is not None:
+                self.log_file.close()
 base_view = BaseView()

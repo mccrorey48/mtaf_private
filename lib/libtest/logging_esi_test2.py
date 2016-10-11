@@ -1,4 +1,4 @@
-import lib.common.logging_esi as logging
+import lib.logging_esi as logging
 
 
 def logit():

@@ -1,11 +1,13 @@
 import unittest
 from time import time, sleep
+
+import lib.logging_esi as logging
+from lib.wrappers import Trace
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import lib.common.logging_esi as logging
-from lib.common.user_exception import UserException as Ux
-from lib.common.wrappers import Trace
+from selenium.webdriver.support.ui import WebDriverWait
+
+from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.selenium_actions')
 
@@ -23,7 +25,15 @@ class SeleniumActions(Tc):
 
     def __init__(self):
         Tc.__init__(self)
-        self.By = None
+
+    def get_locator(self, name):
+        cls = self.__class__
+        while True:
+            if not hasattr(cls, 'locators'):
+                return None
+            if name in cls.locators:
+                return cls.locators[name]
+            cls = cls.__base__
 
     @Trace(log)
     def assert_element_text(self, elem, expected, elem_name='element'):
@@ -64,7 +74,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def click_element_by_key(self, key, seconds=60):
-        locator = self.cfg.get_locator(key, self)
+        locator = self.get_locator(key)
         msg = ''
         start_time = time()
         while time() < start_time + seconds:
@@ -133,7 +143,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_element_by_key(self, key, timeout=30):
-        locator = self.cfg.get_locator(key, self)
+        locator = self.get_locator(key)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -144,7 +154,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_sub_element_by_key(self, parent, key, timeout=20):
-        locator = self.cfg.get_locator(key, self)
+        locator = self.get_locator(key)
         try:
             return self.find_sub_element_by_locator(parent, locator, timeout)
         except WebDriverException as e:
@@ -152,7 +162,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_elements_by_key(self, key, filter_fn=None):
-        locator = self.cfg.get_locator(key, self)
+        locator = self.get_locator(key)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -205,8 +215,6 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_element_with_timeout(self, method, value, parent=None, timeout=10):
-        # if not method.upper() in self.By.__dict__:
-        #     raise Ux("Unknown finder method %s" % method)
         start_time = time()
         while time() - start_time < timeout:
             if parent:

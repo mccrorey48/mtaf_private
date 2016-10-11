@@ -1,11 +1,11 @@
 # from time import sleep
 # from svauto.user_exception import UserException as Ux
 import argparse
-from lib.softphone.softphone import get_softphone
-import lib.common.logging_esi as logging_esi
 from time import sleep
 
+import lib.logging_esi as logging_esi
 from ePhone7.utils.configure import cfg
+from lib.softphone.softphone import get_softphone
 
 parser = argparse.ArgumentParser()
 parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="specify site tag")
@@ -14,7 +14,6 @@ cfg.set_site(args.site_tag)
 
 from ePhone7.views.prefs import prefs_view
 from ePhone7.views.user import user_view
-from lib.android.remote import remote
 
 
 def make_softphone_call():
@@ -42,7 +41,7 @@ def make_softphone_call_and_answer():
         # sleep(5)
         softphone.teardown_call()
 
-remote.update_remote('main')
+user_view.update_remote('main')
 # user_view.wait_for_view()
 user_view.goto_prefs()
 prefs_view.exit_prefs()

@@ -2,7 +2,8 @@ import argparse
 import time
 
 import lib.common.logging_esi as logging_esi
-from lib.common.esi_result import EsiResult
+
+from lib.esi_result import EsiResult
 
 log = logging_esi.get_logger('esi.run_tests')
 

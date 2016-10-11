@@ -1,14 +1,20 @@
-import lib.common.logging_esi as logging
-from lib.common.wrappers import Trace
-from ccd.views.reseller import ResellerView
+import lib.logging_esi as logging
+from lib.wrappers import Trace
+
 from ccd.utils.configure import cfg
-from lib.common.user_exception import UserException as Ux
-from time import sleep
+from ccd.views.reseller import ResellerView
+from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.reseller_domains_view')
 
 
 class ResellerDomainsView(ResellerView):
+
+    locators = {
+        "DomainFilter": {"by": "id", "value": "domains"},
+        "DomainName": {"by": "xpath", "value": "//tbody/tr/td[1]/a"},
+        "DomainNames": {"by": "xpath", "value": "//tbody/tr/td/a"}
+    }
 
     def __init__(self):
         super(ResellerDomainsView, self).__init__()

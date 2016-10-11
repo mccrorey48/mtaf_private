@@ -8,5 +8,9 @@ def before_all(context):
     base_view.open_browser()
 
 
+def after_scenario(context, scenario):
+    pass
+
+# @capture
 def after_all(context):
     base_view.close_browser()

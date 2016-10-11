@@ -1,19 +1,17 @@
-import lib.common.logging_esi as logging_esi
+import lib.logging_esi as logging_esi
 logging_esi.console_handler.setLevel(logging_esi.INFO)
 log = logging_esi.get_logger('esi.smoke')
 with logging_esi.msg_src_cm('importing modules'):
     import unittest
-    from lib.android.actions import Actions
     from ePhone7.utils.configure import cfg
     from ePhone7.views import *
-    from lib.common.wrappers import TestCase
+    from lib.wrappers import TestCase
 
-debug = False
-no_favorites = True
+debug = True
 
 
 def except_screenshot(type, value, traceback):
-    Actions.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
+    base_view.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
 
 
 class SmokeTests(unittest.TestCase):
@@ -121,7 +119,7 @@ class SmokeTests(unittest.TestCase):
         list_element = contacts_view.get_contact_list_element(contact_number)
         contacts_view.call_contact_from_list_element(list_element)
 
-    @unittest.skipIf(debug or no_favorites, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_130_clear_favorites_list(self):
         # user_view.wait_for_view()
@@ -129,7 +127,7 @@ class SmokeTests(unittest.TestCase):
         contacts_view.goto_tab('Favorites')
         contacts_view.clear_favorites()
 
-    @unittest.skipIf(debug or no_favorites, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_140_add_favorites(self):
         # user_view.wait_for_view()
@@ -137,7 +135,7 @@ class SmokeTests(unittest.TestCase):
         contacts_view.goto_tab('Coworkers')
         contacts_view.add_favorites_from_coworkers()
 
-    @unittest.skipIf(debug or no_favorites, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_150_call_from_favorites(self):
         # user_view.wait_for_view()

@@ -1,8 +1,9 @@
+import inspect
 import json
 import os
-import inspect
-from lib.common.user_exception import UserException as Ux
-from lib.android.zpath import expand_zpath
+
+from lib.android import expand_zpath
+from lib.user_exception import UserException as Ux
 
 
 def stringify(thing):

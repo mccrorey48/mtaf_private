@@ -1,5 +1,6 @@
-import lib.android.zpath as zpath
 import re
+
+from lib.android import get_abbrev
 
 # read in the update_r2d2_orig.py script and print to stdout with xpaths converted to zpath,
 # for reference in helping construct a script that uses the r2d2 test framework helpers;
@@ -18,7 +19,7 @@ with open('update_r2d2_orig.py') as f:
             for el in els:
                 ms = re_suffix.match(el)
                 if ms:
-                    zp_els.append(zpath.get_abbrev(ms.group(1)) + ms.group(2))
+                    zp_els.append(get_abbrev(ms.group(1)) + ms.group(2))
             print mq.group(1) + '/'.join(zp_els) + mq.group(3)
         else:
             print line,

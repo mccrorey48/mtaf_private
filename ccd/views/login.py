@@ -1,12 +1,20 @@
-import lib.common.logging_esi as logging
+import lib.logging_esi as logging
+
 from ccd.utils.configure import cfg
-from lib.common.wrappers import Trace
 from ccd.views.base import BaseView
+from lib.wrappers import Trace
 
 log = logging.get_logger('esi.login_view')
 
 
 class LoginView(BaseView):
+
+    locators = {
+        "LoginButton": {"by": "xpath", "value": "//input[@value='Log In']"},
+        "Password": {"by": "id", "value": "LoginPassword"},
+        "PasswordAlert": {"by": "css selector", "value": ".alert"},
+        "UserName": {"by": "id", "value": "LoginUsername"}
+    }
 
     def __init__(self):
         super(LoginView, self).__init__()

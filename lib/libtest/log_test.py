@@ -1,4 +1,4 @@
-import lib.common.logging_esi as logging
+import lib.logging_esi as logging
 log1 = logging.get_logger('esi.log1')
 log2 = logging.get_logger('esi.log2')
 log1.info("goodbye")

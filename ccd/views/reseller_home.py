@@ -1,12 +1,17 @@
-import lib.common.logging_esi as logging
-from lib.common.wrappers import Trace
-from ccd.views.reseller import ResellerView
+import lib.logging_esi as logging
+
 from ccd.utils.configure import cfg
+from ccd.views.reseller import ResellerView
+from lib.wrappers import Trace
 
 log = logging.get_logger('esi.reseller_home_view')
 
 
 class ResellerHomeView(ResellerView):
+
+    locators = {
+        "DomainQuickLaunch": {"by": "id", "value": "domains"}
+    }
 
     def __init__(self):
         super(ResellerHomeView, self).__init__()

@@ -1,6 +1,8 @@
-from lib.common.wrappers import Trace
-import lib.common.logging_esi as logging
+import lib.logging_esi as logging
+
 from ePhone7.views.base import BaseView
+from lib.wrappers import Trace
+
 log = logging.get_logger('esi.app_storage_view')
 
 

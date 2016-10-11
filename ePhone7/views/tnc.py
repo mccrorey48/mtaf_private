@@ -1,7 +1,7 @@
-import lib.common.logging_esi as logging
-from lib.android.remote import remote
-from lib.common.wrappers import Trace
+import lib.logging_esi as logging
+
 from ePhone7.views.base import BaseView
+from lib.wrappers import Trace
 
 log = logging.get_logger('esi.tnc_view')
 
@@ -13,13 +13,13 @@ class TncView(BaseView):
 
     @Trace(log)
     def not_tnc_activity(self):
-        return remote.driver.current_activity != '.settings.ui.TernsAndConditionsScreen'
+        return self.current_activity != '.settings.ui.TernsAndConditionsScreen'
 
     @Trace(log)
     def accept_tnc(self):
         self.click_element_by_key('Accept')
         self.click_element_by_key('Continue')
-        testfn = lambda: remote.driver.current_activity != '.settings.ui.TernsAndConditionsScreen'
+        testfn = lambda: self.current_activity != '.settings.ui.TernsAndConditionsScreen'
         failmsg_fn = lambda: 'activity is still .settings.ui.TermsAndConditionsScreen'
         self.wait_for_condition_true(testfn, failmsg_fn)
 
