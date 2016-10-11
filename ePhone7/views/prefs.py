@@ -17,6 +17,32 @@ list_items = {
 
 
 class PrefsView(BaseView):
+    locators = {
+        "About": {"by": "zpath", "value": "//el/ll[4]/tv"},
+        "AboutOk": {"by": "id", "value": "android:id/button1"},
+        "AboutEphone7": {"by": "zpath", "value": "//lv/ll[13]/tv", "text": "About ePhone7"},
+        "AppVersion": {"by": "id", "value": "com.esi_estech.ditto:id/app_version"},
+        "AutoAnswerSwitch": {"by": "id", "value": "com.esi_estech.ditto:id/settings_list_auto_answer_switch"},
+        "CallForwardingOptions": {"by": "zpath", "value": "//el/ll[3]/tv", "text": "Call Forwarding Options"},
+        "Close": {"by": "id", "value": "com.esi_estech.ditto:id/close_button"},
+        "DisplayBrightness": {"by": "zpath", "value": "//lv/ll[8]/tv", "text": "Display Brightness"},
+        "DisplaySleepTimer": {"by": "zpath", "value": "//lv/ll[9]/tv", "text": "Display Sleep Timer"},
+        "eHelp": {"by": "zpath", "value": "//lv/ll[4]/tv", "text": "eHelp"},
+        "ListItemTitle": {"by": "id", "value": "com.esi_estech.ditto:id/settings_list_item_title"},
+        "LogoutAccount": {"by": "zpath", "value": "//lv/ll[12]/tv", "text": "Logout Account"},
+        "LogoutCancel": {"by": "id", "value": "com.esi_estech.ditto:id/cancel_button"},
+        "LogoutConfirm": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
+        "MenuCategories": {"by": "id", "value": "com.esi_estech.ditto:id/settings_header_label"},
+        "MenuItems": {"by": "xpath", "value": "//el/ll"},
+        "NeedHelp": {"by": "zpath", "value": "//el/rl[1]/tv[1]", "text": "Need Help?"},
+        "Personal": {"by": "zpath", "value": "//el/rl[2]/tv[1]", "text": "Personal"},
+        "Phone": {"by": "zpath", "value": "//el/rl[3]/tv[1]", "text": "Phone"},
+        "PhoneUpdates": {"by": "zpath", "value": "//lv/ll[10]/tv", "text": "Phone Updates"},
+        "Ringtones": {"by": "zpath", "value": "//lv/ll[7]/tv", "text": "Ringtones"},
+        "SignInWithGoogle": {"by": "zpath", "value": "//lv/ll[2]/tv", "text": "Sign in with Google"},
+        "System": {"by": "zpath", "value": "//el/rl[4]/tv[1]", "text": "System"},
+        "VolumeSettings": {"by": "zpath", "value": "//lv/ll[6]/tv", "text": "Volume Settings"}
+    }
 
     def __init__(self):
         super(PrefsView, self).__init__()

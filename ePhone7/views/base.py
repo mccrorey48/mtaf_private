@@ -6,6 +6,7 @@ from PIL import Image
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
 from lib.wrappers import Trace
+from lib.android import expand_zpath
 
 from ePhone7.utils.configure import cfg
 from lib.android import MockDriver
@@ -26,6 +27,14 @@ class BaseView(SeleniumActions):
         super(BaseView, self).__init__()
         self.cfg = cfg
         self.By = MobileBy
+
+    def get_locator(self, name):
+        locator = SeleniumActions.get_locator(self, name)
+        if locator is not None and locator["by"] == "zpath":
+            locator["by"] = "xpath"
+            locator["value"] = expand_zpath(locator["value"])
+        return locator
+
 
     @Trace(log)
     def send_keycode(self, keycode):

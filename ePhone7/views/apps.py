@@ -11,6 +11,15 @@ log = logging.get_logger('esi.apps_view')
 
 class AppsView(BaseView):
 
+    locators = {
+        "AllVisible": {"by": "zpath", "value": "//gl/tv[1]"},
+        "AppsExit": {"by": "zpath", "value": "//v/ll/fl/iv[2]"},
+        "ContactsStorage": {"by": "zpath", "value": "//tv[contains(@text,'Contacts Storage')]"},
+        "ePhone": {"by": "zpath", "value": "//tv[contains(@text,'ePhone')]"},
+        "Tab": {"by": "zpath", "value": "//vp/v/tv"},
+        "TabBar": {"by": "id", "value": "tabs"}
+    }
+
     def __init__(self):
         super(AppsView, self).__init__()
 

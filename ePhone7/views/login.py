@@ -9,6 +9,12 @@ log = logging.get_logger('esi.login_view')
 
 class LoginView(BaseView):
 
+    locators = {
+        "Login": {"by": "id", "value": "com.esi_estech.ditto:id/login_button"},
+        "Password": {"by": "id", "value": "com.esi_estech.ditto:id/login_password"},
+        "Username": {"by": "id", "value": "com.esi_estech.ditto:id/login_username"}
+    }
+
     @Trace(log)
     def __init__(self):
         super(LoginView, self).__init__()

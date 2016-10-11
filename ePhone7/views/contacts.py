@@ -13,6 +13,23 @@ log = logging.get_logger('esi.contacts_view')
 
 class ContactsView(UserView):
 
+    locators = {
+        "Coworkers": {"by": "id", "value": "com.esi_estech.ditto:id/ephone_contacts", "text": "Coworkers"},
+        "ContactCallIcon": {"by": "id", "value": "com.esi_estech.ditto:id/call_button"},
+        "ContactClose": {"by": "id", "value": "com.esi_estech.ditto:id/bottom_sheet_title_clear_button"},
+        "ContactName": {"by": "id", "value": "android:id/text1"},
+        "ContactNumber": {"by": "id", "value": "android:id/text2"},
+        "ContactNameSubElement": {"parent": "ContactParent", "by": "id", "value": "android:id/text1"},
+        "ContactParent": {"by": "id", "value": "com.esi_estech.ditto:id/contact_list_item_layout"},
+        "Favorites": {"by": "id", "value": "com.esi_estech.ditto:id/favorites", "text": "Favorites"},
+        "FavoriteIndicator": {"by": "id", "value": "com.esi_estech.ditto:id/favorite_indicator"},
+        "FirstContactName": {"by": "zpath", "value": "//rv/fl[1]/rl/ll/tv"},
+        "Groups": {"by": "id", "value": "com.esi_estech.ditto:id/contact_groups", "text": "Groups"},
+        "Personal": {"by": "id", "value": "com.esi_estech.ditto:id/all_contacts", "text": "Personal"},
+        "ScrollHandle": {"by": "id", "value": "com.esi_estech.ditto:id/scroll_handle"},
+        "Tab": {"by": "zpath", "value": "//th/rl/fl/ll/ll"}
+    }
+
     def __init__(self):
         super(ContactsView, self).__init__()
         self.tab_names = ('Personal', 'Coworkers', 'Favorites', 'Groups')

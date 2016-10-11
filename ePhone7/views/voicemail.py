@@ -12,6 +12,29 @@ import re
 
 
 class VoicemailView(UserView):
+    locators = {
+        "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
+        "Contacts": {"by": "zpath", "value": "//tw/rl[1]/ll/tv", "text": "Contacts"},
+        "DndButton": {"by": "accessibility id", "value": "Do not Disturb"},
+        "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endButtonImage"},
+        "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
+        "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
+        "Keypad": {"by": "id", "parent": "com.esi_estech.ditto:id/keypad_tab", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
+        "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
+        "IncomingCallIgnore": {"by": "id", "value": "com.esi_estech.ditto:id/ignore_button"},
+        "IncomingCallAnswerToSpeaker": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_speaker_button"},
+        "IncomingCallLabel": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_label"},
+        "IncomingCallCallerImage": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_image"},
+        "IncomingCallCallerName": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_name"},
+        "IncomingCallCallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_number"},
+        "PrefsButton": {"by": "id", "value": "com.esi_estech.ditto:id/settings_button"},
+        "PrefsButtonz": {"by": "zpath", "value": "//rl[2]/bt[5]"},
+        "SettingsButton": {"by": "zpath", "value": "//sv/fl/fl[3]"},
+        "SettingsButtonText": {"by": "zpath", "value": "//sv/fl/fl[3]/ll/tv"},
+        "UserHeaderName": {"by": "id", "value": "com.esi_estech.ditto:id/user_header_name"},
+        "UserProximityStatus": {"by": "id", "value": "com.esi_estech.ditto:id/user_proximity_status"},
+        "Voicemail": {"by": "zpath", "value": "//tw/rl[3]/ll/tv", "text": "Voicemail"}
+    }
 
     def __init__(self):
         super(VoicemailView, self).__init__()

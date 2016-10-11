@@ -1,7 +1,7 @@
 import argparse
 import time
 
-import lib.common.logging_esi as logging_esi
+import lib.logging_esi as logging_esi
 
 from lib.esi_result import EsiResult
 
