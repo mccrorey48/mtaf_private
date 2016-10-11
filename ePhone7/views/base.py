@@ -1,16 +1,17 @@
 import lib.common.logging_esi as logging_esi
 from ePhone7.utils.configure import cfg
 from lib.android.actions import Actions
-from lib.common.wrappers import Trace
 
 log = logging_esi.get_logger('esi.user_view')
 
 
-class BaseView(object):
+class BaseView(Actions):
 
-    @Trace(log)
     def __init__(self):
+        super(BaseView, self).__init__()
         self.cfg = cfg
-        self.actions = Actions(self)
+
+    def __str__(self):
+        return self.__class__().__name__
 
 base_view = BaseView()

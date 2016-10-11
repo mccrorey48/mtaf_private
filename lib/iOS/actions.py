@@ -220,9 +220,10 @@ class Actions(Tc):
         log.debug("saving %s" % fullpath)
         remote.driver.get_screenshot_as_file(fullpath)
 
-    def color_match(self, c1, c2, tolerance = 5):
+    @staticmethod
+    def color_match(c1, c2, tolerance=5):
         for i in range(3):
-            if c2[i]  > c1[i] + tolerance or c2[i] < c1[i] - tolerance:
+            if c2[i] > c1[i] + tolerance or c2[i] < c1[i] - tolerance:
                 return False
         return True
 
@@ -282,86 +283,3 @@ class Actions(Tc):
         current_color = list(sorted(colors, reverse=True, key=lambda x: x[0])[1][1])[:-1]
         return current_color
 
-    # def get_element_maxcolor(self, pix, elem_name):
-    #     locator = self.get_locator(elem_name)
-    #     color_name_list = self.get_colors(view_chain)
-    #     elem = self.find_element_by_locator(locator)
-    #     px_min = elem.location['y']
-    #     px_max = px_min + elem.size['height'] + 1
-    #     py_min = 599 - (elem.location['x'] + elem.size['width']) + 1
-    #     py_max = 599 - elem.location['x']
-    #     hist = {}
-    #     yhist = {}
-    #     for py in range(py_min, py_max):
-    #         yhist[px] = {}
-    #         for px in range(px_min, px_min + 10):
-    #             key = pix[px, py]
-    #             ykey = '%02X%02X%02X' % key[:3]
-    #             if key in hist:
-    #                 hist[key] += 1
-    #             else:
-    #                 hist[key] = 1
-    #             if ykey in yhist[px]:
-    #                 yhist[px][ykey] += 1
-    #             else:
-    #                 yhist[px][ykey] = 1
-    #         log.debug("%s: yhist[%s] = %s" % (elem_name, px, repr(yhist[px])))
-    #     maxval = 0
-    #     maxkey = ''
-    #     for key in hist:
-    #         if hist[key] > maxval:
-    #             maxval = hist[key]
-    #             maxkey = key
-    #     for color_name in color_name_list:
-    #         if tuple(color_name_list[color_name]) == maxkey:
-    #             return color_name
-    #     raise Ux('key "%s" not in %s elem_name="%s" view_chain=%s' %
-    #              (repr(maxkey), repr(color_name_list), elem_name, repr(view_chain)))
-
-    @staticmethod
-    @Trace(log)
-    def pixel_from_xml_xy(pix, x, y):
-        try:
-            # print "(%d,%d) => [%d, %d]" % (x, y, y, 599-x)
-            return [int(val) for val in pix[y, 599 - x]]
-        except Exception as e:
-            raise Ux("pixel_from_xml_xy(pix, %d, %d), pix[%d, %d] %s" % (x, y, y, 599 - x, e.message))
-
-    @Trace(log)
-    def get_pixel_histograms(self, pix, min_x, min_y, lim_x, lim_y):
-        # translate screen layout (xml) x and y to pix (png file) x and y
-        hists = {}
-        pixels_per_color = {}
-        for y in range(min_y, lim_y):
-            yhist = {}
-            for x in range(min_x, lim_x):
-                pixel = self.pixel_from_xml_xy(pix, x, y)
-                color = '%02X%02X%02X' % (pixel[0], pixel[1], pixel[2])
-                if color in pixels_per_color:
-                    pixels_per_color[color] += 1
-                else:
-                    pixels_per_color[color] = 1
-                if color in yhist:
-                    yhist[color] += 1
-                else:
-                    yhist[color] = 1
-            hists[y] = yhist
-        for key in pixels_per_color.keys():
-            if pixels_per_color[key] < 10:
-                del pixels_per_color[key]
-        return hists
-
-    @Trace(log)
-    def assert_element_maxcolor(self, pix, elem_name, color_name, should_be_true):
-        pass
-    #     maxcolor = self.get_element_maxcolor(pix, elem_name)
-    #     log.debug('verifying element %s has background color "%s"' % (elem_name, color_name))
-    #     if should_be_true:
-    #         self.assertEqual(maxcolor, color_name, 'maxcolor "%s" is not "%s"' % (maxcolor, color_name))
-    #     else:
-    #         self.assertNotEqual(maxcolor, color_name, 'maxcolor "%s" should not be "%s"' % (maxcolor, color_name))
-
-    # def assert_contact_names_ok(self, names, contacts_group):
-    #     self.assertListEqual(names, cfg.site['Accounts']['R2d2User'][contacts_group],
-    #                          'contact names %s not equal to group "%s" names %s' %
-    #                          (repr(names), contacts_group, repr(cfg.site['Accounts']['R2d2User'][contacts_group])))

@@ -25,11 +25,11 @@ class LoginView(BaseView):
     def login(self):
         acct_cfg = cfg.site['Accounts']['R2d2User']
         login_id = '%s@%s' % (acct_cfg['UserId'], acct_cfg['DomainName'])
-        self.actions.find_element_by_key('Username').set_text(login_id)
-        self.actions.find_element_by_key('Password').set_text(passwd)
-        self.actions.click_element_by_key('Login')
+        self.find_element_by_key('Username').set_text(login_id)
+        self.find_element_by_key('Password').set_text(passwd)
+        self.click_element_by_key('Login')
         failmsg = 'current activity is not .activities.MainViewActivity'
         testfn = lambda: remote.current_activity == '.activities.MainViewActivity'
-        self.actions.wait_for_condition_true(testfn, failmsg)
+        self.wait_for_condition_true(testfn, failmsg)
 
 login_view = LoginView()

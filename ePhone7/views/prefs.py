@@ -15,18 +15,17 @@ list_items = {
 
 class PrefsView(BaseView):
 
-    @Trace(log)
     def __init__(self):
         super(PrefsView, self).__init__()
 
     def hide_list_items(self):
-        titles_shown = [el.text for el in self.actions.find_elements_by_key('ListItemTitle')]
+        titles_shown = [el.text for el in self.find_elements_by_key('ListItemTitle')]
         if len(titles_shown) == 0:
             return
         for header in list_items.keys():
             if list_items[header][0] in titles_shown:
-                self.actions.click_element_by_key(header)
-            titles_shown = [el.text for el in self.actions.find_elements_by_key('ListItemTitle')]
+                self.click_element_by_key(header)
+            titles_shown = [el.text for el in self.find_elements_by_key('ListItemTitle')]
             if len(titles_shown) == 0:
                 return
             if list_items[header][0] in titles_shown:
@@ -41,42 +40,42 @@ class PrefsView(BaseView):
     @Trace(log)
     def set_auto_answer(self, on=True):
         self.hide_list_items()
-        self.actions.click_element_by_key('Phone')
-        elem = self.actions.find_element_by_key('AutoAnswerSwitch')
+        self.click_element_by_key('Phone')
+        elem = self.find_element_by_key('AutoAnswerSwitch')
         y = elem.location['y'] + (elem.size['height'] / 2)
         left = elem.location['x']
         right = elem.location['x'] + (elem.size['width'] / 2)
         if on:
-            self.actions.swipe(left, y, right, y, 1000)
+            self.swipe(left, y, right, y, 1000)
         else:
-            self.actions.swipe(right, y, left, y, 1000)
-        self.actions.click_element_by_key('Phone')
+            self.swipe(right, y, left, y, 1000)
+        self.click_element_by_key('Phone')
 
     @Trace(log)
     def logout(self):
-        self.actions.click_element_by_key('LogoutAccount')
+        self.click_element_by_key('LogoutAccount')
 
     @Trace(log)
     def logout_cancel(self):
-        self.actions.click_element_by_key('LogoutCancel')
+        self.click_element_by_key('LogoutCancel')
 
     @Trace(log)
     def logout_confirm(self):
-        self.actions.click_element_by_key('LogoutConfirm')
+        self.click_element_by_key('LogoutConfirm')
 
     @Trace(log)
     def exit_prefs(self):
-        self.actions.click_element_by_key('Close')
+        self.click_element_by_key('Close')
 
     @Trace(log)
     def get_app_version(self):
         self.hide_list_items()
-        self.actions.click_element_by_key('System')
-        self.actions.click_element_by_key('About')
-        about_popup = self.actions.find_element_by_key('AppVersion')
+        self.click_element_by_key('System')
+        self.click_element_by_key('About')
+        about_popup = self.find_element_by_key('AppVersion')
         source = about_popup.text
-        self.actions.click_element_by_key('AboutOk')
-        self.actions.click_element_by_key('System')
+        self.click_element_by_key('AboutOk')
+        self.click_element_by_key('System')
         m = re.match('App Version : (\S*)', source.encode('utf8'))
         if m is None:
             return "Unknown Version"
@@ -86,7 +85,7 @@ class PrefsView(BaseView):
 
     @Trace(log)
     def verify_view(self):
-        return len(self.actions.find_elements_by_key('MenuCategories')) > 0
+        return len(self.find_elements_by_key('MenuCategories')) > 0
 
 
 prefs_view = PrefsView()

@@ -11,7 +11,6 @@ log = logging.get_logger('esi.contacts_view')
 
 class ContactsView(UserView):
 
-    @Trace(log)
     def __init__(self):
         super(ContactsView, self).__init__()
         self.tab_names = ('Personal', 'Coworkers', 'Favorites', 'Groups')
@@ -22,25 +21,25 @@ class ContactsView(UserView):
     @Trace(log)
     def call_contact_from_list_element(self, list_element):
         softphone = get_softphone()
-        icon = self.actions.find_sub_element_by_key(list_element, 'ContactCallIcon')
+        icon = self.find_sub_element_by_key(list_element, 'ContactCallIcon')
         # wait for handset picture to turn green
         timeout = 20
         start_time = time()
         current_time = start_time
         desired_color = cfg.colors['ContactsView']['handset_online_color'][:-1]
         while current_time - start_time < timeout:
-            self.actions.get_screenshot_as_png('call_from_contacts', cfg.test_screenshot_folder)
-            current_color = self.actions.get_element_color('call_from_contacts', icon)
+            self.get_screenshot_as_png('call_from_contacts', cfg.test_screenshot_folder)
+            current_color = self.get_element_color('call_from_contacts', icon)
             if current_color == desired_color:
                 break
             current_time = time()
         else:
             log.warn('handset icon color is not green (%s) within %s seconds, current color is %s' %
                          (desired_color, timeout, current_color))
-        self.actions.click_element(icon)
+        self.click_element(icon)
         softphone.wait_for_call_status('start', 20)
         sleep(10)
-        self.actions.click_element_by_key('EndActiveCall')
+        self.click_element_by_key('EndActiveCall')
         softphone.wait_for_call_status('end', 20)
 
     @Trace(log)
@@ -49,7 +48,7 @@ class ContactsView(UserView):
         # of some elements and with others missing, although the list length is correct):
         # this doesn't seem to happen if you wait long enough before getting the elements, so repeat
         # until each element returned from find_elements_by_key has unique text
-        self.displayed_elems = self.actions.find_elements_by_key('ContactNumber')
+        self.displayed_elems = self.find_elements_by_key('ContactNumber')
         self.displayed_numbers = [elem.text for elem in self.displayed_elems]
         unique_numbers = []
         for number in self.displayed_numbers:
@@ -61,7 +60,7 @@ class ContactsView(UserView):
     @Trace(log)
     def wait_for_no_duplicate_numbers(self):
         failmsg_fmt = 'contact number list %s not unique'
-        self.actions.wait_for_condition_true(self.no_duplicate_numbers,
+        self.wait_for_condition_true(self.no_duplicate_numbers,
                                              lambda: failmsg_fmt % repr(self.displayed_numbers), timeout=30)
 
     @Trace(log)
@@ -88,9 +87,9 @@ class ContactsView(UserView):
             self.swipe_up()
 
         # get the parent elements from the screen and find the one that contains contact_number
-        parents = self.actions.find_elements_by_key('ContactParent')
+        parents = self.find_elements_by_key('ContactParent')
         for parent in parents:
-            number = self.actions.find_sub_element_by_key(parent, 'ContactNumber').text
+            number = self.find_sub_element_by_key(parent, 'ContactNumber').text
             log.debug('<%s> subelement ContactNumber text = %s' % (parent.id, number))
             if number == contact_number:
                 break
@@ -106,9 +105,9 @@ class ContactsView(UserView):
         # repeat getting the parent elements and finding the one with the right subelement
         # now that we're pretty sure it's near the center of the screen
         self.wait_for_no_duplicate_numbers()
-        parents = self.actions.find_elements_by_key('ContactParent')
+        parents = self.find_elements_by_key('ContactParent')
         for parent in parents:
-            number = self.actions.find_sub_element_by_key(parent, 'ContactNumber').text
+            number = self.find_sub_element_by_key(parent, 'ContactNumber').text
             log.debug('<%s> subelement ContactNumber text = %s' % (parent.id, number))
             if number == contact_number:
                 break
@@ -140,7 +139,7 @@ class ContactsView(UserView):
 
     @Trace(log)
     def scroll_to_top_of_list(self):
-        self.actions.tap(560, 210, duration=1000)
+        self.tap(560, 210, duration=1000)
         sleep(2)
 
     @Trace(log)
@@ -148,32 +147,32 @@ class ContactsView(UserView):
         self.scroll_to_top_of_list()
         contacts_group = cfg.site['Accounts']['R2d2User'][contacts_group_name]
         # wait for the contact list to appear
-        self.actions.find_element_by_key('FirstContactName', timeout=30)
+        self.find_element_by_key('FirstContactName', timeout=30)
         numbers = self.get_all_group_contacts(contacts_group)
-        self.actions.get_screenshot_as_png('contact_verify_numbers', cfg.test_screenshot_folder)
+        self.get_screenshot_as_png('contact_verify_numbers', cfg.test_screenshot_folder)
         err_msg = 'contact numbers %s not equal to group "%s"' % (repr(numbers), contacts_group)
-        self.actions.assertEqual(set(numbers), set(contacts_group), err_msg)
+        self.assertEqual(set(numbers), set(contacts_group), err_msg)
 
     @Trace(log)
     def clear_favorites(self):
         while True:
-            elems = self.actions.find_elements_by_key('ContactParent')
+            elems = self.find_elements_by_key('ContactParent')
             if len(elems) == 0:
                 break
-            self.actions.click_element(elems[0])
-            self.actions.click_element_by_key('FavoriteIndicator')
+            self.click_element(elems[0])
+            self.click_element_by_key('FavoriteIndicator')
             sleep(5)
 
     def contact_detail_view_visible(self):
         try:
-            self.actions.find_element_by_key('FavoriteIndicator', timeout=5)
+            self.find_element_by_key('FavoriteIndicator', timeout=5)
         except Ux:
             return False
         return True
 
     @Trace(log)
     def get_contact_detail_view(self):
-        self.actions.wait_for_condition_true(self.contact_detail_view_visible,
+        self.wait_for_condition_true(self.contact_detail_view_visible,
                                              lambda: 'no contact detail view')
 
     @Trace(log)
@@ -182,16 +181,16 @@ class ContactsView(UserView):
         # get each contact element containing a name in the new_favorites list
         # and if it is not already a favorite, toggle the favorites selector
         for number in new_favorites:
-            self.actions.click_element(self.get_contact_list_element(number))
+            self.click_element(self.get_contact_list_element(number))
             # desired_color = cfg.colors['ContactsView']['handset_online_color'][:-1]
             filebase = 'contact_%s' %  number
-            self.actions.get_screenshot_as_png(filebase, cfg.test_screenshot_folder)
-            icon = self.actions.find_element_by_key('FavoriteIndicator')
-            current_color = self.actions.get_element_color(filebase, icon)
+            self.get_screenshot_as_png(filebase, cfg.test_screenshot_folder)
+            icon = self.find_element_by_key('FavoriteIndicator')
+            current_color = self.get_element_color(filebase, icon)
             desired_color = cfg.colors['ContactsView']['favorite_on_color'][:-1]
             if current_color != desired_color:
-                self.actions.click_element(icon)
-            self.actions.click_element_by_key('ContactClose')
+                self.click_element(icon)
+            self.click_element_by_key('ContactClose')
 
 
 contacts_view = ContactsView()

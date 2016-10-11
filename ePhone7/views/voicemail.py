@@ -3,7 +3,6 @@ from time import sleep
 import lib.common.logging_esi as logging
 from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
-from lib.android.actions import Actions
 from lib.common.user_exception import UserException as Ux
 from lib.common.wrappers import Trace
 
@@ -13,7 +12,6 @@ import re
 
 class VoicemailView(UserView):
 
-    @Trace(log)
     def __init__(self):
         super(VoicemailView, self).__init__()
         self.tab_names = ('New', 'Saved', 'Trash')
@@ -40,17 +38,17 @@ class VoicemailView(UserView):
         from lib.softphone.softphone import get_softphone
         # expects the current display to be the detail screen for a voicemail from cfg.site['DefaultSoftphoneUser']
         softphone = get_softphone()
-        self.actions.click_element_by_key('VmCallButton')
+        self.click_element_by_key('VmCallButton')
         softphone.wait_for_call_status('start', 20)
         sleep(10)
-        self.actions.click_element_by_key('EndActiveCall')
+        self.click_element_by_key('EndActiveCall')
         softphone.wait_for_call_status('end', 20)
-        self.actions.click_element_by_key('VmDetailHeader')
+        self.click_element_by_key('VmDetailHeader')
 
     @Trace(log)
     def no_vm_activity(self):
         try:
-            self.actions.find_elements_by_key('VmParent')
+            self.find_elements_by_key('VmParent')
         except Ux as e:
             log.debug("no_vm_activity returning False, User Exception: %s" % e)
             return False
@@ -58,34 +56,34 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def save_voicemail_button(self):
-        self.actions.click_element_by_key('SaveButton')
+        self.click_element_by_key('SaveButton')
 
     @Trace(log)
     def delete_voicemail_button(self):
-        self.actions.click_element_by_key('DeleteButton')
+        self.click_element_by_key('DeleteButton')
 
     @Trace(log)
     def forward_voicemail_button(self):
-        self.actions.click_element_by_key('ForwardButton')
+        self.click_element_by_key('ForwardButton')
 
     @Trace(log)
     def swipe_get_vm_parents(self):
         self.swipe_down()
-        self.elems = self.actions.find_elements_by_key('VmParent')
+        self.elems = self.find_elements_by_key('VmParent')
         if len(self.elems) > 0:
             return True
         return False
 
     @Trace(log)
     def get_first_vm_parent(self):
-        self.actions.wait_for_condition_true(self.swipe_get_vm_parents,
+        self.wait_for_condition_true(self.swipe_get_vm_parents,
                                              lambda: 'no voicemails displayed', timeout=60)
         elem = self.elems[0]
         self.new_vals = {
-            'caller_name': self.actions.find_sub_element_by_key(elem, 'CallerName').text,
-            'vm_duration': self.actions.find_sub_element_by_key(elem, 'VmDuration').text,
-            'caller_number': self.actions.find_sub_element_by_key(elem, 'CallerNumber').text,
-            'called_time': self.actions.find_sub_element_by_key(elem, 'CalledTime').text
+            'caller_name': self.find_sub_element_by_key(elem, 'CallerName').text,
+            'vm_duration': self.find_sub_element_by_key(elem, 'VmDuration').text,
+            'caller_number': self.find_sub_element_by_key(elem, 'CallerNumber').text,
+            'called_time': self.find_sub_element_by_key(elem, 'CalledTime').text
         }
         log.debug("first vm caller_name = %s" % self.new_vals['caller_name'])
         log.debug("first vm vm_duration = %s" % self.new_vals['vm_duration'])
@@ -95,17 +93,17 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def first_vm_opened(self):
-        self.actions.click_element(self.get_first_vm_parent())
+        self.click_element(self.get_first_vm_parent())
         try:
-            self.actions.find_element_by_key('DeleteButton')
+            self.find_element_by_key('DeleteButton')
         except:
             return False
         return True
 
     @Trace(log)
     def open_first_vm(self):
-        self.actions.wait_for_condition_true(self.first_vm_opened, lambda: 'first vm not opened', timeout=30)
-        self.actions.click_element_by_key('PlaybackStartStop')
+        self.wait_for_condition_true(self.first_vm_opened, lambda: 'first vm not opened', timeout=30)
+        self.click_element_by_key('PlaybackStartStop')
 
 
 
@@ -140,25 +138,25 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def verify_first_vm(self):
-        self.actions.wait_for_condition_true(self.vm_match, lambda: 'first voicemail not a match', timeout=120)
+        self.wait_for_condition_true(self.vm_match, lambda: 'first voicemail not a match', timeout=120)
 
     @Trace(log)
     def clear_all_vm(self):
         while True:
-            elems = self.actions.find_elements_by_key('VmParent')
+            elems = self.find_elements_by_key('VmParent')
             if len(elems) == 0:
                 break
-            self.actions.click_element(elems[0])
+            self.click_element(elems[0])
             sleep(5)
-            self.actions.click_element_by_key('DeleteButton')
+            self.click_element_by_key('DeleteButton')
             self.swipe_down()
             sleep(5)
 
     @Trace(log)
     def forward_voicemail(self):
         for n in list('2203'):
-            self.actions.send_keycode("KEYCODE_%s" % n)
-        self.actions.click_element_by_key('OkForwardButton')
+            self.send_keycode("KEYCODE_%s" % n)
+        self.click_element_by_key('OkForwardButton')
 
 
 voicemail_view = VoicemailView()
