@@ -1,9 +1,8 @@
 import unittest
 from time import time, sleep
-
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import lib.common.logging_esi as logging
 from lib.common.user_exception import UserException as Ux
 from lib.common.wrappers import Trace
@@ -19,13 +18,12 @@ class Tc(unittest.TestCase):
 
 class SeleniumActions(Tc):
 
-    def __init__(self, remote, view=None):
+    cfg = None
+    driver = None
+
+    def __init__(self):
         Tc.__init__(self)
-        if view is not None:
-            self.view = view
-        if self.view is None:
-            raise Ux('Actions instantiation must include view parameter')
-        self.remote = remote
+        self.By = None
 
     @Trace(log)
     def assert_element_text(self, elem, expected, elem_name='element'):
@@ -58,11 +56,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def get_source(self):
-        return self.remote.driver.page_source
-
-    @Trace(log)
-    def quit(self):
-        self.remote.driver.quit()
+        return self.driver.page_source
 
     @Trace(log)
     def click_element(self, elem):
@@ -70,7 +64,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def click_element_by_key(self, key, seconds=60):
-        locator = self.view.cfg.get_locator(key, self.view)
+        locator = self.cfg.get_locator(key, self)
         msg = ''
         start_time = time()
         while time() < start_time + seconds:
@@ -104,16 +98,16 @@ class SeleniumActions(Tc):
     def find_elements_by_locator(self, locator):
         if locator['by'] == 'xpath':
             log.debug("xpath = " + locator['value'])
-            return self.remote.driver.find_elements_by_xpath(locator['value'])
+            return self.driver.find_elements_by_xpath(locator['value'])
         if locator['by'] == 'id':
             log.debug("id = " + locator['value'])
-            return self.remote.driver.find_elements_by_id(locator['value'])
+            return self.driver.find_elements_by_id(locator['value'])
         if locator['by'] == 'accessibility id':
             log.debug("accessibility id = " + locator['value'])
-            return self.remote.driver.find_elements_by_accessibility_id(locator['value'])
+            return self.driver.find_elements_by_accessibility_id(locator['value'])
         if locator['by'] == 'css selector':
             log.debug("css selector = " + locator['value'])
-            return self.remote.driver.find_elements_by_css_selector(locator['value'])
+            return self.driver.find_elements_by_css_selector(locator['value'])
 
     @Trace(log)
     def find_sub_element_by_locator(self, parent, locator, timeout=10):
@@ -139,7 +133,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_element_by_key(self, key, timeout=30):
-        locator = self.view.cfg.get_locator(key, self.view)
+        locator = self.cfg.get_locator(key, self)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -150,7 +144,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_sub_element_by_key(self, parent, key, timeout=20):
-        locator = self.view.cfg.get_locator(key, self.view)
+        locator = self.cfg.get_locator(key, self)
         try:
             return self.find_sub_element_by_locator(parent, locator, timeout)
         except WebDriverException as e:
@@ -158,7 +152,7 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_elements_by_key(self, key, filter_fn=None):
-        locator = self.view.cfg.get_locator(key, self.view)
+        locator = self.cfg.get_locator(key, self)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element_by_key(locator['parent_key'])
@@ -191,6 +185,10 @@ class SeleniumActions(Tc):
         raise Ux('actual element text = "%s", expected "%s" after %d seconds' %
                  (self.actual_text, expected_text, seconds))
 
+    @Trace(log)
+    def wait_for_title(self, title, timeout=20):
+        WebDriverWait(self.driver, timeout).until(EC.title_is(title))
+
     @staticmethod
     @Trace(log)
     def wait_for_condition_true(condition_fn, failmsg_fn, timeout=30, poll_time=1.0, warn_time=5.0):
@@ -207,14 +205,14 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_element_with_timeout(self, method, value, parent=None, timeout=10):
-        if not self.remote.By.is_valid(method):
-            raise Ux("Unknown finder method %s" % method)
+        # if not method.upper() in self.By.__dict__:
+        #     raise Ux("Unknown finder method %s" % method)
         start_time = time()
         while time() - start_time < timeout:
             if parent:
                 elems = parent.find_elements(method, value)
             else:
-                elems = self.remote.driver.find_elements(method, value)
+                elems = self.driver.find_elements(method, value)
             if len(elems) > 1:
                 raise Ux("Multiple elements match %s = %s, parent = %s" % (method, value, parent))
             if len(elems) == 1:
