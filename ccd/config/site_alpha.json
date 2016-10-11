@@ -2,7 +2,7 @@
     "Mock": false,
     "SeleniumUrl": "http://localhost:4444/wd/hub",
     "DefaultTimeout": 10,
-    "PortalUrl": "https://alpha.esihs.net/portal/",
+    "PortalUrl": "https://alpha.esihs.net/portal/login/logout",
     "Version": "v.1.2.5",
     "Build": "0",
     "Date": "August 29, 2016",
