@@ -35,11 +35,13 @@
                 "value": "nav-users"
             }
         },
-        "ResellerView": {
-            "DomainMessage": {
+        "BaseView": {
+            "TestDomainMessage": {
                 "by": "id",
                 "value": "domain-message"
-            },
+            }
+        },
+        "ResellerView": {
             "DomainsTab": {
                 "by": "id",
                 "value": "nav-domains"
@@ -65,6 +67,10 @@
             "DomainName": {
                 "by": "xpath",
                 "value": "//tbody/tr/td[1]/a"
+            },
+            "DomainNames": {
+                "by": "xpath",
+                "value": "//tbody/tr/td/a"
             }
         },
         "ResellerHomeView": {
