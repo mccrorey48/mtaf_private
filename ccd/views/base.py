@@ -1,4 +1,5 @@
 import lib.logging_esi as logging
+import lib.filters as filters
 from lib.wrappers import Trace
 from selenium.webdriver import Chrome, Firefox
 from selenium.webdriver.common.keys import Keys
@@ -6,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from ccd.utils.configure import cfg
 from lib.selenium_actions import SeleniumActions
 from lib.user_exception import UserException as Ux, UserFailException as Fx
+import re
 
 log = logging.get_logger('esi.base_view')
 
@@ -13,7 +15,9 @@ log = logging.get_logger('esi.base_view')
 class BaseView(SeleniumActions):
 
     locators = {
-        "TestDomainMessage": {"by": "id", "value": "domain-message"}
+        "TestDomainMessage": {"by": "id", "value": "domain-message"},
+        "TableRows": {"by": "xpath", "value": "//table/tbody/tr"},
+        "RowDataSub": {"by": "xpath", "value": "td[column]"},
     }
 
     def __init__(self):
@@ -24,6 +28,22 @@ class BaseView(SeleniumActions):
         self.current_browser = None
         self.log_file = None
         super(BaseView, self).__init__()
+
+    @Trace(log)
+    def find_table_rows_by_text(self, column, text, partial=False):
+        match_rows = []
+        rows = self.find_elements_by_key("TableRows")
+        data_locator = self.get_locator("RowDataSub")
+        data_locator["value"] = re.sub("column", "%s" % column, data_locator["value"])
+        for row in rows:
+            if partial:
+                if text not in self.find_sub_element_by_locator(row, data_locator).text:
+                    continue
+            else:
+                if text != self.find_sub_element_by_locator(row, data_locator).text:
+                    continue
+            match_rows.append(row)
+        return match_rows
 
     def get_portal_url(self):
         self.get_url(cfg.site['PortalUrl'])

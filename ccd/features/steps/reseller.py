@@ -10,13 +10,13 @@ def step_impl(context):
     reseller_view.wait_for_page_title()
 
 
-@given('I am on the reseller home page')
+@given('I go to the reseller home page')
 def step_impl(context):
     reseller_view.goto_home()
     reseller_home_view.wait_for_page_title()
 
 
-@given('I am on the reseller domains page')
+@given('I go to the reseller domains page')
 def step_impl(context):
     reseller_view.goto_domains()
     reseller_domains_view.wait_for_page_title()

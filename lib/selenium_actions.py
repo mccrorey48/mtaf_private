@@ -53,18 +53,6 @@ class SeleniumActions(Tc):
                          (elem_name, expected_count, len(elems)))
 
     @Trace(log)
-    def assert_elements_count_less_equal(self, elems, maxcount, elem_name='elements'):
-        log.debug('%s count = %d should be <= %d' % (elem_name, len(elems), maxcount))
-        self.assertLessEqual(len(elems), maxcount, "Expect %s length <= %d, got %d" %
-                             (elem_name, maxcount, len(elems)))
-
-    @Trace(log)
-    def assert_elements_count_greater_equal(self, elems, mincount, elem_name='elements'):
-        log.debug('%s count = %d should be >= %d' % (elem_name, len(elems), mincount))
-        self.assertGreaterEqual(len(elems), mincount, "Expect %s length >= %d, got %d" %
-                                (elem_name, mincount, len(elems)))
-
-    @Trace(log)
     def get_source(self):
         return self.driver.page_source
 
@@ -170,7 +158,7 @@ class SeleniumActions(Tc):
             else:
                 elems = self.find_elements_by_locator(locator)
             if filter_fn is not None:
-                return filter_fn(elems)
+                return filter_fn(self, elems)
             else:
                 return elems
         except WebDriverException as e:

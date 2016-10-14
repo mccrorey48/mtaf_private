@@ -1,4 +1,7 @@
 import re
+import lib.logging_esi
+from lib.wrappers import Trace
+
 
 from lib.user_exception import UserException as Ux
 
@@ -62,6 +65,9 @@ def expand_zpath(zpath):
     return '/'.join(term_list)
 
 
+mock_log = lib.logging_esi.get_logger('mock_element')
+
+
 class MockElement:
 
     tag_name = 'mock element'
@@ -71,64 +77,86 @@ class MockElement:
 
     def __init__(self):
         self.name = 'MockElement'
-    #
-    # def click(self):
-    #     log.info('MockElement.click()')
-    #
-    # def get_attribute(self, attr):
-    #     log.info('MockElement.get_attribute(%s)' % attr)
-    #     return 'mock ' + attr + ' attribute'
-    #
-    # def hide_keyboard(self):
-    #     log.info('MockElement.hide_keyboard()')
-    #
-    # def is_displayed(self):
-    #     log.info('MockElement.is_displayed() returning True')
-    #     return True
-    #
-    # def is_enabled(self):
-    #     log.info('MockElement.is_enabled() returning True')
-    #     return True
-    #
-    # def set_value(self, value):
-    #     log.info('MockElement.set_value(%s)' % value)
-    #
-    # def set_text(self, value):
-    #     log.info('MockElement.set_value(%s)' % value)
-    #
-    # def send_keys(self, value):
-    #     log.info('MockElement.send_keys(%s)' % value)
-    #
-    # def find_element_by_xpath(self, xpath):
-    #     return MockElement()
-    #
-    # def find_element_by_name(self, name):
-    #     log.info('MockElement.find_element_by_name(%s)' % name)
-    #     return MockElement()
-    #
-    # def find_element_by_classname(self, classname):
-    #     log.info('MockElement.find_element_by_classname(%s)' % classname)
-    #     return MockElement()
-    #
-    # def find_element_by_id(self, id):
-    #     log.info('MockElement.find_element_by_id(%s)' % id)
-    #     return MockElement()
-    #
-    # def find_elements_by_xpath(self, xpath):
-    #     log.info('MockElement.find_elements_by_xpath(%s)' % xpath)
-    #     return [MockElement(), MockElement()]
-    #
-    # def find_elements_by_name(self, name):
-    #     log.info('MockElement.find_elements_by_name(%s)' % name)
-    #     return [MockElement(), MockElement()]
-    #
-    # def find_elements_by_classname(self, classname):
-    #     log.info('MockElement.find_elements_by_classname(%s)' % classname)
-    #     return [MockElement(), MockElement()]
-    #
-    # def find_elements_by_id(self, id):
-    #     log.info('MockElement.find_elements_by_id(%s)' % id)
-    #     return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def click():
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def get_attribute(attr):
+        return 'mock ' + attr + ' attribute'
+
+    @staticmethod
+    @Trace(mock_log)
+    def hide_keyboard():
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def is_displayed():
+        return True
+
+    @staticmethod
+    @Trace(mock_log)
+    def is_enabled():
+        return True
+
+    @staticmethod
+    @Trace(mock_log)
+    def set_value(value):
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def set_text(value):
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def send_keys(value):
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_element_by_xpath(xpath):
+        return MockElement()
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_element_by_name(name):
+        return MockElement()
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_element_by_classname(classname):
+        return MockElement()
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_element_by_id(id):
+        return MockElement()
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_elements_by_xpath(xpath):
+        return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_elements_by_name(name):
+        return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_elements_by_classname(classname):
+        return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_elements_by_id(id):
+        return [MockElement(), MockElement()]
 
 
 class MockDriver:
@@ -136,61 +164,84 @@ class MockDriver:
     def __init__(self):
         pass
 
-    # def close_app(self):
-    #     pass
-    #
-    # def quit(self):
-    #     pass
-    #
-    # def execute_script(self, script, args):
-    #     pass
-    #
-    # def find_element_by_xpath(self, xpath):
-    #     log.info('find_element_by_xpath(%s)' % xpath)
-    #     return MockElement()
-    #
-    # def find_element_by_name(self, name):
-    #     log.info('find_element_by_xpath(%s)' % name)
-    #     return MockElement()
-    #
-    # def find_element_by_classname(self, classname):
-    #     log.info('find_element_by_xpath(%s)' % classname)
-    #     return MockElement()
-    #
-    # def find_element_by_id(self, _id):
-    #     log.info('find_element_by_xpath(%s)' % _id)
-    #     return MockElement()
-    #
-    # def find_elements_by_xpath(self, xpath):
-    #     log.info('find_element_by_xpath(%s)' % xpath)
-    #     return [MockElement(), MockElement()]
-    #
-    # def find_elements_by_name(self, name):
-    #     log.info('find_element_by_xpath(%s)' % name)
-    #     return [MockElement(), MockElement()]
-    #
-    # def find_elements_by_classname(self, classname):
-    #     log.info('find_element_by_xpath(%s)' % classname)
-    #     return [MockElement(), MockElement()]
-    #
-    # def find_elements_by_id(self, _id):
-    #     log.info('find_element_by_xpath(%s)' % _id)
-    #     return [MockElement(), MockElement()]
-    #
-    # def scroll(self, origin_el, destination_el):
-    #     log.info('scroll(%s, %s)' % (origin_el.text, destination_el.text))
-    #
-    # def swipe(self, x1, y1, x2, y2, duration):
-    #     log.info('swipe(%s, %s, %s, %s, %s)' % (x1, y1, x2, y2, duration))
-    #     return [MockElement(), MockElement()]
-    #
-    # def tap(self, loc, duration):
-    #     log.info('tap(%s, %s, %s)' % (loc[0], loc[1], duration))
-    #
-    # def hide_keyboard(self):
-    #     log.info('hide_keyboard()')
-    #
-    # def get_screenshot_as_file(self, filename):
-    #     log.info('get_screenshot_as_file(%s)' % filename)
-    #
+    @staticmethod
+    @Trace(mock_log)
+    def close_app():
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def quit():
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def execute_script(script, args):
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_element_by_xpath(xpath):
+        return MockElement()
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_element_by_name(name):
+        return MockElement()
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_element_by_classname(classname):
+        return MockElement()
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_element_by_id(_id):
+        return MockElement()
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_elements_by_xpath(xpath):
+        return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_elements_by_name(name):
+        return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_elements_by_classname(classname):
+        return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def find_elements_by_id(_id):
+        return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def scroll(origin_el, destination_el):
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def swipe(x1, y1, x2, y2, duration):
+        return [MockElement(), MockElement()]
+
+    @staticmethod
+    @Trace(mock_log)
+    def tap(loc, duration):
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def hide_keyboard():
+        pass
+
+    @staticmethod
+    @Trace(mock_log)
+    def get_screenshot_as_file(filename):
+        pass
+
 

@@ -1,5 +1,7 @@
 from behave import *
 from ccd.views import *
+from selenium.common.exceptions import TimeoutException
+from lib.user_exception import UserException as Ux
 
 
 @given('I go to the portal login page')
@@ -44,9 +46,15 @@ def step_impl(context):
 
 @then('the Manager Home page will load')
 def step_impl(context):
-    reseller_view.wait_for_page_title()
+    try:
+        reseller_view.wait_for_page_title()
+    except TimeoutException:
+        raise AssertionError("Timed out waiting for Manager Home Page to load")
 
 
 @then('the invalid alert will appear')
 def step_impl(context):
-    login_view.wait_for_invalid_login_alert()
+    try:
+        login_view.wait_for_invalid_login_alert(timeout=10)
+    except Ux:
+        raise AssertionError('Invalid username/password alert not found')
