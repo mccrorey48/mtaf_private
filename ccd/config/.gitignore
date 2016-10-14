@@ -1,5 +1,0 @@
-*.json
-!mongo_json/ccd_locators.json
-!mongo_json/test_accounts.json
-!/accounts.json
-!/site*.json
