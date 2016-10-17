@@ -1,5 +1,6 @@
 import json
 import os
+from ccd.utils.db_utils import read_dbs
 
 
 def stringify(thing):
@@ -23,14 +24,14 @@ class Cfg:
     xml_folder = None
     csv_folder = None
     colors_folder = None
-    site = None
     exec_dir = os.getcwd()
     caps = {}
     locators = {}
     colors = {}
 
     def set_site(self, svr_tag):
-        self.cfg_folder_path = os.path.join(self.exec_dir, 'ccd', 'config')
-        self.site = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'site_%s.json' % svr_tag))))
+        site = read_dbs(['ccd_site'])[svr_tag]
+        pass
+
 
 cfg = Cfg()

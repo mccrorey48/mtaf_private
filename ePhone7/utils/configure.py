@@ -1,9 +1,5 @@
-import inspect
 import json
 import os
-
-from lib.android import expand_zpath
-from lib.user_exception import UserException as Ux
 
 
 def stringify(thing):
@@ -21,16 +17,18 @@ def stringify(thing):
 
 
 class Cfg:
-    cfg_folder_path = None
-    test_screenshot_folder = None
-    screenshot_folder = None
-    xml_folder = None
-    csv_folder = None
-    colors_folder = None
-    site = None
-    exec_dir = os.getcwd()
-    caps = {}
-    colors = {}
+
+    def __init__(self):
+        self.cfg_folder_path = None
+        self.test_screenshot_folder = None
+        self.screenshot_folder = None
+        self.xml_folder = None
+        self.csv_folder = None
+        self.colors_folder = None
+        self.site = None
+        self.exec_dir = os.getcwd()
+        self.caps = {}
+        self.colors = {}
 
     def set_site(self, site_tag):
         self.cfg_folder_path = os.path.join(self.exec_dir, 'ePhone7', 'config')

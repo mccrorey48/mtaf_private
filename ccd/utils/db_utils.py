@@ -42,39 +42,6 @@ class CfgReader:
         if platform_name in self.platform_names:
             return db[platform_name].find_one({"type": "ini_tags"})['values']
 
-    def merge_dicts(self, dict1, dict2):
-        """
-            add items dict2 to dict2:
-
-            for each attribute in dict2:
-                if no attribute with that name in dict1:
-                    add attribute to dict1
-                else:
-                    if dict1 attribute is instance of dict:
-                        merge_dicts(<dict1 attribute>, <dict2 attribute>)
-                    else:
-                        replace dict1 attribute with dict2 attribute
-
-        :param dict1: dictionary with initial values, which will contain final merged values
-        :param dict2: dictionary with values to merge into dict1
-        """
-        if not isinstance(dict1, dict):
-            dict1 = {}
-        if not isinstance(dict2, dict):
-            dict2 = {}
-        for key in dict2.keys():
-            if key in dict1 and isinstance(dict1[key], dict):
-                self.merge_dicts(dict1[key], dict2[key])
-            else:
-                dict1[key] = dict2[key]
-
-    def read_locators_from_db(self, svr_tag):
-        db = self.client.ccd_locators
-        self.locators['xpath'] = CfgReader.stringify(db.default.find_one({'type': 'xpath'}))
-        self.merge_dicts(self.locators['xpath'], CfgReader.stringify(db[svr_tag].find_one({'type': 'xpath'})))
-        self.locators['javascript'] = CfgReader.stringify(db.default.find_one({'type': 'javascript'}))
-        self.merge_dicts(self.locators['javascript'], CfgReader.stringify(db[svr_tag].find_one({'type': 'javascript'})))
-        pass
 
     @staticmethod
     def stringify(thing):
@@ -148,7 +115,35 @@ class CfgReader:
                     self.account_configs[uri][_tag] = domain_config[_tag]
 
 
-def read_dbs(_db_names):
+def merge_dicts(dict1, dict2):
+    """
+        add items dict2 to dict2:
+
+        for each attribute in dict2:
+            if no attribute with that name in dict1:
+                add attribute to dict1
+            else:
+                if dict1 attribute is instance of dict:
+                    merge_dicts(<dict1 attribute>, <dict2 attribute>)
+                else:
+                    replace dict1 attribute with dict2 attribute
+
+    :param dict1: dictionary with initial values, which will contain final merged values
+    :param dict2: dictionary with values to merge into dict1
+    """
+    if not isinstance(dict1, dict):
+        dict1 = {}
+    if not isinstance(dict2, dict):
+        dict2 = {}
+    for key in dict2.keys():
+        if key in dict1 and isinstance(dict1[key], dict):
+            merge_dicts(dict1[key], dict2[key])
+        else:
+            dict1[key] = dict2[key]
+
+
+def read_dbs(_db_names, server):
+    client = MongoClient(server)
     all_dbs = {}
     for _db_name in _db_names:
         db = client[_db_name]
@@ -162,8 +157,8 @@ def read_dbs(_db_names):
     return all_dbs
 
 
-def dump_dbs(_db_names, cfg_dir, output_fd):
-    all_dbs = read_dbs(_db_names)
+def dump_dbs(_db_names, server, cfg_dir, _output_fd):
+    all_dbs = read_dbs(_db_names, server)
     for _db_name in _db_names:
         _db = all_dbs[_db_name]
         db_dict = {}
@@ -179,57 +174,70 @@ def dump_dbs(_db_names, cfg_dir, output_fd):
                 if _db_name.endswith("_accounts") and item['type'] == 'account':
                     passwords[collection_name][item["uri"]] = item.pop("password", None)
                 db_dict[collection_name].append(item)
-        if output_fd:
-            output_fd.write("%s\n" % _db_name)
-            output_fd.write(json.dumps(db_dict, sort_keys=True, indent=4, separators=(',', ': ')))
-            output_fd.write('\n')
+        if _output_fd:
+            _output_fd.write("%s\n" % _db_name)
+            _output_fd.write(json.dumps(db_dict, sort_keys=True, indent=4, separators=(',', ': ')))
+            _output_fd.write('\n')
         else:
             with open(os.path.join(cfg_dir, '%s.json' % _db_name), 'w') as f:
                 f.write(json.dumps(db_dict, sort_keys=True, indent=4, separators=(',', ': ')))
         if _db_name.endswith("_accounts"):
-            if output_fd:
-                output_fd.write("passwords\n")
-                output_fd.write(json.dumps(passwords, sort_keys=True, indent=4, separators=(',', ': ')))
-                output_fd.write('\n')
+            if _output_fd:
+                _output_fd.write("passwords\n")
+                _output_fd.write(json.dumps(passwords, sort_keys=True, indent=4, separators=(',', ': ')))
+                _output_fd.write('\n')
             else:
                 with open(os.path.join(cfg_dir, 'passwords.json'), 'w') as f:
                     f.write(json.dumps(passwords, sort_keys=True, indent=4, separators=(',', ': ')))
 
 
-def restore_db(_db_names, cfg_dir, output_fd):
+def restore_db(_db_names, server, cfg_dir, _output_fd):
     all_output = {}
+    all_collections = {}
     for _db_name in _db_names:
-        db = client[_db_name]
         with open(os.path.join(cfg_dir, '%s.json' % _db_name)) as infile:
             json_txt = infile.read()
         db_collections = json.loads(json_txt)
         all_output[_db_name] = db_collections
         all_passwords = None
-        if _db_name.endswith("_accounts"):
+        if _db_name.endswith("_site"):
             with open(os.path.join(cfg_dir, 'passwords.json')) as infile:
                 json_txt = infile.read()
             all_passwords = json.loads(json_txt)
         for collection_name in db_collections.keys():
             print "restoring collection: " + collection_name
-            if not output_fd:
-                db.drop_collection(collection_name)
             collection = db_collections[collection_name]
-            if _db_name.endswith("_accounts"):
+            if _db_name.endswith("_site") and collection_name in all_passwords:
                 passwords = all_passwords[collection_name]
-                for obj in collection:
-                    if obj["type"] == "account":
-                        obj["password"] = passwords[obj["uri"]]
-            if not output_fd:
                 for doc in collection:
-                    db[collection_name].insert_one(doc)
-    if output_fd:
-        output_fd.write(json.dumps(all_output, sort_keys=True, indent=4, separators=(',', ': ')))
-        output_fd.write('\n')
+                    try:
+                        if doc['type'] == 'account' and doc['uri'] in passwords:
+                            doc['password'] = passwords[doc['uri']]
+                    except KeyError:
+                        pass
+        all_collections[_db_name] = db_collections
+    if not _output_fd:
+        write_dbs(all_collections, server)
+    if _output_fd:
+        _output_fd.write(json.dumps(all_output, sort_keys=True, indent=4, separators=(',', ': ')))
+        _output_fd.write('\n')
+
+
+def write_dbs(all_collections, server):
+    client = MongoClient(server)
+    for _db_name in all_collections.keys():
+        db = client[_db_name]
+        for collection_name in all_collections[_db_name].keys():
+            collection = all_collections[_db_name][collection_name]
+            db.drop_collection(collection_name)
+            for doc in collection:
+                db[collection_name].insert_one(doc)
+
 
 if __name__ == '__main__':
     import argparse
     ops = {'dump': dump_dbs, 'restore': restore_db}
-    db_names = ['ccd_accounts', 'ccd_locators', 'site']
+    db_names = ['ccd_site']
     db_args = db_names + ['all']
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description='  saves and restores databases from mongodb running on SERVER\n' +
@@ -246,7 +254,6 @@ if __name__ == '__main__':
     parser.add_argument("operation", type=str, choices=['dump', 'restore'], help="operation to perform")
     parser.add_argument("db_name", type=str, choices=db_args, help="name of database to dump or restore")
     args = parser.parse_args()
-    client = MongoClient(args.server)
     if args.output_file is None:
         output_fd = None
     elif args.output_file == '-' or args.output_file == 'stdout':
@@ -254,8 +261,8 @@ if __name__ == '__main__':
     else:
         output_fd = open(os.path.join(args.cfg_dir, args.output_file), 'w')
     if args.db_name == 'all':
-        ops[args.operation](db_names, args.cfg_dir, output_fd)
+        ops[args.operation](db_names, args.server, args.cfg_dir, output_fd)
     else:
-        ops[args.operation]([args.db_name], args.cfg_dir, output_fd)
+        ops[args.operation]([args.db_name], args.server, args.cfg_dir, output_fd)
     if output_fd is not None and output_fd != sys.stdout:
         output_fd.close()

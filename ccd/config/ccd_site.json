@@ -1,12 +1,60 @@
 {
+    "alpha": [
+        {
+            "Build": "0",
+            "Date": "August 29, 2016",
+            "Network": "production",
+            "PortalUrl": "https://alpha.esihs.net/portal/login/logout",
+            "Time": "3:30pm",
+            "Version": "v.1.2.5",
+            "type": "constants"
+        }
+    ],
+    "beta": [
+        {
+            "Build": "0",
+            "Date": "August 29, 2016",
+            "Network": "production",
+            "PortalUrl": "https://alpha.esihs.net/portal/login/logout",
+            "Time": "3:30pm",
+            "Version": "v.1.2.5",
+            "type": "constants"
+        }
+    ],
+    "default": [
+        {
+            "DefaultTimeout": 10,
+            "Mock": false,
+            "SeleniumUrl": "http://localhost:4444/wd/hub",
+            "type": "constants"
+        }
+    ],
+    "gamma": [
+        {
+            "Build": "0",
+            "Date": "August 29, 2016",
+            "Network": "production",
+            "PortalUrl": "https://alpha.esihs.net/portal/login/logout",
+            "Time": "3:30pm",
+            "Version": "v.1.2.5",
+            "type": "constants"
+        }
+    ],
     "production": [
         {
-            "type": "ini_tags",
-            "values": [
-                "alpha",
-                "beta",
-                "gamma"
-            ]
+            "TestDomain": "SVAutoCustomer",
+            "TestDomainExtended": "SVAutoCustomer (",
+            "TestDomainMin": "SVAutoCu",
+            "type": "constants"
+        },
+        {
+            "BadPassword": "2222",
+            "BadUserId": "mmccroreyr",
+            "DomainName": "SVAutoManage",
+            "Password": "0222",
+            "UserId": "mmccroreyrs",
+            "name": "ResellerUser",
+            "type": "user"
         },
         {
             "contexts": [
@@ -16,6 +64,7 @@
             "email": "1000@test1.test-eng.com",
             "name1": "User",
             "name2": "testerA",
+            "password": "0",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -30,6 +79,7 @@
             "email": "1001@test1.test-eng.com",
             "name1": "User",
             "name2": "testerB",
+            "password": "0",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -45,6 +95,7 @@
             "email": "1002@test1.test-eng.com",
             "name1": "User",
             "name2": "testerC",
+            "password": "C2gByjI9",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -60,6 +111,7 @@
             "email": "1003@test1.test-eng.com",
             "name1": "User",
             "name2": "testerD",
+            "password": "9Wwjy8i5",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -75,6 +127,7 @@
             "email": "1004@test1.test-eng.com",
             "name1": "User",
             "name2": "testerE",
+            "password": "9A5I95cU",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -90,6 +143,7 @@
             "email": "1005@test1.test-eng.com",
             "name1": "User",
             "name2": "testerF",
+            "password": "F2MEMMFD",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -105,6 +159,7 @@
             "email": "1006@test1.test-eng.com",
             "name1": "User",
             "name2": "testerG",
+            "password": "cVe5ZJbu",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -121,6 +176,7 @@
             "email": "3000@test1.test-eng.com",
             "name1": "User",
             "name2": "testerH",
+            "password": "0",
             "phone_type": "conference",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -135,6 +191,7 @@
             "email": "2001@test2.test-eng.com",
             "name1": "Jessica",
             "name2": "ePhone7",
+            "password": "0",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -149,6 +206,7 @@
             "email": "2016@test2.test-eng.com",
             "name1": "David",
             "name2": "ePhone7",
+            "password": "0",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -163,6 +221,7 @@
             "email": "2200@test2.test-eng.com",
             "name1": "Auto",
             "name2": "testerA",
+            "password": "0",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -177,6 +236,7 @@
             "email": "2201@test2.test-eng.com",
             "name1": "Auto",
             "name2": "testerB",
+            "password": "0",
             "phone_type": "hard",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -191,6 +251,7 @@
             "email": "2202@test2.test-eng.com",
             "name1": "Auto",
             "name2": "testerC",
+            "password": "vsvSIHpL",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -205,11 +266,20 @@
             "email": "2203@test2.test-eng.com",
             "name1": "Auto",
             "name2": "testerD",
+            "password": "TSDlprSD",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
             "type": "account",
             "uri": "sip:2203@test2.test-eng.com"
+        },
+        {
+            "domain": "test1.test-eng.com",
+            "name": "Test Engineering Test Domain 1",
+            "rs_domain": "test-eng.com",
+            "rs_password": "0222",
+            "rs_user": "mmccroreyrs",
+            "type": "domain"
         },
         {
             "contexts": [
@@ -219,6 +289,7 @@
             "email": "2204@test2.test-eng.com",
             "name1": "Auto",
             "name2": "testerE",
+            "password": "kVAsy1oc",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -233,6 +304,7 @@
             "email": "2205@test2.test-eng.com",
             "name1": "Auto",
             "name2": "testerF",
+            "password": "nBiQ9DEG",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -247,6 +319,7 @@
             "email": "2206@test2.test-eng.com",
             "name1": "Auto",
             "name2": "testerG",
+            "password": "Lp0PLwJk",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -261,6 +334,7 @@
             "email": "2207@test2.test-eng.com",
             "name1": "Auto",
             "name2": "testerH",
+            "password": "61M46JUi",
             "phone_type": "soft",
             "proxy": "nr5.cpbx.esihs.net",
             "scope": "premier",
@@ -268,47 +342,29 @@
             "uri": "sip:2207@test2.test-eng.com"
         },
         {
-            "name": "test1.test-eng.com",
+            "domain": "test2.test-eng.com",
+            "name": "Test Engineering Test Domain 2",
             "rs_domain": "test-eng.com",
             "rs_password": "0222",
             "rs_user": "mmccroreyrs",
             "type": "domain"
-        },
-        {
-            "name": "test2.test-eng.com",
-            "rs_domain": "test-eng.com",
-            "rs_password": "0222",
-            "rs_user": "mmccroreyrs",
-            "type": "domain"
-        },
-        {
-            "cust_dom": "test1.test-eng.com",
-            "cust_dom_name": "Test Engineering Test Domain 1",
-            "dns_list": [
-                "10.0.50.156",
-                "10.0.50.157"
-            ],
-            "type": "platform"
-        },
-        {
-            "cust_dom": "test2.test-eng.com",
-            "cust_dom_name": "Test Engineering Test Domain 2",
-            "dns_list": [
-                "10.0.50.156",
-                "10.0.50.157"
-            ],
-            "type": "platform"
         }
     ],
     "svlab": [
         {
-            "type": "ini_tags",
-            "values": [
-                "my2",
-                "dev",
-                "test",
-                "alpha.svlab"
-            ]
+            "TestDomain": "SVAutoCustomer",
+            "TestDomainExtended": "SVAutoCustomer (",
+            "TestDomainMin": "SVAutoCu",
+            "type": "constants"
+        },
+        {
+            "BadPassword": "2222",
+            "BadUserId": "mmccroreyr",
+            "DomainName": "SVAutoManage",
+            "Password": "0222",
+            "UserId": "mmccroreyrs",
+            "name": "ResellerUser",
+            "type": "user"
         },
         {
             "contexts": [
@@ -318,6 +374,22 @@
             "email": "1000@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerA",
+            "password": "1000",
+            "phone_type": "hard",
+            "proxy": "svlab.esihs.net",
+            "scope": "premier",
+            "type": "account",
+            "uri": "sip:1000@SVAutoCustomer"
+        },
+        {
+            "contexts": [
+                "callgui"
+            ],
+            "delete": "true",
+            "email": "1000@SVAutoCustomer.com",
+            "name1": "User",
+            "name2": "testerA",
+            "password": "1000",
             "phone_type": "hard",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -332,6 +404,7 @@
             "email": "1001@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerB",
+            "password": "1001",
             "phone_type": "hard",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -347,6 +420,7 @@
             "email": "1002@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerC",
+            "password": "Y5UYnzq0",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -362,6 +436,7 @@
             "email": "1003@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerD",
+            "password": "P3cLwt54",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -377,6 +452,7 @@
             "email": "1004@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerE",
+            "password": "BnFVPlIH",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -392,6 +468,7 @@
             "email": "1005@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerF",
+            "password": "5FS94C3Q",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -408,6 +485,7 @@
             "email": "3000@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerG",
+            "password": "0",
             "phone_type": "conference",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -415,20 +493,24 @@
             "uri": "sip:3000@SVAutoCustomer"
         },
         {
-            "name": "SVAutoCustomer",
+            "domain": "SVAutoCustomer",
+            "name": "SVAuto Customer",
             "rs_domain": "SVAutoManage",
             "rs_password": "0222",
             "rs_user": "mmccroreyrs",
             "type": "domain"
-        },
+        }
+    ],
+    "test": [
         {
-            "cust_dom": "SVAutoCustomer",
-            "cust_dom_name": "SVAuto Customer",
-            "dns_list": [
-                "10.0.50.156",
-                "10.0.50.157"
-            ],
-            "type": "platform"
+            "Build": "0",
+            "Date": "August 29, 2016",
+            "Network": "svlab",
+            "PortalUrl": "http://test.svlab.esihs.net/portal/login/logout",
+            "SeleniumUrl": "http://localhost:4444/wd/hub",
+            "Time": "3:30pm",
+            "Version": "v.1.2.5",
+            "type": "constants"
         }
     ]
 }
