@@ -15,6 +15,7 @@ Feature: Remove existing test users and conferences
     And I see the first test conference has been deleted
     Then I repeat until there are no test conferences listed
 
+  @wip
   Scenario: Remove existing test users
     When I go to the domain users page
     And I see if any test users are listed

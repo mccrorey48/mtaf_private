@@ -115,33 +115,6 @@ class CfgReader:
                     self.account_configs[uri][_tag] = domain_config[_tag]
 
 
-def merge_dicts(dict1, dict2):
-    """
-        add items dict2 to dict2:
-
-        for each attribute in dict2:
-            if no attribute with that name in dict1:
-                add attribute to dict1
-            else:
-                if dict1 attribute is instance of dict:
-                    merge_dicts(<dict1 attribute>, <dict2 attribute>)
-                else:
-                    replace dict1 attribute with dict2 attribute
-
-    :param dict1: dictionary with initial values, which will contain final merged values
-    :param dict2: dictionary with values to merge into dict1
-    """
-    if not isinstance(dict1, dict):
-        dict1 = {}
-    if not isinstance(dict2, dict):
-        dict2 = {}
-    for key in dict2.keys():
-        if key in dict1 and isinstance(dict1[key], dict):
-            merge_dicts(dict1[key], dict2[key])
-        else:
-            dict1[key] = dict2[key]
-
-
 def read_dbs(_db_names, server):
     client = MongoClient(server)
     all_dbs = {}
@@ -153,27 +126,25 @@ def read_dbs(_db_names, server):
         all_dbs[_db_name] = {}
         for collection_name in collection_names:
             print "getting collection from db: %s.%s" % (_db_name, collection_name)
-            all_dbs[_db_name][collection_name] = db[collection_name]
+            all_dbs[_db_name][collection_name] = []
+            for doc in db[collection_name].find():
+                all_dbs[_db_name][collection_name].append(doc)
     return all_dbs
 
 
 def dump_dbs(_db_names, server, cfg_dir, _output_fd):
     all_dbs = read_dbs(_db_names, server)
     for _db_name in _db_names:
-        _db = all_dbs[_db_name]
-        db_dict = {}
+        db_dict = all_dbs[_db_name]
         if _db_name.endswith("_accounts"):
             passwords = {}
-        for collection_name in _db:
-            db_dict[collection_name] = []
-            collection = _db[collection_name]
+        for collection_name in db_dict:
             if _db_name.endswith("_accounts"):
                 passwords[collection_name] = {}
-            for item in collection.find():
+            for item in db_dict[collection_name]:
                 item.pop("_id")
                 if _db_name.endswith("_accounts") and item['type'] == 'account':
-                    passwords[collection_name][item["uri"]] = item.pop("password", None)
-                db_dict[collection_name].append(item)
+                    passwords[collection_name][item['uri']] = item.pop('password', None)
         if _output_fd:
             _output_fd.write("%s\n" % _db_name)
             _output_fd.write(json.dumps(db_dict, sort_keys=True, indent=4, separators=(',', ': ')))

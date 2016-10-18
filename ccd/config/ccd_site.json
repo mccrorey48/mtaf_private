@@ -26,6 +26,7 @@
             "DefaultTimeout": 10,
             "Mock": false,
             "SeleniumUrl": "http://localhost:4444/wd/hub",
+            "TestUserPartialName": "User tester",
             "type": "constants"
         }
     ],
@@ -370,7 +371,7 @@
             "contexts": [
                 "callgui"
             ],
-            "delete": "true",
+            "delete": "false",
             "email": "1000@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerA",
@@ -385,26 +386,10 @@
             "contexts": [
                 "callgui"
             ],
-            "delete": "true",
-            "email": "1000@SVAutoCustomer.com",
-            "name1": "User",
-            "name2": "testerA",
-            "password": "1000",
-            "phone_type": "hard",
-            "proxy": "svlab.esihs.net",
-            "scope": "premier",
-            "type": "account",
-            "uri": "sip:1000@SVAutoCustomer"
-        },
-        {
-            "contexts": [
-                "callgui"
-            ],
-            "delete": "true",
+            "delete": "false",
             "email": "1001@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerB",
-            "password": "1001",
             "phone_type": "hard",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -420,7 +405,6 @@
             "email": "1002@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerC",
-            "password": "Y5UYnzq0",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -436,7 +420,6 @@
             "email": "1003@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerD",
-            "password": "P3cLwt54",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -452,7 +435,6 @@
             "email": "1004@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerE",
-            "password": "BnFVPlIH",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -468,7 +450,6 @@
             "email": "1005@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerF",
-            "password": "5FS94C3Q",
             "phone_type": "soft",
             "proxy": "svlab.esihs.net",
             "scope": "premier",
@@ -485,7 +466,6 @@
             "email": "3000@SVAutoCustomer.com",
             "name1": "User",
             "name2": "testerG",
-            "password": "0",
             "phone_type": "conference",
             "proxy": "svlab.esihs.net",
             "scope": "premier",

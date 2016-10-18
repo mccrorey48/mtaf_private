@@ -18,7 +18,8 @@ class DomainView(BaseView):
         "NavBannerTitle": {"by": "css selector", "value": ".navigation-title", "parent": "NavBanner"},
         "SettingsTab": {"by": "id", "value": "nav-settings"},
         "UsersTab": {"by": "id", "value": "nav-users"},
-        "ConferencesTab": {"by": "id", "value": "nav-conferences"}
+        "ConferencesTab": {"by": "id", "value": "nav-conferences"},
+        "ConfirmYes": {"by": "xpath", "value": "/html/body/div[2]/div[2]/div/a[1]"}
     }
 
     def __init__(self):

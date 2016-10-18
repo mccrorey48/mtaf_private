@@ -12,8 +12,7 @@ class DomainConferencesView(DomainView):
         "InventoryTab": {"by": "id", "value": "nav-inventory"},
         "HomeTab": {"by": "id", "value": "nav-home-reseller"},
         "Logout": {"by": "id", "value": "logout"},
-        "TrashCanIconSub": {"by": "xpath", "value": "td[7]/a[3]"},
-        "ConfirmYes": {"by": "xpath", "value": "/html/body/div[2]/div[2]/div/a[1]"}
+        "TrashCanIconSub": {"by": "xpath", "value": "td[7]/a[3]"}
     }
 
     def __init__(self):
