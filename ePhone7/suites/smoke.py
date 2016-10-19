@@ -115,7 +115,7 @@ class SmokeTests(unittest.TestCase):
         # user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Coworkers')
-        contact_number = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']
+        contact_number = cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]['UserId']
         list_element = contacts_view.get_contact_list_element(contact_number)
         contacts_view.call_contact_from_list_element(list_element)
 
@@ -141,7 +141,7 @@ class SmokeTests(unittest.TestCase):
         # user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
-        contact_number = cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']
+        contact_number = cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]['UserId']
         list_element = contacts_view.get_contact_list_element(contact_number)
         contacts_view.call_contact_from_list_element(list_element)
 

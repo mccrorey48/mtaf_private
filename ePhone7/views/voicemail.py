@@ -49,7 +49,7 @@ class VoicemailView(UserView):
         from lib.softphone.softphone import get_softphone
         softphone = get_softphone()
         self.set_dnd(on=True)
-        dst_cfg = cfg.site['Accounts']['R2d2User']
+        dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('start', 10)

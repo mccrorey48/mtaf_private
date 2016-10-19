@@ -17,20 +17,23 @@ class Cfg:
         self.caps = {}
         self.colors = {}
 
-    # def set_site(self, site_tag):
-    #     self.cfg_folder_path = os.path.join(self.exec_dir, 'ePhone7', 'config')
-    #     self.caps = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'caps.json'))))
-    #     self.colors = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'colors.json'))))
-    #     self.site = stringify(json.load(open(os.path.join(self.cfg_folder_path, 'site_%s.json' % site_tag))))
-    #     self.test_screenshot_folder = os.path.join(self.exec_dir, self.site['TestScreenshotsFolder'])
-    #     self.screenshot_folder = os.path.join(self.exec_dir, self.site['ScreenshotsFolder'])
-    #     self.xml_folder = os.path.join(self.exec_dir, self.site['XmlFolder'])
-    #     self.csv_folder = os.path.join(self.exec_dir, self.site['CsvFolder'])
-    #     self.colors_folder = os.path.join(self.exec_dir, self.site['ColorsFolder'])
-    def set_site(self, site_tag):
-        client = MongoClient('vqda')
+    def set_site(self, cfg_server, site_tag):
+        client = MongoClient(cfg_server)
         db = client['e7_site']
         site_collection = db[site_tag]
         merge_collection(self.site, site_collection)
+        db = client['e7_caps']
+        for name in db.collection_names(False):
+            self.caps[name] = {}
+            merge_collection(self.caps[name], db[name])
+        db = client['e7_colors']
+        for name in db.collection_names(False):
+            self.colors[name] = {}
+            merge_collection(self.colors[name], db[name])
+            self.test_screenshot_folder = os.path.join(self.exec_dir, self.site['TestScreenshotsFolder'])
+            self.screenshot_folder = os.path.join(self.exec_dir, self.site['ScreenshotsFolder'])
+            self.xml_folder = os.path.join(self.exec_dir, self.site['XmlFolder'])
+            self.csv_folder = os.path.join(self.exec_dir, self.site['CsvFolder'])
+            self.colors_folder = os.path.join(self.exec_dir, self.site['ColorsFolder'])
 
 cfg = Cfg()

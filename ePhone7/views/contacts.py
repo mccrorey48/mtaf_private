@@ -164,7 +164,7 @@ class ContactsView(UserView):
     @Trace(log)
     def verify_contacts_list_test(self, contacts_group_name):
         self.scroll_to_top_of_list()
-        contacts_group = cfg.site['Accounts']['R2d2User'][contacts_group_name]
+        contacts_group = cfg.site['Users']['R2d2User'][contacts_group_name]
         # wait for the contact list to appear
         self.find_element_by_key('FirstContactName', timeout=30)
         numbers = self.get_all_group_contacts(contacts_group)
@@ -196,7 +196,7 @@ class ContactsView(UserView):
 
     @Trace(log)
     def add_favorites_from_coworkers(self):
-        new_favorites = cfg.site['Accounts']['R2d2User']['FavoriteContacts'][:]
+        new_favorites = cfg.site['Users']['R2d2User']['FavoriteContacts'][:]
         # get each contact element containing a name in the new_favorites list
         # and if it is not already a favorite, toggle the favorites selector
         for number in new_favorites:

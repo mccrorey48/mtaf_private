@@ -29,7 +29,7 @@ class LoginView(BaseView):
 
     @Trace(log)
     def login(self):
-        acct_cfg = cfg.site['Accounts']['R2d2User']
+        acct_cfg = cfg.site['Users']['R2d2User']
         login_id = '%s@%s' % (acct_cfg['UserId'], acct_cfg['DomainName'])
         self.find_element_by_key('Username').set_text(login_id)
         self.find_element_by_key('Password').set_text(passwd)

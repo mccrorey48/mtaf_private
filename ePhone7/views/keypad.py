@@ -39,7 +39,7 @@ class KeypadView(UserView):
     @Trace(log)
     def make_call(self):
         softphone = get_softphone()
-        for n in list(cfg.site['Accounts'][cfg.site['DefaultSoftphoneUser']]['UserId']):
+        for n in list(cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]['UserId']):
             self.click_element_by_key('NumKey' + n)
         self.click_element_by_key('FuncKeyCall')
         softphone.wait_for_call_status('start', 20)
