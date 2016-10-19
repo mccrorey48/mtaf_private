@@ -107,26 +107,36 @@ def write_dbs(all_collections, server):
 if __name__ == '__main__':
     import argparse
     ops = {'dump': dump_dbs, 'restore': restore_dbs}
-    dbs = ['e7_site', 'ccd_site']
+    targets = {
+        'e7_site': {"cfg_dir": os.path.join('ePhone7', 'config'), "db_names": ['e7_site']},
+        'e7_all': {"cfg_dir": os.path.join('ePhone7', 'config'), "db_names": ['e7_site', 'e7_caps', 'e7_colors']},
+        'ccd_site': {"cfg_dir": os.path.join('ccd', 'config'), "db_names": ['ccd_site']}
+    }
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description='  saves and restores databases from mongodb running on SERVER\n' +
-                                                 '  using JSON files in config directory for database backup;\n'
-                                                 '  "dump" gets <db_name> and saves in config/<db_name>.json\n' +
-                                                 '  "restore" replaces <db_name> with data from config/<db_name>.json')
+                                                 '  using JSON files in config directory for database backup;\n' +
+                                                 '  "dump" gets <db_name> and saves in ' +
+                                                 '<target config directory>/<db_name>.json\n' +
+                                                 '  "restore" replaces <db_name> with data from ' +
+                                                 '<target config directory>/<db_name>.json')
     parser.add_argument("-s", "--server", type=str, default='vqda',
                         help="(optional) specify mongodb server, default 'vqda'")
-    parser.add_argument("-c", "--cfg_dir", type=str, default='config',
-                        help="(optional) specify output directory, default 'config'")
     parser.add_argument("-o", "--output_file", default=None,
                         help="dump writes JSON to output file, restore writes JSON to output file,\n" +
                              "db and JSON files not changed; '-' for stdout")
     parser.add_argument("operation", type=str, choices=['dump', 'restore'], help="operation to perform")
-    parser.add_argument("db_name", type=str, choices=dbs, help="name of database to dump or restore")
+    parser.add_argument("target", type=str, choices=targets.keys(),
+                        help='indicates databases to dump or restore:\n' +
+                             '  e7_site: db name e7_site; config directory ePhone7/config\n' +
+                             '  e7_all: db names e7_site, caps, colors; config directory ePhone7/config\n' +
+                             '  ccd_site: db name ccd_site; config directory ccd/config\n')
     args = parser.parse_args()
+    db_names = targets[args.target]['db_names']
+    cfg_dir = targets[args.target]['cfg_dir']
     if args.output_file is None:
-        ops[args.operation]([args.db_name], args.server, args.cfg_dir, None)
+        ops[args.operation](db_names, args.server, cfg_dir, None)
     elif args.output_file == '-' or args.output_file == 'stdout':
-        ops[args.operation]([args.db_name], args.server, args.cfg_dir, sys.stdout)
+        ops[args.operation](db_names, args.server, cfg_dir, sys.stdout)
     else:
-        with open(os.path.join(args.cfg_dir, args.output_file), 'w') as output_fd:
-            ops[args.operation]([args.db_name], args.server, args.cfg_dir, output_fd)
+        with open(os.path.join(cfg_dir, args.output_file), 'w') as output_fd:
+            ops[args.operation](db_names, args.server, cfg_dir, output_fd)
