@@ -17,7 +17,7 @@ from ePhone7.views.base import base_view
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 from time import sleep
 import lib.logging_esi as logging_esi
-from ePhone7.utils.view_info import view_info
+from ePhone7.utils.xml.view_info import view_info
 from lib.wrappers import Trace
 from lib.user_exception import UserException as Ux
 log = logging_esi.get_logger('esi.get_xml')
