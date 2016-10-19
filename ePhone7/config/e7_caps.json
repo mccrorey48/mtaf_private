@@ -1,68 +1,68 @@
 {
-    "nolaunch": [
-        {
-            "platformName": "Android",
-            "platformVersion": "4.4",
-            "deviceName": "r2d2",
-            "autoLaunch": false,
-            "appPackage": "com.esi_estech.ditto",
-            "newCommandTimeout": 1200,
-            "type": "constants"
-        }
-    ],
     "login": [
         {
-            "appium-version": "1.3.7",
-            "platformName": "Android",
-            "platformVersion": "4.4",
-            "deviceName": "r2d2",
-            "autoLaunch": true,
-            "appPackage": "com.esi_estech.ditto",
             "appActivity": ".activities.MainViewActivity",
+            "appPackage": "com.esi_estech.ditto",
             "appWaitActivity": ".settings.ui.LoginActivity",
-            "newCommandTimeout": 1200,
-            "type": "constants"
-        }
-    ],
-    "tnc": [
-        {
             "appium-version": "1.3.7",
-            "platformName": "Android",
-            "platformVersion": "4.4",
-            "deviceName": "r2d2",
             "autoLaunch": true,
-            "appPackage": "com.esi_estech.ditto",
-            "appActivity": ".activities.MainViewActivity",
-            "appWaitActivity": "settings.ui.TermsAndConditionsScreen",
+            "deviceName": "r2d2",
             "newCommandTimeout": 1200,
-            "type": "constants"
-        }
-    ],
-    "settings": [
-        {
-            "appium-version": "1.3.7",
             "platformName": "Android",
             "platformVersion": "4.4",
-            "deviceName": "r2d2",
-            "autoLaunch": false,
-            "appPackage": "com.esi_estech.ditto",
-            "newCommandTimeout": 1200,
             "type": "constants"
         }
     ],
     "main": [
         {
-            "platformName": "Android",
-            "platformVersion": "4.4",
-            "newCommandTimeout": 1200,
-            "appWaitPackage": "com.esi_estech.ditto",
+            "appActivity": ".activities.MainViewActivity",
             "appPackage": "com.esi_estech.ditto",
+            "appWaitActivity": "activities.MainViewActivity",
+            "appWaitPackage": "com.esi_estech.ditto",
             "automationName": "Appium",
             "deviceName": "r2d2",
-            "noReset": true,
-            "appActivity": ".activities.MainViewActivity",
-            "appWaitActivity": "activities.MainViewActivity",
             "dontStopAppOnReset": true,
+            "newCommandTimeout": 1200,
+            "noReset": true,
+            "platformName": "Android",
+            "platformVersion": "4.4",
+            "type": "constants"
+        }
+    ],
+    "nolaunch": [
+        {
+            "appPackage": "com.esi_estech.ditto",
+            "autoLaunch": false,
+            "deviceName": "r2d2",
+            "newCommandTimeout": 1200,
+            "platformName": "Android",
+            "platformVersion": "4.4",
+            "type": "constants"
+        }
+    ],
+    "settings": [
+        {
+            "appPackage": "com.esi_estech.ditto",
+            "appium-version": "1.3.7",
+            "autoLaunch": false,
+            "deviceName": "r2d2",
+            "newCommandTimeout": 1200,
+            "platformName": "Android",
+            "platformVersion": "4.4",
+            "type": "constants"
+        }
+    ],
+    "tnc": [
+        {
+            "appActivity": ".activities.MainViewActivity",
+            "appPackage": "com.esi_estech.ditto",
+            "appWaitActivity": "settings.ui.TermsAndConditionsScreen",
+            "appium-version": "1.3.7",
+            "autoLaunch": true,
+            "deviceName": "r2d2",
+            "newCommandTimeout": 1200,
+            "platformName": "Android",
+            "platformVersion": "4.4",
             "type": "constants"
         }
     ]
