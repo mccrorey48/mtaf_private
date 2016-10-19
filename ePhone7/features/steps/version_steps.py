@@ -31,4 +31,5 @@ def step_impl(context):
     else:
         version = m.group(1)
         print("\nVersion = %s" % version)
-        assert version == context.config.userdata.get('version')
+        expected = context.config.userdata.get('version')
+        assert version == expected, "Incorrect Version: expected %s, got %s" % (expected, version)
