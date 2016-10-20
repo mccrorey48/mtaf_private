@@ -18,8 +18,8 @@ class Cfg:
         self.colors = {}
         self.site = {}
 
-    def set_site(self, svr_tag):
-        client = MongoClient('vqda')
+    def set_site(self, cfg_host, svr_tag):
+        client = MongoClient(cfg_host)
         db = client['ccd_site']
         svr_collection = db[svr_tag]
         merge_collection(self.site, svr_collection)

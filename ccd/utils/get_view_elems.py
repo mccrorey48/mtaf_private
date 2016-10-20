@@ -1,10 +1,12 @@
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("svr_tag", choices=['alpha', 'test'], help="server tag, selects server to test")
+parser.add_argument('-c', '--cfg_host', help='name of mongodb server for test configuration, default "vqda"',
+                    default='vqda')
 args = parser.parse_args()
 
 from ccd.utils.configure import cfg
-cfg.set_site(args.svr_tag)
+cfg.set_site(args.cfg_host, args.svr_tag)
 
 import lib.logging_esi as logging_esi
 log = logging_esi.get_logger('esi.get_view_elems')

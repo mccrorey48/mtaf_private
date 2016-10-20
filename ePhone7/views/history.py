@@ -5,7 +5,7 @@ from lib.wrappers import Trace
 
 from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
-from lib.softphone.softphone import get_softphone
+from ePhone7.utils.get_softphone import get_softphone
 from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.contacts_view')

@@ -12,10 +12,21 @@ from lib.softphone.wav_audio import create_wav_file
 from lib.user_exception import UserException as Ux
 
 log = logging_esi.get_logger('esi.softphone')
+
 softphones = {}
 
 
-class Softphone:
+def Softphone(user_cfg, null_snd, tcp):
+    uri = 'sip:%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
+    if uri in softphones:
+        return softphones[uri]
+    else:
+        softphone = _Softphone(user_cfg, null_snd, tcp)
+        softphones[uri] = softphone
+        return softphone
+
+
+class _Softphone:
 
     account = None
     uri = None
@@ -24,10 +35,8 @@ class Softphone:
     cmd_q = None
     dst_uri = None
 
-
     @Trace(log)
-    def __init__(self, user_name, null_snd, tcp):
-        user_cfg = cfg.site['Accounts'][user_name]
+    def __init__(self, user_cfg, null_snd, tcp):
         pbfile = user_cfg['pbfile']
         create_wav_file(pbfile, cfg.site['Quiet'])
         uri = 'sip:%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
@@ -42,7 +51,6 @@ class Softphone:
         self.uri = uri
         self.pjl.pbfile_strings[self.uri] = pbfile
         self.account = self.pjl.lib.add_account(self.uri, proxy, passwd)
-        softphones[user_name] = self
 
     def __del__(self):
         if self.uri in self.pjl.current_calls:
@@ -122,13 +130,3 @@ class Softphone:
     @Trace(log)
     def set_monitor_off(self):
         self.pjl.lib.connect_monitor(None)
-
-
-def get_softphone(user_name=None, null_snd=False, tcp=False):
-    if user_name is None:
-        user_name = cfg.site["DefaultSoftphoneUser"]
-    if user_name in softphones:
-        return softphones[user_name]
-    else:
-        return Softphone(user_name, null_snd, tcp)
-

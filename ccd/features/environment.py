@@ -3,8 +3,12 @@ from ccd.views import base_view
 
 
 def before_all(context):
-    server = context.config.userdata.get('server')
-    cfg.set_site(server)
+    ccd_server = context.config.userdata.get('ccd_server')
+    if 'cfg_server' in context.config.userdata:
+        cfg_server = context.config.userdata.get('cfg_server')
+    else:
+        cfg_server = 'vqda'
+    cfg.set_site(cfg_server, ccd_server)
     base_view.open_browser()
 
 

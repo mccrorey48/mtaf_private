@@ -7,7 +7,7 @@ with logging_esi.msg_src_cm('importing modules'):
     from ePhone7.views import *
     from lib.wrappers import TestCase
 
-debug = True
+debug = False
 
 
 def except_screenshot(type, value, traceback):
@@ -24,7 +24,7 @@ class SmokeTests(unittest.TestCase):
     def tearDownClass(cls):
         base_view.close_appium()
 
-    # @unittest.skipIf(debug, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_030_contact_lists(self):
         # works for coworker contacts, need to define requirements and setup for others
@@ -38,7 +38,7 @@ class SmokeTests(unittest.TestCase):
         # contacts_view.goto_tab('Favorites')
         # contacts_view.verify_contacts_list('FavoriteContacts')
 
-    # @unittest.skipIf(debug, 'debug')
+    @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_040_user_tabs(self):
         user_view.goto_tab('Contacts')

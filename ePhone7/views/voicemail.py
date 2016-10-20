@@ -13,27 +13,24 @@ import re
 
 class VoicemailView(UserView):
     locators = {
-        "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
-        "Contacts": {"by": "zpath", "value": "//tw/rl[1]/ll/tv", "text": "Contacts"},
-        "DndButton": {"by": "accessibility id", "value": "Do not Disturb"},
-        "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endButtonImage"},
-        "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
-        "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
-        "Keypad": {"by": "id", "parent": "com.esi_estech.ditto:id/keypad_tab", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
-        "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
-        "IncomingCallIgnore": {"by": "id", "value": "com.esi_estech.ditto:id/ignore_button"},
-        "IncomingCallAnswerToSpeaker": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_speaker_button"},
-        "IncomingCallLabel": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_label"},
-        "IncomingCallCallerImage": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_image"},
-        "IncomingCallCallerName": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_name"},
-        "IncomingCallCallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_number"},
-        "PrefsButton": {"by": "id", "value": "com.esi_estech.ditto:id/settings_button"},
-        "PrefsButtonz": {"by": "zpath", "value": "//rl[2]/bt[5]"},
-        "SettingsButton": {"by": "zpath", "value": "//sv/fl/fl[3]"},
-        "SettingsButtonText": {"by": "zpath", "value": "//sv/fl/fl[3]/ll/tv"},
-        "UserHeaderName": {"by": "id", "value": "com.esi_estech.ditto:id/user_header_name"},
-        "UserProximityStatus": {"by": "id", "value": "com.esi_estech.ditto:id/user_proximity_status"},
-        "Voicemail": {"by": "zpath", "value": "//tw/rl[3]/ll/tv", "text": "Voicemail"}
+        "CalledTime": {"by": "id", "value": "com.esi_estech.ditto:id/calledTime"},
+        "CallerName": {"by": "id", "value": "com.esi_estech.ditto:id/callerName"},
+        "CallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/callerNumber"},
+        "DeleteButton": {"by": "id", "value": "com.esi_estech.ditto:id/delete_voicemail"},
+        "ForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_voicemail"},
+        "New": {"by": "id", "value": "com.esi_estech.ditto:id/voicemail_new", "text": "NEW"},
+        "NoVoicemails": {"by": "id", "value": "com.esi_estech.ditto:id/call_log_empty"},
+        "OkForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_dialog_ok_button"},
+        "PlaybackStartStop": {"by": "id", "value": "com.esi_estech.ditto:id/playback_start_stop"},
+        "SaveButton": {"by": "id", "value": "com.esi_estech.ditto:id/save_voicemail"},
+        "Saved": {"by": "id", "value": "com.esi_estech.ditto:id/voicemail_saved", "text": "SAVED"},
+        "ShareButton": {"by": "id", "value": "com.esi_estech.ditto:id/share_voicemail"},
+        "Trash": {"by": "id", "value": "com.esi_estech.ditto:id/voicemail_trash", "text": "TRASH"},
+        "VmDuration": {"by": "id", "value": "com.esi_estech.ditto:id/vmDuration"},
+        "VmButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_button"},
+        "VmCallButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_call_button"},
+        "VmDetailHeader": {"by": "id", "value": "com.esi_estech.ditto:id/vm_user_header_layout"},
+        "VmParent": {"by": "id", "value": "com.esi_estech.ditto:id/voicemail_card"}
     }
 
     def __init__(self):
@@ -46,7 +43,7 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def receive_voicemail(self):
-        from lib.softphone.softphone import get_softphone
+        from ePhone7.utils.get_softphone import get_softphone
         softphone = get_softphone()
         self.set_dnd(on=True)
         dst_cfg = cfg.site['Users']['R2d2User']
@@ -59,7 +56,7 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def call_first_vm_caller(self):
-        from lib.softphone.softphone import get_softphone
+        from ePhone7.utils.get_softphone import get_softphone
         # expects the current display to be the detail screen for a voicemail from cfg.site['DefaultSoftphoneUser']
         softphone = get_softphone()
         self.click_element_by_key('VmCallButton')

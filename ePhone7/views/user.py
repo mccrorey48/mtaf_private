@@ -141,7 +141,7 @@ class UserView(BaseView):
 
     @Trace(log)
     def incoming_call_screen_test(self):
-        from lib.softphone.softphone import get_softphone
+        from ePhone7.utils.get_softphone import get_softphone
         softphone = get_softphone()
         src_cfg = cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]
         dst_cfg = cfg.site['Users']['R2d2User']
@@ -156,7 +156,7 @@ class UserView(BaseView):
 
     @Trace(log)
     def answer_call_test(self):
-        from lib.softphone.softphone import get_softphone
+        from ePhone7.utils.get_softphone import get_softphone
         softphone = get_softphone()
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
@@ -169,7 +169,7 @@ class UserView(BaseView):
 
     @Trace(log)
     def auto_answer_call_test(self):
-        from lib.softphone.softphone import get_softphone
+        from ePhone7.utils.get_softphone import get_softphone
         softphone = get_softphone()
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
@@ -180,7 +180,7 @@ class UserView(BaseView):
 
     @Trace(log)
     def ignore_call_test(self):
-        from lib.softphone.softphone import get_softphone
+        from ePhone7.utils.get_softphone import get_softphone
         softphone = get_softphone()
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']

@@ -5,7 +5,7 @@ from time import sleep
 
 import lib.logging_esi as logging_esi
 from ePhone7.utils.configure import cfg
-from lib.softphone.softphone import get_softphone
+from ePhone7.utils.get_softphone import get_softphone
 
 parser = argparse.ArgumentParser()
 parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="specify site tag")

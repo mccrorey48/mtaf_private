@@ -1,3 +1,19 @@
+# pjsip doesn't work with unicode so just convert the config data to str type
+def stringify(thing):
+    # convert unicode to str because pjsip doesn't like unicode
+    if type(thing) is unicode:
+        return str(thing)
+    elif type(thing) is dict:
+        newdict = {}
+        for key in thing:
+            newdict[str(key)] = stringify(thing[key])
+        return newdict
+    elif type(thing) is list:
+        return [stringify(item) for item in thing]
+    else:
+        return thing
+
+
 def merge_collection(site, collection):
     """
         add items from collection (type MongoClient[<db_name>][<collection_name>])
@@ -39,6 +55,7 @@ def merge_collection(site, collection):
     :param dict2: dictionary with values to merge into dict1
     """
     for doc in collection.find():
+        doc = stringify(doc)
         del doc["_id"]
         if doc["type"] == "constants":
             del doc["type"]

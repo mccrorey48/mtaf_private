@@ -2,13 +2,14 @@ import argparse
 import unittest
 
 parser = argparse.ArgumentParser()
-parser.add_argument("dir_name", choices=['ePhone7', 'ePhonego-android', 'ePhoneGo-iOS'], help="dir name, selects mtaf subdirectory")
 parser.add_argument("site_tag", choices=['mm', 'js', 'local'], help="site tag, selects config/site_<tag>.json file")
+parser.add_argument('-c', '--cfg_host', help='name of mongodb server for test configuration, default "vqda"',
+                    default='vqda')
 args = parser.parse_args()
 
 from ePhone7.utils.configure import cfg
 
-cfg.set_site(args.dir_name, args.site_tag)
+cfg.set_site(args.cfg_host, args.site_tag)
 
 # suite = unittest.TestSuite()
 # suite.addTest(unittest.TestLoader().loadTestsFromTestCase(smoke.SmokeTests))
