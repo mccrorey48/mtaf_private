@@ -1,0 +1,3 @@
+#/bin/bash
+cd ~/mtaf
+behave ePhone7/features -D site_tag=mm -D version=0.20.8 -f plain
