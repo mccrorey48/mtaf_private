@@ -1,6 +1,5 @@
 from behave import *
 from ccd.views import *
-from ccd.utils.configure import cfg
 
 use_step_matcher("re")
 
@@ -80,4 +79,39 @@ def step_impl(context):
             Then I click the trash can for the first test user
             And I click Yes on the confirmation popup
             And I see the first test user has been deleted
+        """)
+
+
+@when("I go to the timeframes page")
+def step_impl(context):
+    domain_view.goto_time_frames()
+
+
+@step("I see if any timeframes are listed")
+def step_impl(context):
+    context.rows = domain_time_frames_view.find_elements_by_key("TableRows")
+
+
+@then("I click the trash can for the first timeframe")
+def step_impl(context):
+    if len(context.rows):
+        elem = domain_time_frames_view.find_sub_element_by_key(context.rows[0], "TrashCanIconSub")
+        domain_users_view.click_element(elem)
+
+
+@step("I see the first timeframe has been deleted")
+def step_impl(context):
+    if len(context.rows) > 0:
+        rows = domain_time_frames_view.find_elements_by_key("TableRows")
+        assert len(rows) == len(context.rows) - 1, "user not deleted"
+        context.rows = rows
+
+
+@then("I repeat until there are no timeframes listed")
+def step_impl(context):
+    while len(context.rows) > 0:
+        context.execute_steps(u"""
+            Then I click the trash can for the first timeframe
+            And I click Yes on the confirmation popup
+            And I see the first timeframe has been deleted
         """)
