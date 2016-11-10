@@ -1,5 +1,6 @@
 from behave import *
 from ccd.views import *
+from time import sleep
 
 use_step_matcher("re")
 
@@ -25,6 +26,7 @@ def step_impl(context):
 @step("I click Yes on the confirmation popup")
 def step_impl(context):
     if len(context.rows):
+        sleep(2)
         domain_view.click_element_by_key("ConfirmYes")
 
 
@@ -95,6 +97,7 @@ def step_impl(context):
 @then("I click the trash can for the first timeframe")
 def step_impl(context):
     if len(context.rows):
+        sleep(2)
         elem = domain_time_frames_view.find_sub_element_by_key(context.rows[0], "TrashCanIconSub")
         domain_users_view.click_element(elem)
 

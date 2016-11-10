@@ -1,5 +1,6 @@
 from behave import *
 from ccd.views import *
+from time import sleep
 
 use_step_matcher("re")
 
@@ -22,11 +23,13 @@ def step_impl(context):
 
 @when("I enter a timeframe name")
 def step_impl(context):
+    sleep(2)
     domain_time_frames_view.find_element_by_key("TimeframeName").send_keys('SVAuto')
 
 
 @step("I click the Save button")
 def step_impl(context):
+    sleep(2)
     domain_time_frames_view.click_element_by_key('SaveButton')
 
 
