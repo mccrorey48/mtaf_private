@@ -50,7 +50,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def wait_for_page_title(self):
-        self.wait_for_title(self.page_title, timeout=15)
+        self.wait_for_title(self.page_title)
 
     @Trace(log)
     def test_domain_message_is_displayed(self):

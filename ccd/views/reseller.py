@@ -41,7 +41,7 @@ class ResellerView(BaseView):
     def version_should_be_correct(self):
         source = self.get_source()
         m = re.match('.*<!-- ESI Cloud Communication Dashboard (v\.\d+\.\d+\.\d+) build (\d+) Date: ([^-]*) -- (\S*)',
-                 source, re.MULTILINE | re.DOTALL)
+                     source, re.MULTILINE | re.DOTALL)
         if m:
             _version, _build, _date, _time = m.groups()
             log.debug("version info = %s", m.groups())
