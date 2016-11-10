@@ -75,7 +75,7 @@ class MyCallCallback(pj.CallCallback):
         self.acct_info.state = pj.CallState.NULL
         self.media_connected = False
 
-    def on_state(self):
+    def _on_state(self):
         _info = self.acct_info.call.info()
         remote_uri = re.match('("[^"]*"\s+)?<?([^>]+)', _info.remote_uri).group(2)
         log.debug("%s: ci.remote_uri=%s state %s media_state %s" % (
@@ -98,8 +98,13 @@ class MyCallCallback(pj.CallCallback):
         if self.acct_info.on_state_cb:
             self.acct_info.on_state_cb(self.acct_info)
 
+    def on_state(self):
+        with logging_esi.msg_src_cm('on_state'):
+            self._on_state()
+
     def on_media_state(self):
-        self.on_state()
+        with logging_esi.msg_src_cm('on_media_state'):
+            self._on_state()
 
 
 class AccountInfo:
@@ -118,7 +123,7 @@ class AccountInfo:
 
 class PjsuaLib(pj.Lib):
 
-    acct_infos = {}
+    accounts = {}
 
     def __init__(self, quality=10, tx_drop_pct=0, rx_drop_pct=0):
         pj.Lib.__init__(self)
@@ -160,9 +165,9 @@ class PjsuaLib(pj.Lib):
         acc_cfg.allow_contact_rewrite = False
         acc_cfg.auth_cred = [pj.AuthCred(realm="*", username=number, passwd=pw)]
         account = self.create_account(acc_cfg)
-        self.acct_infos[uri] = AccountInfo(account)
-        account_cb = MyAccountCallback(self.acct_infos[uri])
+        self.accounts[uri] = AccountInfo(account)
+        account_cb = MyAccountCallback(self.accounts[uri])
         account.set_callback(account_cb)
-        self.acct_infos[uri].account_cb = account_cb
+        self.accounts[uri].account_cb = account_cb
         account_cb.wait()
 

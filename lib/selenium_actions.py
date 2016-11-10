@@ -37,18 +37,18 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def assert_element_text(self, elem, expected, elem_name='element'):
-        log.debug('%s text = %s should be %s' % (elem_name, elem.text, expected))
+        # log.debug('%s text = %s should be %s' % (elem_name, elem.text, expected))
         self.assertEqual(elem.text, expected, "Expect %s text '%s', got '%s'" % (elem_name, expected, elem.text))
 
     @Trace(log)
     def assert_element_text_ic(self, elem, expected, elem_name='element'):
-        log.debug('%s text = %s should be %s (ignore case)' % (elem_name, elem.text, expected))
+        # log.debug('%s text = %s should be %s (ignore case)' % (elem_name, elem.text, expected))
         self.assertEqual(elem.text.upper(), expected.upper(), "Expect %s text '%s', got '%s' (ignoring case)" %
                          (elem_name, expected, elem.text))
 
     @Trace(log)
     def assert_elements_count(self, elems, expected_count, elem_name='elements'):
-        log.debug('%s count = %d should be %d' % (elem_name, len(elems), expected_count))
+        # log.debug('%s count = %d should be %d' % (elem_name, len(elems), expected_count))
         self.assertEqual(len(elems), expected_count, "Expect %s length %d, got %d" %
                          (elem_name, expected_count, len(elems)))
 
@@ -76,12 +76,12 @@ class SeleniumActions(Tc):
                 if found_text != locator["text"]:
                     msg = "element text did not match, expected %s, found %s" % (locator["text"], found_text)
                     continue
-                log.debug("found element with text = %s" % found_text)
+                # log.debug("found element with text = %s" % found_text)
             if elem.is_displayed() and elem.is_enabled():
-                log.debug("element found and clickable, clicking")
+                # log.debug("element found and clickable, clicking")
                 self.click_element(elem)
             else:
-                log.debug("element found but is not clickable, waiting")
+                # log.debug("element found but is not clickable, waiting")
                 continue
             break
         else:
@@ -89,44 +89,44 @@ class SeleniumActions(Tc):
 
     @Trace(log)
     def find_element_by_locator(self, locator, timeout=10):
-        log.debug("%s = %s" % (locator['by'], locator['value']))
+        # log.debug("%s = %s" % (locator['by'], locator['value']))
         return self.find_element_with_timeout(locator['by'], locator['value'], timeout=timeout)
 
     @Trace(log)
     def find_elements_by_locator(self, locator):
         if locator['by'] == 'xpath':
-            log.debug("xpath = " + locator['value'])
+            # log.debug("xpath = " + locator['value'])
             return self.driver.find_elements_by_xpath(locator['value'])
         if locator['by'] == 'id':
-            log.debug("id = " + locator['value'])
+            # log.debug("id = " + locator['value'])
             return self.driver.find_elements_by_id(locator['value'])
         if locator['by'] == 'accessibility id':
-            log.debug("accessibility id = " + locator['value'])
+            # log.debug("accessibility id = " + locator['value'])
             return self.driver.find_elements_by_accessibility_id(locator['value'])
         if locator['by'] == 'css selector':
-            log.debug("css selector = " + locator['value'])
+            # log.debug("css selector = " + locator['value'])
             return self.driver.find_elements_by_css_selector(locator['value'])
 
     @Trace(log)
     def find_sub_element_by_locator(self, parent, locator, timeout=10):
         if locator['by'] == 'xpath':
-            log.debug("xpath = " + locator['value'])
+            # log.debug("xpath = " + locator['value'])
             return self.find_element_with_timeout('xpath', locator['value'], parent=parent, timeout=timeout)
         if locator['by'] == 'id':
-            log.debug("id = " + locator['value'])
+            # log.debug("id = " + locator['value'])
             return self.find_element_with_timeout('id', locator['value'], parent=parent, timeout=timeout)
 
     @staticmethod
     @Trace(log)
     def find_sub_elements_by_locator(parent, locator, timeout=20):
         if locator['by'] == 'xpath':
-            log.debug("xpath = " + locator['value'])
+            # log.debug("xpath = " + locator['value'])
             return parent.find_elements_by_xpath(locator['value'])
         if locator['by'] == 'id':
-            log.debug("id = " + locator['value'])
+            # log.debug("id = " + locator['value'])
             return parent.find_elements_by_id(locator['value'])
         if locator['by'] == 'css':
-            log.debug("css selector= " + locator['value'])
+            # log.debug("css selector= " + locator['value'])
             return parent.find_elements_by_css_selector(locator['value'])
 
     @Trace(log)

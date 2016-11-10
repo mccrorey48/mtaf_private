@@ -82,7 +82,7 @@ class Trace(object):
                 self.elapsed_time = time() - start_time
             except Fx as e:
                 logger.warn(('%%s %%s%%-%ds FAIL - %%s' % (35 - logging_esi.trace_indent))
-                            % (self.prefix(), f.func_name, "%s %s" % (sp(), e.get_msg())))
+                            % (self.prefix(), f.func_name, sp(), e.get_msg()))
                 raise Fx('calling %s' % f.func_name)
             except:
                 (exc_type, value, tb) = sys.exc_info()
