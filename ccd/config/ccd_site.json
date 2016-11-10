@@ -464,13 +464,13 @@
     ],
     "test": [
         {
-            "Build": "0",
-            "Date": "August 29, 2016",
+            "Build": "1",
+            "Date": "November 2, 2016",
             "Network": "svlab",
             "PortalUrl": "http://test.svlab.esihs.net/portal/login/logout",
             "SeleniumUrl": "http://localhost:4444/wd/hub",
-            "Time": "3:30pm",
-            "Version": "v.1.2.5",
+            "Time": "4:00pm",
+            "Version": "v.1.2.7",
             "type": "constants"
         }
     ]
