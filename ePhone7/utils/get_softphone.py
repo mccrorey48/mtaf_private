@@ -2,7 +2,6 @@ from ePhone7.utils.configure import cfg
 from lib.softphone.softphone import Softphone
 
 
-
 def get_softphone(user_name=None, null_snd=False, tcp=False):
     if user_name is None:
         user_name = cfg.site["DefaultSoftphoneUser"]
