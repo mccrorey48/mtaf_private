@@ -6,7 +6,8 @@ from time import time
 import lib.logging_esi as logging_esi
 from appium import webdriver
 
-from lib.user_exception import UserException as Ux, UserFailException as Fx, stat_prefix as sp
+from lib.user_exception import UserException as Ux, UserFailException as Fx, UserTimeoutException as Tx, \
+    stat_prefix as sp
 
 log = logging_esi.get_logger('esi.wrappers')
 
@@ -84,6 +85,10 @@ class Trace(object):
                 logger.warn(('%%s %%s%%-%ds FAIL - %%s' % (35 - logging_esi.trace_indent))
                             % (self.prefix(), f.func_name, sp(), e.get_msg()))
                 raise Fx('calling %s' % f.func_name)
+            except Tx as e:
+                logger.warn(('%%s %%s%%-%ds FAIL - %%s' % (35 - logging_esi.trace_indent))
+                            % (self.prefix(), f.func_name, sp(), e.get_msg()))
+                raise Tx('User timeout exception: calling %s' % f.func_name)
             except:
                 (exc_type, value, tb) = sys.exc_info()
                 if exc_type == Ux:

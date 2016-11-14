@@ -3,7 +3,7 @@ import inspect
 
 
 class UserException(Exception):
-    def __init__(self, msg='no message', sp=True):
+    def __init__(self, msg='user exception', sp=True):
         self.msg = msg
         if sp:
             self.text = stat_prefix(2) + ' - ' + msg
@@ -18,7 +18,12 @@ class UserException(Exception):
 
 
 class UserFailException(UserException):
-    def __init__(self, msg='no message'):
+    def __init__(self, msg='fail exception'):
+        UserException.__init__(self, msg, False)
+
+
+class UserTimeoutException(UserException):
+    def __init__(self, msg='timeout exception'):
         UserException.__init__(self, msg, False)
 
 
