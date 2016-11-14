@@ -50,20 +50,59 @@ caller.account_info.on_incoming_call_cb = on_incoming_call_ring
 user_cfg = cfg.site['Users']['Auto TesterD']
 pbfile = os.path.join('wav', '%s.wav' % user_cfg['UserId'])
 uri = "sip:%s@%s" % (user_cfg['UserId'], user_cfg['DomainName'])
-called = Softphone(uri, user_cfg['Proxy'], user_cfg['Password'], null_snd=True,
-                   dns_list=user_cfg['dns_list'], tcp=False, pbfile=pbfile)
-called.account_info.on_state_cb = on_state_cb
-called.account_info.on_incoming_call_cb = on_incoming_call_ring
-caller.make_call(called.uri)
+called_1 = Softphone(uri, user_cfg['Proxy'], user_cfg['Password'], null_snd=True,
+                     dns_list=user_cfg['dns_list'], tcp=False, pbfile=pbfile)
+called_1.account_info.on_state_cb = on_state_cb
+called_1.account_info.on_incoming_call_cb = on_incoming_call_ring
+user_cfg = cfg.site['Users']['Auto TesterE']
+pbfile = os.path.join('wav', '%s.wav' % user_cfg['UserId'])
+uri = "sip:%s@%s" % (user_cfg['UserId'], user_cfg['DomainName'])
+called_2 = Softphone(uri, user_cfg['Proxy'], user_cfg['Password'], null_snd=True,
+                     dns_list=user_cfg['dns_list'], tcp=False, pbfile=pbfile)
+called_2.account_info.on_state_cb = on_state_cb
+called_2.account_info.on_incoming_call_cb = on_incoming_call_answer
+
+# caller calls called_1
+# called_1 answers 180 ringing, waits 5 seconds, answers 200 OK
+# caller waits 5 seconds after 200 OK, hangs up
+caller.make_call(called_1.uri)
 try:
     caller.wait_for_call_status('early', 20)
 except Tx as e:
     log.warn(e.msg)
 sleep(5)
-called.account_info.call.answer(200)
+called_1.account_info.call.answer(200)
 try:
     caller.wait_for_call_status('call', 20)
 except Tx as e:
     log.warn(e.msg)
 sleep(5)
 caller.end_call()
+
+# caller calls called_2
+# called_2 auto answers (sends 200 OK immediately)
+# caller waits 5 seconds after 200 OK, hangs up
+caller.make_call(called_2.uri)
+try:
+    caller.wait_for_call_status('call', 20)
+except Tx as e:
+    log.warn(e.msg)
+sleep(5)
+caller.end_call()
+
+# caller calls called_1
+# called_1 answers 180 ringing, waits 5 seconds, answers 200 OK
+# called_1 waits 5 seconds after sending 200 OK, hangs up
+caller.make_call(called_1.uri)
+try:
+    caller.wait_for_call_status('early', 20)
+except Tx as e:
+    log.warn(e.msg)
+sleep(5)
+called_1.account_info.call.answer(200)
+try:
+    caller.wait_for_call_status('call', 20)
+except Tx as e:
+    log.warn(e.msg)
+sleep(5)
+called_1.end_call()

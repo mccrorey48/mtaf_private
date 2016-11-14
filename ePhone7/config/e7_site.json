@@ -261,6 +261,19 @@
             "name": "Auto TesterD",
             "pbfile": "wav/2203.wav",
             "type": "user"
+        },
+        {
+            "DomainName": "test2.test-eng.com",
+            "Password": "kVAsy1oc",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2204",
+            "UserNameIncoming": "Auto Testerd",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "Auto TesterE",
+            "pbfile": "wav/2204.wav",
+            "type": "user"
         }
     ]
 }
