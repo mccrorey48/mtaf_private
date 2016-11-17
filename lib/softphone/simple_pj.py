@@ -33,9 +33,23 @@ call_state_text = {
 }
 
 
-# callback used by the pjsip/pjsua libraries for logging
+# callback to be used by the pjsip/pjsua C libraries for logging
 def pjl_log_cb(level, _str, _len):
-    log.debug(_str.strip())
+    sip_match = re.match('.*(Request|Response)', _str)
+    lines = ["log_cb(%d): %s" % (level, line) for line in _str.splitlines()]
+    if level == 1:
+        for line in lines:
+            log.warn(line)
+    elif level == 2:
+        for line in lines:
+            log.info(line)
+    elif sip_match:
+        log.trace(lines[0])
+        for line in lines:
+            log.debug(line)
+    else:
+        for line in lines:
+            log.debug(line)
 
 
 class Softphone:
@@ -62,7 +76,7 @@ class Softphone:
             self.account_info = account_infos[self.uri]
 
     @Trace(log)
-    def wait_for_call_status(self, desired_status, timeout=30):
+    def wait_for_call_status(self, desired_status, timeout=20, warn_only=False):
         # possible desired_status values: 'call', 'idle', 'early', 'hold'
         start = time()
         while time() - start < timeout:
@@ -74,26 +88,50 @@ class Softphone:
                 self.teardown_call()
                 raise Ux('wait for call status "early" terminated call because status was "call"')
         else:
-            raise Tx('wait for call status "%s" timed out after %s seconds' % (desired_status, timeout))
+            if warn_only:
+                log.warn('wait for call status "%s" timed out after %s seconds' % (desired_status, timeout))
+            else:
+                raise Tx('wait for call status "%s" timed out after %s seconds' % (desired_status, timeout))
 
     @Trace(log)
-    def make_call(self, dst_uri):
+    def make_call(self, dst_uri, dst_response=None):
         self.dst_uri = dst_uri
+        account_infos[dst_uri].incoming_response = dst_response
         if self.account_info.reg_status != 200:
             raise Ux("Can't set up call, registration status (src) %s" % self.account_info.reg_status)
         log.debug("%s calling %s" % (self.uri, self.dst_uri))
-        # print self.dst_uri
         self.account_info.call = self.account_info.account.make_call(self.dst_uri)
         self.account_info.call.set_callback(MyCallCallback(self.account_info))
 
     @Trace(log)
-    def end_call(self):
+    def end_call(self, timeout=10):
         if not self.account_info.call:
             raise Ux("end_call(): %s not in call" % self.uri)
         log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
         self.account_info.call.hangup()
-        self.wait_for_call_status('disconnected', 5)
-        sleep(5)
+        self.wait_for_call_status('idle', timeout)
+
+    @Trace(log)
+    def hold(self, timeout=10):
+        if not self.account_info.call:
+            raise Ux("end_call(): %s not in call" % self.uri)
+        log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
+        self.account_info.call.hold()
+        self.wait_for_call_status('hold', timeout)
+
+    @Trace(log)
+    def unhold(self, timeout=10):
+        if not self.account_info.call:
+            raise Ux("end_call(): %s not in call" % self.uri)
+        log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
+        self.account_info.call.unhold()
+        self.wait_for_call_status('call', timeout)
+
+    @Trace(log)
+    def send_response_code(self, code):
+        if not self.account_info.call:
+            raise Ux("leave_msg(): %s not in call" % self.uri)
+        self.account_info.call.answer(code)
 
     @Trace(log)
     def leave_msg(self, length=None):
@@ -105,13 +143,6 @@ class Softphone:
             random.seed(time())
             length = random.randrange(10, 30, 1)
         sleep(length)
-
-    def teardown_call(self):
-        if self.account_info.call:
-            self.account_info.call.hangup()
-            log.debug("%s hanging up" % self.uri)
-            log.debug("calling wait_for_call_status(%s, 'end', 15)" % self.uri)
-            self.wait_for_call_status('disconnected', 15)
 
     @Trace(log)
     def dial_dtmf(self, dtmf_string):
@@ -129,40 +160,6 @@ class Softphone:
     def set_monitor_off(self):
         pass
 
-    # @Trace(log)
-    # def connect_media(self):
-    #     if self.rec_id is None:
-    #         raise Ux("connect_media: no media exists")
-    #     self.rec_slot = self.lib.recorder_get_slot(self.rec_id)
-    #     my_uri = self.call.info().account.info().uri
-    #     # self.media_call_slot is set to the call's conference slot when connecting media,
-    #     # and set to None when disconnecting, so if it is not None, this is a reconnect
-    #     if self.media_call_slot is not None:
-    #         # if self.media_call_slot is not None but is not the current call's conference slot,
-    #         # it isn't a reconnect, it's a structural program error
-    #         if self.media_call_slot != self.call.info().conf_slot:
-    #             raise Ux("connect_media: call at slot %d media already connected to call slot %d"
-    #                      % (self.call.info().conf_slot, self.media_call_slot))
-    #         log.debug("%s: disconnecting call slot %d from recorder %s at slot %d"
-    #                   % (my_uri, self.media_call_slot, self.rec_id, self.rec_slot))
-    #         lib.conf_disconnect(self.media_call_slot, self.rec_slot)
-    #         if self.player_id is not None:
-    #             self.pb_slot = lib.player_get_slot(self.player_id)
-    #             log.debug("%s: disconnecting player %s at slot %d to call slot %d"
-    #                       % (my_uri, self.player_id, self.pb_slot, self.media_call_slot))
-    #             lib.conf_disconnect(self.pb_slot, self.media_call_slot)
-    #         self.media_call_slot = None
-    #     log.debug("%s: connecting call slot %d to recorder %s at slot %d"
-    #               % (my_uri, self.call.info().conf_slot, self.rec_id, self.rec_slot))
-    #     lib.conf_connect(self.call.info().conf_slot, self.rec_slot)
-    #     # if there is a player ID then the player was created during create_media and we can connect it, too
-    #     if self.player_id is not None:
-    #         self.pb_slot = lib.player_get_slot(self.player_id)
-    #         log.debug("%s: connecting player %s at slot %d to call slot %d"
-    #                   % (my_uri, self.player_id, self.pb_slot, self.call.info().conf_slot))
-    #         lib.conf_connect(self.pb_slot, self.call.info().conf_slot)
-    #     self.media_call_slot = self.call.info().conf_slot
-
 
 class MyAccountCallback(pj.AccountCallback):
 
@@ -173,15 +170,17 @@ class MyAccountCallback(pj.AccountCallback):
         pj.AccountCallback.__init__(self)
         log.debug("MyAccountCallback.__init__(%s)" % acct_info)
         self.acct_info = acct_info
+        pass
 
     def wait(self):
         self.sem = threading.Semaphore(0)
         self.sem.acquire()
 
     def on_reg_state(self):
-        _info = self.account.info()
-        log.debug("%s: on_reg_state - registration status = %s (%s)" % (_info.uri, _info.reg_status, _info.reg_reason))
-        self.acct_info.reg_status = _info.reg_status
+        reg_info = self.account.info()
+        log.debug("%s: on_reg_state - registration status = %s (%s)" % (reg_info.uri, reg_info.reg_status,
+                                                                        reg_info.reg_reason))
+        self.acct_info.reg_status = reg_info.reg_status
         if self.sem and self.acct_info.reg_status == 200:
             self.sem.release()
             self.sem = None
@@ -191,8 +190,60 @@ class MyAccountCallback(pj.AccountCallback):
         self.acct_info.call = call
         call.set_callback(MyCallCallback(self.acct_info))
         # on_incoming_call_cb defaults to None, but it can designate an external callback to be called here
-        if self.acct_info.on_incoming_call_cb:
-            self.acct_info.on_incoming_call_cb(self.acct_info)
+        if self.acct_info.incoming_response:
+            call.answer(self.acct_info.incoming_response)
+
+
+# look up new_call_states[old_state][(call_state, media_state)]
+# to get a dictionary that will contain 'new_state' and might contain 'media actions'
+new_call_statuses = {
+    'idle': {
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['create_media', 'connect_media']},
+        (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'error'},
+        (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'early'},
+        (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'early'},
+        (pj.CallState.INCOMING, pj.MediaState.ACTIVE): {'status': 'idle'},
+        (pj.CallState.INCOMING, pj.MediaState.NULL): {'status': 'idle'},
+        (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'idle'},
+        (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'idle'},
+        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle'},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle'},
+    },
+    'early': {
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['create_media', 'connect_media']},
+        (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'early'},
+        (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'early'},
+        (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'early'},
+        (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'early'},
+        (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'early'},
+        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle'},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle'},
+    },
+    'call': {
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call'},
+        (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'hold', 'actions': ['disconnect_media']},
+        (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'error'},
+        (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'error'},
+        (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'error'},
+        (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'error'},
+        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': [
+            'disconnect_media', 'destroy_media', 'end_call']},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': [
+            'disconnect_media', 'destroy_media', 'end_call']}
+    },
+    'hold': {
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['connect_media']},
+        (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'hold'},
+        (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'error'},
+        (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'error'},
+        (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'error'},
+        (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'error'},
+        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': [
+            'destroy_media', 'end_call']},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': [
+            'destroy_media', 'end_call']}
+    },
+}
 
 
 class MyCallCallback(pj.CallCallback):
@@ -202,46 +253,30 @@ class MyCallCallback(pj.CallCallback):
         self.acct_info = acct_info
         self.rec_slot = None
         self.rec_id = None
-        self.player_id = None
+        self.pb_id = None
         self.pb_slot = None
-        self.old_pbfile = None
         self.acct_info.state = pj.CallState.NULL
         self.media_connected = False
 
     def _on_state(self):
-        _info = self.acct_info.call.info()
-        remote_uri = re.match('("[^"]*"\s+)?<?([^>]+)', _info.remote_uri).group(2)
+        media_ops = {
+            'create_media': self.create_media,
+            'connect_media': self.connect_media,
+            'disconnect_media': self.disconnect_media,
+            'destroy_media': self.destroy_media,
+            'end_call': self.end_call
+        }
+        call_info = self.acct_info.call.info()
+        remote_uri = re.match('("[^"]*"\s+)?<?([^>]+)', call_info.remote_uri).group(2)
+        self.acct_info.state = call_info.state
+        self.acct_info.media_state = call_info.media_state
         log.debug("%s: ci.remote_uri=%s state %s media_state %s" % (
-            _info.uri, remote_uri, call_state_text[_info.state], media_state_text[_info.media_state]))
-        if self.acct_info.state != _info.state:
-            log.debug("%s: call transition %s --> %s" % (_info.uri, call_state_text[self.acct_info.state],
-                                                         call_state_text[_info.state]))
-            self.acct_info.state = _info.state
-            if self.acct_info.state == pj.CallState.DISCONNECTED:
-                self.acct_info.call = None
-                self.acct_info.call_status = 'disconnected'
-            elif self.acct_info.state == pj.CallState.NULL:
-                self.acct_info.call = None
-                self.acct_info.call_status = 'idle'
-            elif self.acct_info.state == pj.CallState.EARLY:
-                self.acct_info.call_status = 'early'
-            elif self.acct_info.state == pj.CallState.CONFIRMED:
-                if self.acct_info.media_state != _info.media_state:
-                    log.debug("%s: media transition %s --> %s" % (_info.uri, media_state_text[self.acct_info.media_state],
-                                                                  media_state_text[_info.media_state]))
-                    self.acct_info.media_state = _info.media_state
-                    if _info.state == pj.CallState.CONFIRMED:
-                        new_hold_state = self.acct_info.media_state != pj.MediaState.ACTIVE
-                        if self.acct_info.hold != new_hold_state:
-                            log.debug("%s: hold transition %s --> %s" % (_info.uri, self.acct_info.hold, new_hold_state))
-                            self.acct_info.hold = new_hold_state
-                if self.acct_info.hold:
-                    self.acct_info.call_status = 'hold'
-                else:
-                    self.acct_info.call_status = 'call'
-        # on_state_cb defaults to None, but it can designate an external callback to be called here
-        if self.acct_info.on_state_cb:
-            self.acct_info.on_state_cb(self.acct_info)
+            call_info.uri, remote_uri, call_state_text[call_info.state], media_state_text[call_info.media_state]))
+        new_call_status = new_call_statuses[self.acct_info.call_status][(call_info.state, call_info.media_state)]
+        self.acct_info.call_status = new_call_status['status']
+        if 'actions' in new_call_status:
+            for action in new_call_status['actions']:
+                media_ops[action]()
 
     def on_state(self):
         with logging_esi.msg_src_cm('on_state'):
@@ -251,20 +286,71 @@ class MyCallCallback(pj.CallCallback):
         with logging_esi.msg_src_cm('on_media_state'):
             self._on_state()
 
+    @Trace(log)
+    def create_media(self):
+        log.info("%s: called create_media" % self.acct_info.uri)
 
-class AccountInfo:
+    @Trace(log)
+    def destroy_media(self):
+        log.info("%s: called destroy_media" % self.acct_info.uri)
+
+    @Trace(log)
+    def disconnect_media(self):
+        log.info("%s: called disconnect_media" % self.acct_info.uri)
+
+    @Trace(log)
+    def end_call(self):
+        log.info("%s: called end_call" % self.acct_info.uri)
+        self.acct_info.call = None
+
+    @Trace(log)
+    def connect_media(self):
+        log.info("%s: called connect_media" % self.acct_info.uri)
+        # if self.rec_id is None:
+        #     raise Ux("connect_media: no media exists")
+        # self.rec_slot = self.lib.recorder_get_slot(self.rec_id)
+        # my_uri = self.call.info().account.info().uri
+        #     # self.media_call_slot is set to the call's conference slot when connecting media,
+        #     # and set to None when disconnecting, so if it is not None, this is a reconnect
+        #     if self.media_call_slot is not None:
+        #         # if self.media_call_slot is not None but is not the current call's conference slot,
+        #         # it isn't a reconnect, it's a structural program error
+        #         if self.media_call_slot != self.call.info().conf_slot:
+        #             raise Ux("connect_media: call at slot %d media already connected to call slot %d"
+        #                      % (self.call.info().conf_slot, self.media_call_slot))
+        #         log.debug("%s: disconnecting call slot %d from recorder %s at slot %d"
+        #                   % (my_uri, self.media_call_slot, self.rec_id, self.rec_slot))
+        #         lib.conf_disconnect(self.media_call_slot, self.rec_slot)
+        #         if self.pb_id is not None:
+        #             self.pb_slot = lib.player_get_slot(self.pb_id)
+        #             log.debug("%s: disconnecting player %s at slot %d to call slot %d"
+        #                       % (my_uri, self.pb_id, self.pb_slot, self.media_call_slot))
+        #             lib.conf_disconnect(self.pb_slot, self.media_call_slot)
+        #         self.media_call_slot = None
+        #     log.debug("%s: connecting call slot %d to recorder %s at slot %d"
+        #               % (my_uri, self.call.info().conf_slot, self.rec_id, self.rec_slot))
+        #     lib.conf_connect(self.call.info().conf_slot, self.rec_slot)
+        #     # if there is a player ID then the player was created during create_media and we can connect it, too
+        #     if self.pb_id is not None:
+        #         self.pb_slot = lib.player_get_slot(self.pb_id)
+        #         log.debug("%s: connecting player %s at slot %d to call slot %d"
+        #                   % (my_uri, self.pb_id, self.pb_slot, self.call.info().conf_slot))
+        #         lib.conf_connect(self.pb_slot, self.call.info().conf_slot)
+        #     self.media_call_slot = self.call.info().conf_slot
+
+
+class MyAccountInfo:
 
     def __init__(self, account):
         self.account = account
-        self.account_cb = None
+        self.uri = None
         self.state = pj.CallState.NULL
         self.media_state = pj.MediaState.NULL
         self.call_status = 'idle'
         self.reg_status = None
         self.call = None
         self.hold = False
-        self.on_state_cb = None
-        self.on_incoming_call_cb = None
+        self.incoming_response = None
 
 
 class PjsuaLib(pj.Lib):
@@ -315,10 +401,11 @@ class PjsuaLib(pj.Lib):
             acc_cfg.allow_contact_rewrite = False
             acc_cfg.auth_cred = [pj.AuthCred(realm="*", username=number, passwd=pw)]
             account = self.create_account(acc_cfg)
-            account_info = AccountInfo(account)
-            account_info.account_cb = MyAccountCallback(account_info)
-            account.set_callback(account_info.account_cb)
+            account_info = MyAccountInfo(account)
+            account_info.uri = uri
             account_infos[uri] = account_info
-            account_info.account_cb.wait()
+            account_cb = MyAccountCallback(account_info)
+            account.set_callback(account_cb)
+            account_cb.wait()
             return account_info
 

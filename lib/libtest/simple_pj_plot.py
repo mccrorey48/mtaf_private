@@ -105,7 +105,7 @@ with open('log/esi_debug.log', 'r') as f:
 max_ms = 20000
 max_secs = max_ms/1000
 x = [float(ms)/1000 for ms in range(max_ms)]
-inv_offsets = {'INV': 0.5, '407': 0.4, '100': 0.3, '180': 0.2, '200': 0.1, 'ACK': 0.0}
+inv_offsets = {'CAN': 0.7, '487': 0.6, 'INV': 0.5, '407': 0.4, '100': 0.3, '180': 0.2, '200': 0.1, 'ACK': 0.0}
 bye_offsets = {'BYE': 0.5, '200': 0.0}
 # print start_timestamp
 base_y = 0
@@ -137,6 +137,7 @@ for cseq in cseqs:
         # print "    %s %s %6.3f  %8s  %28s %s" % (d['ms'], d['timestamp'], d['secs'], d['type'], d['dir'], d['desc'])
         # get ms for start of new y value
         if req_desc[:6] == 'INVITE':
+            print d['ms'], d['desc'][:3]
             y_offsets[d['ms']] = inv_offsets[d['desc'][:3]]
         elif req_desc[:3] == 'BYE':
             y_offsets[d['ms']] = bye_offsets[d['desc'][:3]]

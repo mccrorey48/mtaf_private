@@ -28,7 +28,7 @@ from time import sleep
 from pymongo import MongoClient
 import re
 
-msg_len_max = 33
+msg_len_max = 18
 msg_src_stack = []
 msg_src = ''
 root_name = 'esi'
@@ -37,6 +37,7 @@ TRACE = (DEBUG + INFO) / 2
 
 current_formatter = None
 trace_indent = 0
+
 
 class EsiLogger(getLoggerClass()):
 
@@ -69,6 +70,7 @@ class EsiLogger(getLoggerClass()):
 
 setLoggerClass(EsiLogger)
 
+
 @contextmanager
 def msg_src_cm(src):
     push_msg_src(src)
@@ -96,7 +98,7 @@ def pop_msg_src():
         set_msg_src('')
 
 
-def set_msg_src(src='', set_linefeed=False, show_lineno=True):
+def set_msg_src(src='', set_linefeed=False):
     global msg_len_max
     global msg_src
     if len(src) > msg_len_max:
@@ -105,12 +107,7 @@ def set_msg_src(src='', set_linefeed=False, show_lineno=True):
     msg_fmt = "%%-%ds" % (msg_len_max + 1)
     msg_src = src
     msg_src_formatted = msg_fmt % src
-    # if show_lineno:
-    #     lineno_fmt = '%(module)s'
-    # else:
-    lineno_fmt = ''
-    format_str = '%%(asctime)s.%%(msecs)03d [%%(name)-25s] %%(levelname)-7s - [%s%s] %%(message)s' % \
-                 (msg_src_formatted, lineno_fmt)
+    format_str = '%%(asctime)s.%%(msecs)03d [%%(name)-25s] %%(levelname)-7s - [%s] %%(message)s' % msg_src_formatted
     formatter = Formatter(format_str, datefmt='%m/%d/%y %H:%M:%S')
     update_handler_formatters(formatter)
     if set_linefeed:
