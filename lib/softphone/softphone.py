@@ -16,12 +16,12 @@ log = logging_esi.get_logger('esi.softphone')
 softphones = {}
 
 
-def Softphone(user_cfg, null_snd, tcp):
+def Softphone(user_cfg):
     uri = 'sip:%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
     if uri in softphones:
         return softphones[uri]
     else:
-        softphone = _Softphone(user_cfg, null_snd, tcp)
+        softphone = _Softphone(user_cfg)
         softphones[uri] = softphone
         return softphone
 
@@ -36,14 +36,14 @@ class _Softphone:
     dst_uri = None
 
     @Trace(log)
-    def __init__(self, user_cfg, null_snd, tcp):
+    def __init__(self, user_cfg):
         pbfile = user_cfg['pbfile']
         create_wav_file(pbfile, cfg.site['Quiet'])
         uri = 'sip:%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
         proxy = user_cfg['Proxy']
         passwd = user_cfg['Password']
         if len(softphones) == 0:
-            pjl.lib.start(null_snd=null_snd, dns_list=user_cfg['dns_list'], tcp=tcp)
+            pjl.lib.start(null_snd=cfg.site['NullSound'], dns_list=cfg.site['DnsList'], tcp=cfg.site['UseTcp'])
             pjl.lib.connect_monitor(None)
             pjl.cmd_q = Queue.Queue()
         self.pjl = pjl
