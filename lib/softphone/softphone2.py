@@ -57,7 +57,7 @@ class Softphone:
             raise Ux("Can't set up call, registration status (src) %s" % self.account_info.reg_status)
         log.debug("%s calling %s" % (self.uri, self.dst_uri))
         # print self.dst_uri
-        self.account_info.call = self.account_info.account.make_call(self.dst_uri)
+        self.account_info.call = self.account_info.account.make_call_to_softphone(self.dst_uri)
         self.account_info.call.set_callback(pj.MyCallCallback(self.account_info))
 
     @Trace(log)
