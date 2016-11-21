@@ -33,7 +33,7 @@ if get_new_data:
     called_info = lib.accounts['sip:2203@test2.test-eng.com']
     called_info.on_state_cb = on_state_cb
     called_info.on_incoming_call_cb = on_incoming_call_cb
-    caller_info.call = caller_info.account.make_call('sip:2203@test2.test-eng.com')
+    caller_info.call = caller_info.account.make_call_to_softphone('sip:2203@test2.test-eng.com')
     caller_info.call.set_callback(pj.MyCallCallback(caller_info))
     for i in range(10):
         # if called_info.call:

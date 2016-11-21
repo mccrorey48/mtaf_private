@@ -21,7 +21,7 @@ def make_softphone_call():
         softphone = get_softphone()
         dst_cfg = cfg.site['Accounts']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
-        softphone.make_call(dst_uri)
+        softphone.make_call_to_softphone(dst_uri)
         softphone.wait_for_call_status('early', 30)
         sleep(5)
         softphone.teardown_call()
@@ -32,7 +32,7 @@ def make_softphone_call_and_answer():
         softphone = get_softphone()
         dst_cfg = cfg.site['Accounts']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
-        softphone.make_call(dst_uri)
+        softphone.make_call_to_softphone(dst_uri)
         softphone.wait_for_call_status('early', 30)
         user_view.actions.click_element_by_key('IncomingCallAnswerToSpeaker')
         softphone.wait_for_call_status('start', 30)

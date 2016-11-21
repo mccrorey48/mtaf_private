@@ -40,7 +40,7 @@ class Softphone:
 
     def make_call(self, dst_uri):
         log.debug("%s calling %s" % (self.uri, dst_uri))
-        self.account_info.call = self.account_info.account.make_call(dst_uri)
+        self.account_info.call = self.account_info.account.make_call_to_softphone(dst_uri)
         self.dst_uri = dst_uri
         self.account_info.call.set_callback(pj.MyCallCallback(self.account_info))
 
