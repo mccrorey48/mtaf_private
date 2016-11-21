@@ -386,6 +386,7 @@ class PjsuaLib(pj.Lib):
             my_media_cfg.rx_drop_pct = self.rx_drop_pct
             my_media_cfg.quality = self.quality
             my_media_cfg.ptime = 20
+            my_media_cfg.no_vad = True
             if len(dns_list):
                 my_ua_cfg.nameserver = dns_list
             self.init(log_cfg=pj.LogConfig(level=4, callback=log_cb), ua_cfg=my_ua_cfg, media_cfg=my_media_cfg)
