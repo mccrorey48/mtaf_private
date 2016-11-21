@@ -5,11 +5,17 @@
             "CsvFolder": "ePhone7/utils/csv",
             "DefaultSoftphoneUser": "Auto TesterG",
             "DefaultTimeout": 10,
+            "DnsList": [
+                "10.0.50.156",
+                "10.0.50.157"
+            ],
             "Mock": false,
+            "NullSound": false,
             "Quiet": true,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
             "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
             "TestScreenshotsFolder": "ePhone7/screenshots",
+            "UseTcp": false,
             "XmlFolder": "ePhone7/utils/xml",
             "type": "constants"
         },
@@ -76,10 +82,16 @@
             "CsvFolder": "ePhone7/utils/csv",
             "DefaultSoftphoneUser": "Jessica Softphone",
             "DefaultTimeout": 10,
+            "DnsList": [
+                "10.0.50.156",
+                "10.0.50.157"
+            ],
             "Mock": false,
+            "NullSound": false,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
             "SeleniumUrl": "http://10.3.1.165:4723/wd/hub",
             "TestScreenshotsFolder": "ePhone7/screenshots",
+            "UseTcp": false,
             "XmlFolder": "ePhone7/utils/xml",
             "type": "constants"
         },
@@ -131,11 +143,17 @@
             "CsvFolder": "ePhone7/utils/csv",
             "DefaultSoftphoneUser": "Auto TesterC",
             "DefaultTimeout": 10,
+            "DnsList": [
+                "10.0.50.156",
+                "10.0.50.157"
+            ],
             "Mock": false,
+            "NullSound": false,
             "Quiet": true,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
             "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
             "TestScreenshotsFolder": "ePhone7/screenshots",
+            "UseTcp": false,
             "XmlFolder": "ePhone7/utils/xml",
             "type": "constants"
         },
@@ -200,11 +218,17 @@
             "CsvFolder": "ePhone7/utils/csv",
             "DefaultSoftphoneUser": "Auto TesterC",
             "DefaultTimeout": 10,
+            "DnsList": [
+                "10.0.50.156",
+                "10.0.50.157"
+            ],
             "Mock": false,
+            "NullSound": false,
             "Quiet": true,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
             "SeleniumUrl": "http://10.3.1.187:4723/wd/hub",
             "TestScreenshotsFolder": "ePhone7/screenshots",
+            "UseTcp": false,
             "XmlFolder": "ePhone7/utils/xml",
             "type": "constants"
         },
@@ -284,8 +308,11 @@
                 "10.0.50.156",
                 "10.0.50.157"
             ],
+            "NullSound": false,
+            "Quiet": true,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
             "TestScreenshotsFolder": "ePhone7/screenshots",
+            "UseTcp": false,
             "XmlFolder": "ePhone7/utils/xml",
             "type": "constants"
         },
@@ -294,7 +321,11 @@
             "Password": "nvtgNoo7",
             "Proxy": "svlab.esihs.net",
             "UserId": "1200",
+            "dns_list": [
+                "10.0.50.156"
+            ],
             "name": "Auto TesterC",
+            "pbfile": "wav/1200.wav",
             "type": "user"
         },
         {
@@ -302,7 +333,11 @@
             "Password": "3eORt8Tb",
             "Proxy": "svlab.esihs.net",
             "UserId": "1201",
+            "dns_list": [
+                "10.0.50.156"
+            ],
             "name": "Auto TesterD",
+            "pbfile": "wav/1201.wav",
             "type": "user"
         },
         {
@@ -310,7 +345,11 @@
             "Password": "8Ieuqi0P",
             "Proxy": "svlab.esihs.net",
             "UserId": "1202",
+            "dns_list": [
+                "10.0.50.156"
+            ],
             "name": "Auto TesterE",
+            "pbfile": "wav/1202.wav",
             "type": "user"
         }
     ]
