@@ -171,7 +171,7 @@ class SmokeTests(unittest.TestCase):
     @TestCase(log, except_cb=except_screenshot)
     def test_180_call_from_keypad(self):
         user_view.goto_tab('Keypad')
-        keypad_view.make_call()
+        keypad_view.make_call_to_softphone()
 
     # run with test_200_delete_save_voicemail for better results
     @unittest.skipIf(debug, 'debug')
