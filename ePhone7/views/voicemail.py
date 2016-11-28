@@ -18,14 +18,14 @@ class VoicemailView(UserView):
         "CallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/callerNumber"},
         "DeleteButton": {"by": "id", "value": "com.esi_estech.ditto:id/delete_voicemail"},
         "ForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_voicemail"},
-        "New": {"by": "id", "value": "com.esi_estech.ditto:id/voicemail_new", "text": "NEW"},
+        "New": {"by": "zpath", "value": "//bt[@text='NEW']"},
         "NoVoicemails": {"by": "id", "value": "com.esi_estech.ditto:id/call_log_empty"},
         "OkForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_dialog_ok_button"},
         "PlaybackStartStop": {"by": "id", "value": "com.esi_estech.ditto:id/playback_start_stop"},
         "SaveButton": {"by": "id", "value": "com.esi_estech.ditto:id/save_voicemail"},
-        "Saved": {"by": "id", "value": "com.esi_estech.ditto:id/voicemail_saved", "text": "SAVED"},
+        "Saved": {"by": "zpath", "value": "//ll/bt[@text='SAVED']"},
         "ShareButton": {"by": "id", "value": "com.esi_estech.ditto:id/share_voicemail"},
-        "Trash": {"by": "id", "value": "com.esi_estech.ditto:id/voicemail_trash", "text": "TRASH"},
+        "Trash": {"by": "zpath", "value": "//ll/bt[@text='TRASH']"},
         "VmDuration": {"by": "id", "value": "com.esi_estech.ditto:id/vmDuration"},
         "VmButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_button"},
         "VmCallButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_call_button"},
@@ -49,21 +49,22 @@ class VoicemailView(UserView):
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
-        softphone.wait_for_call_status('start', 10)
+        softphone.wait_for_call_status('call', 10)
         softphone.leave_msg()
         self.set_dnd(on=False)
-        softphone.teardown_call()
+        softphone.end_call()
 
     @Trace(log)
     def call_first_vm_caller(self):
         from ePhone7.utils.get_softphone import get_softphone
         # expects the current display to be the detail screen for a voicemail from cfg.site['DefaultSoftphoneUser']
         softphone = get_softphone()
+        softphone.account_info.incoming_response = 200
         self.click_element_by_key('VmCallButton')
-        softphone.wait_for_call_status('start', 20)
+        softphone.wait_for_call_status('call', 20)
         sleep(10)
         self.click_element_by_key('EndActiveCall')
-        softphone.wait_for_call_status('end', 20)
+        softphone.wait_for_call_status('idle', 20)
         self.click_element_by_key('VmDetailHeader')
 
     @Trace(log)

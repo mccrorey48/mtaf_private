@@ -152,7 +152,7 @@ class UserView(BaseView):
         self.find_element_by_key('IncomingCallAnswerToSpeaker')
         self.wait_for_element_text_by_key('IncomingCallCallerName', src_cfg['UserNameIncoming'])
         self.wait_for_element_text_by_key('IncomingCallCallerNumber', src_cfg['UserId'])
-        softphone.teardown_call()
+        softphone.end_call()
 
     @Trace(log)
     def answer_call_test(self):
@@ -163,9 +163,9 @@ class UserView(BaseView):
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('early', self.call_status_wait)
         self.click_element_by_key('IncomingCallAnswerToSpeaker')
-        softphone.wait_for_call_status('start', self.call_status_wait)
+        softphone.wait_for_call_status('call', self.call_status_wait)
         self.click_element_by_key('EndActiveCall')
-        softphone.wait_for_call_status('end', self.call_status_wait)
+        softphone.wait_for_call_status('idle', self.call_status_wait)
 
     @Trace(log)
     def auto_answer_call_test(self):
@@ -174,9 +174,9 @@ class UserView(BaseView):
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
-        softphone.wait_for_call_status('start', self.call_status_wait)
+        softphone.wait_for_call_status('call', self.call_status_wait)
         self.click_element_by_key('EndActiveCall')
-        softphone.wait_for_call_status('end', self.call_status_wait)
+        softphone.wait_for_call_status('idle', self.call_status_wait)
 
     @Trace(log)
     def ignore_call_test(self):
@@ -188,19 +188,19 @@ class UserView(BaseView):
         softphone.wait_for_call_status('early', self.call_status_wait)
         self.click_element_by_key('IncomingCallIgnore')
         # the softphone caller will hear ringing until the max number of rings occurs, then
-        # the softphone status will change to "start" because pbx accepts the invite to play
+        # the softphone status will change to "call" because pbx accepts the invite to play
         # the "unavailable" message
         #
         # this is probably not how it is supposed to work...I think the caller should be sent to the
         # "unavailable" message immediately when "ignore call" is touched. In this case the
         # 40 second wait for call status is way too long
-        wait_time = softphone.wait_for_call_status('start', 40)
-        log.debug('got "start" status in %s seconds' % wait_time)
+        wait_time = softphone.wait_for_call_status('call', 40)
+        log.debug('got "call" status in %s seconds' % wait_time)
         softphone.set_monitor_on()
         sleep(10)
         # could insert a sleep here and do a fingerprint analysis of the recorded audio file
         softphone.set_monitor_off()
-        softphone.teardown_call()
+        softphone.end_call()
 
 
 user_view = UserView()

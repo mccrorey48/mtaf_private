@@ -40,6 +40,7 @@ class ContactsView(UserView):
     @Trace(log)
     def call_contact_from_list_element(self, list_element):
         softphone = get_softphone()
+        softphone.account_info.incoming_response = 200
         icon = self.find_sub_element_by_key(list_element, 'ContactCallIcon')
         # wait for handset picture to turn green
         timeout = 20
@@ -56,10 +57,10 @@ class ContactsView(UserView):
             log.warn('handset icon color is not green (%s) within %s seconds, current color is %s' %
                          (desired_color, timeout, current_color))
         self.click_element(icon)
-        softphone.wait_for_call_status('start', 20)
+        softphone.wait_for_call_status('call', 20)
         sleep(10)
         self.click_element_by_key('EndActiveCall')
-        softphone.wait_for_call_status('end', 20)
+        softphone.wait_for_call_status('idle', 20)
 
     @Trace(log)
     def no_duplicate_numbers(self):

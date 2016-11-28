@@ -13,9 +13,9 @@ log = logging.get_logger('esi.contacts_view')
 
 class HistoryView(UserView):
     locators = {
-        "All": {"by": "id", "value": "com.esi_estech.ditto:id/history_timeline", "text": "All"},
-        "Missed": {"by": "id", "value": "com.esi_estech.ditto:id/history_missed", "text": "Missed"},
-        "HistoryEntry": {"by": "zpath", "value": "//rv/ll"},
+        "All": {"by": "id", "value": "com.esi_estech.ditto:id/button1", "text": "All"},
+        "Missed": {"by": "id", "value": "com.esi_estech.ditto:id/button2", "text": "Missed"},
+        "HistoryEntry": {"by": "zpath", "value": "//rv/rl"},
         "CallerName": {"by": "id", "value": "com.esi_estech.ditto:id/callerName"},
         "CallIcon": {"by": "id", "value": "com.esi_estech.ditto:id/call_type_button"}
     }
@@ -47,11 +47,12 @@ class HistoryView(UserView):
         call_icon = history_view.find_sub_element_by_key(entry_elem, 'CallIcon')
         log.debug("call icon location y = %s" % call_icon.location['y'])
         softphone = get_softphone()
+        softphone.account_info.incoming_response = 200
         self.click_element(call_icon)
-        softphone.wait_for_call_status('start', 20)
+        softphone.wait_for_call_status('call', 20)
         sleep(10)
         self.click_element_by_key('EndActiveCall')
-        softphone.wait_for_call_status('end', 20)
+        softphone.wait_for_call_status('idle', 20)
 
 
 history_view = HistoryView()
