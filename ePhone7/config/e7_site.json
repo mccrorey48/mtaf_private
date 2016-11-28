@@ -226,7 +226,7 @@
             "NullSound": false,
             "Quiet": true,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
-            "SeleniumUrl": "http://10.3.1.187:4723/wd/hub",
+            "SeleniumUrl": "http://10.3.1.67:4723/wd/hub",
             "TestScreenshotsFolder": "ePhone7/screenshots",
             "UseTcp": false,
             "XmlFolder": "ePhone7/utils/xml",

@@ -58,15 +58,15 @@ def get_call_views(version):
         answer_to_speaker_icon = user_view.find_element_by_key('IncomingCallAnswerToSpeaker')
         save_xml_and_screenshot('incoming_call_%s' % version, version)
         user_view.click_element(answer_to_speaker_icon)
-        softphone.wait_for_call_status('start', 30)
+        softphone.wait_for_call_status('call', 30)
         sleep(5)
         # end_active_call = user_view.find_element_by_key('EndActiveCall')
         save_xml_and_screenshot('active_call_%s' % version, version)
         # log.trace("clicking end active call icon")
         # end_active_call.click()
         # log.trace("clicked end active call icon")
-        # softphone.wait_for_call_status('end', 30)
-        softphone.teardown_call()
+        # softphone.wait_for_call_status('idle', 30)
+        softphone.end_call()
 
 @Trace(log)
 def get_nav_views(version):
