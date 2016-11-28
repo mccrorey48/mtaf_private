@@ -51,7 +51,7 @@ def call_ring_answer(_caller, _called, auto_answer=True, holder=None, ender=p1):
 
 
 def call_hard_phone(_caller, dst_uri, duration):
-    _caller.make_call_to_hardphone(dst_uri)
+    _caller.make_call(dst_uri)
     _caller.wait_for_call_status('call', warn_only=True)
     sleep(duration)
     _caller.end_call()

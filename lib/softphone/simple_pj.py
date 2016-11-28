@@ -114,7 +114,7 @@ class Softphone:
         self.account_info.call.set_callback(MyCallCallback(self.account_info))
 
     @Trace(log)
-    def make_call_to_hardphone(self, dst_uri):
+    def make_call(self, dst_uri):
         if self.account_info.reg_status != 200:
             raise Ux("Can't set up call, registration status (src) %s" % self.account_info.reg_status)
         log.debug("%s calling %s" % (self.uri, dst_uri))
@@ -365,7 +365,7 @@ class MyCallCallback(pj.CallCallback):
 
     @Trace(log)
     def end_call(self):
-        log.info("%s: called end_call" % self.account_info.uri)
+        log.debug("%s: called end_call" % self.account_info.uri)
         self.account_info.call = None
 
     @Trace(log)
@@ -404,41 +404,45 @@ class MyCallCallback(pj.CallCallback):
             lib.conf_connect(self.pb_slot, conf_slot)
         self.media_call_slot = conf_slot
 
-    @Trace(log)
-    def disconnect_media(self):
-        log.info("%s: called disconnect_media" % self.account_info.uri)
-        if self.rec_id is None:
-            raise Ux("disconnect_media: no recorder exists, not disconnecting")
-        if self.pb_id is None:
-            log.debug('%s: disconnect_media: no player exists, not disconnecting')
-        if self.rec_id is None and self.pb_id is None:
-            return
-        if self.media_call_slot is None:
-            raise Ux('disconnect_media: media not connected')
-        lib = self.account_info.lib
-        uri = self.account_info.uri
-        conf_slot = self.account_info.call.info().conf_slot
-        if self.media_call_slot != conf_slot:
-            raise Ux('disconnect_media: self.media_call_slot (%s) not equal to conf_slot (%s)' % (
-                self.media_call_slot, conf_slot))
-        if self.rec_id is not None:
-            rec_slot = lib.recorder_get_slot(self.rec_id)
-            log.debug("%s: disconnecting call slot %d from recorder %s at slot %d"
-                      % (uri, self.media_call_slot, self.rec_id, rec_slot))
-            lib.conf_disconnect(self.media_call_slot, rec_slot)
-        if self.pb_id is not None:
-            self.pb_slot = lib.player_get_slot(self.pb_id)
-            log.debug("%s: disconnecting player %s at slot %d to call slot %d"
-                      % (uri, self.pb_id, self.pb_slot, self.media_call_slot))
-            lib.conf_disconnect(self.pb_slot, self.media_call_slot)
-        self.media_call_slot = None
+    # maybe this will be needed at some point but it's not necessary when call_status goes from 'call' to 'hold';
+    # call.hold() disconnects the media as a side effect, but it needs to be reconnected explicitly using connect_media
+    # when call.unhold() causes the call_status to change from 'hold' back to 'call'
+    #
+    # @Trace(log)
+    # def disconnect_media(self):
+    #     if self.rec_id is None:
+    #         raise Ux("disconnect_media: no recorder exists, not disconnecting")
+    #     if self.pb_id is None:
+    #         log.debug('%s: disconnect_media: no player exists, not disconnecting')
+    #     if self.rec_id is None and self.pb_id is None:
+    #         return
+    #     if self.media_call_slot is None:
+    #         raise Ux('disconnect_media: media not connected')
+    #     lib = self.account_info.lib
+    #     uri = self.account_info.uri
+    #     conf_slot = self.account_info.call.info().conf_slot
+    #     if self.media_call_slot != conf_slot:
+    #         raise Ux('disconnect_media: self.media_call_slot (%s) not equal to conf_slot (%s)' % (
+    #             self.media_call_slot, conf_slot))
+    #     if self.rec_id is not None:
+    #         rec_slot = lib.recorder_get_slot(self.rec_id)
+    #         log.debug("%s: disconnecting call slot %d from recorder %s at slot %d"
+    #                   % (uri, self.media_call_slot, self.rec_id, rec_slot))
+    #         lib.conf_disconnect(self.media_call_slot, rec_slot)
+    #     if self.pb_id is not None:
+    #         self.pb_slot = lib.player_get_slot(self.pb_id)
+    #         log.debug("%s: disconnecting player %s at slot %d to call slot %d"
+    #                   % (uri, self.pb_id, self.pb_slot, self.media_call_slot))
+    #         lib.conf_disconnect(self.pb_slot, self.media_call_slot)
+    #     self.media_call_slot = None
 
 
 class MyAccountInfo:
 
-    def __init__(self, account):
+    def __init__(self, account, uri, number):
         self.account = account
-        self.uri = None
+        self.uri = uri
+        self.number = number
         self.state = pj.CallState.NULL
         self.media_state = pj.MediaState.NULL
         self.call_status = 'idle'
@@ -489,21 +493,19 @@ class PjsuaLib(pj.Lib):
     def add_account(self, number, domain, proxy, pw):
         uri = "sip:%s@%s" % (number, domain)
         if uri in account_infos:
-            log.warn('%s: account already created' % uri)
-        else:
-            acc_cfg = pj.AccountConfig()
-            acc_cfg.id = uri
-            acc_cfg.reg_uri = "sip:%s" % proxy
-            acc_cfg.proxy = ["sip:%s" % proxy]
-            acc_cfg.allow_contact_rewrite = False
-            acc_cfg.auth_cred = [pj.AuthCred(realm="*", username=number, passwd=pw)]
-            account = self.create_account(acc_cfg)
-            account_info = MyAccountInfo(account)
-            account_info.uri = uri
-            account_info.number = number
-            account_infos[uri] = account_info
-            account_cb = MyAccountCallback(account_info)
-            account.set_callback(account_cb)
-            account_cb.wait()
-            return account_info
+            log.debug('%s: [add_account] deleting existing account' % uri)
+            account_infos[uri].account.delete()
+        acc_cfg = pj.AccountConfig()
+        acc_cfg.id = uri
+        acc_cfg.reg_uri = "sip:%s" % proxy
+        acc_cfg.proxy = ["sip:%s" % proxy]
+        acc_cfg.allow_contact_rewrite = False
+        acc_cfg.auth_cred = [pj.AuthCred(realm="*", username=number, passwd=pw)]
+        account = self.create_account(acc_cfg)
+        account_info = MyAccountInfo(account, uri, number)
+        account_cb = MyAccountCallback(account_info)
+        account.set_callback(account_cb)
+        account_cb.wait()
+        account_infos[uri] = account_info
+        return account_info
 

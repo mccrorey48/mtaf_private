@@ -204,13 +204,13 @@ class SeleniumActions(Tc):
     @Trace(log)
     def find_element_with_timeout(self, method, value, parent=None, timeout=10):
         start_time = time()
+        elems = []
         while time() - start_time < timeout:
             if parent:
                 elems = parent.find_elements(method, value)
             else:
                 elems = self.driver.find_elements(method, value)
-            if len(elems) > 1:
-                raise Ux("Multiple elements match %s = %s, parent = %s" % (method, value, parent))
             if len(elems) == 1:
                 return elems[0]
-        raise Ux("No matching elements found with %s = %s, timeout = %s, parent = %s" % (method, value, timeout, parent))
+        raise Ux("%s matching elements found with %s = %s, timeout = %s, parent = %s" %
+                 (len(elems), method, value, timeout, parent))

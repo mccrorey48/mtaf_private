@@ -9,7 +9,7 @@ class EsiResult(unittest.TextTestResult):
 
     def __init__(self, *args, **kwargs):
         unittest.TextTestResult.__init__(self, *args, **kwargs)
-        logging_esi.set_msg_src(self.__class__.__name__, show_lineno=False)
+        logging_esi.set_msg_src(self.__class__.__name__)
 
     def startTest(self, test):
         super(EsiResult, self).startTest(test)
