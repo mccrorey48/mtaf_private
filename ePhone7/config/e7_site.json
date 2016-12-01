@@ -3,6 +3,7 @@
         {
             "ColorsFolder": "ePhone7/utils",
             "CsvFolder": "ePhone7/utils/csv",
+            "DefaultForwardAccount": "Auto TesterH",
             "DefaultSoftphoneUser": "Auto TesterG",
             "DefaultTimeout": 10,
             "DnsList": [
@@ -90,7 +91,8 @@
         {
             "ColorsFolder": "ePhone7/utils",
             "CsvFolder": "ePhone7/utils/csv",
-            "DefaultSoftphoneUser": "Jessica Softphone",
+            "DefaultForwardAccount": "Auto TesterF",
+            "DefaultSoftphoneUser": "Auto TesterE",
             "DefaultTimeout": 10,
             "DnsList": [
                 "10.0.50.156",
@@ -155,12 +157,39 @@
             "name": "Jessica Softphone",
             "pbfile": "wav/2021.wav",
             "type": "user"
+        },
+        {
+            "DomainName": "test2.test-eng.com",
+            "Password": "kVAsy1oc",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2204",
+            "UserNameIncoming": "Auto Testerd",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "Auto TesterE",
+            "pbfile": "wav/2204.wav",
+            "type": "user"
+        },
+        {
+            "DomainName": "test2.test-eng.com",
+            "Password": "nBiQ9DEG",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2205",
+            "UserNameIncoming": "Auto Testerf",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "Auto TesterF",
+            "pbfile": "wav/2204.wav",
+            "type": "user"
         }
     ],
     "local": [
         {
             "ColorsFolder": "ePhone7/utils",
             "CsvFolder": "ePhone7/utils/csv",
+            "DefaultForwardAccount": "Auto TesterD",
             "DefaultSoftphoneUser": "Auto TesterC",
             "DefaultTimeout": 10,
             "DnsList": [
@@ -236,6 +265,7 @@
         {
             "ColorsFolder": "ePhone7/utils",
             "CsvFolder": "ePhone7/utils/csv",
+            "DefaultForwardAccount": "Auto TesterD",
             "DefaultSoftphoneUser": "Auto TesterC",
             "DefaultTimeout": 10,
             "DnsList": [
@@ -314,19 +344,6 @@
             ],
             "name": "Auto TesterD",
             "pbfile": "wav/2203.wav",
-            "type": "user"
-        },
-        {
-            "DomainName": "test2.test-eng.com",
-            "Password": "kVAsy1oc",
-            "Proxy": "nr5.cpbx.esihs.net",
-            "UserId": "2204",
-            "UserNameIncoming": "Auto Testerd",
-            "dns_list": [
-                "10.0.50.156"
-            ],
-            "name": "Auto TesterE",
-            "pbfile": "wav/2204.wav",
             "type": "user"
         }
     ],
