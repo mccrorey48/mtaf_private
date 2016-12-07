@@ -182,7 +182,8 @@ class SmokeTests(unittest.TestCase):
         prefs_view.exit_prefs()
         self.save_new_voicemail()
 
-    def save_new_voicemail(self):
+    @staticmethod
+    def save_new_voicemail():
         user_view.goto_tab('Voicemail')
         voicemail_view.goto_tab('Saved')
         voicemail_view.clear_all_vm()
@@ -191,7 +192,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.receive_voicemail()
         voicemail_view.open_first_vm()
         voicemail_view.save_first_vm_vals()
-        voicemail_view.save_voicemail_button()
+        voicemail_view.save_open_voicemail()
         voicemail_view.goto_tab('Saved')
         voicemail_view.verify_first_vm()
 
@@ -240,7 +241,7 @@ class SmokeTests(unittest.TestCase):
         # voicemail_view.verify_first_vm()
         voicemail_view.open_first_vm()
         voicemail_view.save_first_vm_vals()
-        voicemail_view.save_voicemail_button()
+        voicemail_view.save_open_voicemail()
         voicemail_view.goto_tab('Saved')
         voicemail_view.verify_first_vm()
         voicemail_view.clear_all_vm()
@@ -252,11 +253,10 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('New')
         voicemail_view.clear_all_vm()
         voicemail_view.receive_voicemail()
+        vmid = voicemail_view.get_id()
         voicemail_view.open_first_vm()
-        voicemail_view.save_first_vm_vals()
-        voicemail_view.forward_voicemail_button()
-        voicemail_view.forward_voicemail()
-        # need a way to verify the forward
+        voicemail_view.forward_open_voicemail()
+        voicemail_view.compare_vmid(vmid)
 
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
@@ -268,14 +268,13 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('New')
         voicemail_view.clear_all_vm()
         voicemail_view.receive_voicemail()
+        vmid = voicemail_view.get_id()
         voicemail_view.open_first_vm()
-        voicemail_view.save_first_vm_vals()
-        voicemail_view.save_voicemail_button()
+        voicemail_view.save_open_voicemail()
         voicemail_view.goto_tab('Saved')
         voicemail_view.open_first_vm()
-        voicemail_view.forward_voicemail_button()
-        voicemail_view.forward_voicemail()
-        # need a way to verify the forward
+        voicemail_view.forward_open_voicemail()
+        voicemail_view.compare_vmid(vmid)
 
     # #function disable for the moment
     # @unittest.skipIf(debug, 'debug')

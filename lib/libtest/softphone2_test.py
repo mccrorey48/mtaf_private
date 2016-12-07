@@ -19,13 +19,13 @@ logging_esi.console_handler.setLevel(logging_esi.INFO)
 # get account setup info from mongodb and create softphones
 with logging_esi.msg_src_cm('creating softphones'):
     phones = []
-    for user_tag in ['C', 'D', 'E']:
+    for user_tag in ['C', 'D']:
         user_name = 'Auto Tester' + user_tag
         user_cfg = cfg.site['Users'][user_name]
         uri = "sip:%s@%s" % (user_cfg['UserId'], user_cfg['DomainName'])
-        phones.append(Softphone(uri, user_cfg['Proxy'], user_cfg['Password'], dns_list=cfg.site['DnsList'],
+        phones.append(Softphone(uri, user_cfg['Proxy'], user_cfg['PhonePassword'], dns_list=cfg.site['DnsList'],
                                 quiet=cfg.site['Quiet']))
-    [p1, p2, p3] = phones
+    [p1, p2] = phones
 
 
 # make some calls:
@@ -57,8 +57,8 @@ def call_hard_phone(_caller, dst_uri, duration):
     _caller.end_call()
     sleep(1)
 
-# with logging_esi.msg_src_cm('test_0'):
-#     call_ring_answer(p1, p2, auto_answer=false, ender=p1)
+with logging_esi.msg_src_cm('test_0'):
+    call_ring_answer(p1, p2, auto_answer=False, ender=p1)
 # with logging_esi.msg_src_cm('test_1'):
 #     call_ring_answer(p1, p2, ender=p1)
 # with logging_esi.msg_src_cm('test_2'):
@@ -71,5 +71,5 @@ def call_hard_phone(_caller, dst_uri, duration):
 #     call_ring_answer(p1, p2, holder=p1, ender=p2)
 # with logging_esi.msg_src_cm('test_6'):
 #     call_ring_answer(p1, p2, holder=p2, ender=p2)
-with logging_esi.msg_src_cm('test_7'):
-    call_hard_phone(p1, 'sip:1000@SVAutoCustomer', 10)
+# with logging_esi.msg_src_cm('test_7'):
+#     call_hard_phone(p1, 'sip:1000@SVAutoCustomer', 10)
