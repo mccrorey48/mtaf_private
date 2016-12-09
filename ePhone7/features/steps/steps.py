@@ -2,12 +2,10 @@ from behave import *
 from ePhone7.views import *
 import re
 
-use_step_matcher("re")
 
 @given('I go to the preferences view')
 def step_impl(context):
-    pass
-    # user_view.goto_prefs()
+    user_view.goto_prefs()
 
 
 @when('I touch the "System" menu category')
@@ -39,16 +37,17 @@ def step_impl(context):
 
 @given("I go to the Contacts view")
 def step_impl(context):
-    pass
+    user_view.goto_tab('Contacts')
 
 
 @step("I go to the Personal tab")
 def step_impl(context):
-    pass
+    contacts_view.goto_tab('Personal')
 
 
 @when('I touch the "Sign in with Google" banner')
 def step_impl(context):
+    contacts_view.click_element_by_key('GoogleSignInBanner')
     pass
 
 
