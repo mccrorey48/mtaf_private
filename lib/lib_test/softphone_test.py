@@ -19,13 +19,13 @@ logging_esi.console_handler.setLevel(logging_esi.INFO)
 # get account setup info from mongodb and create softphones
 with logging_esi.msg_src_cm('creating softphones'):
     phones = []
-    for user_tag in ['C', 'D']:
+    for user_tag in ['C', 'D', 'C']:
         user_name = 'Auto Tester' + user_tag
         user_cfg = cfg.site['Users'][user_name]
         uri = "sip:%s@%s" % (user_cfg['UserId'], user_cfg['DomainName'])
         phones.append(Softphone(uri, user_cfg['Proxy'], user_cfg['PhonePassword'], dns_list=cfg.site['DnsList'],
                                 quiet=cfg.site['Quiet']))
-    [p1, p2] = phones
+    [p1, p2, p3] = phones
 
 
 # make some calls:

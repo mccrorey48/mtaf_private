@@ -151,7 +151,7 @@ class VoicemailView(UserView):
     @Trace(log)
     def clear_all_vm(self):
         while True:
-            elems = self.find_elements_by_key('VmParent')
+            elems = [elem for elem in self.find_elements_by_key('VmParent') if elem.size['width'] != 0]
             if len(elems) == 0:
                 break
             self.click_element(elems[0])

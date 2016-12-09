@@ -85,6 +85,13 @@ class Softphone:
             self.account_info.record = record
             self.account_info.lib = self.lib
 
+    def __del__(self):
+        if self.account_info.call:
+            log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
+            self.account_info.call.hangup()
+            self.wait_for_call_status('idle')
+        self.lib.delete_account(self.uri)
+
     @Trace(log)
     def wait_for_call_status(self, desired_status, timeout=20, warn_only=False):
         # possible desired_status values: 'call', 'idle', 'early', 'hold'
@@ -216,7 +223,8 @@ class MyAccountCallback(pj.AccountCallback):
 # to get a dictionary that will contain 'new_state' and might contain 'media actions'
 new_call_statuses = {
     'idle': {
-        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['create_media', 'connect_media']},
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': [
+            'create_media', 'connect_media']},
         (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'error'},
         (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'early'},
         (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'early'},
@@ -225,17 +233,18 @@ new_call_statuses = {
         (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'idle'},
         (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'idle'},
         (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle'},
-        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle'},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle'}
     },
     'early': {
-        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['create_media', 'connect_media']},
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': [
+            'create_media', 'connect_media']},
         (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'early'},
         (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'early'},
         (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'early'},
         (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'early'},
         (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'early'},
-        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle'},
-        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle'},
+        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': [ 'delete_call']},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': [ 'delete_call']}
     },
     'call': {
         (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call'},
@@ -245,9 +254,9 @@ new_call_statuses = {
         (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'error'},
         (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'error'},
         (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': [
-            'destroy_media', 'end_call']},
+            'destroy_media', 'delete_call']},
         (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': [
-            'destroy_media', 'end_call']}
+            'destroy_media', 'delete_call']}
     },
     'hold': {
         (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['connect_media']},
@@ -257,9 +266,9 @@ new_call_statuses = {
         (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'error'},
         (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'error'},
         (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': [
-            'destroy_media', 'end_call']},
+            'destroy_media', 'delete_call']},
         (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': [
-            'destroy_media', 'end_call']}
+            'destroy_media', 'delete_call']}
     },
 }
 
@@ -281,15 +290,17 @@ class MyCallCallback(pj.CallCallback):
             'create_media': self.create_media,
             'connect_media': self.connect_media,
             'destroy_media': self.destroy_media,
-            'end_call': self.end_call
+            'delete_call': self.delete_call
         }
         call_info = self.account_info.call.info()
         remote_uri = re.match('("[^"]*"\s+)?<?([^>]+)', call_info.remote_uri).group(2)
         self.account_info.state = call_info.state
         self.account_info.media_state = call_info.media_state
-        log.debug("%s: ci.remote_uri=%s state %s media_state %s" % (
+        log.debug("_on_state: %s: ci.remote_uri=%s state %s media_state %s" % (
             call_info.uri, remote_uri, call_state_text[call_info.state], media_state_text[call_info.media_state]))
         new_call_status = new_call_statuses[self.account_info.call_status][(call_info.state, call_info.media_state)]
+        log.debug("_on_state: old call_status = %s, new call_status = %s" % (self.account_info.call_status,
+                                                                             new_call_status['status']))
         self.account_info.call_status = new_call_status['status']
         if 'actions' in new_call_status:
             for action in new_call_status['actions']:
@@ -364,8 +375,8 @@ class MyCallCallback(pj.CallCallback):
             f.write(struct.pack('I', flen - 44))
 
     @Trace(log)
-    def end_call(self):
-        log.debug("%s: called end_call" % self.account_info.uri)
+    def delete_call(self):
+        log.debug("%s: called delete_call" % self.account_info.uri)
         self.account_info.call = None
 
     @Trace(log)
@@ -462,9 +473,6 @@ class PjsuaLib(pj.Lib):
         self.tcp = False
         self.no_vad = no_vad
 
-    def __del__(self):
-        pass
-
     def start(self, log_cb=pjl_log_cb, null_snd=False, tcp=False, dns_list=None):
         self.tcp = tcp
         my_ua_cfg = pj.UAConfig()
@@ -490,11 +498,13 @@ class PjsuaLib(pj.Lib):
         self.set_codec_priority('PCMU/8000/1', 149)
         self.set_codec_priority('G722/16000/1', 148)
 
+    @Trace(log)
     def add_account(self, number, domain, proxy, pw):
         uri = "sip:%s@%s" % (number, domain)
         if uri in account_infos:
-            log.debug('%s: [add_account] deleting existing account' % uri)
-            account_infos[uri].account.delete()
+            log.debug('%s: [add_account] using existing account' % uri)
+            return account_infos[uri]
+        log.debug('%s: [add_account] creating account' % uri)
         acc_cfg = pj.AccountConfig()
         acc_cfg.id = uri
         acc_cfg.reg_uri = "sip:%s" % proxy
@@ -508,4 +518,11 @@ class PjsuaLib(pj.Lib):
         account_cb.wait()
         account_infos[uri] = account_info
         return account_info
+
+    @staticmethod
+    @Trace(log)
+    def delete_account(uri):
+        log.debug('%s: [delete_account] deleting existing account' % uri)
+        account_infos[uri].account.delete()
+        del account_infos[uri]
 

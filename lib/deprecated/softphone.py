@@ -3,13 +3,12 @@ import random
 import re
 from time import time, sleep
 
+import lib.deprecated.pjsua_lib as pjl
 import lib.logging_esi as logging_esi
-from lib.wrappers import Trace
-
-import lib.softphone.pjsua_lib as pjl
 from ePhone7.utils.configure import cfg
 from lib.softphone.wav_audio import create_wav_file
 from lib.user_exception import UserException as Ux
+from lib.wrappers import Trace
 
 log = logging_esi.get_logger('esi.softphone')
 

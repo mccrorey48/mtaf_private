@@ -4,7 +4,7 @@ test the cfg_reader module installed from svauto_shared
 import argparse
 import pprint
 
-from lib.cfg_reader import CfgReader
+from lib.deprecated.cfg_reader import CfgReader
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-m", "--mongo_host", type=str, default='vqda',

@@ -63,29 +63,31 @@ class SeleniumActions(Tc):
     @Trace(log)
     def click_element_by_key(self, key, seconds=60):
         locator = self.get_locator(key)
-        msg = ''
-        start_time = time()
-        while time() < start_time + seconds:
-            try:
-                elem = self.find_element_by_key(key)
-            except WebDriverException as e:
-                msg = "WebDriverException: %s" % e.message
-                continue
-            if "text" in locator:
-                found_text = elem.text
-                if found_text != locator["text"]:
-                    msg = "element text did not match, expected %s, found %s" % (locator["text"], found_text)
-                    continue
-                # log.debug("found element with text = %s" % found_text)
-            if elem.is_displayed() and elem.is_enabled():
-                # log.debug("element found and clickable, clicking")
-                self.click_element(elem)
-            else:
-                # log.debug("element found but is not clickable, waiting")
-                continue
-            break
-        else:
-            raise Ux(msg)
+        elem = self.find_element_by_key(key)
+        self.click_element(elem)
+        # msg = ''
+        # start_time = time()
+        # while time() < start_time + seconds:
+        #     try:
+        #         elem = self.find_element_by_key(key)
+        #     except WebDriverException as e:
+        #         msg = "WebDriverException: %s" % e.message
+        #         continue
+        #     if "text" in locator:
+        #         found_text = elem.text
+        #         if found_text != locator["text"]:
+        #             msg = "element text did not match, expected %s, found %s" % (locator["text"], found_text)
+        #             continue
+        #         # log.debug("found element with text = %s" % found_text)
+        #     if elem.is_displayed() and elem.is_enabled():
+        #         # log.debug("element found and clickable, clicking")
+        #         self.click_element(elem)
+        #     else:
+        #         # log.debug("element found but is not clickable, waiting")
+        #         continue
+        #     break
+        # else:
+        #     raise Ux(msg)
 
     @Trace(log)
     def find_element_by_locator(self, locator, timeout=10):
