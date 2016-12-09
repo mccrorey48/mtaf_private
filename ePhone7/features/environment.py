@@ -9,7 +9,7 @@ def before_all(context):
     else:
         cfg_server = 'vqda'
     cfg.set_site(cfg_server, site_tag)
-    base_view.open_appium()
+    # base_view.open_appium()
 
 
 def after_all(context):

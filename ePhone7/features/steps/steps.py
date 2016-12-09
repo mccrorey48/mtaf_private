@@ -37,17 +37,19 @@ def step_impl(context):
 
 @given("I go to the Contacts view")
 def step_impl(context):
-    user_view.goto_tab('Contacts')
+    # user_view.goto_tab('Contacts')
+    pass
 
 
 @step("I go to the Personal tab")
 def step_impl(context):
-    contacts_view.goto_tab('Personal')
+    # contacts_view.goto_tab('Personal')
+    pass
 
 
 @when('I touch the "Sign in with Google" banner')
 def step_impl(context):
-    contacts_view.click_element_by_key('GoogleSignInBanner')
+    # contacts_view.click_element_by_key('GoogleSignInBanner')
     pass
 
 
@@ -61,12 +63,12 @@ def step_impl(context):
     pass
 
 
-@then("My Google contacts appear on the Personal contacts list")
+@then("My Google contacts are shown on the display")
 def step_impl(context):
     pass
 
 
-@given("I am logged in to the ePhone7")
+@given("I log in to the ePhone7")
 def step_impl(context):
     """
     :type context: behave.runner.Context
@@ -74,7 +76,7 @@ def step_impl(context):
     pass
 
 
-@step("I go to the Home screen")
+@step("I go to the Home view")
 def step_impl(context):
     """
     :type context: behave.runner.Context
@@ -171,6 +173,374 @@ def step_impl(context):
 
 
 @then("the Preferences view appears")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the Contacts button")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("I touch the Coworkers tab")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("My Coworker contacts are shown on the display")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("My Coworker contacts appear on the Coworkers contacts list")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the handset icon on a contact list item")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("My phone calls the contact")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("I touch the Favorites tab")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("My Favorite contacts are shown on the display")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("My Favorite contacts appear on the Coworkers contacts list")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the name of a contact that is not a Favorite")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("A contact detail screen appears with a white star icon")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the white star icon")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("The star turns yellow")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("The contact is shown on the display")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the name of a contact")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("A contact detail screen appears with a yellow star icon")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the yellow star icon")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("The start turns white")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I close the contact detail screen")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("The contact is not shown on the display")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("My Favorite contacts are shown on the display")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("I touch the name of a contact")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("A contact detail screen appears with a yellow star icon")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("I touch the yellow star icon")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("The start turns white")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@given("I touch the Groups tab")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("My Group Lists are shown on the display")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the Add button")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("A Create New Group popup appears")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I enter a group name")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("I touch the Create button")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("The personal group list is shown on the display")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the name of a personal Group list")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("The contact list for the group is displayed")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("Add and Delete buttons are visible")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("My Coworker contacts are displayed in a list with checkboxes")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch a check a box next to a contact")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("A check mark appears in the box")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the Done button")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("The contact is shown on the contact list for the group")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("The previously added contact is not on the list with checkboxes")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the Delete button")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@then("The Group list contacts are displayed in a list with checkboxes")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("The contact is not shown on the contact list for the group")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@when("I touch the name of a system Group list")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
+@step("Add and Delete buttons are not visible")
 def step_impl(context):
     """
     :type context: behave.runner.Context

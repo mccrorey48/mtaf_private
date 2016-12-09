@@ -1,10 +1,9 @@
 Feature: As a user I want to navigate to different views using the touch screen
 
-  Background: I start by logging in to the ePhone7 and going to the Home screen
-    Given I am logged in to the ePhone7
-    And I go to the Home screen
+  Background: I am at the Home view
+    Given I log in to the ePhone7
+    And I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-
 
   Scenario: I want to go to the Contacts view
     Given I touch the Contacts button
