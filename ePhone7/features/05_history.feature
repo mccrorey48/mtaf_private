@@ -1,7 +1,7 @@
 Feature: As a user I want to see my call history and make calls from the listed items
 
   Background: I am in the History view
-    Given I log in to the ePhone7
+    Given I am logged in to the ePhone7
     And I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the History button
@@ -107,7 +107,6 @@ Feature: As a user I want to see my call history and make calls from the listed 
     When I touch the voicemail icon
     Then A voicemail detail window appears
     And The voicemail audio plays back
-
 
   Scenario: I want to call back an outgoing call indicated on the All History view
     Given I make a call to a coworker contact

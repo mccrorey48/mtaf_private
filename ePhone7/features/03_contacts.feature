@@ -1,11 +1,12 @@
 Feature: As a user I want to use and manage my contact lists
 
   Background: I am at the Contacts view
-    Given I log in to the ePhone7
+    Given I am logged in to the ePhone7
     And I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the Contacts button
-    Then I see the Personal, Coworkers, Favorites and Groups tabs at the top of the screen
+    Then the Contacts view appears
+    And I see the Personal, Coworkers, Favorites and Groups tabs
 
   Scenario: I want to import my Google contacts
     Given I go to the Personal tab
@@ -50,7 +51,7 @@ Feature: As a user I want to use and manage my contact lists
     And I touch the name of a contact
     And A contact detail screen appears with a yellow star icon
     And I touch the yellow star icon
-    And The start turns white
+    And The star turns white
     When I close the contact detail screen
     Then The contact is not shown on the display
 
