@@ -176,7 +176,7 @@ def step_impl(context):
     pass
 
 
-@step("My Coworker contacts appear on the Coworkers contacts list")
+@step("My Coworker contacts are each listed with a handset icon")
 def step_impl(context):
     pass
 
@@ -1413,5 +1413,60 @@ def step_impl(context):
 
 
 @then("The network settings are displayed")
+def step_impl(context):
+    pass
+
+
+@when("I long-press a contact list item")
+def step_impl(context):
+    pass
+
+
+@then('An "Add Multiple Favorites" confirmation dialog appears')
+def step_impl(context):
+    pass
+
+
+@then("The contacts are shown with a Favorites star icon next to each one")
+def step_impl(context):
+    pass
+
+
+@step("Any existing Favorite contacts have a yellow start icon")
+def step_impl(context):
+    pass
+
+
+@step("Any other contacts have a white start icon")
+def step_impl(context):
+    pass
+
+
+@when("I touch the Favorites star icon on some contacts")
+def step_impl(context):
+    pass
+
+
+@then("The color toggles between yellow and white")
+def step_impl(context):
+    pass
+
+
+@then("My updated Favorite contacts are shown on the display")
+def step_impl(context):
+    pass
+
+
+@given("I touch the Personal tab")
+def step_impl(context):
+    pass
+
+
+@then("My Personal contacts are shown on the display")
+def step_impl(context):
+    pass
+
+
+@then("My Personal contacts are each listed with a handset icon")
 def step_impl(context):
     pass

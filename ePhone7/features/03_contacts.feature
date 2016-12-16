@@ -21,7 +21,7 @@ Feature: As a user I want to use and manage my contact lists
 
   Scenario: I want to call a contact from my Coworkers list
     Given I touch the Coworkers tab
-    Then My Coworker contacts appear on the Coworkers contacts list
+    Then My Coworker contacts are each listed with a handset icon
     When I touch the handset icon on a contact list item
     Then My phone calls the contact
 
@@ -44,6 +44,38 @@ Feature: As a user I want to use and manage my contact lists
     Then The star turns yellow
     When I touch the Favorites tab
     Then The contact is shown on the display
+
+  Scenario: I want to set the Favorites status of multiple Coworker contacts
+    Given I touch the Coworkers tab
+    Then My Coworker contacts are shown on the display
+    When I long-press a contact list item
+    Then An "Add Multiple Favorites" confirmation dialog appears
+    When I touch "OK"
+    Then The contacts are shown with a Favorites star icon next to each one
+    And Any existing Favorite contacts have a yellow start icon
+    And Any other contacts have a white start icon
+    When I touch the Favorites star icon on some contacts
+    Then The color toggles between yellow and white
+    When I long-press a contact list item
+    Then My Coworker contacts are each listed with a handset icon
+    When I touch the Favorites tab
+    Then My updated Favorite contacts are shown on the display
+
+  Scenario: I want to set the Favorites status of multiple Personal contacts
+    Given I touch the Personal tab
+    Then My Personal contacts are shown on the display
+    When I long-press a contact list item
+    Then An "Add Multiple Favorites" confirmation dialog appears
+    When I touch "OK"
+    Then The contacts are shown with a Favorites star icon next to each one
+    And Any existing Favorite contacts have a yellow start icon
+    And Any other contacts have a white start icon
+    When I touch the Favorites star icon on some contacts
+    Then The color toggles between yellow and white
+    When I long-press a contact list item
+    Then My Personal contacts are each listed with a handset icon
+    When I touch the Favorites tab
+    Then My updated Favorite contacts are shown on the display
 
   Scenario: I want to remove a contact from my Favorites list
     Given I touch the Favorites tab
