@@ -106,6 +106,21 @@ def step_impl(context):
     pass
 
 
+@step('I touch "Check Ethernet"')
+def step_impl(context):
+    pass
+
+
+@step('I touch "Confirm"')
+def step_impl(context):
+    pass
+
+
+@step('I touch "Factory Reset"')
+def step_impl(context):
+    pass
+
+
 @step('I touch "Personal"')
 def step_impl(context):
     pass
@@ -977,6 +992,11 @@ def step_impl(context):
     pass
 
 
+@step('A "Factory Reset" confirmation dialog appears')
+def step_impl(context):
+    pass
+
+
 @step('An "Account Deleted" popup appears')
 def step_impl(context):
     pass
@@ -1084,327 +1104,314 @@ def step_impl(context):
 
 @then('A submenu appears with a "Default Contacts Tab" option')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
+    pass
+
+
+@then('A submenu appears with a "Network" option')
+def step_impl(context):
     pass
 
 
 @when('I touch "Default Contacts Tab"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A submenu appears with a "Call Forwarding Options" option')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch "Call Forwarding Options"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch "Call Forwarding"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch the "Cancel" button')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A window appears with a section labeled "Call Forward Busy"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch the "Call Forward Busy" section')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @step('The section labeled "Call Forward Busy" is highlighted')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @step('The section labeled "Call Forward Busy" is not highlighted')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch "Phone"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A submenu appears with a "Brightness" option')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch "Brightness"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then("Only the contact I touched is listed")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A submenu appears with a "Screen Timeout" option')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch "Screen Timeout"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A "Sleep Timer Setting" window appears with buttons for various timer settings')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @step("The current timer setting is selected")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when("I touch the button for another timer setting")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then("The new timer setting is selected")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('The "Sleep Timer Setting" window disappears')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A "Select Ringtone" window appears with options for various ringtones')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @step("Only the current ringtone has a dot next to it")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when("I touch the button for another ringtone")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then("Only the new ringtone has a dot next to it")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A window with a "Touch Sounds" toggle appears')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @step('The toggle handle is in the "Off" position')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch and drag the toggle handle to the "On" position')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('The toggle handle stays in the "On" position')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A window with a "Ringer Volume" slider appears')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A submenu appears with an "Auto-Answer Calls" toggle')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A submenu appears with a "Ringtones" option')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch "Ringtones"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('The "Ringtones" window disappears')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @step('The toggle handle is in the "On" position')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch and drag the toggle handle to the "Off" position')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('The toggle handle stays in the "Off" position')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A window with a "Voice Call" slider appears')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A submenu appears with a "Volume Control" option')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @when('I touch "Volume Control"')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @then('A window with a "Media Volume" slider appears')
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
+    pass
+
+
+@then('A submenu appears with a "Date/Time Options" option')
+def step_impl(context):
+    pass
+
+
+@when('I touch "Date/Time Options"')
+def step_impl(context):
+    pass
+
+
+@then('A window with a "24-hour Format" toggle appears')
+def step_impl(context):
+    pass
+
+
+@then('A window with a "Change Timezone" option appears')
+def step_impl(context):
+    pass
+
+
+@step("The current time zone text is shown")
+def step_impl(context):
+    pass
+
+
+@when("I touch the current time zone text")
+def step_impl(context):
+    pass
+
+
+@then("A menu appears with time zone choices")
+def step_impl(context):
+    pass
+
+
+@when("I touch a new time zone choice")
+def step_impl(context):
+    pass
+
+
+@then("The menu disappears")
+def step_impl(context):
+    pass
+
+
+@step("The new time zone text is shown")
+def step_impl(context):
+    pass
+
+
+@when('I touch "System"')
+def step_impl(context):
+    pass
+
+
+@then('A submenu appears with a "Utilities" option')
+def step_impl(context):
+    pass
+
+
+@when('I touch the "Utilities" option')
+def step_impl(context):
+    pass
+
+
+@when('I touch the "Network" option')
+def step_impl(context):
+    pass
+
+
+@then('A menu with a "Clear App Data/Cache" option appears')
+def step_impl(context):
+    pass
+
+
+@when('I touch "Clear App Data/Cache"')
+def step_impl(context):
+    pass
+
+
+@then('A "Clear All User Data" confirmation dialog appears')
+def step_impl(context):
+    pass
+
+
+@then("The login screen appears")
+def step_impl(context):
+    pass
+
+
+@then('A menu with a "Factory Reset" option appears')
+def step_impl(context):
+    pass
+
+
+@then('A window appears with a "Check Ethernet" option')
+def step_impl(context):
+    pass
+
+
+@then("The network settings are displayed")
+def step_impl(context):
     pass

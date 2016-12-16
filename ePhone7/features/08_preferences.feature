@@ -238,10 +238,67 @@ Feature: As a user I want to view and change detailed settings that control my p
     When I touch and drag the toggle handle to the "Off" position
     Then The toggle handle stays in the "Off" position
 
+  Scenario: I want to change to the 24-hour date format
+    When I touch "Phone"
+    Then A submenu appears with a "Date/Time Options" option
+    When I touch "Date/Time Options"
+    Then A window with a "24-hour Format" toggle appears
+    And The toggle handle is in the "Off" position
+    When I touch and drag the toggle handle to the "On" position
+    Then The toggle handle stays in the "On" position
+    When I touch the "OK" button
+    Then The window disappears
+
+  Scenario: I want to change to the 12-hour date format
+    When I touch "Phone"
+    Then A submenu appears with a "Date/Time Options" option
+    When I touch "Date/Time Options"
+    Then A window with a "24-hour Format" toggle appears
+    And The toggle handle is in the "On" position
+    When I touch and drag the toggle handle to the "Off" position
+    Then The toggle handle stays in the "Off" position
+    When I touch the "OK" button
+    Then The window disappears
+
+  Scenario: I want to change the time zone
+    When I touch "Phone"
+    Then A submenu appears with a "Date/Time Options" option
+    When I touch "Date/Time Options"
+    Then A window with a "Change Timezone" option appears
+    And The current time zone text is shown
+    When I touch the current time zone text
+    Then A menu appears with time zone choices
+    When I touch a new time zone choice
+    Then The menu disappears
+    And The new time zone text is shown
+    When I touch the "OK" button
+    Then The window disappears
+
   Scenario: I want to log out of my phone
+    When I touch "System"
+    Then A submenu appears with a "Utilities" option
+    When I touch the "Utilities" option
+    Then A menu with a "Clear App Data/Cache" option appears
+    When I touch "Clear App Data/Cache"
+    Then A "Clear All User Data" confirmation dialog appears
+    When I touch "Confirm"
+    Then The login screen appears
+
   Scenario: I want to reset my phone to the factory settings
+    When I touch "System"
+    Then A submenu appears with a "Utilities" option
+    When I touch the "Utilities" option
+    Then A menu with a "Factory Reset" option appears
+    When I touch "Factory Reset"
+    Then A "Factory Reset" confirmation dialog appears
+    When I touch "Confirm"
+    Then The login screen appears
+
   Scenario: I want to see my phone's network settings
-  Scenario: I want to set my phone to use a specified IP address
-  Scenario: I want to set my phone to use an IP address assigned by a DHCP server
-  Scenario: I want to set my phone to use a specified proxy server
+    When I touch "System"
+    Then A submenu appears with a "Network" option
+    When I touch the "Network" option
+    Then A window appears with a "Check Ethernet" option
+    When I touch "Check Ethernet"
+    Then The network settings are displayed
 
