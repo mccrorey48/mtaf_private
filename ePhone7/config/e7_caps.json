@@ -1,7 +1,7 @@
 {
     "login": [
         {
-            "appActivity": ".activities.MainViewActivity",
+            "appActivity": ".settings.ui.LoginActivity",
             "appPackage": "com.esi_estech.ditto",
             "appWaitActivity": ".settings.ui.LoginActivity",
             "appium-version": "1.3.7",
@@ -33,8 +33,11 @@
         {
             "appPackage": "com.esi_estech.ditto",
             "autoLaunch": false,
+            "automationName": "Appium",
             "deviceName": "r2d2",
+            "dontStopAppOnReset": true,
             "newCommandTimeout": 1200,
+            "noReset": true,
             "platformName": "Android",
             "platformVersion": "4.4",
             "type": "constants"
