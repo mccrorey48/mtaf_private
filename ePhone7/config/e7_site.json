@@ -205,11 +205,21 @@
             ],
             "Mock": false,
             "NullSound": false,
+            "OauthHeaders": {
+                "content-type": "application/json"
+            },
+            "OauthURL": "https://pro.esiapi.io/aaa/v2",
+            "OauthUsername": "{\"username\":\"%s@%s\",\"password\":\"%s\"}",
             "Quiet": true,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
             "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
             "TestScreenshotsFolder": "ePhone7/screenshots",
             "UseTcp": false,
+            "VVMHeaders": {
+                "Authorization": "Bearer %s",
+                "Content-Type": "application/json"
+            },
+            "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
             "XmlFolder": "ePhone7/utils/xml",
             "type": "constants"
         },
