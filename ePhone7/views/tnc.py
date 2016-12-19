@@ -16,17 +16,12 @@ class TncView(BaseView):
 
     def __init__(self):
         super(TncView, self).__init__()
-
-    @Trace(log)
-    def not_tnc_activity(self):
-        return self.current_activity != '.settings.ui.TernsAndConditionsScreen'
+        self.png_file_base = 'tnc'
 
     @Trace(log)
     def accept_tnc(self):
         self.click_element_by_key('Accept')
         self.click_element_by_key('Continue')
-        testfn = lambda: self.current_activity != '.settings.ui.TernsAndConditionsScreen'
-        failmsg_fn = lambda: 'activity is still .settings.ui.TermsAndConditionsScreen'
-        self.wait_for_condition_true(testfn, failmsg_fn)
+        self.wait_for_activity('.util.AppIntroActivity')
 
 tnc_view = TncView()

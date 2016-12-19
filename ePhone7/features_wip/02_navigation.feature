@@ -25,6 +25,6 @@ Feature: As a user I want to navigate to different views using the touch screen
     Then the Dial view appears
 
   Scenario: I want to go to the Preferences view
-    Given I touch the Preferences button
-    Then the Preferences view appears
+    Given I touch the Preferences icon
+    Then the Preferences window appears
 

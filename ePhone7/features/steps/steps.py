@@ -1,35 +1,36 @@
 from behave import *
 from ePhone7.views import *
+from lib.user_exception import UserException as Ux
 import re
 
 
 @step('I touch the "System" menu category')
 def step_impl(context):
-    # prefs_view.hide_list_items()
-    # prefs_view.click_element_by_key('System')
+    prefs_view.hide_list_items()
+    prefs_view.click_element_by_key('System')
     pass
 
 
 @step('I touch the "About" menu item')
 def step_impl(context):
-    # prefs_view.click_element_by_key('About')
+    prefs_view.click_element_by_key('About')
     pass
 
 
 @step('The correct version is displayed')
 def step_impl(context):
-    # about_popup = prefs_view.find_element_by_key('AppVersion')
-    # source = about_popup.text
-    # prefs_view.click_element_by_key('AboutOk')
-    # prefs_view.click_element_by_key('System')
-    # m = re.match('App Version : (\S*)', source.encode('utf8'))
-    # if m is None:
-    #     print("Unknown Version")
-    # else:
-    #     version = m.group(1)
-    #     print("\nVersion = %s" % version)
-    #     expected = context.config.userdata.get('version')
-    #     assert version == expected, "Incorrect Version: expected %s, got %s" % (expected, version)
+    about_popup = prefs_view.find_element_by_key('AppVersion')
+    source = about_popup.text
+    prefs_view.click_element_by_key('AboutOk')
+    prefs_view.click_element_by_key('System')
+    m = re.match('App Version : (\S*)', source.encode('utf8'))
+    if m is None:
+        print("Unknown Version")
+    else:
+        version = m.group(1)
+        print("\nVersion = %s" % version)
+        expected = context.config.userdata.get('version')
+        assert version == expected, "Incorrect Version: expected %s, got %s" % (expected, version)
     pass
 
 
@@ -68,7 +69,13 @@ def step_impl(context):
 
 @step("I am logged in to the ePhone7")
 def step_impl(context):
-    pass
+    try:
+        el = user_view.find_element_by_key('UserHeaderName', timeout=5)
+        pass
+    except Ux as e:
+        login_view.login()
+        tnc_view.accept_tnc()
+        app_intro_view.skip_intro()
 
 
 @step("I go to the Home view")
@@ -151,12 +158,22 @@ def step_impl(context):
     pass
 
 
-@step("I touch the Preferences button")
+@step("I touch the Preferences icon")
+def step_impl(context):
+    user_view.click_element_by_key('PrefsButton')
+
+
+@step("the Preferences window appears")
 def step_impl(context):
     pass
 
 
-@step("the Preferences view appears")
+@step("I close the Preferences window")
+def step_impl(context):
+    pass
+
+
+@step("The Preferences window disappears")
 def step_impl(context):
     pass
 
@@ -776,11 +793,6 @@ def step_impl(context):
     pass
 
 
-@step("I go to the Preferences view")
-def step_impl(context):
-    pass
-
-
 @step("I close all open submenus")
 def step_impl(context):
     pass
@@ -789,7 +801,6 @@ def step_impl(context):
 @step("I see the Need Help, Personal, Phone and System category elements")
 def step_impl(context):
     pass
-
 
 
 @step("A submenu opens with an eHelp option")
@@ -863,11 +874,6 @@ def step_impl(context):
 
 
 @step('I touch the "X" icon')
-def step_impl(context):
-    pass
-
-
-@step("The Preferences window disappears")
 def step_impl(context):
     pass
 
@@ -1028,11 +1034,6 @@ def step_impl(context):
 
 
 @step("The Contacts tab window disappears")
-def step_impl(context):
-    pass
-
-
-@step("I close the Preferences window")
 def step_impl(context):
     pass
 

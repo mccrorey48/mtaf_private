@@ -145,7 +145,7 @@ class BaseView(SeleniumActions):
             return driver
 
     @Trace(log)
-    def open_appium(self, caps_tag='main'):
+    def open_appium(self, caps_tag='nolaunch'):
         if cfg.site['Mock']:
             SeleniumActions.driver = MockDriver()
         else:
@@ -163,5 +163,11 @@ class BaseView(SeleniumActions):
             SeleniumActions.driver = None
             self.caps_tag = None
         pass
+
+    @Trace(log)
+    def wait_for_activity(self, activity):
+        failmsg = 'current activity is not %s' % activity
+        self.wait_for_condition_true(lambda: self.driver.current_activity == activity, lambda: failmsg)
+
 
 base_view = BaseView()

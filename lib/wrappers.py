@@ -98,6 +98,7 @@ class Trace(object):
                     logger.warn(('%%s %%-%ds EXCEPTION:      %%s: %%s [%%s]' % (35 - logging_esi.trace_indent))
                                 % (self.prefix(), f.func_name, value.__class__.__name__,
                                    '%s line %s in %s attempting "%s"' % traceback.extract_tb(tb)[1], value))
+                    raise
                 if self.except_cb:
                     try:
                         self.except_cb(exc_type, value, tb)

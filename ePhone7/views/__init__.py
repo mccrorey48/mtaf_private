@@ -1,4 +1,7 @@
 from .base import base_view
+from .login import login_view
+from .tnc import tnc_view
+from .app_intro import app_intro_view
 from .user import user_view
 from .contacts import contacts_view
 from .history import history_view
