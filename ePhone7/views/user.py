@@ -20,7 +20,7 @@ class UserView(BaseView):
         "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endButtonImage"},
         "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
         "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
-        "Keypad": {"by": "id", "parent": "com.esi_estech.ditto:id/keypad_tab", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
+        "Keypad": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
         "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
         "IncomingCallIgnore": {"by": "id", "value": "com.esi_estech.ditto:id/ignore_button"},
         "IncomingCallAnswerToSpeaker": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_speaker_button"},

@@ -13,6 +13,7 @@ log = logging.get_logger('esi.keypad_view')
 class KeypadView(UserView):
 
     locators = {
+        "DialPad": {"by": "id", "value": "com.esi_estech.ditto:id/content_dial_pad" },
         "NumKeyAll": {"by": "zpath", "value": "//gv/rl"},
         "FuncKeyAll": {"by": "zpath", "value": "//tl/tr/ll"},
         "NumKey1": {"by": "zpath", "value": "//tv[@text='1']"},

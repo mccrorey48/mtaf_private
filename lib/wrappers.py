@@ -2,7 +2,7 @@ import inspect
 import sys
 import traceback
 from time import time
-
+import re
 import lib.logging_esi as logging_esi
 from appium import webdriver
 
@@ -40,13 +40,14 @@ class TestCase(object):
 
 class Trace(object):
 
-    def __init__(self, logger=None, except_cb=None):
+    def __init__(self, logger=None, except_cb=None, log_level='trace'):
         """
         If there are decorator arguments, the function
         to be decorated is not passed to the constructor!
         """
         self.logger = logger
         self.except_cb = except_cb
+        self.log_level = log_level
 
     @staticmethod
     def prefix():
@@ -66,14 +67,22 @@ class Trace(object):
                 logger = log
             else:
                 logger = self.logger
+            log_fn = {
+                'warn': logger.warn,
+                'info': logger.info,
+                'trace': logger.trace,
+                'debug': logger.debug
+            }[self.log_level]
             arg_reprs = []
             for arg in args:
                 if type(arg) == webdriver.webelement.WebElement:
                     arg_reprs.append('<%s>' % arg._id)
+                elif arg.__class__.__name__[-4:] == 'View':
+                    arg_reprs.append(arg.__class__.__name__)
                 else:
                     arg_reprs.append(repr(arg))
             called = "%s%s" % (f.func_name, '(%s)' % ','.join(arg_reprs))
-            logger.trace("%s %s" % (self.prefix(), called))
+            log_fn("%s %s" % (self.prefix(), called))
             logging_esi.trace_indent += 1
             retval = None
             self.elapsed_time = 0.0
@@ -98,7 +107,7 @@ class Trace(object):
                     logger.warn(('%%s %%-%ds EXCEPTION:      %%s: %%s [%%s]' % (35 - logging_esi.trace_indent))
                                 % (self.prefix(), f.func_name, value.__class__.__name__,
                                    '%s line %s in %s attempting "%s"' % traceback.extract_tb(tb)[1], value))
-                    raise
+
                 if self.except_cb:
                     try:
                         self.except_cb(exc_type, value, tb)
@@ -109,7 +118,7 @@ class Trace(object):
                 logging_esi.trace_indent -= 1
                 val_reprs = []
                 if retval is None:
-                    logger.trace('%s %s returned [%.3fs]' % (self.prefix(), f.func_name, self.elapsed_time))
+                    log_fn('%s %s returned [%.3fs]' % (self.prefix(), f.func_name, self.elapsed_time))
                 else:
                     if type(retval) == list:
                         for val in retval:
@@ -125,6 +134,6 @@ class Trace(object):
                             returned = repr(retval)
                     if len(returned) > 160:
                         returned = returned[:160] + "..."
-                    logger.trace('%s %s returned %s [%.3fs]' % (self.prefix(), f.func_name, returned, self.elapsed_time))
+                    log_fn('%s %s returned %s [%.3fs]' % (self.prefix(), f.func_name, returned, self.elapsed_time))
             return retval
         return wrapped_f

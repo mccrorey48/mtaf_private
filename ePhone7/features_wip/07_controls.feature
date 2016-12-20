@@ -2,7 +2,6 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
 
   Background: I am logged in and at the Home view
     Given I am logged in to the ePhone7
-    When I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
 
   Scenario: I want to activate Do Not Disturb

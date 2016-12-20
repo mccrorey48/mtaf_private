@@ -2,7 +2,6 @@ Feature: As a user I want to make calls by directly entering all or part of a co
 
   Background: I am in the Dial view
     Given I am logged in to the ePhone7
-    And I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the Dial button
     Then I see the keypad

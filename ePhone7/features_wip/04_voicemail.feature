@@ -2,7 +2,6 @@ Feature: As a user I want to use and manage my voicemail lists
 
   Background: A new voicemail is shown in the New Voicemails view
     Given I am logged in to the ePhone7
-    And I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the Voicemail button
     Then I see the New, Saved and Trash tabs at the top of the screen

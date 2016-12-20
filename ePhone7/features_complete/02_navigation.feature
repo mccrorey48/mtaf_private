@@ -2,7 +2,6 @@ Feature: As a user I want to navigate to different views using the touch screen
 
   Background: I am at the Home view
     Given I am logged in to the ePhone7
-    And I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
 
   Scenario: I want to go to the Contacts view
@@ -16,7 +15,7 @@ Feature: As a user I want to navigate to different views using the touch screen
     And I see the All and Missed tabs at the top of the screen
 
   Scenario: I want to go to the Voicemail view
-    Given I touch the History button
+    Given I touch the Voicemail button
     Then the Voicemail view appears
     And I see the New, Saved and Trash tabs at the top of the screen
 

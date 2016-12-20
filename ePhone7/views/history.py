@@ -16,6 +16,7 @@ class HistoryView(UserView):
         "All": {"by": "id", "value": "com.esi_estech.ditto:id/button1", "text": "All"},
         "Missed": {"by": "id", "value": "com.esi_estech.ditto:id/button2", "text": "Missed"},
         "HistoryEntry": {"by": "zpath", "value": "//rv/rl"},
+        "HistoryList": {"by": "id", "value": "com.esi_estech.ditto:id/call_history_sliding_layout"},
         "CallerName": {"by": "id", "value": "com.esi_estech.ditto:id/callerName"},
         "CallIcon": {"by": "id", "value": "com.esi_estech.ditto:id/call_type_button"}
     }

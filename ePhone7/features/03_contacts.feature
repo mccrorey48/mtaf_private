@@ -2,7 +2,6 @@ Feature: As a user I want to use and manage my contact lists
 
   Background: I am at the Contacts view
     Given I am logged in to the ePhone7
-    And I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the Contacts button
     Then the Contacts view appears

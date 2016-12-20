@@ -14,13 +14,14 @@ log = logging.get_logger('esi.contacts_view')
 class ContactsView(UserView):
 
     locators = {
-        "Coworkers": {"by": "id", "value": "com.esi_estech.ditto:id/ephone_contacts", "text": "Coworkers"},
         "ContactCallIcon": {"by": "id", "value": "com.esi_estech.ditto:id/call_button"},
         "ContactClose": {"by": "id", "value": "com.esi_estech.ditto:id/bottom_sheet_title_clear_button"},
         "ContactName": {"by": "id", "value": "android:id/text1"},
         "ContactNumber": {"by": "id", "value": "android:id/text2"},
         "ContactNameSubElement": {"parent": "ContactParent", "by": "id", "value": "android:id/text1"},
         "ContactParent": {"by": "id", "value": "com.esi_estech.ditto:id/contact_list_item_layout"},
+        "ContactsList": {"by": "id", "value": "com.esi_estech.ditto:id/contactsList"},
+        "Coworkers": {"by": "id", "value": "com.esi_estech.ditto:id/ephone_contacts", "text": "Coworkers"},
         "Favorites": {"by": "id", "value": "com.esi_estech.ditto:id/favorites", "text": "Favorites"},
         "FavoriteIndicator": {"by": "id", "value": "com.esi_estech.ditto:id/favorite_indicator"},
         "FirstContactName": {"by": "zpath", "value": "//rv/fl[1]/rl/ll/tv"},

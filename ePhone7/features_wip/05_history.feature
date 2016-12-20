@@ -2,7 +2,6 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Background: I am in the History view
     Given I am logged in to the ePhone7
-    And I go to the Home view
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the History button
     Then I see the All and Missed tabs at the top of the screen

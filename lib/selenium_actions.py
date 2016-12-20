@@ -89,12 +89,12 @@ class SeleniumActions(Tc):
         # else:
         #     raise Ux(msg)
 
-    @Trace(log)
+    @Trace(log, log_level='debug')
     def find_element_by_locator(self, locator, timeout=10):
         # log.debug("%s = %s" % (locator['by'], locator['value']))
         return self.find_element_with_timeout(locator['by'], locator['value'], timeout=timeout)
 
-    @Trace(log)
+    @Trace(log, log_level='debug')
     def find_elements_by_locator(self, locator):
         if locator['by'] == 'xpath':
             # log.debug("xpath = " + locator['value'])
@@ -109,7 +109,7 @@ class SeleniumActions(Tc):
             # log.debug("css selector = " + locator['value'])
             return self.driver.find_elements_by_css_selector(locator['value'])
 
-    @Trace(log)
+    @Trace(log, log_level='debug')
     def find_sub_element_by_locator(self, parent, locator, timeout=10):
         if locator['by'] == 'xpath':
             # log.debug("xpath = " + locator['value'])
@@ -119,7 +119,7 @@ class SeleniumActions(Tc):
             return self.find_element_with_timeout('id', locator['value'], parent=parent, timeout=timeout)
 
     @staticmethod
-    @Trace(log)
+    @Trace(log, log_level='debug')
     def find_sub_elements_by_locator(parent, locator, timeout=20):
         if locator['by'] == 'xpath':
             # log.debug("xpath = " + locator['value'])
@@ -190,7 +190,7 @@ class SeleniumActions(Tc):
         WebDriverWait(self.driver, timeout).until(EC.title_is(title))
 
     @staticmethod
-    @Trace(log)
+    @Trace(log, log_level='debug')
     def wait_for_condition_true(condition_fn, failmsg_fn, timeout=30, poll_time=1.0, warn_time=5.0):
         start_time = time()
         while True:
@@ -203,7 +203,7 @@ class SeleniumActions(Tc):
                 return True
             sleep(poll_time)
 
-    @Trace(log)
+    @Trace(log, log_level='debug')
     def find_element_with_timeout(self, method, value, parent=None, timeout=10):
         start_time = time()
         elems = []

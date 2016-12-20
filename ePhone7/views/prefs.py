@@ -38,6 +38,7 @@ class PrefsView(BaseView):
         "Personal": {"by": "zpath", "value": "//el/rl[2]/tv[1]", "text": "Personal"},
         "Phone": {"by": "zpath", "value": "//el/rl[3]/tv[1]", "text": "Phone"},
         "PhoneUpdates": {"by": "zpath", "value": "//lv/ll[10]/tv", "text": "Phone Updates"},
+        "Preferences": {"by": "id", "value": "com.esi_estech.ditto:id/settings_list"},
         "Ringtones": {"by": "zpath", "value": "//lv/ll[7]/tv", "text": "Ringtones"},
         "SignInWithGoogle": {"by": "zpath", "value": "//lv/ll[2]/tv", "text": "Sign in with Google"},
         "System": {"by": "zpath", "value": "//el/rl[4]/tv[1]", "text": "System"},
