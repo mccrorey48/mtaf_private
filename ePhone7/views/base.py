@@ -5,6 +5,7 @@ import lib.logging_esi as logging_esi
 from PIL import Image
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
+from selenium.common.exceptions import TimeoutException
 from lib.wrappers import Trace
 from lib.android import expand_zpath
 
@@ -165,9 +166,9 @@ class BaseView(SeleniumActions):
         pass
 
     @Trace(log)
-    def wait_for_activity(self, activity):
-        failmsg = 'current activity is not %s' % activity
-        self.wait_for_condition_true(lambda: self.driver.current_activity == activity, lambda: failmsg)
+    def wait_for_activity(self, activity, timeout=30):
+        if not self.driver.wait_activity(activity, timeout):
+            raise Ux('current activity is not %s' % activity)
 
 
 base_view = BaseView()

@@ -77,11 +77,10 @@ def mock_assertions(context, scenario):
         assert get_portal_url.call_count == 1
         assert find_element_by_key.call_count == 3
         assert find_element_by_key.return_value.send_keys.call_count == 2
-        assert find_element_by_key.return_value.send_keys.call_args_list[0][0] == \
-            ('mmccroreyrs@SVAutoManage',), "expect 'mmccroreyrs@SVAutoManage', got %s" % \
-                                           find_element_by_key.return_value.send_keys.call_args_list[0][0]
-        assert context.mocks['login_view']['find_element_by_key'].return_value.send_keys.call_args_list[1][0] == \
-            ('0222',), "expect '0222', got %s" % context.find_element.return_value.send_keys.call_args_list[1][0]
+        username = find_element_by_key.return_value.send_keys.call_args_list[0][0][0]
+        assert username == 'mmccroreyrs@SVAutoManage', "expect username 'mmccroreyrs@SVAutoManage', got %s" % username
+        password = find_element_by_key.return_value.send_keys.call_args_list[1][0][0]
+        assert password == '0222', "expect password '0222', got %s" % password
         assert wait_for_title.call_count == 1
         assert wait_for_title.call_args[0] == ('Manager Portal - Home',), \
             "expect 'Manager Portal - Home', got %s" % wait_for_title.call_args[0]
@@ -89,12 +88,10 @@ def mock_assertions(context, scenario):
         assert get_portal_url.call_count == 1
         assert find_element_by_key.call_count == 3
         assert find_element_by_key.return_value.send_keys.call_count == 2
-        assert find_element_by_key.return_value.send_keys.call_args_list[0][0] == ('mmccroreyrs@SVAutoManage',), \
-            "expect 'mmccroreyrs@SVAutoManage', got %s" % \
-            find_element_by_key.return_value.send_keys.call_args_list[0][0]
-        assert find_element_by_key.return_value.send_keys.call_args_list[1][0] == ('2222',), \
-            "expect '0222', got %s" % \
-            find_element_by_key.return_value.send_keys.call_args_list[1][0]
+        username = find_element_by_key.return_value.send_keys.call_args_list[0][0][0]
+        assert username == 'mmccroreyrs@SVAutoManage', "expect username 'mmccroreyrs@SVAutoManage', got %s" % username
+        password = find_element_by_key.return_value.send_keys.call_args_list[1][0][0]
+        assert password == '2222', "expect password '2222', got %s" % password
 
 
 def before_all(context):

@@ -3,7 +3,7 @@ from time import time, sleep
 
 import lib.logging_esi as logging
 from lib.wrappers import Trace
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -143,6 +143,23 @@ class SeleniumActions(Tc):
             raise Ux('WebDriverException ' + e.message)
 
     @Trace(log)
+    def element_is_present(self, key, timeout=1):
+        # waits 'timeout' seconds for exactly one element with the indicated key to be present
+        # and returns True if that happens, False otherwise
+        locator = self.get_locator(key)
+        try:
+            if 'parent_key' in locator:
+                parent = self.find_element_by_key(locator['parent_key'])
+                self.find_sub_element_by_locator(parent, locator, timeout)
+            else:
+                self.find_element_by_locator(locator, timeout)
+        except Ux:
+            return False
+        except WebDriverException as e:
+            raise Ux('WebDriverException ' + e.message)
+        return True
+
+    @Trace(log)
     def find_sub_element_by_key(self, parent, key, timeout=20):
         locator = self.get_locator(key)
         try:
@@ -205,14 +222,15 @@ class SeleniumActions(Tc):
 
     @Trace(log, log_level='debug')
     def find_element_with_timeout(self, method, value, parent=None, timeout=10):
+        # calls find_elements until exactly one element is returned, or times out and raises Ux exception
         start_time = time()
-        elems = []
-        while time() - start_time < timeout:
+        while True:
             if parent:
                 elems = parent.find_elements(method, value)
             else:
                 elems = self.driver.find_elements(method, value)
             if len(elems) == 1:
                 return elems[0]
-        raise Ux("%s matching elements found with %s = %s, timeout = %s, parent = %s" %
-                 (len(elems), method, value, timeout, parent))
+            if time() - start_time > timeout:
+                raise Ux("%s matching elements found with %s = %s, timeout = %s, parent = %s" %
+                         (len(elems), method, value, timeout, parent))

@@ -69,12 +69,13 @@ def step_impl(context):
 
 @step("I am logged in to the ePhone7")
 def step_impl(context):
-    try:
-        user_view.find_element_by_key('UserHeaderName', timeout=5)
-    except Ux:
+    if prefs_view.element_is_present('Preferences'):
+        prefs_view.click_element_by_key('Close')
+    if not user_view.element_is_present('UserHeaderName'):
         login_view.login()
         tnc_view.accept_tnc()
         app_intro_view.skip_intro()
+        assert user_view.element_is_present('UserHeaderName', 10), 'Unable to log in'
 
 
 @step("I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen")
