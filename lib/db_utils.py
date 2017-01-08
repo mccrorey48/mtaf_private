@@ -34,6 +34,8 @@ def dump_dbs(_db_names, server, cfg_dir, _output_fd):
         db_dict = all_dbs[_db_name]
         if _db_name.endswith("_site"):
             passwords = {}
+            del db_dict['constants']
+            del db_dict['user']
         for collection_name in db_dict:
             if _db_name.endswith("_site"):
                 passwords[collection_name] = {}
@@ -69,22 +71,33 @@ def restore_dbs(_db_names, server, cfg_dir, _output_fd):
         db_collections = json.loads(json_txt)
         all_output[_db_name] = db_collections
         if _db_name.endswith("_site"):
+            constants = []
+            user = []
             try:
                 with open(os.path.join(cfg_dir, 'passwords.json')) as infile:
                     all_passwords = json.loads(infile.read())
             except IOError:
                 all_passwords = {}
-        for collection_name in db_collections.keys():
-            print "restoring collection: " + collection_name
-            collection = db_collections[collection_name]
-            if _db_name.endswith("_site") and collection_name in all_passwords:
-                passwords = all_passwords[collection_name]
-                for doc in collection:
+            for collection_name in db_collections.keys():
+                print "processing collection " + collection_name
+                if collection_name in all_passwords:
+                    passwords = all_passwords[collection_name]
+                for doc in db_collections[collection_name]:
                     try:
-                        if doc['type'] == 'account' and doc['uri'] in passwords:
+                        if collection_name in all_passwords and doc['type'] == 'account' and doc['uri'] in passwords:
                             doc['password'] = passwords[doc['uri']]
                     except KeyError:
                         pass
+                    try:
+                        if doc['type'] == 'user':
+                            user.append(dict(doc, **{'site_tag': collection_name}))
+                        elif doc['type'] == 'constants':
+                            constants.append(dict(doc, **{'site_tag': collection_name}))
+                    except KeyError:
+                        pass
+            db_collections['constants'] = constants
+            db_collections['user'] = user
+        print "restoring db: " + _db_name
         all_collections[_db_name] = db_collections
     if not _output_fd:
         write_dbs(all_collections, server)
