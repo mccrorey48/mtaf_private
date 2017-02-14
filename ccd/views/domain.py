@@ -29,8 +29,8 @@ class DomainView(BaseView):
 
     @Trace(log)
     def goto_tab(self, tab_name, banner_title):
-        self.click_element_by_key(tab_name)
-        elem = self.find_element_by_key("NavBannerTitle")
+        self.click_element_by_name(tab_name)
+        elem = self.find_element("NavBannerTitle")
         self.assert_element_text(elem, banner_title, "Banner Title")
 
     @Trace(log)
@@ -56,28 +56,28 @@ class DomainView(BaseView):
     @Trace(log)
     def goto_auto_attendants(self):
         sleep(1)
-        self.click_element_by_key('SettingsTab')
+        self.click_element_by_name('SettingsTab')
         link_elem = self.find_element_with_timeout("partial link text", 'Auto')
         link_elem.click()
 
     @Trace(log)
     def goto_time_frames(self):
         sleep(1)
-        self.click_element_by_key('SettingsTab')
+        self.click_element_by_name('SettingsTab')
         link_elem = self.find_element_with_timeout("partial link text", 'Time')
         link_elem.click()
 
     @Trace(log)
     def goto_music_on_hold(self):
         sleep(1)
-        self.click_element_by_key('SettingsTab')
+        self.click_element_by_name('SettingsTab')
         link_elem = self.find_element_with_timeout("partial link text", 'Music')
         link_elem.click()
 
     @Trace(log)
     def goto_locations(self):
         sleep(1)
-        self.click_element_by_key('SettingsTab')
+        self.click_element_by_name('SettingsTab')
         link_elem = self.find_element_with_timeout("partial link text", 'Loc')
         link_elem.click()
 

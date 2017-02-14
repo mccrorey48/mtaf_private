@@ -59,7 +59,7 @@ class UserView(BaseView):
             desired_color = cfg.colors['UserView']['dnd_on_color'][:-1]
         else:
             desired_color = cfg.colors['UserView']['dnd_off_color'][:-1]
-        elem = self.find_element_by_key('DndButton')
+        elem = self.find_element('DndButton')
         self.get_screenshot_as_png('set_dnd', cfg.test_screenshot_folder)
         current_color = self.get_element_color('set_dnd', elem)
         if current_color != desired_color:
@@ -90,14 +90,14 @@ class UserView(BaseView):
 
     @Trace(log)
     def end_call(self):
-        self.click_element_by_key('EndActiveCall')
+        self.click_element_by_name('EndActiveCall')
 
     @Trace(log)
     def goto_settings(self):
         sleep(2.0)
         self.swipe(515, 12, 515, 250, 400)
         self.swipe(515, 12, 515, 250, 400)
-        elem = self.find_element_by_key('SettingsButtonText')
+        elem = self.find_element('SettingsButtonText')
         self.assert_element_text_ic(elem, 'settings', 'button')
         # Touch settings, settings menu appears with "Apps" item
         self.tap_element(elem)
@@ -116,7 +116,7 @@ class UserView(BaseView):
 
     @Trace(log)
     def verify_prefs_view(self):
-        self.click_element_by_key('PrefsButton')
+        self.click_element_by_name('PrefsButton')
         return prefs_view.verify_view()
 
     @Trace(log)
@@ -127,7 +127,7 @@ class UserView(BaseView):
         # if it is active, return true
         # if another tab is active, return false
         # if no tab is active, raise an exception
-        self.click_element_by_key(self.expected_tab)
+        self.click_element_by_name(self.expected_tab)
         sleep(5)
         self.get_screenshot_as_png(self.png_file_base, cfg.test_screenshot_folder)
         self.active_tab = None
@@ -148,10 +148,10 @@ class UserView(BaseView):
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('early', self.call_status_wait)
-        self.find_element_by_key('IncomingCallAnswerToHeadset')
-        self.find_element_by_key('IncomingCallAnswerToSpeaker')
-        self.wait_for_element_text_by_key('IncomingCallCallerName', src_cfg['UserNameIncoming'])
-        self.wait_for_element_text_by_key('IncomingCallCallerNumber', src_cfg['UserId'])
+        self.find_element('IncomingCallAnswerToHeadset')
+        self.find_element('IncomingCallAnswerToSpeaker')
+        self.wait_for_element_text('IncomingCallCallerName', src_cfg['UserNameIncoming'])
+        self.wait_for_element_text('IncomingCallCallerNumber', src_cfg['UserId'])
         softphone.end_call()
 
     @Trace(log)
@@ -162,9 +162,9 @@ class UserView(BaseView):
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('early', self.call_status_wait)
-        self.click_element_by_key('IncomingCallAnswerToSpeaker')
+        self.click_element_by_name('IncomingCallAnswerToSpeaker')
         softphone.wait_for_call_status('call', self.call_status_wait)
-        self.click_element_by_key('EndActiveCall')
+        self.click_element_by_name('EndActiveCall')
         softphone.wait_for_call_status('idle', self.call_status_wait)
 
     @Trace(log)
@@ -175,7 +175,7 @@ class UserView(BaseView):
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('call', self.call_status_wait)
-        self.click_element_by_key('EndActiveCall')
+        self.click_element_by_name('EndActiveCall')
         softphone.wait_for_call_status('idle', self.call_status_wait)
 
     @Trace(log)
@@ -186,7 +186,7 @@ class UserView(BaseView):
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('early', self.call_status_wait)
-        self.click_element_by_key('IncomingCallIgnore')
+        self.click_element_by_name('IncomingCallIgnore')
         # the softphone caller will hear ringing until the max number of rings occurs, then
         # the softphone status will change to "call" because pbx accepts the invite to play
         # the "unavailable" message

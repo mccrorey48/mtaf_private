@@ -23,7 +23,7 @@ class ResellerDomainsView(ResellerView):
 
     @Trace(log)
     def goto_test_domain_select(self):
-        elems = self.find_elements_by_key("DomainName")
+        elems = self.find_elements("DomainName")
         # print "number of elements: %s" % len(elems)
         for elem in elems:
             # print "elem text = %s" % elem.text
@@ -40,17 +40,17 @@ class ResellerDomainsView(ResellerView):
 
     @Trace(log)
     def click_first_domain(self):
-        elems = self.find_elements_by_key("DomainNames")
+        elems = self.find_elements("DomainNames")
         if len(elems) > 0:
             self.click_element(elems[0])
 
     @Trace(log)
     def get_visible_domain_name_elems(self):
-        return self.find_elements_by_key("DomainNames")
+        return self.find_elements("DomainNames")
 
     @Trace(log)
     def first_row_is_test_domain(self):
-        elems = self.find_elements_by_key("DomainNames")
+        elems = self.find_elements("DomainNames")
         if len(elems) > 0:
             return elems[0].text == cfg.site['TestDomain']
         else:
@@ -58,7 +58,7 @@ class ResellerDomainsView(ResellerView):
 
     @Trace(log)
     def only_test_domain_is_in_table(self):
-        elems = self.find_elements_by_key("DomainNames")
+        elems = self.find_elements("DomainNames")
         log.debug("number of elems is %s" % len(elems))
         if len(elems) != 1:
             raise Ux("expected one domain to be in table, found %s" % len(elems))

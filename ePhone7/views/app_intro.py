@@ -18,7 +18,7 @@ class AppIntroView(BaseView):
 
     @Trace(log)
     def skip_intro(self):
-        self.click_element_by_key('Skip')
+        self.click_element_by_name('Skip')
         self.wait_for_activity('.activities.MainViewActivity')
 
 app_intro_view = AppIntroView()

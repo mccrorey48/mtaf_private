@@ -7,22 +7,22 @@ import re
 @step('I touch the "System" menu category')
 def step_impl(context):
     prefs_view.hide_list_items()
-    prefs_view.click_element_by_key('System')
+    prefs_view.click_element_by_name('System')
     pass
 
 
 @step('I touch the "About" menu item')
 def step_impl(context):
-    prefs_view.click_element_by_key('About')
+    prefs_view.click_element_by_name('About')
     pass
 
 
 @step('The correct version is displayed')
 def step_impl(context):
-    about_popup = prefs_view.find_element_by_key('AppVersion')
+    about_popup = prefs_view.find_element('AppVersion')
     source = about_popup.text
-    prefs_view.click_element_by_key('AboutOk')
-    prefs_view.click_element_by_key('System')
+    prefs_view.click_element_by_name('AboutOk')
+    prefs_view.click_element_by_name('System')
     m = re.match('App Version : (\S*)', source.encode('utf8'))
     if m is None:
         print("Unknown Version")
@@ -48,7 +48,7 @@ def step_impl(context):
 
 @step('I touch the "Sign in with Google" banner')
 def step_impl(context):
-    # contacts_view.click_element_by_key('GoogleSignInBanner')
+    # contacts_view.click_element_by_name('GoogleSignInBanner')
     pass
 
 
@@ -70,7 +70,7 @@ def step_impl(context):
 @step("I am logged in to the ePhone7")
 def step_impl(context):
     if prefs_view.element_is_present('Preferences'):
-        prefs_view.click_element_by_key('Close')
+        prefs_view.click_element_by_name('Close')
     if not user_view.element_is_present('UserHeaderName'):
         login_view.login()
         tnc_view.accept_tnc()
@@ -80,15 +80,15 @@ def step_impl(context):
 
 @step("I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen")
 def step_impl(context):
-    user_view.find_element_by_key('Contacts')
-    user_view.find_element_by_key('History')
-    user_view.find_element_by_key('Voicemail')
-    user_view.find_element_by_key('Keypad')
+    user_view.find_element('Contacts')
+    user_view.find_element('History')
+    user_view.find_element('Voicemail')
+    user_view.find_element('Keypad')
 
 
 @step("the Contacts view appears")
 def step_impl(context):
-    contacts_view.find_element_by_key('ContactsList')
+    contacts_view.find_element('ContactsList')
 
 
 @step("the Voicemail view appears")
@@ -98,15 +98,15 @@ def step_impl(context):
 
 @step("I see the Personal, Coworkers, Favorites and Groups tabs")
 def step_impl(context):
-    contacts_view.find_element_by_key('Personal')
-    contacts_view.find_element_by_key('Coworkers')
-    contacts_view.find_element_by_key('Favorites')
-    contacts_view.find_element_by_key('Groups')
+    contacts_view.find_element('Personal')
+    contacts_view.find_element('Coworkers')
+    contacts_view.find_element('Favorites')
+    contacts_view.find_element('Groups')
 
 
 @step("I touch the History button")
 def step_impl(context):
-    user_view.click_element_by_key('History')
+    user_view.click_element_by_name('History')
 
 
 @step('I touch "Next"')
@@ -141,29 +141,29 @@ def step_impl(context):
 
 @step("I see the New, Saved and Trash tabs at the top of the screen")
 def step_impl(context):
-    voicemail_view.find_element_by_key('New')
-    voicemail_view.find_element_by_key('Saved')
-    voicemail_view.find_element_by_key('Trash')
+    voicemail_view.find_element('New')
+    voicemail_view.find_element('Saved')
+    voicemail_view.find_element('Trash')
 
 
 @step("I touch the Dial button")
 def step_impl(context):
-    user_view.click_element_by_key('Keypad')
+    user_view.click_element_by_name('Keypad')
 
 
 @step("the Dial view appears")
 def step_impl(context):
-    keypad_view.find_element_by_key('DialPad')
+    keypad_view.find_element('DialPad')
 
 
 @step("I touch the Preferences icon")
 def step_impl(context):
-    user_view.click_element_by_key('PrefsButton')
+    user_view.click_element_by_name('PrefsButton')
 
 
 @step("the Preferences window appears")
 def step_impl(context):
-    prefs_view.find_element_by_key('Preferences')
+    prefs_view.find_element('Preferences')
 
 
 @step("I close the Preferences window")
@@ -178,7 +178,7 @@ def step_impl(context):
 
 @step("I touch the Contacts button")
 def step_impl(context):
-    user_view.click_element_by_key('Contacts')
+    user_view.click_element_by_name('Contacts')
 
 
 @step("I touch the Coworkers tab")
@@ -383,7 +383,7 @@ def step_impl(context):
 
 @step("I touch the Voicemail button")
 def step_impl(context):
-    user_view.click_element_by_key('Voicemail')
+    user_view.click_element_by_name('Voicemail')
 
 
 @step("I touch the New tab")
@@ -513,8 +513,8 @@ def step_impl(context):
 
 @step("I see the All and Missed tabs at the top of the screen")
 def step_impl(context):
-    history_view.find_element_by_key('All')
-    history_view.find_element_by_key('Missed')
+    history_view.find_element('All')
+    history_view.find_element('Missed')
 
 
 @step("I receive a call")
@@ -964,7 +964,7 @@ def step_impl(context):
 
 @step("the History view appears")
 def step_impl(context):
-    history_view.find_element_by_key('HistoryList')
+    history_view.find_element('HistoryList')
 
 
 @step("I am not signed in to my gmail account")

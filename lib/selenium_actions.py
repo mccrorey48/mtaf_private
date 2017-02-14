@@ -61,40 +61,17 @@ class SeleniumActions(Tc):
         elem.click()
 
     @Trace(log)
-    def click_element_by_key(self, key, seconds=60):
-        locator = self.get_locator(key)
-        elem = self.find_element_by_key(key)
+    def click_element_by_name(self, name, seconds=60):
+        locator = self.get_locator(name)
+        elem = self.find_element(name)
         self.click_element(elem)
-        # msg = ''
-        # start_time = time()
-        # while time() < start_time + seconds:
-        #     try:
-        #         elem = self.find_element_by_key(key)
-        #     except WebDriverException as e:
-        #         msg = "WebDriverException: %s" % e.message
-        #         continue
-        #     if "text" in locator:
-        #         found_text = elem.text
-        #         if found_text != locator["text"]:
-        #             msg = "element text did not match, expected %s, found %s" % (locator["text"], found_text)
-        #             continue
-        #         # log.debug("found element with text = %s" % found_text)
-        #     if elem.is_displayed() and elem.is_enabled():
-        #         # log.debug("element found and clickable, clicking")
-        #         self.click_element(elem)
-        #     else:
-        #         # log.debug("element found but is not clickable, waiting")
-        #         continue
-        #     break
-        # else:
-        #     raise Ux(msg)
 
     @Trace(log, log_level='debug')
     def find_element_by_locator(self, locator, timeout=10):
         # log.debug("%s = %s" % (locator['by'], locator['value']))
         return self.find_element_with_timeout(locator['by'], locator['value'], timeout=timeout)
 
-    @Trace(log, log_level='debug')
+    # @Trace(log, log_level='debug')
     def find_elements_by_locator(self, locator):
         if locator['by'] == 'xpath':
             # log.debug("xpath = " + locator['value'])
@@ -120,7 +97,7 @@ class SeleniumActions(Tc):
 
     @staticmethod
     @Trace(log, log_level='debug')
-    def find_sub_elements_by_locator(parent, locator, timeout=20):
+    def find_sub_elements_by_locator(parent, locator):
         if locator['by'] == 'xpath':
             # log.debug("xpath = " + locator['value'])
             return parent.find_elements_by_xpath(locator['value'])
@@ -132,47 +109,74 @@ class SeleniumActions(Tc):
             return parent.find_elements_by_css_selector(locator['value'])
 
     @Trace(log)
-    def find_element_by_key(self, key, timeout=30):
-        locator = self.get_locator(key)
+    def find_element(self, name, timeout=30):
+        locator = self.get_locator(name)
         try:
             if 'parent_key' in locator:
-                parent = self.find_element_by_key(locator['parent_key'])
+                parent = self.find_element(locator['parent_key'])
                 return self.find_sub_element_by_locator(parent, locator, timeout)
             return self.find_element_by_locator(locator, timeout)
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
     @Trace(log)
-    def element_is_present(self, key, timeout=1):
-        # waits 'timeout' seconds for exactly one element with the indicated key to be present
+    def element_is_present(self, name, timeout=1):
+        # waits 'timeout' seconds for exactly one element with the indicated name to be present
         # and returns True if that happens, False otherwise
-        locator = self.get_locator(key)
+        locator = self.get_locator(name)
         try:
             if 'parent_key' in locator:
-                parent = self.find_element_by_key(locator['parent_key'])
-                self.find_sub_element_by_locator(parent, locator, timeout)
+                parent = self.find_element(locator['parent_key'])
+                elem =self.find_sub_element_by_locator(parent, locator, timeout)
             else:
-                self.find_element_by_locator(locator, timeout)
+                elem =self.find_element_by_locator(locator, timeout)
         except Ux:
             return False
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
-        return True
+        # if the locator has a "text" attribute, verify that the text in the element matches
+        if 'text' not in locator:
+            return True
+        else:
+            if elem.text == locator['text']:
+                return True
+            else:
+                return False
 
     @Trace(log)
-    def find_sub_element_by_key(self, parent, key, timeout=20):
-        locator = self.get_locator(key)
+    def element_is_not_present(self, name, timeout=1):
+        # waits 'timeout' seconds for zero elements with the indicated name to be present
+        # and returns True if that happens, False otherwise
+        locator = self.get_locator(name)
+        start_time = time()
+        while True:
+            if 'parent_key' in locator:
+                parent = self.find_element(locator['parent_key'])
+                elems = self.find_sub_elements_by_locator(parent, locator)
+            else:
+                elems = self.find_elements_by_locator(locator)
+            if len(elems) == 0:
+                return True
+            if 'text' in locator:
+                if len(elems) == 1 and elems[0] != locator['text']:
+                    return True
+            if time() - start_time > timeout:
+                return False
+
+    @Trace(log)
+    def find_sub_element(self, parent, name, timeout=20):
+        locator = self.get_locator(name)
         try:
             return self.find_sub_element_by_locator(parent, locator, timeout)
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
     @Trace(log)
-    def find_elements_by_key(self, key, filter_fn=None):
-        locator = self.get_locator(key)
+    def find_elements(self, name, filter_fn=None):
+        locator = self.get_locator(name)
         try:
             if 'parent_key' in locator:
-                parent = self.find_element_by_key(locator['parent_key'])
+                parent = self.find_element(locator['parent_key'])
                 elems = self.find_sub_elements_by_locator(parent, locator)
             else:
                 elems = self.find_elements_by_locator(locator)
@@ -184,19 +188,19 @@ class SeleniumActions(Tc):
             raise Ux('WebDriverException ' + e.message)
 
     @Trace(log)
-    def test_element_text_by_key(self, key, expected_text):
+    def test_element_text(self, name, expected_text):
         try:
-            self.actual_text = self.find_element_by_key(key, 10).text
+            self.actual_text = self.find_element(name, 10).text
         except Ux:
             self.actual_text = 'not found'
             return False
         return self.actual_text == expected_text
 
     @Trace(log)
-    def wait_for_element_text_by_key(self, key, expected_text, seconds=30):
+    def wait_for_element_text(self, name, expected_text, seconds=30):
         start_time = time()
         while time() < start_time + seconds:
-            if self.test_element_text_by_key(key, expected_text):
+            if self.test_element_text(name, expected_text):
                 return
             sleep(1.0)
         raise Ux('actual element text = "%s", expected "%s" after %d seconds' %

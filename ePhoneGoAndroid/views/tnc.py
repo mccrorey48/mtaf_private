@@ -1,6 +1,6 @@
 import lib.logging_esi as logging
 
-from ePhone7.views.base import BaseView
+from ePhoneGoAndroid.views.base import BaseView
 from lib.wrappers import Trace
 
 log = logging.get_logger('esi.tnc_view')

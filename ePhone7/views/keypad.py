@@ -42,11 +42,11 @@ class KeypadView(UserView):
         softphone = get_softphone()
         softphone.account_info.incoming_response = 200
         for n in list(cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]['UserId']):
-            self.click_element_by_key('NumKey' + n)
-        self.click_element_by_key('FuncKeyCall')
+            self.click_element_by_name('NumKey' + n)
+        self.click_element_by_name('FuncKeyCall')
         softphone.wait_for_call_status('call', 20)
         sleep(10)
-        self.click_element_by_key('EndActiveCall')
+        self.click_element_by_name('EndActiveCall')
         softphone.wait_for_call_status('idle', 20)
 
 keypad_view = KeypadView()

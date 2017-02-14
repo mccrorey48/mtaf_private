@@ -5,16 +5,15 @@ import lib.logging_esi as logging_esi
 from PIL import Image
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
-from selenium.common.exceptions import TimeoutException
 from lib.wrappers import Trace
 from lib.android import expand_zpath
 
-from ePhone7.utils.configure import cfg
+from ePhoneGoAndroid.utils.configure import cfg
 from lib.android import MockDriver
 from lib.selenium_actions import SeleniumActions
 from lib.user_exception import UserException as Ux
 
-log = logging_esi.get_logger('esi.settings_view')
+log = logging_esi.get_logger('esi.base_view')
 
 keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
 
@@ -100,7 +99,7 @@ class BaseView(SeleniumActions):
         # im.paste(color_band, crop_points, 0)
         # im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after_%s.png' % suffix))
         if self.color_match(tab_color, active_color):
-            log.debug('tab_coloetr is "active": %s' % repr(tab_color))
+            log.debug('tab_color is "active": %s' % repr(tab_color))
             return 'active_color'
         elif self.color_match(tab_color, inactive_color):
             log.debug('tab_color is "inactive": %s' % repr(tab_color))
@@ -169,6 +168,5 @@ class BaseView(SeleniumActions):
     def wait_for_activity(self, activity, timeout=30):
         if not self.driver.wait_activity(activity, timeout):
             raise Ux('current activity is not %s' % activity)
-
 
 base_view = BaseView()

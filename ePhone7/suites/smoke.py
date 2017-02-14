@@ -1,4 +1,5 @@
 import lib.logging_esi as logging_esi
+from os import path, makedirs
 logging_esi.console_handler.setLevel(logging_esi.INFO)
 log = logging_esi.get_logger('esi.smoke')
 with logging_esi.msg_src_cm('importing modules'):
@@ -11,17 +12,34 @@ debug = False
 
 
 def except_screenshot(type, value, traceback):
+    xml = base_view.get_source();
+    try:
+        makedirs(cfg.xml_folder)
+    except OSError as e:
+        # ignore 'File exists' error but re-raise any others
+        if e.errno != 17:
+            raise e
+    xml_fullpath = path.join(cfg.xml_folder, 'exception.xml')
+    log.info("saving xml %s" % xml_fullpath)
+    with open(xml_fullpath, 'w') as _f:
+        _f.write(xml.encode('utf8'))
     base_view.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
 
 
 class SmokeTests(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
+    # @classmethod
+    # def setUpClass(cls):
+    #     base_view.open_appium('main')
+    #
+    # @classmethod
+    # def tearDownClass(cls):
+    #     base_view.close_appium()
+
+    def setUp(self):
         base_view.open_appium('main')
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         base_view.close_appium()
 
     @unittest.skipIf(debug, 'debug')
@@ -145,7 +163,7 @@ class SmokeTests(unittest.TestCase):
         list_element = contacts_view.get_contact_list_element(contact_number)
         contacts_view.call_contact_from_list_element(list_element)
 
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_160_call_from_history(self):
         # user_view.wait_for_view()
@@ -157,7 +175,7 @@ class SmokeTests(unittest.TestCase):
         history_view.goto_tab('All')
         history_view.call_contact_test()
 
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_170_call_from_voicemail(self):
         user_view.goto_tab('Voicemail')
@@ -167,14 +185,14 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.open_first_vm()
         voicemail_view.call_first_vm_caller()
 
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_180_call_from_keypad(self):
         user_view.goto_tab('Keypad')
         keypad_view.make_call_to_softphone()
 
     # run with test_200_delete_save_voicemail for better results
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_190_save_new_voicemail(self):
         user_view.goto_prefs()
@@ -196,7 +214,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('Saved')
         voicemail_view.verify_first_vm()
 
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_200_trash_saved_voicemail(self):
         self.save_new_voicemail()
@@ -207,7 +225,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.verify_first_vm()
 
     # run with test_220_save_deleted_voicemail for better results
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_210_trash_new_voicemail(self):
         user_view.goto_tab('Voicemail')
@@ -220,7 +238,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('Trash')
         voicemail_view.verify_first_vm()
 
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_220_save_deleted_voicemail(self):
         user_view.goto_tab('Voicemail')
@@ -246,7 +264,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.verify_first_vm()
         voicemail_view.clear_all_vm()
 
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_230_forward_new_voicemail(self):
         user_view.goto_tab('Voicemail')
@@ -258,7 +276,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.forward_open_voicemail()
         voicemail_view.compare_vmid(vmid)
 
-    @unittest.skipIf(debug, 'debug')
+    # @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)
     def test_240_forward_saved_voicemail(self):
         self.save_new_voicemail()

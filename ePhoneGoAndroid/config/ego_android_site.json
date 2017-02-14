@@ -1,0 +1,91 @@
+{
+    "mm": [
+        {
+            "ColorsFolder": "ePhone7/utils",
+            "CsvFolder": "ePhone7/utils/csv",
+            "DefaultForwardAccount": "Auto TesterD",
+            "DefaultSoftphoneUser": "Auto TesterC",
+            "DefaultTimeout": 1,
+            "DnsList": [
+                "10.0.50.156",
+                "10.0.50.157"
+            ],
+            "Mock": false,
+            "NullSound": false,
+            "OauthHeaders": {
+                "content-type": "application/json"
+            },
+            "OauthURL": "https://pro.esiapi.io/aaa/v2",
+            "OauthUsername": "{\"username\":\"%s@%s\",\"password\":\"%s\"}",
+            "Quiet": true,
+            "ScreenshotsFolder": "ePhone7/utils/screenshots",
+            "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
+            "TestScreenshotsFolder": "ePhone7/screenshots",
+            "UseTcp": false,
+            "VVMHeaders": {
+                "Authorization": "Bearer %s",
+                "Content-Type": "application/json"
+            },
+            "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
+            "XmlFolder": "ePhone7/utils/xml",
+            "type": "constants"
+        },
+        {
+            "AccountPassword": "2016",
+            "AllContacts": [
+                "2200",
+                "2201",
+                "2202",
+                "2203",
+                "2204"
+            ],
+            "CoworkerContacts": [
+                "2200",
+                "2201",
+                "2202",
+                "2203",
+                "2204",
+                "2205"
+            ],
+            "DomainName": "test2.test-eng.com",
+            "FavoriteContacts": [
+                "2200",
+                "2201",
+                "2202"
+            ],
+            "PhonePassword": "2016",
+            "UserId": "2016",
+            "UserName": "David ePhone7",
+            "name": "R2d2User",
+            "type": "user"
+        },
+        {
+            "AccountPassword": "2202",
+            "DomainName": "test2.test-eng.com",
+            "PhonePassword": "vsvSIHpL",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2202",
+            "UserNameIncoming": "Auto Testerc",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "Auto TesterC",
+            "pbfile": "wav/2202.wav",
+            "type": "user"
+        },
+        {
+            "AccountPassword": "2203",
+            "DomainName": "test2.test-eng.com",
+            "PhonePassword": "TSDlprSD",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2203",
+            "UserNameIncoming": "Auto Testerd",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "Auto TesterD",
+            "pbfile": "wav/2203.wav",
+            "type": "user"
+        }
+    ]
+}

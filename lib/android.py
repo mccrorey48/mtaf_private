@@ -26,6 +26,7 @@ path_by_abbrev = {
     "tv": "android.widget.TextView",
     "tw": "android.widget.TabWidget",
     "v":  "android.view.View",
+    "vg": "android.view.ViewGroup",
     "vp": "android.support.v4.view.ViewPager"
 }
 
