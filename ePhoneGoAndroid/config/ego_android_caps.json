@@ -46,9 +46,24 @@
             "type": "constants"
         }
     ],
+    "launcher": [
+        {
+            "appActivity": "activities.LauncherActivity",
+            "appPackage": "com.sec.android.app.launcher",
+            "autoLaunch": true,
+            "automationName": "Appium",
+            "deviceName": "ePhoneGo",
+            "dontStopAppOnReset": true,
+            "newCommandTimeout": 1200,
+            "noReset": true,
+            "platformName": "Android",
+            "platformVersion": "6.0",
+            "type": "constants"
+        }
+    ],
     "settings": [
         {
-            "appActivity": "com.android.settings.Settings",
+            "appActivity": "Settings",
             "appPackage": "com.android.settings",
             "autoLaunch": true,
             "automationName": "Appium",
