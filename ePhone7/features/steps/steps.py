@@ -6,6 +6,9 @@ import re
 
 @step('A "Active Call Dialpad" window appears')
 def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
     pass
 
 @step('A "Active Call Screen" window appears')
@@ -340,6 +343,13 @@ def step_impl(context):
     """
     pass
 
+@then("I do not see a warning message and the phone reboots")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
 @step("I end the call")
 def step_impl(context):
     pass
@@ -356,6 +366,33 @@ def step_impl(context):
 def step_impl(context):
     pass
 
+@when("I enter a VLAN identifier between 1 and 4094")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+@when("I enter a VLAN identifier greater than 4094")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+@step("I enter a VLAN priority between 0 and 7")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+@step("I enter a VLAN priority greater than 7")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
 @step("I enter my email address")
 def step_impl(context):
     pass
@@ -393,6 +430,11 @@ def step_impl(context):
     # user_view.goto_tab('Contacts')
     pass
 
+@step("I go to the Home view")
+def step_impl(context):
+    # user_view.goto_tab('Contacts')
+    pass
+
 @step("I go to the Personal tab")
 def step_impl(context):
     # contacts_view.goto_tab('Personal')
@@ -416,6 +458,13 @@ def step_impl(context):
 
 @step("I receive a new voicemail")
 def step_impl(context):
+    pass
+
+@then("I see a warning message and the phone does not reboot")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
     pass
 
 @step("I see the All and Missed tabs at the top of the screen")
@@ -444,6 +493,13 @@ def step_impl(context):
 
 @step("I see the Need Help, Personal, Phone and System category elements")
 def step_impl(context):
+    pass
+
+@then("I see the Network Settings view")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
     pass
 
 @step("I see the New, Saved and Trash tabs at the top of the screen")
@@ -529,6 +585,13 @@ def step_impl(context):
 
 @when('I touch "Ringtones"')
 def step_impl(context):
+    pass
+
+@step('I touch "Save and Reboot"')
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
     pass
 
 @when('I touch "Screen Timeout"')
@@ -1108,6 +1171,7 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     pass
+
 @step("The personal group list is shown on the display")
 def step_impl(context):
     pass
@@ -1219,6 +1283,10 @@ def step_impl(context):
     pass
 
 @step("The window disappears")
+def step_impl(context):
+    pass
+
+@given("VLAN is enabled")
 def step_impl(context):
     pass
 

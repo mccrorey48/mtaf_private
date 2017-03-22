@@ -42,7 +42,7 @@ def run_features(features_dir, site_tag, run_tags, version):
     return json.loads('\n'.join(out[0][:out[0].rindex(']') + 1].split('\n')))
 
 
-def write_result_to_db(server, db_name, test_class, environment, configuration, features):
+def write_result_to_db(server, db_name, test_class, environment, configuration, mock_steps, features):
     print 'writing to db_name %s, server %s:' % (db_name, server)
     client = MongoClient(server)
     db = client[db_name]
@@ -93,17 +93,25 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                 del scenario['name']
                 if 'tags' not in scenario.keys():
                     scenario['tags'] = []
+                if len(scenario['steps']) == 0:
+                    scenario['status'] = 'fake'
                 for step in scenario['steps']:
                     step['text'] = step['name']
                     del step['name']
                     if 'result' in step:
-                        step['status'] = step['result']['status']
+                        if step['text'].lower() in mock_steps:
+                            step['status'] = 'fake'
+                        else:
+                            step['status'] = step['result']['status']
                         step['duration'] = step['result']['duration']
                         if 'error_message' in step['result']:
                             step['error_message'] = step['result']['error_message']
+                        else:
+                            step['error_message'] = ''
                         del step['result']
-                        if step['status'] == 'failed':
-                            scenario['status'] = 'failed'
+                        if step['status'] == 'failed' or step['status'] == 'fake':
+                            scenario['status'] = step['status']
+                            feature['status'] = step['status']
                     else:
                         step['status'] = 'passed'
                         step['duration'] = ''
@@ -113,6 +121,8 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
 
 if __name__ == '__main__':
     import argparse
+    from os import path
+    from lib.mock_steps import find_mocks
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description='  runs behave test on specified features directory and saves' +
                                                  '  the results on a mongodb running on a specified server\n')
@@ -128,9 +138,10 @@ if __name__ == '__main__':
     parser.add_argument("-t", "--site_tag", type=str, default='mm', help="site tag (default mm)")
     parser.add_argument("-v", "--version", type=str, default='1.2.0', help="apk version (default 1.2.0)")
     args = parser.parse_args()
+    mock_steps = find_mocks(path.join(args.features_directory, "steps", "steps.py"))
     features = run_features(args.features_directory, args.site_tag, args.run_tags, args.version)
     configuration = "site_tag:%s, run_tags:%s" % (args.site_tag, args.run_tags)
-    write_result_to_db(args.server, args.db_name, args.test_class, args.environment, configuration, features)
+    write_result_to_db(args.server, args.db_name, args.test_class, args.environment, configuration, mock_steps, features)
 
 
 
