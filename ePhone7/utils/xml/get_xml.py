@@ -7,8 +7,8 @@ from ePhone7.utils.configure import cfg
 
 parser = argparse.ArgumentParser()
 parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local', 'ds'], help="specify site tag")
-parser.add_argument('-c', '--cfg_host', help='name of mongodb server for test configuration, default "vqda"',
-                    default='vqda')
+parser.add_argument('-c', '--cfg_host', help='name of mongodb server for test configuration, default "vqda1"',
+                    default='vqda1')
 args = parser.parse_args()
 
 cfg.set_site(args.cfg_host, args.site_tag)
