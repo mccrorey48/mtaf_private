@@ -41,6 +41,8 @@ def dump_dbs(_db_names, server, cfg_dir, _output_fd):
                 passwords[collection_name] = {}
             for doc in db_dict[collection_name]:
                 doc.pop("_id")
+                if "start_id" in doc:
+                    doc["start_id"] = str(doc["start_id"])
                 if _db_name.endswith("_site") and doc['type'] == 'account':
                     if 'password' in doc:
                         passwords[collection_name][doc['uri']] = doc.pop('password', None)

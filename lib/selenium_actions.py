@@ -123,13 +123,16 @@ class SeleniumActions(Tc):
     def element_is_present(self, name, timeout=1):
         # waits 'timeout' seconds for exactly one element with the indicated name to be present
         # and returns True if that happens, False otherwise
+        # Note;
+        # - "not element_is_present()" is true when timeout expires before exactly one matching element is found;
+        # - "element_is_not_present()" is true when zero matching elements are found before timeout expires
         locator = self.get_locator(name)
         try:
             if 'parent_key' in locator:
                 parent = self.find_element(locator['parent_key'])
-                elem =self.find_sub_element_by_locator(parent, locator, timeout)
+                elem = self.find_sub_element_by_locator(parent, locator, timeout)
             else:
-                elem =self.find_element_by_locator(locator, timeout)
+                elem = self.find_element_by_locator(locator, timeout)
         except Ux:
             return False
         except WebDriverException as e:
@@ -147,6 +150,9 @@ class SeleniumActions(Tc):
     def element_is_not_present(self, name, timeout=1):
         # waits 'timeout' seconds for zero elements with the indicated name to be present
         # and returns True if that happens, False otherwise
+        # Note:
+        # - "not element_is_present()" is true when timeout expires before exactly one matching element is found;
+        # - "element_is_not_present()" is true when zero matching elements are found before timeout expires
         locator = self.get_locator(name)
         start_time = time()
         while True:
