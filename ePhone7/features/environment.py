@@ -7,7 +7,7 @@ def before_all(context):
     if 'cfg_server' in context.config.userdata:
         cfg_server = context.config.userdata.get('cfg_server')
     else:
-        cfg_server = 'vqda'
+        cfg_server = 'vqda1'
     cfg.set_site(cfg_server, site_tag)
     base_view.open_appium()
 

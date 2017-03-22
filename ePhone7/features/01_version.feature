@@ -1,5 +1,6 @@
 Feature: The version of the software should be correct
 
+  @tested
   Scenario: I want to be using the correct version of the ePhone7 software
     Given I am logged in to the ePhone7
     When I touch the Preferences icon
