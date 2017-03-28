@@ -24,6 +24,10 @@ class BaseView(SeleniumActions):
     current_activity = None
     caps_tag = None
 
+    locators = {
+        "ConfirmButton": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"}
+    }
+
     def __init__(self):
         super(BaseView, self).__init__()
         self.cfg = cfg
