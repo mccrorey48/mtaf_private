@@ -9,8 +9,12 @@ def before_all(context):
     else:
         cfg_server = 'vqda1'
     cfg.set_site(cfg_server, site_tag)
-    # base_view.open_appium()
+    if 'fake' not in str(context._config.tags).split(','):
+        base_view.open_appium()
 
 
 def after_all(context):
     base_view.close_appium()
+
+def after_step(context, step):
+    pass

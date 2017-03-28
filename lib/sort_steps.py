@@ -28,11 +28,11 @@ def sort(filename):
     with open(filename, 'w') as f:
         for line in prefix_lines:
             f.write(line)
-        for key in sorted(step_defs.keys()):
+        for key in sorted(step_defs.keys(), key=lambda key: ''.join(key.lower().split('"'))):
             # print ">>> " + key
             for line in step_defs[key]:
                 f.write(line)
-            f.write("\n")
+            f.write("\n\n")
 
 
 if __name__ == '__main__':
