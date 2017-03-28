@@ -29,9 +29,9 @@ Feature: As a user I want to view and change detailed settings that control my p
     When I swipe the screen from right to left
     Then A "Dialpad Screen" window appears
     When I swipe the screen from right to left
-    Then A "Active Call Screen" window appears
+    Then an "Active Call Screen" window appears
     When I swipe the screen from right to left
-    Then A "Active Call Dialpad" window appears
+    Then an "Active Call Dialpad" window appears
     When I swipe the screen from right to left
     Then A "Preferences Screen" window appears
 
@@ -79,7 +79,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     Then A window appears with a button for each Contacts tab
     And The current default tab is selected
     When I touch the button for another tab
-    And I touch the OK button
+    And I touch "OK"
     Then The Contacts tab window disappears
     When I close the Preferences window
     And I touch the Contacts button
@@ -95,7 +95,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     Then A window appears with a list of contacts
     And I touch a contact element
     Then Only the contact I touched is listed
-    When I touch the "OK" button
+    When I touch "OK"
     Then Both windows disappear
     When I touch "Call Forwarding"
     Then A window appears with a section labeled "Call Forward No Answer"
@@ -121,7 +121,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     Then A window appears with a list of contacts
     And I touch a contact element
     Then Only the contact I touched is listed
-    When I touch the "OK" button
+    When I touch "OK"
     Then Both windows disappear
     When I touch "Call Forwarding"
     Then A window appears with a section labeled "Call Forward Busy"
@@ -157,7 +157,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     And The current timer setting is selected
     When I touch the button for another timer setting
     Then The new timer setting is selected
-    When I touch the OK button
+    When I touch "OK"
     Then The "Sleep Timer Setting" window disappears
 
   Scenario: I want to change my phone's ringtone
@@ -168,7 +168,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     And Only the current ringtone has a dot next to it
     When I touch the button for another ringtone
     Then Only the new ringtone has a dot next to it
-    When I touch the OK button
+    When I touch "OK"
     Then The "Ringtones" window disappears
 
   Scenario: I want to turn on my phone's touch sounds
@@ -256,7 +256,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     And The toggle handle is in the "On" position
     When I touch and drag the toggle handle to the "Off" position
     Then The toggle handle stays in the "Off" position
-    When I touch the "OK" button
+    When I touch "OK"
     Then The window disappears
 
   Scenario: I want to change the time zone
@@ -270,7 +270,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     When I touch a new time zone choice
     Then The menu disappears
     And The new time zone text is shown
-    When I touch the "OK" button
+    When I touch "OK"
     Then The window disappears
 
   Scenario: I want to log out of my phone
