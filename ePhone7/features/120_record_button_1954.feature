@@ -1,12 +1,12 @@
 Feature: As a user I want to have a Record button available during an active call (R2D2-1954)
 
-#  @wip
+  @wip
   Scenario: I want to record an incoming call
     Given I am logged in to the ePhone7
     And I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the Dial button
     Then The Dial view appears
-    When I dial *1987
+    When I dial the Advanced Settings direct code
     And I touch the call button
     Then the Advanced Options view appears
     When I scroll down to the Call Record Enable setting
@@ -26,7 +26,7 @@ Feature: As a user I want to have a Record button available during an active cal
     And I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the Dial button
     Then The Dial view appears
-    When I dial *1987
+    When I dial the Advanced Settings direct code
     And I touch the call button
     Then the Advanced Options view appears
     When I scroll down to the Call Record Enable setting
@@ -45,7 +45,7 @@ Feature: As a user I want to have a Record button available during an active cal
     And I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the Dial button
     Then The Dial view appears
-    When I dial *1987
+    When I dial the Advanced Settings direct code
     And I touch the call button
     Then the Advanced Options view appears
     When I scroll down to the Call Record Enable setting
@@ -65,7 +65,7 @@ Feature: As a user I want to have a Record button available during an active cal
     And I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When I touch the Dial button
     Then The Dial view appears
-    When I dial *1987
+    When I dial the Advanced Settings direct code
     And I touch the call button
     Then the Advanced Options view appears
     When I scroll down to the Call Record Enable setting

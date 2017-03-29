@@ -17,7 +17,7 @@ view_info = {
             'voicemail': {
                 'locator_name': 'Voicemail'
             },
-            'dial': {
+            'dial_number': {
                 'locator_name': 'Keypad'
             }
         }

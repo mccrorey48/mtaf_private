@@ -53,6 +53,15 @@ class KeypadView(UserView):
         "#": "NumKeyPound"
     }
 
+    numbers = {
+        "Current OTA Server": "*682#",
+        "Production OTA Server": "*7763#",
+        "Alpha OTA Server": "*23742#",
+        "Beta OTA Server": "*2382#",
+        "Advanced Settings": "*1987"
+    }
+
+
     def __init__(self):
         super(KeypadView, self).__init__()
         self.png_file_base = 'keypad'
@@ -70,9 +79,13 @@ class KeypadView(UserView):
         softphone.wait_for_call_status('idle', 20)
 
     @Trace(log)
-    def dial(self, number):
+    def dial_number(self, number):
         for digit in number:
             self.click_element_by_name(self.digits[digit])
+
+    @Trace(log)
+    def dial_name(self, name):
+        self.dial_number(self.numbers[name])
 
 keypad_view = KeypadView()
 

@@ -2,6 +2,8 @@ from behave import *
 from ePhone7.views import *
 from lib.user_exception import UserException as Ux
 import re
+from behave import use_step_matcher
+
 
 
 @step("A call between two other accounts has been parked by the called account")
@@ -141,9 +143,6 @@ def step_impl(context):
 
 @step("a Record button is visible")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
@@ -364,7 +363,7 @@ def step_impl(context):
           Given I am logged in to the ePhone7
           Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
           When I touch the Dial button
-          Then The Dial view appears
+          Then the Dial view appears
         ''')
 
 
@@ -414,6 +413,11 @@ def step_impl(context):
     pass
 
 
+@step("I check the Call Record Enable checkbox")
+def step_impl(context):
+    pass
+
+
 @step("I close all open submenus")
 def step_impl(context):
     pass
@@ -429,21 +433,10 @@ def step_impl(context):
     pass
 
 
-@when("I dial *1987")
-def step_impl(context):
+@when("I dial the {code_name} direct code")
+def dial_server_direct_code(context, code_name):
     if 'fake' not in str(context._config.tags).split(','):
-        keypad_view.dial('*1987')
-
-@when("I dial *682#")
-def step_impl(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        keypad_view.dial('*682#')
-
-
-@when("I dial *7763#")
-def step_impl(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        keypad_view.dial('*7763#')
+        keypad_view.dial_name(code_name)
 
 
 @when("I disable VLAN")
@@ -585,9 +578,6 @@ def step_impl(context):
 
 @step("I have at least one new voicemail")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
@@ -617,6 +607,16 @@ def step_impl(context):
 
 
 @step("I receive a new voicemail")
+def step_impl(context):
+    pass
+
+
+@when("I scroll down to the Call Record Enable setting")
+def step_impl(context):
+    pass
+
+
+@step("I scroll to the top of the Advanced Options view")
 def step_impl(context):
     pass
 
@@ -694,6 +694,11 @@ def step_impl(context):
             And I touch "Save and Reboot"
             Then I do not see a warning message and the phone reboots
         ''')
+
+
+@step("I swipe down twice")
+def step_impl(context):
+    pass
 
 
 @step("I swipe the screen from right to left")
@@ -1142,6 +1147,11 @@ def step_impl(context):
     pass
 
 
+@step("I uncheck the Call Record Enable checkbox")
+def step_impl(context):
+    pass
+
+
 @step("I use the keypad to filter the list of contacts")
 def step_impl(context):
     pass
@@ -1189,9 +1199,6 @@ def step_impl(context):
 
 @then("my new voicemails are listed")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
@@ -1227,9 +1234,6 @@ def step_impl(context):
 
 @then("my saved voicemails are listed")
 def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
@@ -1258,118 +1262,128 @@ def step_impl(context):
     pass
 
 
-@step('The "Account Deleted" popup disappears')
+@step('the "Account Deleted" popup disappears')
 def step_impl(context):
     pass
 
 
-@step("The Call Forward icon is blue")
+@then("the Advanced Options view appears")
 def step_impl(context):
     pass
 
 
-@step("The Call Forward icon is red")
+@then("the Advanced Options view disappears")
 def step_impl(context):
     pass
 
 
-@step("The call has a blue handset icon with an incoming arrow")
+@step("the Call Forward icon is blue")
 def step_impl(context):
     pass
 
 
-@step("The call has a green handset icon with an outgoing arrow")
+@step("the Call Forward icon is red")
 def step_impl(context):
     pass
 
 
-@step("The call has a red handset icon with a missed arrow")
+@step("the call has a blue handset icon with an incoming arrow")
 def step_impl(context):
     pass
 
 
-@step("The call has a voicemail icon")
+@step("the call has a green handset icon with an outgoing arrow")
 def step_impl(context):
     pass
 
 
-@step("The Call Park icon")
+@step("the call has a red handset icon with a missed arrow")
 def step_impl(context):
     pass
 
 
-@step("The caller ends the call")
+@step("the call has a voicemail icon")
 def step_impl(context):
     pass
 
 
-@step("The caller gets a voicemail prompt")
+@step("the Call Park icon")
 def step_impl(context):
     pass
 
 
-@step("The caller is connected to my phone")
+@step("the caller ends the call")
 def step_impl(context):
     pass
 
 
-@step("The caller leaves a message")
+@step("the caller gets a voicemail prompt")
 def step_impl(context):
     pass
 
 
-@step("The caller leaves a voicemail")
+@step("the caller is connected to my phone")
 def step_impl(context):
     pass
 
 
-@then("The color toggles between yellow and white")
+@step("the caller leaves a message")
 def step_impl(context):
     pass
 
 
-@step("The contact is not shown on the contact list for the group")
+@step("the caller leaves a voicemail")
 def step_impl(context):
     pass
 
 
-@step("The contact is not shown on the display")
+@then("the color toggles between yellow and white")
 def step_impl(context):
     pass
 
 
-@step("The contact is shown on the contact list for the group")
+@step("the contact is not shown on the contact list for the group")
 def step_impl(context):
     pass
 
 
-@step("The contact is shown on the display")
+@step("the contact is not shown on the display")
 def step_impl(context):
     pass
 
 
-@step("The contact list for the group is displayed")
+@step("the contact is shown on the contact list for the group")
 def step_impl(context):
     pass
 
 
-@then("The contacts are shown with a Favorites star icon next to each one")
+@step("the contact is shown on the display")
 def step_impl(context):
     pass
 
 
-@step("The Contacts tab window disappears")
+@step("the contact list for the group is displayed")
 def step_impl(context):
     pass
 
 
-@step("The Contacts view appears")
+@then("the contacts are shown with a Favorites star icon next to each one")
+def step_impl(context):
+    pass
+
+
+@step("the Contacts tab window disappears")
+def step_impl(context):
+    pass
+
+
+@step("the Contacts view appears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
         contacts_view.find_element('ContactsList')
 
 
-@step('The correct version is displayed')
+@step('the correct version is displayed')
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
         about_popup = prefs_view.find_element('AppVersion')
@@ -1387,34 +1401,34 @@ def step_impl(context):
         pass
 
 
-@step("The current default tab is selected")
+@step("the current default tab is selected")
 def step_impl(context):
     pass
 
 
-@then("The Current OTA Server popup appears")
+@then("the Current OTA Server popup appears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
         assert(keypad_view.element_is_present('CurrentOtaPopup'))
 
 
-@then("The Current OTA Server popup disappears")
+@then("the Current OTA Server popup disappears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
         assert(keypad_view.element_is_not_present('CurrentOtaPopup'))
 
 
-@step("The current time zone text is shown")
+@step("the current time zone text is shown")
 def step_impl(context):
     pass
 
 
-@step("The current timer setting is selected")
+@step("the current timer setting is selected")
 def step_impl(context):
     pass
 
 
-@step("the Dial view appears")
+@then("the Dial view appears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
         keypad_view.find_element('DialPad')
@@ -1425,32 +1439,32 @@ def step_impl(context):
     pass
 
 
-@step("The Do Not Disturb icon is blue")
+@step("the Do Not Disturb icon is blue")
 def step_impl(context):
     pass
 
 
-@step("The Do Not Disturb icon is red")
+@step("the Do Not Disturb icon is red")
 def step_impl(context):
     pass
 
 
-@step("The Do Not Disturb icon turns blue")
+@step("the Do Not Disturb icon turns blue")
 def step_impl(context):
     pass
 
 
-@step("The Do Not Disturb icon turns red")
+@step("the Do Not Disturb icon turns red")
 def step_impl(context):
     pass
 
 
-@step("The Google dialog disappears")
+@step("the Google dialog disappears")
 def step_impl(context):
     pass
 
 
-@step("The Group list contacts are displayed in a list with checkboxes")
+@step("the Group list contacts are displayed in a list with checkboxes")
 def step_impl(context):
     pass
 
@@ -1461,84 +1475,79 @@ def step_impl(context):
         history_view.find_element('HistoryList')
 
 
-@step("The in-call window appears")
+@step("the in-call window appears")
 def step_impl(context):
     pass
 
 
-@step("The in-call window disappears")
+@step("the in-call window disappears")
 def step_impl(context):
     pass
 
 
-@step("The incoming call window appears")
+@step("the incoming call window appears")
 def step_impl(context):
     pass
 
 
-@step("The incoming call window disappears")
+@step("the incoming call window disappears")
 def step_impl(context):
     pass
 
 
-@step("The keypad disappears")
+@step("the keypad disappears")
 def step_impl(context):
     pass
 
 
-@then("The login screen appears")
+@then("the login screen appears")
 def step_impl(context):
     pass
 
 
-@step('The "Manage Accounts" element label changes to "Sign in with Google"')
+@step('the "Manage Accounts" element label changes to "Sign in with Google"')
 def step_impl(context):
     pass
 
 
-@then("The menu disappears")
+@then("the menu disappears")
 def step_impl(context):
     pass
 
 
-@step('The message "Current OTA Server: Production" is shown')
-def step_impl(context):
+@then('the message "{message}" is shown')
+def step_impl(context, message):
     if 'fake' not in str(context._config.tags).split(','):
-        assert(keypad_view.find_element('OtaUpdatePopupContent').text == 'Current OTA Server: Production')
+        text = keypad_view.find_element('OtaUpdatePopupContent').text
+        assert text == message, "expected %s, got %s" % (message, text)
 
 
-@step('the message "Production OTA Server Enabled" is shown')
-def step_impl(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert(keypad_view.find_element('OtaUpdatePopupContent').text == 'Production OTA Server Enabled')
-
-
-@then("The network settings are displayed")
+@then("the network settings are displayed")
 def step_impl(context):
     pass
 
 
-@step("The new default tab is selected")
+@step("the new default tab is selected")
 def step_impl(context):
     pass
 
 
-@step("The new time zone text is shown")
+@step("the new time zone text is shown")
 def step_impl(context):
     pass
 
 
-@then("The new timer setting is selected")
+@then("the new timer setting is selected")
 def step_impl(context):
     pass
 
 
-@step("The new voicemail is the first item listed")
+@step("the new voicemail is the first item listed")
 def step_impl(context):
     pass
 
 
-@step("The New Voicemail view appears")
+@step("the New Voicemail view appears")
 def step_impl(context):
     pass
 
@@ -1555,27 +1564,27 @@ def step_impl(context):
         assert(keypad_view.element_is_not_present('OtaUpdatePopup'))
 
 
-@step("The personal group list is shown on the display")
+@step("the personal group list is shown on the display")
 def step_impl(context):
     pass
 
 
-@step("The popup disappears")
+@step("the popup disappears")
 def step_impl(context):
     pass
 
 
-@step("The popup does not show the current OTA URL")
+@step("the popup does not show the current OTA URL")
 def step_impl(context):
     pass
 
 
-@step("The popup shows the current OTA environment name")
+@step("the popup shows the current OTA environment name")
 def step_impl(context):
     pass
 
 
-@step("The position of the slider control changes")
+@step("the position of the slider control changes")
 def step_impl(context):
     pass
 
@@ -1586,127 +1595,136 @@ def step_impl(context):
         prefs_view.find_element('Preferences')
 
 
-@step("The Preferences window disappears")
+@step("the Preferences window disappears")
 def step_impl(context):
     pass
 
 
-@step("The previously added contact is not on the list with checkboxes")
+@step("the previously added contact is not on the list with checkboxes")
 def step_impl(context):
     pass
 
 
-@then('The "Ringtones" window disappears')
+@step("the Record button is gray")
+def step_impl(context):
+    pass
+
+@step("the Record button is white")
 def step_impl(context):
     pass
 
 
-@step('The section labeled "Call Forward Busy" is highlighted')
+@then('the "Ringtones" window disappears')
 def step_impl(context):
     pass
 
 
-@step('The section labeled "Call Forward Busy" is not highlighted')
+@step('the section labeled "Call Forward Busy" is highlighted')
 def step_impl(context):
     pass
 
 
-@step('The section labeled "Call Forward No Answer" is highlighted')
+@step('the section labeled "Call Forward Busy" is not highlighted')
 def step_impl(context):
     pass
 
 
-@step('The section labeled "Call Forward No Answer" is not highlighted')
+@step('the section labeled "Call Forward No Answer" is highlighted')
 def step_impl(context):
     pass
 
 
-@step('The "Sign in with Google" element label changes to "Manage Accounts"')
+@step('the section labeled "Call Forward No Answer" is not highlighted')
 def step_impl(context):
     pass
 
 
-@then('The "Sleep Timer Setting" window disappears')
+@step('the "Sign in with Google" element label changes to "Manage Accounts"')
 def step_impl(context):
     pass
 
 
-@step("The star turns white")
+@then('the "Sleep Timer Setting" window disappears')
 def step_impl(context):
     pass
 
 
-@step("The star turns yellow")
+@step("the star turns white")
 def step_impl(context):
     pass
 
 
-@step('The toggle handle is in the "Off" position')
+@step("the star turns yellow")
 def step_impl(context):
     pass
 
 
-@step('The toggle handle is in the "On" position')
+@step('the toggle handle is in the "Off" position')
 def step_impl(context):
     pass
 
 
-@then('The toggle handle stays in the "Off" position')
+@step('the toggle handle is in the "On" position')
 def step_impl(context):
     pass
 
 
-@then('The toggle handle stays in the "On" position')
+@then('the toggle handle stays in the "Off" position')
 def step_impl(context):
     pass
 
 
-@given("The VLAN Enable button is active")
+@then('the toggle handle stays in the "On" position')
 def step_impl(context):
     pass
 
 
-@step("The voicemail audio plays back")
+@given("the VLAN Enable button is active")
 def step_impl(context):
     pass
 
 
-@step("The voicemail detail window disappears")
+@step("the voicemail audio plays back")
 def step_impl(context):
     pass
 
 
-@step("The voicemail is also available in the destination contact's new voicemails list")
+@step("the voicemail detail window disappears")
 def step_impl(context):
     pass
 
 
-@step("The voicemail is no longer listed")
+@step("the voicemail is also available in the destination contact's new voicemails list")
 def step_impl(context):
     pass
 
 
-@step("The voicemail is still the first item in the view")
+@step("the voicemail is no longer listed")
 def step_impl(context):
     pass
 
 
-@step("The voicemail is the first item listed")
+@step("the voicemail is still the first item in the view")
 def step_impl(context):
     pass
 
 
-@step("The Voicemail view appears")
+@step("the voicemail is the first item listed")
 def step_impl(context):
     pass
 
 
-@step("The window contains a slider control")
+@step("the Voicemail view appears")
 def step_impl(context):
     pass
 
 
-@step("The window disappears")
+@step("the window contains a slider control")
+def step_impl(context):
+    pass
+
+
+@step("the window disappears")
 def step_impl(context):
     pass
 
