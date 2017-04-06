@@ -23,19 +23,19 @@ class ResellerView(BaseView):
 
     @Trace(log)
     def goto_home(self):
-        self.click_element_by_name('HomeTab')
+        self.click_named_element('HomeTab')
 
     @Trace(log)
     def goto_domains(self):
-        self.click_element_by_name('DomainsTab')
+        self.click_named_element('DomainsTab')
 
     @Trace(log)
     def goto_inventory(self):
-        self.click_element_by_name('InventoryTab')
+        self.click_named_element('InventoryTab')
 
     @Trace(log)
     def logout(self):
-        self.click_element_by_name("Logout")
+        self.click_named_element("Logout")
 
     @Trace(log)
     def version_should_be_correct(self):

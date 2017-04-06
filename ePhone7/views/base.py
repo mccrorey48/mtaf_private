@@ -1,10 +1,10 @@
 import os
 from time import sleep
-
 import lib.logging_esi as logging_esi
 from PIL import Image
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.touch_action import TouchAction
 from selenium.common.exceptions import TimeoutException
 from lib.wrappers import Trace
 from lib.android import expand_zpath
@@ -17,6 +17,8 @@ from lib.user_exception import UserException as Ux
 log = logging_esi.get_logger('esi.settings_view')
 
 keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
+keycodes['KEYCODE_HOME'] = 3
+keycodes['KEYCODE_BACK'] = 4
 
 
 class BaseView(SeleniumActions):
@@ -25,6 +27,14 @@ class BaseView(SeleniumActions):
     caps_tag = None
 
     locators = {
+        "AcraCrashOk": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_call_details"},
+        "ActiveCallScreen": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_call_details"},
+        "AdvancedOptions": {"by": "zpath", "value": "//sp/rl/v[1]/fl/ll/fl/rv/tv[1]"},
+        "AdvancedItems": {"by": "id", "value": "android:id/title"},
+        "AdvancedCheckbox": {"by": "id", "value": "com.esi_estech.ditto:id/checkbox"},
+        "CallRecordEnableText": {"by": "id", "value": "android:id/title", "text": "Call Record Enable"},
+        "CallRecordEnableBox": {"by": "zpath", "value": "com.esi_estech.ditto:id/confirm_button"},
+        "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/recordButton"},
         "ConfirmButton": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"}
     }
 
@@ -51,7 +61,8 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def scroll(self, origin_el, destination_el):
-        SeleniumActions.driver.scroll(origin_el, destination_el)
+        # SeleniumActions.driver.scroll(origin_el, destination_el)
+        TouchAction(self.driver).long_press(origin_el).move_to(destination_el).release().perform()
 
     @Trace(log)
     def swipe(self, origin_x, origin_y, destination_x, destination_y, duration):
@@ -62,7 +73,9 @@ class BaseView(SeleniumActions):
         SeleniumActions.driver.tap([(x, y)], duration)
 
     @Trace(log)
-    def get_screenshot_as_png(self, filebase, screenshot_folder):
+    def get_screenshot_as_png(self, filebase, screenshot_folder=None):
+        if screenshot_folder is None:
+            screenshot_folder = cfg.test_screenshot_folder
         sleep(5)
         fullpath = os.path.join(screenshot_folder, filebase + '.png')
         log.debug("saving screenshot to %s" % fullpath)
@@ -164,6 +177,10 @@ class BaseView(SeleniumActions):
             log.debug('appium is already closed')
         else:
             log.debug('closing appium')
+            logcat = SeleniumActions.driver.get_log('logcat')
+            with open('log/e7_logcat.log', 'w') as f:
+                for line in [item['message'] for item in logcat]:
+                    f.write(line.encode('utf-8') + '\n')
             SeleniumActions.driver.quit()
             SeleniumActions.driver = None
             self.caps_tag = None

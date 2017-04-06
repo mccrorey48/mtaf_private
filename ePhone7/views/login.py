@@ -25,9 +25,9 @@ class LoginView(BaseView):
         acct_cfg = cfg.site['Users']['R2d2User']
         login_id = '%s@%s' % (acct_cfg['UserId'], acct_cfg['DomainName'])
         passwd = acct_cfg['PhonePassword']
-        self.find_element('Username').set_text(login_id)
-        self.find_element('Password').set_text(passwd)
-        self.click_element_by_name('Login')
+        self.find_named_element('Username').set_text(login_id)
+        self.find_named_element('Password').set_text(passwd)
+        self.click_named_element('Login')
         self.wait_for_activity('.settings.ui.TermsAndConditionsScreen')
 
 login_view = LoginView()

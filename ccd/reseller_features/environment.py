@@ -25,7 +25,7 @@ mock_features = [
 
 mock_views = {
     'login_view': {
-        'find_element': {
+        'find_named_element': {
             'return_value': {
                 'send_keys': {},
                 'click': {}
@@ -40,7 +40,7 @@ mock_views = {
     },
     'reseller_view': {
         'wait_for_title': {},
-        'click_element_by_name': {}
+        'click_named_element': {}
     }
 }
 
@@ -70,7 +70,7 @@ def patches_stop(context):
 def mock_assertions(context, scenario):
     open_browser = context.mocks['base_view']['open_browser']
     get_portal_url = context.mocks['base_view']['get_portal_url']
-    find_element_by_key = context.mocks['login_view']['find_element']
+    find_element_by_key = context.mocks['login_view']['find_named_element']
     wait_for_title = context.mocks['reseller_view']['wait_for_title']
     assert open_browser.call_count == 1
     if scenario.name == 'Log in with valid user ID and password':

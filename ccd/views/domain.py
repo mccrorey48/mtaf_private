@@ -11,15 +11,19 @@ log = logging.get_logger('esi.domain_view')
 class DomainView(BaseView):
 
     locators = {
+        "Auto": {"by": "partial link text", "value": "Auto"},
         "CallQueuesTab": {"by": "id", "value": "nav-callqueues"},
+        "ConferencesTab": {"by": "id", "value": "nav-conferences"},
+        "ConfirmYes": {"by": "xpath", "value": "/html/body/div[2]/div[2]/div/a[1]"},
         "HomeTab": {"by": "id", "value": "nav-home-manager"},
         "InventoryTab": {"by": "id", "value": "nav-inventory"},
+        "Loc": {"by": "partial link text", "value": "Loc"},
+        "Music": {"by": "partial link text", "value": "Music"},
         "NavBanner": {"by": "id", "value": "navigation-subbar"},
         "NavBannerTitle": {"by": "css selector", "value": ".navigation-title", "parent": "NavBanner"},
         "SettingsTab": {"by": "id", "value": "nav-settings"},
-        "UsersTab": {"by": "id", "value": "nav-users"},
-        "ConferencesTab": {"by": "id", "value": "nav-conferences"},
-        "ConfirmYes": {"by": "xpath", "value": "/html/body/div[2]/div[2]/div/a[1]"}
+        "Time": {"by": "partial link text", "value": "Time"},
+        "UsersTab": {"by": "id", "value": "nav-users"}
     }
 
     def __init__(self):
@@ -29,8 +33,8 @@ class DomainView(BaseView):
 
     @Trace(log)
     def goto_tab(self, tab_name, banner_title):
-        self.click_element_by_name(tab_name)
-        elem = self.find_element("NavBannerTitle")
+        self.click_named_element(tab_name)
+        elem = self.find_named_element("NavBannerTitle")
         self.assert_element_text(elem, banner_title, "Banner Title")
 
     @Trace(log)
@@ -56,29 +60,29 @@ class DomainView(BaseView):
     @Trace(log)
     def goto_auto_attendants(self):
         sleep(1)
-        self.click_element_by_name('SettingsTab')
-        link_elem = self.find_element_with_timeout("partial link text", 'Auto')
+        self.click_named_element('SettingsTab')
+        link_elem = self.find_named_element('Auto')
         link_elem.click()
 
     @Trace(log)
     def goto_time_frames(self):
         sleep(1)
-        self.click_element_by_name('SettingsTab')
-        link_elem = self.find_element_with_timeout("partial link text", 'Time')
+        self.click_named_element('SettingsTab')
+        link_elem = self.find_named_element('Time')
         link_elem.click()
 
     @Trace(log)
     def goto_music_on_hold(self):
         sleep(1)
-        self.click_element_by_name('SettingsTab')
-        link_elem = self.find_element_with_timeout("partial link text", 'Music')
+        self.click_named_element('SettingsTab')
+        link_elem = self.find_named_element('Music')
         link_elem.click()
 
     @Trace(log)
     def goto_locations(self):
         sleep(1)
-        self.click_element_by_name('SettingsTab')
-        link_elem = self.find_element_with_timeout("partial link text", 'Loc')
+        self.click_named_element('SettingsTab')
+        link_elem = self.find_named_element('Loc')
         link_elem.click()
 
 domain_view = DomainView()

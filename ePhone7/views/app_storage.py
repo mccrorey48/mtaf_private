@@ -14,20 +14,20 @@ class AppStorageView(BaseView):
     @Trace(log)
     def delete_data(self):
         # Touch Clear data, verification popup appears
-        elems = self.find_elements('ClearData')
+        elems = self.find_named_elements('ClearData')
         if len(elems) == 0:
             log.info("AppStorageView Data Already Cleared")
         else:
             self.tap_element(elems[0])
             # Touch OK, verification popup closes, Clear data button disabled, Data is now 0.00B
-            elem = self.find_element('Ok')
+            elem = self.find_named_element('Ok')
             self.tap_element(elem)
-        elem = self.find_element('DataSize')
+        elem = self.find_named_element('DataSize')
         self.assert_element_text(elem, '0.00B', "Data Size text")
 
     @Trace(log)
     def goto_apps(self):
         # Touch Settings icon at top left of screen, all apps view appears
-        self.click_element_by_name('Apps')
+        self.click_named_element('Apps')
 
 app_storage_view = AppStorageView()

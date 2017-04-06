@@ -7,6 +7,7 @@ from ePhone7.utils.configure import cfg
 from ePhone7.views.base import BaseView
 from ePhone7.views.prefs import prefs_view
 from lib.user_exception import UserException as Ux
+from ePhone7.utils.get_softphone import get_softphone
 
 log = logging_esi.get_logger('esi.user_view')
 
@@ -46,6 +47,7 @@ class UserView(BaseView):
         self.expected_tab = None
         self.active_tab = None
         self.call_status_wait = 30
+        self.softphones = {}
 
     # @Trace(log)
     # def logout(self):
@@ -60,7 +62,7 @@ class UserView(BaseView):
             desired_color = cfg.colors['UserView']['dnd_on_color'][:-1]
         else:
             desired_color = cfg.colors['UserView']['dnd_off_color'][:-1]
-        elem = self.find_element('DndButton')
+        elem = self.find_named_element('DndButton')
         self.get_screenshot_as_png('set_dnd', cfg.test_screenshot_folder)
         current_color = self.get_element_color('set_dnd', elem)
         if current_color != desired_color:
@@ -91,14 +93,14 @@ class UserView(BaseView):
 
     @Trace(log)
     def end_call(self):
-        self.click_element_by_name('EndActiveCall')
+        self.click_named_element('EndActiveCall')
 
     @Trace(log)
     def goto_settings(self):
         sleep(2.0)
         self.swipe(515, 12, 515, 250, 400)
         self.swipe(515, 12, 515, 250, 400)
-        elem = self.find_element('SettingsButtonText')
+        elem = self.find_named_element('SettingsButtonText')
         self.assert_element_text_ic(elem, 'settings', 'button')
         # Touch settings, settings menu appears with "Apps" item
         self.tap_element(elem)
@@ -117,7 +119,7 @@ class UserView(BaseView):
 
     @Trace(log)
     def verify_prefs_view(self):
-        self.click_element_by_name('PrefsButton')
+        self.click_named_element('PrefsButton')
         return prefs_view.verify_view()
 
     @Trace(log)
@@ -128,7 +130,7 @@ class UserView(BaseView):
         # if it is active, return true
         # if another tab is active, return false
         # if no tab is active, raise an exception
-        self.click_element_by_name(self.expected_tab)
+        self.click_named_element(self.expected_tab)
         sleep(5)
         self.get_screenshot_as_png(self.png_file_base, cfg.test_screenshot_folder)
         self.active_tab = None
@@ -141,53 +143,61 @@ class UserView(BaseView):
         return self.active_tab == self.expected_tab
 
     @Trace(log)
-    def incoming_call_screen_test(self):
-        from ePhone7.utils.get_softphone import get_softphone
-        softphone = get_softphone()
-        src_cfg = cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]
+    def receive_call(self, caller_name=None):
+        if caller_name is None:
+            caller_name = cfg.site['DefaultSoftphoneUser']
+        self.softphones[caller_name] = get_softphone(caller_name)
+        src_cfg = cfg.site['Users'][caller_name]
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
-        softphone.make_call(dst_uri)
-        softphone.wait_for_call_status('early', self.call_status_wait)
-        self.find_element('IncomingCallAnswerToHeadset')
-        self.find_element('IncomingCallAnswerToSpeaker')
-        self.wait_for_element_text('IncomingCallCallerName', src_cfg['UserNameIncoming'])
-        self.wait_for_element_text('IncomingCallCallerNumber', src_cfg['UserId'])
-        softphone.end_call()
+        self.softphones[caller_name].make_call(dst_uri)
+        self.softphones[caller_name].wait_for_call_status('early', self.call_status_wait)
+        return caller_name, src_cfg
+
+    @Trace(log)
+    def configure_called_answer_ring(self, called_name=None):
+        if called_name is None:
+            called_name = cfg.site['DefaultSoftphoneUser']
+        self.softphones[called_name] = get_softphone(called_name)
+        self.softphones[called_name].account_info.incoming_response = 180
+        return self.softphones[called_name]
+
+
+    @Trace(log)
+    def incoming_call_screen_test(self):
+        caller_name, src_cfg  = self.receive_call()
+        self.find_named_element('IncomingCallAnswerToHeadset')
+        self.find_named_element('IncomingCallAnswerToSpeaker')
+        self.wait_for_named_element_text('IncomingCallCallerName', src_cfg['UserNameIncoming'])
+        self.wait_for_named_element_text('IncomingCallCallerNumber', src_cfg['UserId'])
+        self.softphones[caller_name].end_call()
 
     @Trace(log)
     def answer_call_test(self):
-        from ePhone7.utils.get_softphone import get_softphone
-        softphone = get_softphone()
-        dst_cfg = cfg.site['Users']['R2d2User']
-        dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
-        softphone.make_call(dst_uri)
-        softphone.wait_for_call_status('early', self.call_status_wait)
-        self.click_element_by_name('IncomingCallAnswerToSpeaker')
-        softphone.wait_for_call_status('call', self.call_status_wait)
-        self.click_element_by_name('EndActiveCall')
-        softphone.wait_for_call_status('idle', self.call_status_wait)
+        caller_name, src_cfg = self.receive_call()
+        self.click_named_element('IncomingCallAnswerToSpeaker')
+        self.softphones[caller_name].wait_for_call_status('call', self.call_status_wait)
+        self.click_named_element('EndActiveCall')
+        self.softphones[caller_name].wait_for_call_status('idle', self.call_status_wait)
 
     @Trace(log)
     def auto_answer_call_test(self):
-        from ePhone7.utils.get_softphone import get_softphone
         softphone = get_softphone()
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('call', self.call_status_wait)
-        self.click_element_by_name('EndActiveCall')
+        self.click_named_element('EndActiveCall')
         softphone.wait_for_call_status('idle', self.call_status_wait)
 
     @Trace(log)
     def ignore_call_test(self):
-        from ePhone7.utils.get_softphone import get_softphone
         softphone = get_softphone()
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('early', self.call_status_wait)
-        self.click_element_by_name('IncomingCallIgnore')
+        self.click_named_element('IncomingCallIgnore')
         # the softphone caller will hear ringing until the max number of rings occurs, then
         # the softphone status will change to "call" because pbx accepts the invite to play
         # the "unavailable" message

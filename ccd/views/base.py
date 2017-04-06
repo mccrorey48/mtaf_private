@@ -32,15 +32,14 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def find_table_rows_by_text(self, column, text, partial=False):
         match_rows = []
-        rows = self.find_elements("TableRows")
-        data_locator = self.get_locator("RowDataSub")
-        data_locator["value"] = re.sub("column", "%s" % column, data_locator["value"])
+        rows = self.find_named_elements("TableRows")
+        locator = {"by": "xpath", "value": "td[%s]" % column}
         for row in rows:
             if partial:
-                if text not in self.find_sub_element_by_locator(row, data_locator).text:
+                if text not in self.find_sub_element_by_locator(row, locator).text:
                     continue
             else:
-                if text != self.find_sub_element_by_locator(row, data_locator).text:
+                if text != self.find_sub_element_by_locator(row, locator).text:
                     continue
             match_rows.append(row)
         return match_rows
@@ -54,7 +53,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def test_domain_message_is_displayed(self):
-        self.find_element("TestDomainMessage")
+        self.find_named_element("TestDomainMessage")
 
     @staticmethod
     def get_url(url):
@@ -64,9 +63,9 @@ class BaseView(SeleniumActions):
         SeleniumActions.driver.get(url)
 
     def filter_dropdown_and_click_result_by_link_text(self, input_key, filter_text, link_text):
-        input_elem = self.find_element(input_key)
+        input_elem = self.find_named_element(input_key)
         input_elem.send_keys(filter_text)
-        link_elem = self.find_element_with_timeout("partial link text", link_text, parent=input_elem.parent)
+        link_elem = self.find_element_by_locator({"by": "partial link text", "value": link_text, "parent": input_elem.parent})
         link_elem.click()
 
     @staticmethod

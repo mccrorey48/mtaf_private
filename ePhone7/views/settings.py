@@ -18,6 +18,6 @@ class SettingsView(BaseView):
 
     @Trace(log)
     def goto_apps(self):
-        self.click_element_by_name('AppsBar')
+        self.click_named_element('AppsBar')
 
 settings_view = SettingsView()

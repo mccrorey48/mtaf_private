@@ -33,8 +33,11 @@ class PrefsView(BaseView):
         "LogoutCancel": {"by": "id", "value": "com.esi_estech.ditto:id/cancel_button"},
         "LogoutConfirm": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
         "MenuCategories": {"by": "id", "value": "com.esi_estech.ditto:id/settings_header_label"},
-        "MenuItems": {"by": "xpath", "value": "//el/ll"},
+        "MenuItems": {"by": "zpath", "value": "//el/ll"},
+        "MenuItemNetworkText": {"by": "zpath", "value": "//el/ll/tv", "text": "Network"},
         "NeedHelp": {"by": "zpath", "value": "//el/rl[1]/tv[1]", "text": "Need Help?"},
+        "NetworkSaveAndReboot": {"by": "id", "value": "com.esi_estech.ditto:id/save_nw_config"},
+        "NetworkSettingsLabel": {"by": "id", "value": "com.esi_estech.ditto:id/preferences_label", "text": "Network Settings"},
         "Personal": {"by": "zpath", "value": "//el/rl[2]/tv[1]", "text": "Personal"},
         "Phone": {"by": "zpath", "value": "//el/rl[3]/tv[1]", "text": "Phone"},
         "PhoneUpdates": {"by": "zpath", "value": "//lv/ll[10]/tv", "text": "Phone Updates"},
@@ -42,6 +45,11 @@ class PrefsView(BaseView):
         "Ringtones": {"by": "zpath", "value": "//lv/ll[7]/tv", "text": "Ringtones"},
         "SignInWithGoogle": {"by": "zpath", "value": "//lv/ll[2]/tv", "text": "Sign in with Google"},
         "System": {"by": "zpath", "value": "//el/rl[4]/tv[1]", "text": "System"},
+        "VlanDisable": {"by": "id", "value": "com.esi_estech.ditto:id/vlan_disable"},
+        "VlanEnable": {"by": "id", "value": "com.esi_estech.ditto:id/vlan_enable"},
+        "VlanRebootAlert": {"by": "id", "value": "com.esi_estech.ditto:id/count_down_label"},
+        "VlanIdentifier": {"by": "id", "value": "com.esi_estech.ditto:id/nw_config_vlan_identifier_new_value"},
+        "VlanPriority": {"by": "id", "value": "com.esi_estech.ditto:id/nw_config_vlan_priority_new_value"},
         "VolumeSettings": {"by": "zpath", "value": "//lv/ll[6]/tv", "text": "Volume Settings"}
     }
 
@@ -49,13 +57,13 @@ class PrefsView(BaseView):
         super(PrefsView, self).__init__()
 
     def hide_list_items(self):
-        titles_shown = [el.text for el in self.find_elements('ListItemTitle')]
+        titles_shown = [el.text for el in self.find_named_elements('ListItemTitle')]
         if len(titles_shown) == 0:
             return
         for header in list_items.keys():
             if list_items[header][0] in titles_shown:
-                self.click_element_by_name(header)
-            titles_shown = [el.text for el in self.find_elements('ListItemTitle')]
+                self.click_named_element(header)
+            titles_shown = [el.text for el in self.find_named_elements('ListItemTitle')]
             if len(titles_shown) == 0:
                 return
             if list_items[header][0] in titles_shown:
@@ -70,8 +78,8 @@ class PrefsView(BaseView):
     @Trace(log)
     def set_auto_answer(self, on=True):
         self.hide_list_items()
-        self.click_element_by_name('Phone')
-        elem = self.find_element('AutoAnswerSwitch')
+        self.click_named_element('Phone')
+        elem = self.find_named_element('AutoAnswerSwitch')
         y = elem.location['y'] + (elem.size['height'] / 2)
         left = elem.location['x']
         right = elem.location['x'] + (elem.size['width'] / 2)
@@ -79,33 +87,33 @@ class PrefsView(BaseView):
             self.swipe(left, y, right, y, 1000)
         else:
             self.swipe(right, y, left, y, 1000)
-        self.click_element_by_name('Phone')
+        self.click_named_element('Phone')
 
     @Trace(log)
     def logout(self):
-        self.click_element_by_name('LogoutAccount')
+        self.click_named_element('LogoutAccount')
 
     @Trace(log)
     def logout_cancel(self):
-        self.click_element_by_name('LogoutCancel')
+        self.click_named_element('LogoutCancel')
 
     @Trace(log)
     def logout_confirm(self):
-        self.click_element_by_name('LogoutConfirm')
+        self.click_named_element('LogoutConfirm')
 
     @Trace(log)
     def exit_prefs(self):
-        self.click_element_by_name('Close')
+        self.click_named_element('Close')
 
     @Trace(log)
     def get_app_version(self):
         self.hide_list_items()
-        self.click_element_by_name('System')
-        self.click_element_by_name('About')
-        about_popup = self.find_element('AppVersion')
+        self.click_named_element('System')
+        self.click_named_element('About')
+        about_popup = self.find_named_element('AppVersion')
         source = about_popup.text
-        self.click_element_by_name('AboutOk')
-        self.click_element_by_name('System')
+        self.click_named_element('AboutOk')
+        self.click_named_element('System')
         m = re.match('App Version : (\S*)', source.encode('utf8'))
         if m is None:
             return "Unknown Version"
@@ -115,7 +123,7 @@ class PrefsView(BaseView):
 
     @Trace(log)
     def verify_view(self):
-        return len(self.find_elements('MenuCategories')) > 0
+        return len(self.find_named_elements('MenuCategories')) > 0
 
 
 prefs_view = PrefsView()

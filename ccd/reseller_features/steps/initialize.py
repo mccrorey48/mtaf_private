@@ -19,7 +19,7 @@ def step_impl(context):
 @then("I click the trash can for the first test conference")
 def step_impl(context):
     if len(context.rows):
-        elem = domain_conferences_view.find_sub_element(context.rows[0], "TrashCanIconSub")
+        elem = domain_conferences_view.find_named_sub_element(context.rows[0], "TrashCanIconSub")
         domain_conferences_view.click_element(elem)
 
 
@@ -27,7 +27,7 @@ def step_impl(context):
 def step_impl(context):
     if len(context.rows):
         sleep(2)
-        domain_view.click_element_by_name("ConfirmYes")
+        domain_view.click_named_element("ConfirmYes")
 
 
 @then("I see the first test conference has been deleted")
@@ -62,7 +62,7 @@ def step_impl(context):
 @then("I click the trash can for the first test user")
 def step_impl(context):
     if len(context.rows):
-        elem = domain_users_view.find_sub_element(context.rows[0], "TrashCanIconSub")
+        elem = domain_users_view.find_named_sub_element(context.rows[0], "TrashCanIconSub")
         domain_users_view.click_element(elem)
 
 
@@ -91,21 +91,21 @@ def step_impl(context):
 
 @step("I see if any timeframes are listed")
 def step_impl(context):
-    context.rows = domain_time_frames_view.find_elements("TableRows")
+    context.rows = domain_time_frames_view.find_named_elements("TableRows")
 
 
 @then("I click the trash can for the first timeframe")
 def step_impl(context):
     if len(context.rows):
         sleep(2)
-        elem = domain_time_frames_view.find_sub_element(context.rows[0], "TrashCanIconSub")
+        elem = domain_time_frames_view.find_named_sub_element(context.rows[0], "TrashCanIconSub")
         domain_users_view.click_element(elem)
 
 
 @step("I see the first timeframe has been deleted")
 def step_impl(context):
     if len(context.rows) > 0:
-        rows = domain_time_frames_view.find_elements("TableRows")
+        rows = domain_time_frames_view.find_named_elements("TableRows")
         assert len(rows) == len(context.rows) - 1, "user not deleted"
         context.rows = rows
 

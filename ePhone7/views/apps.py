@@ -35,21 +35,21 @@ class AppsView(BaseView):
 
     @Trace(log)
     def goto_all_apps(self):
-        elems = self.find_elements('Tab')
+        elems = self.find_named_elements('Tab')
         self.assert_elements_count(elems, 2, 'app tabs')
         self.assert_element_text_ic(elems[0], 'downloaded', 'first tab')
         self.assert_element_text_ic(elems[1], 'running', 'second tab')
         # Swipe right twice, all apps view appears
         self.swipe(515, 250, 100, 250, 400)
         self.swipe(515, 250, 100, 250, 400)
-        elems = self.find_elements('Tab')
+        elems = self.find_named_elements('Tab')
         self.assert_elements_count(elems, 2, 'app tabs')
         self.assert_element_text_ic(elems[0], 'running', 'first tab')
         self.assert_element_text_ic(elems[1], 'all', 'second tab')
 
     @Trace(log)
     def goto_settings(self):
-        self.click_element_by_name('AppsExit')
+        self.click_named_element('AppsExit')
 
     @Trace(log)
     def goto_ephone_storage(self):
@@ -57,8 +57,8 @@ class AppsView(BaseView):
         tries = 0
         elems = None
         while tries < 4:
-            elems = self.find_elements('AllVisible',
-                                       filters.get_filter('text_start', 'ePhone'))
+            elems = self.find_named_elements('AllVisible',
+                                             filters.get_filter('text_start', 'ePhone'))
             tries += 1
             if len(elems) > 0:
                 break
@@ -72,8 +72,8 @@ class AppsView(BaseView):
         tries = 0
         elems = None
         while tries < 4:
-            elems = self.find_elements('AllVisible',
-                                       filters.get_filter('text_all', 'Contacts Storage'))
+            elems = self.find_named_elements('AllVisible',
+                                             filters.get_filter('text_all', 'Contacts Storage'))
             tries += 1
             if len(elems) > 0:
                 break

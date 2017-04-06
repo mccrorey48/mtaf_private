@@ -25,29 +25,29 @@ class LoginView(BaseView):
     def input_bad_username(self):
         user_cfg = cfg.site['Users']['ResellerUser']
         username = '%s@%s' % (user_cfg['BadUserId'], user_cfg['DomainName'])
-        self.find_element('UserName').send_keys(username)
+        self.find_named_element('UserName').send_keys(username)
 
     @Trace(log)
     def input_reseller_username(self):
         user_cfg = cfg.site['Users']['ResellerUser']
         username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
-        self.find_element('UserName').send_keys(username)
+        self.find_named_element('UserName').send_keys(username)
 
     @Trace(log)
     def input_reseller_password(self):
         user_cfg = cfg.site['Users']['ResellerUser']
         password = user_cfg['Password']
-        self.find_element('Password').send_keys(password)
+        self.find_named_element('Password').send_keys(password)
 
     @Trace(log)
     def input_bad_password(self):
         user_cfg = cfg.site['Users']['ResellerUser']
         password = user_cfg['BadPassword']
-        self.find_element('Password').send_keys(password)
+        self.find_named_element('Password').send_keys(password)
 
     @Trace(log)
     def click_login(self):
-        self.click_element_by_name('LoginButton')
+        self.click_named_element('LoginButton')
 
     def login_with_good_credentials(self):
         user_cfg = cfg.site['Users']['ResellerUser']
@@ -81,13 +81,13 @@ class LoginView(BaseView):
 
     def login(self, username, password):
         if len(username):
-            self.find_element('UserName').send_keys(username)
+            self.find_named_element('UserName').send_keys(username)
         if len(password):
-            self.find_element('Password').send_keys(password)
-        self.click_element_by_name('LoginButton')
+            self.find_named_element('Password').send_keys(password)
+        self.click_named_element('LoginButton')
 
     def wait_for_invalid_login_alert(self, timeout=10):
-        el = self.find_element("PasswordAlert", timeout)
+        el = self.find_named_element("PasswordAlert", timeout)
         self.assert_element_text(elem=el, expected="Username or password is invalid. Please try again.",
                                  elem_name="alert")
 
