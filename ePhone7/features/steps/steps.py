@@ -1,9 +1,6 @@
 from behave import *
 from ePhone7.views import *
-from lib.user_exception import UserException as Ux
 import re
-from behave import use_step_matcher
-
 
 
 @step("A call between two other accounts has been parked by the called account")
@@ -143,7 +140,9 @@ def step_impl(context):
 
 @step("a Record button is visible")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        assert user_view.element_is_present('CallRecordButton')
+        context.record_button = user_view.find_named_element('CallRecordButton')
 
 
 @then('A "Select Ringtone" window appears with options for various ringtones')
@@ -188,7 +187,8 @@ def step_impl(context):
 
 @then('A submenu appears with a "Network" option')
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.element_is_present('MenuItemNetworkText')
 
 
 @then('A submenu appears with a "Ringtones" option')
@@ -333,7 +333,8 @@ def step_impl(context):
 
 @step('an "Active Call Screen" window appears')
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        base_view.find_named_element('ActiveCallScreen')
 
 
 @then('An "Add Multiple Favorites" confirmation dialog appears')
@@ -356,36 +357,21 @@ def step_impl(context):
     pass
 
 
-@given("I am at the Dial view")
-def step_impl(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        context.execute_steps(u'''
-          Given I am logged in to the ePhone7
-          Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-          When I touch the Dial button
-          Then the Dial view appears
-        ''')
-
-
-@given("I am at the Home view")
-def step_impl(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        context.execute_steps(u'''
-          Given I am logged in to the ePhone7
-          Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-        ''')
-
-
 @step("I am logged in to the ePhone7")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        if prefs_view.element_is_present('Preferences'):
-            prefs_view.click_element_by_name('Close')
-        if not user_view.element_is_present('UserHeaderName'):
+        base_view.send_keycode('KEYCODE_BACK')
+        # base_view.close_appium()
+        # base_view.open_appium()
+        # if prefs_view.element_is_present('Preferences'):
+        #     prefs_view.click_named_element('Close')
+        if not user_view.element_is_present('UserHeaderName', timeout=120):
             login_view.login()
             tnc_view.accept_tnc()
             app_intro_view.skip_intro()
             assert user_view.element_is_present('UserHeaderName', 10), 'Unable to log in'
+        else:
+            print("UserHeaderName found")
 
 
 @step("I am not signed in to my gmail account")
@@ -400,7 +386,9 @@ def step_impl(context):
 
 @step("I answer the call")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.click_named_element('IncomingCallAnswerToSpeaker')
+        user_view.softphones[context.caller_name].wait_for_call_status('call', user_view.call_status_wait)
 
 
 @step("I can choose Cancel or OK by touching the corresponding button")
@@ -415,7 +403,13 @@ def step_impl(context):
 
 @step("I check the Call Record Enable checkbox")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        cbs = base_view.find_named_elements("AdvancedCheckbox")
+        assert len(cbs) > 2, "Expected >2 AdvancedCheckbox elements, got %s" % len(cbs)
+        if cbs[1].get_attribute('checked') == 'false':
+            cbs[1].click()
+            checked = cbs[1].get_attribute('checked')
+            assert checked == 'true'
 
 
 @step("I close all open submenus")
@@ -439,23 +433,16 @@ def dial_server_direct_code(context, code_name):
         keypad_view.dial_name(code_name)
 
 
-@when("I disable VLAN")
+@then("The reboot alert window appears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        context.execute_steps(u'''
-            When I touch the VLAN Disable button
-            And the Disable button is active
-        ''')
-
-
-@then("I do not see a warning message and the phone reboots")
-def step_impl(context):
-    pass
+        assert prefs_view.element_is_present("VlanRebootAlert")
 
 
 @step("I end the call")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.end_call()
 
 
 @step("I enter a 10-digit phone number using the keypad")
@@ -475,22 +462,39 @@ def step_impl(context):
 
 @when("I enter a VLAN identifier between 1 and 4094")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.find_named_element('VlanIdentifier').clear()
+        prefs_view.send_keycode('KEYCODE_2')
+        prefs_view.send_keycode('KEYCODE_0')
+        prefs_view.send_keycode('KEYCODE_BACK')
+
 
 
 @when("I enter a VLAN identifier greater than 4094")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.find_named_element('VlanIdentifier').clear()
+        prefs_view.send_keycode('KEYCODE_4')
+        prefs_view.send_keycode('KEYCODE_3')
+        prefs_view.send_keycode('KEYCODE_3')
+        prefs_view.send_keycode('KEYCODE_3')
+        prefs_view.send_keycode('KEYCODE_BACK')
 
 
 @step("I enter a VLAN priority between 0 and 7")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.find_named_element('VlanPriority').clear()
+        prefs_view.send_keycode('KEYCODE_3')
+        prefs_view.send_keycode('KEYCODE_BACK')
 
 
 @step("I enter a VLAN priority greater than 7")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.find_named_element('VlanPriority').clear()
+        prefs_view.send_keycode('KEYCODE_8')
+        prefs_view.send_keycode('KEYCODE_BACK')
 
 
 @step("I enter my email address")
@@ -545,19 +549,6 @@ def step_impl(context):
     pass
 
 
-@step("I go to the Network Settings view")
-def step_impl(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        context.execute_steps(u'''
-            When I touch the Preferences icon
-            Then the Preferences window appears
-            When I touch the "System" menu category
-            Then A submenu appears with a "Network" option
-            When I touch the "Network" option
-            Then I see the Network Settings view
-        ''')
-
-
 @step("I go to the New Voicemail view")
 def step_impl(context):
     # contacts_view.goto_tab('Personal')
@@ -598,12 +589,18 @@ def step_impl(context):
 
 @step("I make a call to a coworker contact")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        context.softphone = user_view.configure_called_answer_ring()
+        keypad_view.dial_number(context.softphone.number)
+        keypad_view.click_named_element('FuncKeyCall')
+        context.softphone.wait_for_call_status('early', keypad_view.call_status_wait)
+
 
 
 @step("I receive a call")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        context.caller_name, src_cfg = user_view.receive_call()
 
 
 @step("I receive a new voicemail")
@@ -613,11 +610,24 @@ def step_impl(context):
 
 @when("I scroll down to the Call Record Enable setting")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        elems = base_view.find_named_elements('AdvancedItems')
+        assert len(elems) > 1
+        base_view.scroll(elems[-1], elems[0])
+        length = len(base_view.find_named_elements('CallRecordEnableText'))
+        # one retry in case the scroll didn't work
+        if length != 1:
+            elems = base_view.find_named_elements('AdvancedItems')
+            assert len(elems) > 1
+            base_view.scroll(elems[-1], elems[0])
+        assert length == 1, "Expected exactly one CallRecordEnableText element, got %s" % length
 
 
 @step("I scroll to the top of the Advanced Options view")
 def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
     pass
 
 
@@ -629,8 +639,8 @@ def step_impl(context):
 @step("I see the All and Missed tabs at the top of the screen")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        history_view.find_element('All')
-        history_view.find_element('Missed')
+        history_view.find_named_element('All')
+        history_view.find_named_element('Missed')
 
 
 @step("I see the call at the top of the All History view")
@@ -646,10 +656,10 @@ def step_impl(context):
 @step("I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.find_element('Contacts')
-        user_view.find_element('History')
-        user_view.find_element('Voicemail')
-        user_view.find_element('Keypad')
+        user_view.find_named_element('Contacts')
+        user_view.find_named_element('History')
+        user_view.find_named_element('Voicemail')
+        user_view.find_named_element('Keypad')
 
 
 @step("I see the keypad")
@@ -664,40 +674,32 @@ def step_impl(context):
 
 @then("I see the Network Settings view")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        assert prefs_view.element_is_present('NetworkSettingsLabel')
 
 
 @step("I see the New, Saved and Trash tabs at the top of the screen")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        voicemail_view.find_element('New')
-        voicemail_view.find_element('Saved')
-        voicemail_view.find_element('Trash')
+        assert voicemail_view.element_is_present('New')
+        assert voicemail_view.element_is_present('Saved')
+        assert voicemail_view.element_is_present('Trash')
 
 
 @step("I see the Personal, Coworkers, Favorites and Groups tabs")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        contacts_view.find_element('Personal')
-        contacts_view.find_element('Coworkers')
-        contacts_view.find_element('Favorites')
-        contacts_view.find_element('Groups')
-
-
-@step('I set a valid VLAN ID and priority')
-def step_impl(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        context.execute_steps(u'''
-            Given VLAN is enabled
-            When I enter a VLAN identifier between 1 and 4094
-            And I enter a VLAN priority between 0 and 7
-            And I touch "Save and Reboot"
-            Then I do not see a warning message and the phone reboots
-        ''')
+        assert contacts_view.element_is_present('Personal')
+        assert contacts_view.element_is_present('Coworkers')
+        assert contacts_view.element_is_present('Favorites')
+        assert contacts_view.element_is_present('Groups')
 
 
 @step("I swipe down twice")
 def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
     pass
 
 
@@ -809,7 +811,7 @@ def step_impl(context):
 @step('I touch "OK" on the popup')
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        base_view.click_element_by_name("ConfirmButton")
+        base_view.click_named_element("ConfirmButton")
 
 
 @step('I touch "Personal"')
@@ -829,7 +831,9 @@ def step_impl(context):
 
 @step('I touch "Save and Reboot"')
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.click_named_element('NetworkSaveAndReboot')
+        pass
 
 
 @when('I touch "Screen Timeout"')
@@ -850,7 +854,7 @@ def step_impl(context):
 @step('I touch the "About" menu item')
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.click_element_by_name('About')
+        prefs_view.click_named_element('About')
 
 
 @step("I touch the Add button")
@@ -861,6 +865,12 @@ def step_impl(context):
 @step("I touch the All tab")
 def step_impl(context):
     pass
+
+
+@step("I touch the Back button")
+def step_impl(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        base_view.send_keycode('KEYCODE_BACK')
 
 
 @when("I touch the button for another ringtone")
@@ -881,7 +891,7 @@ def step_impl(context):
 @step("I touch the Call button")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        keypad_view.click_element_by_name('FuncKeyCall')
+        keypad_view.click_named_element('FuncKeyCall')
 
 
 @when('I touch the "Call Forward Busy" section')
@@ -917,7 +927,7 @@ def step_impl(context):
 @step("I touch the Contacts button")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_element_by_name('Contacts')
+        user_view.click_named_element('Contacts')
 
 
 @step('I touch the "Contacts" button')
@@ -953,7 +963,7 @@ def step_impl(context):
 @step("I touch the Dial button")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_element_by_name('Keypad')
+        user_view.click_named_element('Keypad')
 
 
 @step("I touch the Do Not Disturb icon")
@@ -999,7 +1009,7 @@ def step_impl(context):
 @step("I touch the History button")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_element_by_name('History')
+        user_view.click_named_element('History')
 
 
 @step("I touch the Missed tab")
@@ -1029,7 +1039,8 @@ def step_impl(context):
 
 @when('I touch the "Network" option')
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.click_named_element('MenuItemNetworkText')
 
 
 @step("I touch the New tab")
@@ -1055,7 +1066,7 @@ def step_impl(context):
 @step("I touch the Preferences icon")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_element_by_name('PrefsButton')
+        user_view.click_named_element('PrefsButton')
 
 
 @step("I touch the Save icon")
@@ -1070,7 +1081,7 @@ def step_impl(context):
 
 @step('I touch the "Sign in with Google" banner')
 def step_impl(context):
-    # contacts_view.click_element_by_name('GoogleSignInBanner')
+    # contacts_view.click_named_element('GoogleSignInBanner')
     pass
 
 
@@ -1078,7 +1089,7 @@ def step_impl(context):
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
         prefs_view.hide_list_items()
-        prefs_view.click_element_by_name('System')
+        prefs_view.click_named_element('System')
 
 
 @step("I touch the Trash tab")
@@ -1093,18 +1104,23 @@ def step_impl(context):
 
 @when("I touch the VLAN Disable button")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.click_named_element('VlanDisable')
 
 
-@step("I touch the VLAN Enable button")
+@step("I enable VLAN")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        elem = prefs_view.find_named_element('VlanEnable')
+        if elem.get_attribute('checked') == 'false':
+            elem.click()
+            assert elem.get_attribute('checked') == 'true'
 
 
 @step("I touch the Voicemail button")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_element_by_name('Voicemail')
+        user_view.click_named_element('Voicemail')
 
 
 @step("I touch the voicemail element")
@@ -1149,7 +1165,12 @@ def step_impl(context):
 
 @step("I uncheck the Call Record Enable checkbox")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        cbs = base_view.find_named_elements("AdvancedCheckbox")
+        assert len(cbs) > 2, "Expected >2 AdvancedCheckbox elements, got %s" % len(cbs)
+        if cbs[1].get_attribute('checked') == 'true':
+            cbs[1].click()
+            assert cbs[1].get_attribute('checked') == 'false'
 
 
 @step("I use the keypad to filter the list of contacts")
@@ -1269,12 +1290,14 @@ def step_impl(context):
 
 @then("the Advanced Options view appears")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        assert base_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
 
 
 @then("the Advanced Options view disappears")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        assert base_view.element_is_not_present('AdvancedOptions'), "Expected Advanced Options view to disappear but it did not"
 
 
 @step("the Call Forward icon is blue")
@@ -1380,16 +1403,16 @@ def step_impl(context):
 @step("the Contacts view appears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        contacts_view.find_element('ContactsList')
+        assert contacts_view.element_is_present('ContactsList')
 
 
 @step('the correct version is displayed')
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        about_popup = prefs_view.find_element('AppVersion')
+        about_popup = prefs_view.find_named_element('AppVersion')
         source = about_popup.text
-        prefs_view.click_element_by_name('AboutOk')
-        prefs_view.click_element_by_name('System')
+        prefs_view.click_named_element('AboutOk')
+        prefs_view.click_named_element('System')
         m = re.match('App Version : (\S*)', source.encode('utf8'))
         if m is None:
             print("Unknown Version")
@@ -1400,6 +1423,13 @@ def step_impl(context):
             assert version == expected, "Incorrect Version: expected %s, got %s" % (expected, version)
         pass
 
+
+@step("the coworker contact answers the call")
+def step_impl(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        context.softphone.account_info.call.answer(200)
+        context.softphone.wait_for_call_status('call', user_view.call_status_wait)
+    pass
 
 @step("the current default tab is selected")
 def step_impl(context):
@@ -1431,7 +1461,7 @@ def step_impl(context):
 @then("the Dial view appears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        keypad_view.find_element('DialPad')
+        assert keypad_view.element_is_present('DialPad')
 
 
 @step("the Disable button is active")
@@ -1472,7 +1502,7 @@ def step_impl(context):
 @step("the History view appears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        history_view.find_element('HistoryList')
+        assert history_view.element_is_present('HistoryList')
 
 
 @step("the in-call window appears")
@@ -1518,7 +1548,7 @@ def step_impl(context):
 @then('the message "{message}" is shown')
 def step_impl(context, message):
     if 'fake' not in str(context._config.tags).split(','):
-        text = keypad_view.find_element('OtaUpdatePopupContent').text
+        text = keypad_view.find_named_element('OtaUpdatePopupContent').text
         assert text == message, "expected %s, got %s" % (message, text)
 
 
@@ -1592,7 +1622,7 @@ def step_impl(context):
 @step("the Preferences window appears")
 def step_impl(context):
     if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.find_element('Preferences')
+        assert prefs_view.element_is_present('Preferences')
 
 
 @step("the Preferences window disappears")
@@ -1607,11 +1637,20 @@ def step_impl(context):
 
 @step("the Record button is gray")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.get_screenshot_as_png('record_button')
+        expected_color = [115, 115, 115]
+        actual_color = user_view.get_element_color('record_button', context.record_button)
+        assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
+
 
 @step("the Record button is white")
 def step_impl(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.get_screenshot_as_png('record_button')
+        expected_color = [216, 216, 216]
+        actual_color = user_view.get_element_color('record_button', context.record_button)
+        assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
 
 @then('the "Ringtones" window disappears')

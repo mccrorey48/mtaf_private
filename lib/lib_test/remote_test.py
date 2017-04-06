@@ -34,10 +34,10 @@ def make_softphone_call_and_answer():
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call_to_softphone(dst_uri)
         softphone.wait_for_call_status('early', 30)
-        user_view.actions.click_element_by_name('IncomingCallAnswerToSpeaker')
+        user_view.actions.click_named_element('IncomingCallAnswerToSpeaker')
         softphone.wait_for_call_status('start', 30)
         sleep(5)
-        # user_view.actions.click_element_by_name('EndActiveCall')
+        # user_view.actions.click_named_element('EndActiveCall')
         # sleep(5)
         softphone.teardown_call()
 
@@ -72,13 +72,13 @@ user_view.goto_tab('Contacts')
 # history_view.goto_tab('Missed')
 
 # def call_first_history_entry():
-#     elems = history_view.actions.find_elements('CallerName')
+#     elems = history_view.actions.find_named_elements('CallerName')
 #     if len(elems) == 0:
 #         raise Ux('No CallerName elements found')
 #     name_elem = elems[0]
 #     loc_y = name_elem.location['y']
 #     print "first name location y = %s" % loc_y
-#     entry_elems = history_view.actions.find_elements('HistoryEntry')
+#     entry_elems = history_view.actions.find_named_elements('HistoryEntry')
 #     for i, entry_elem in enumerate(entry_elems[:-1]):
 #         if entry_elems[i].location['y'] < loc_y < entry_elems[i+1].location['y']:
 #             entry_elem = entry_elems[i]
@@ -86,7 +86,7 @@ user_view.goto_tab('Contacts')
 #     else:
 #         raise Ux('No HistoryEntry element found in same row as first CallerName element')
 #     print "history entry location y = %s" % entry_elem.location['y']
-#     call_icon = history_view.actions.find_sub_element(entry_elem, 'CallIcon')
+#     call_icon = history_view.actions.find_named_sub_element(entry_elem, 'CallIcon')
 #     print "call icon location y = %s" % call_icon.location['y']
 #     call_icon.click()
 
@@ -95,7 +95,7 @@ user_view.goto_tab('Contacts')
 # pass
 
 # try:
-#     # elem = remote.find_element_with_timeout('id', 'com.esi_estech.com:id/call_log_empty', timeout=1)
+#     # elem = remote.find_unique_element_by_method('id', 'com.esi_estech.com:id/call_log_empty', timeout=1)
 #     # elem = remote.driver.find_element_by_id('com.esi_estech.ditto:id/call_log_empty')
 #     elems = remote.driver.find_elements_by_xpath('com.esi_estech.ditto:id/call_log_empty')
 # except BaseException as e:

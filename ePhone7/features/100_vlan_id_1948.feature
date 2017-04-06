@@ -2,16 +2,20 @@ Feature: As a user I want to set up the VLAN (R2D2-1948)
 
   Background: I am at the Network Settings view and VLAN is enabled
     Given I am logged in to the ePhone7
-    Then I go to the Network Settings view
-    And I touch the VLAN Enable button
+    When I touch the Preferences icon
+    Then the Preferences window appears
+    When I touch the "System" menu category
+    Then A submenu appears with a "Network" option
+    When I touch the "Network" option
+    Then I see the Network Settings view
+    And I enable VLAN
 
-#  @wip
+  @wip
   Scenario: I set a valid VLAN ID and priority
-    Given The VLAN Enable button is active
     When I enter a VLAN identifier between 1 and 4094
     And I enter a VLAN priority between 0 and 7
     And I touch "Save and Reboot"
-    Then I do not see a warning message and the phone reboots
+    Then The reboot alert window appears
 
 #  @wip
   Scenario: I can't set an invalid VLAN ID

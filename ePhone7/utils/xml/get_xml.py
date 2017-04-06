@@ -13,9 +13,7 @@ args = parser.parse_args()
 
 cfg.set_site(args.cfg_host, args.site_tag)
 from ePhone7.utils.get_softphone import get_softphone
-from ePhone7.views.user import user_view
-from ePhone7.views.prefs import prefs_view
-from ePhone7.views.base import base_view
+from ePhone7.views import *
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 from time import sleep
 import lib.logging_esi as logging_esi
@@ -55,12 +53,12 @@ def get_call_views(version):
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('early', 30)
-        answer_to_speaker_icon = user_view.find_element('IncomingCallAnswerToSpeaker')
+        answer_to_speaker_icon = user_view.find_named_element('IncomingCallAnswerToSpeaker')
         save_xml_and_screenshot('incoming_call_%s' % version, version)
         user_view.click_element(answer_to_speaker_icon)
         softphone.wait_for_call_status('call', 30)
         sleep(5)
-        # end_active_call = user_view.find_element('EndActiveCall')
+        # end_active_call = user_view.find_named_element('EndActiveCall')
         save_xml_and_screenshot('active_call_%s' % version, version)
         # log.trace("clicking end active call icon")
         # end_active_call.click()
@@ -96,6 +94,34 @@ def get_nav_views(version):
                 sleep(5)
                 save_xml_and_screenshot('%s_%s_%s' % (view, tab, version), version)
 
+buttons = {
+    'Contacts': {'view': contacts_view, 'tabs': ('Personal', 'Coworkers', 'Favorites', 'Groups')},
+    'History': {'view': history_view, 'tabs': ('All', 'Missed')},
+    'Voicemail': {'view': voicemail_view, 'tabs': ('New', 'Saved', 'Trash')},
+    'Keypad': {'view': keypad_view, 'tabs': ()}
+}
+
+@Trace(log)
+def get_nav_views2(version):
+    with logging_esi.msg_src_cm('get_page_sources()'):
+        for button in buttons.keys():
+            user_view.goto_tab(button)
+            log.info("view = %s" % button)
+            if button == 'Keypad':
+                save_xml_and_screenshot('keypad_%s' % version, version)
+                keypad_view.dial_name('Advanced Settings')
+                keypad_view.click_named_element('FuncKeyCall')
+                save_xml_and_screenshot('settings_%s' % version, version)
+                keypad_view.send_keycode('KEYCODE_BACK')
+            else:
+                for tab in buttons[button]['tabs']:
+                    log.info("calling goto_tab(%s)" % tab)
+                    buttons[button]['view'].goto_tab(tab)
+                    # arbitrary sleep to give the screen time to switch
+                    sleep(5)
+                    log.info("tab = %s" % tab)
+                    save_xml_and_screenshot('%s_%s_%s' % (button.lower(), tab.lower(), version), version)
+
 
 if __name__ == '__main__':
     _version = 'not_retrieved'
@@ -103,13 +129,14 @@ if __name__ == '__main__':
     base_view.open_appium('main')
     user_view.goto_prefs()
     _version = prefs_view.get_app_version()
+    save_xml_and_screenshot('prefs_%s' % _version, _version)
     prefs_view.exit_prefs()
     print "version = %s" % _version
     try:
         get_call_views(_version)
         base_view.close_appium()
         base_view.open_appium('main')
-        get_nav_views(_version)
+        get_nav_views2(_version)
         base_view.close_appium()
     except Ux as _e:
         save_xml_and_screenshot('user_exception_handler', _version)

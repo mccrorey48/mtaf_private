@@ -20,24 +20,24 @@ class SettingsView(BaseView):
 
     def scroll_and_get_element(self, name):
         if self.element_is_present(name):
-            return self.find_element(name)
+            return self.find_named_element(name)
         # scroll to top
         while True:
-            elems = self.find_elements("TitleAny")
+            elems = self.find_named_elements("TitleAny")
             before_titles = [elem.text for elem in elems]
             self.scroll(elems[0], elems[-1])
-            elems = self.find_elements("TitleAny")
+            elems = self.find_named_elements("TitleAny")
             after_titles = [elem.text for elem in elems]
             if before_titles == after_titles:
                 break
         while True:
-            elems = self.find_elements("TitleAny")
+            elems = self.find_named_elements("TitleAny")
             before_titles = [elem.text for elem in elems]
             self.scroll(elems[-1], elems[0])
-            elems = self.find_elements("TitleAny")
+            elems = self.find_named_elements("TitleAny")
             after_titles = [elem.text for elem in elems]
             if self.element_is_present(name):
-                return self.find_element(name)
+                return self.find_named_element(name)
             if before_titles == after_titles:
                 raise Ux("Element %s not found" % name)
 

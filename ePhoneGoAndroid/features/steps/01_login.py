@@ -38,7 +38,7 @@ def step_impl(context):
 @when("I touch OK")
 def step_impl(context):
     pass
-    # login_view.click_element_by_name("AttentionOkButton")
+    # login_view.click_named_element("AttentionOkButton")
 
 
 @then("The Attention Alert Message disappears")
@@ -56,7 +56,7 @@ def step_impl(context):
 
 @when("I touch ALLOW")
 def step_impl(context):
-    login_view.click_element_by_name("PermissionAllowButton")
+    login_view.click_named_element("PermissionAllowButton")
 
 
 @then("The Phone Permission Message disappears")
@@ -84,7 +84,7 @@ def step_impl(context):
 
 @when("I touch YES")
 def step_impl(context):
-    login_view.click_element_by_name("BatteryUsageYesButton")
+    login_view.click_named_element("BatteryUsageYesButton")
 
 
 @then("The Battery Usage Alert Message disappears")

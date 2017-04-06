@@ -20,8 +20,8 @@ class TncView(BaseView):
 
     @Trace(log)
     def accept_tnc(self):
-        self.click_element_by_name('Accept')
-        self.click_element_by_name('Continue')
+        self.click_named_element('Accept')
+        self.click_named_element('Continue')
         self.wait_for_activity('.util.AppIntroActivity')
 
 tnc_view = TncView()

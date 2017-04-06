@@ -2,7 +2,11 @@ Feature: As a user I want to keep access to my voicemail after I stop using a VL
 
   Background: I have new and saved voicemails while on a VLAN
     Given I am logged in to the ePhone7
-    Then I set a valid VLAN ID and priority
+    And VLAN is enabled
+    When I enter a VLAN identifier between 1 and 4094
+    And I enter a VLAN priority between 0 and 7
+    And I touch "Save and Reboot"
+    Then I do not see a warning message and the phone reboots
     And I have at least one saved voicemail
     And I have at least one new voicemail
     And I go to the New Voicemail view

@@ -1,6 +1,6 @@
+@sprint @regression
 Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
 
-  @sprint
   Scenario: I want to see the OTA server setting
     Given I am logged in to the ePhone7
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
@@ -19,7 +19,6 @@ Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
     When I touch "OK" on the popup
     Then the Current OTA Server popup disappears
 
-  @sprint
   Scenario: I want to change the OTA server setting to Alpha
     Given I am logged in to the ePhone7
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
@@ -50,7 +49,6 @@ Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
     When I touch "OK" on the popup
     Then the Current OTA Server popup disappears
 
-  @sprint
   Scenario: I want to change the OTA server setting to Beta
     Given I am logged in to the ePhone7
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
@@ -81,7 +79,6 @@ Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
     When I touch "OK" on the popup
     Then the Current OTA Server popup disappears
 
-  @sprint
   Scenario: I want to change the OTA server setting to Production
     Given I am logged in to the ePhone7
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
