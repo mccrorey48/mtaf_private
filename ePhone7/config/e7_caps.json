@@ -50,6 +50,7 @@
             "autoLaunch": false,
             "deviceName": "r2d2",
             "newCommandTimeout": 1200,
+            "noReset": true,
             "platformName": "Android",
             "platformVersion": "4.4",
             "type": "constants"

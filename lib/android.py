@@ -8,7 +8,9 @@ from lib.user_exception import UserException as Ux
 path_by_abbrev = {
     "": "",
     "bt": "android.widget.Button",
+    "cb": "android.widget.CheckBox",
     "el": "android.widget.ExpandableListView",
+    "et": "android.widget.EditText",
     "fl": "android.widget.FrameLayout",
     "gl": "android.widget.GridLayout",
     "gv": "android.widget.GridView",
@@ -19,6 +21,7 @@ path_by_abbrev = {
     "lv": "android.widget.ListView",
     "rl": "android.widget.RelativeLayout",
     "rv": "android.support.v7.widget.RecyclerView",
+    "sp": "android.support.v4.widget.SlidingPaneLayout",
     "sv": "android.widget.ScrollView",
     "th": "android.widget.TabHost",
     "tl": "android.widget.TableLayout",

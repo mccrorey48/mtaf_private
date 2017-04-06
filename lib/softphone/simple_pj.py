@@ -55,6 +55,16 @@ def pjl_log_cb(level, _str, _len):
             log.debug(line)
 
 
+class SoftphoneManager():
+
+    softphones = {}
+
+    def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp):
+        if uri not in self.softphones:
+            self.softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp)
+        return self.softphones[uri]
+
+
 class Softphone:
 
     lib = None
@@ -72,14 +82,14 @@ class Softphone:
         # add this account and start it registering
         m = re.match('sip:([^@]+)@(.+)', self.uri)
         if m:
-            number = m.group(1)
-            domain = m.group(2)
-            self.account_info = self.lib.add_account(number, domain, proxy, password)
+            self.number = m.group(1)
+            self.domain = m.group(2)
+            self.account_info = self.lib.add_account(self.number, self.domain, proxy, password)
             if pbfile is None:
                 self.account_info.pbfile_relpath = None
             else:
                 if pbfile == 'default':
-                    pbfile = '%s.wav' % number
+                    pbfile = '%s.wav' % self.number
                 self.account_info.pbfile_relpath = os.path.join(wav_dir, pbfile)
                 create_wav_file(self.account_info.pbfile_relpath, quiet)
             self.account_info.record = record
