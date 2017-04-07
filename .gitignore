@@ -2,3 +2,7 @@
 wav/
 *.pyc
 output.json
+*.csv
+*.html
+xml_not_retrieved
+exception.xml
