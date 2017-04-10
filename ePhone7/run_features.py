@@ -38,18 +38,28 @@ def run_features(features_dir, site_tag, run_tags, version):
     sys.argv.append('-f')
     sys.argv.append('json.pretty')
     sys.argv.append(features_dir)
+    start_time = datetime.now()
     with capture() as out:
         main()
+    json_repr = '\n'.join(out[0][:out[0].rindex(']') + 1].split('\n'))
+    data = json.loads(json_repr)
+    if len(data):
+        data[0]["start_time"] = start_time.strftime("%X")
+        data[0]["start_date"] = start_time.strftime("%x")
+    json_repr = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
     with open('output.json', 'w') as f:
-        f.write('\n'.join(out[0][:out[0].rindex(']') + 1].split('\n')))
-    return json.loads('\n'.join(out[0][:out[0].rindex(']') + 1].split('\n')))
+        f.write(json_repr)
+    return data
 
 
 def write_result_to_db(server, db_name, test_class, environment, configuration, mock_detector, features):
     print 'writing to db_name %s, server %s:' % (db_name, server)
     client = MongoClient(server)
     db = client[db_name]
-    start_time = datetime.now()
+    if len(features) and 'start_time' in features[0] and 'start_date' in features[0]:
+        start_datetime = datetime.strptime("%s %s" % (features[0]['start_date'], features[0]['start_time']), '%x %X')
+    else:
+        start_datetime = datetime.now()
     test_start = {
         'app': 'ePhone7',
         'build': '',
@@ -60,8 +70,8 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
         'pass_count': 0,
         'status': '',
         'test_class': test_class,
-        'time': start_time.strftime('%X'),
-        'date': start_time.strftime('%x'),
+        'time': start_datetime.strftime('%X'),
+        'date': start_datetime.strftime('%x'),
         'version': '1.x'
     }
     start_id = db['test_starts'].insert_one(test_start).inserted_id
@@ -69,7 +79,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
     pass_count = 0
     skip_count = 0
     start_result = 'passed'
-    for feature in features:
+    for iter_num, feature in enumerate(features):
         feature_has_skips = False
         feature_has_fakes = False
         feature_has_fails = False
@@ -79,8 +89,8 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
         feature['test_class'] = test_class
         feature['text'] = feature['name']
         del feature['name']
-        feature['time'] = start_time.strftime('%X')
-        feature['date'] = start_time.strftime('%x')
+        feature['time'] = start_datetime.strftime('%X')
+        feature['date'] = start_datetime.strftime('%x')
         background_steps = []
         feature['scenarios'] = []
         feature['duration'] = 0.0
@@ -100,8 +110,8 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
             if 'tags' not in scenario.keys():
                 scenario['tags'] = []
             scenario['duration'] = 0.0
-            scenario['time'] = start_time.strftime('%X')
-            scenario['date'] = start_time.strftime('%x')
+            scenario['time'] = start_datetime.strftime('%X')
+            scenario['date'] = start_datetime.strftime('%x')
             for step in scenario['steps']:
                 step['text'] = step['name']
                 del step['name']
@@ -130,7 +140,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     del step['result']
                     scenario['duration'] += step['duration']
                     feature['duration'] += step['duration']
-                    start_time += timedelta(seconds=step['duration'])
+                    start_datetime += timedelta(seconds=step['duration'])
                 else:
                     step['status'] = 'skipped'
                     scenario_has_skips = True

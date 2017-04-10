@@ -6,3 +6,4 @@ output.json
 *.html
 xml_not_retrieved
 exception.xml
+steps.out

@@ -27,7 +27,6 @@ class BaseView(SeleniumActions):
     caps_tag = None
 
     locators = {
-        "AcraCrashOk": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_call_details"},
         "ActiveCallScreen": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_call_details"},
         "AdvancedOptions": {"by": "zpath", "value": "//sp/rl/v[1]/fl/ll/fl/rv/tv[1]"},
         "AdvancedItems": {"by": "id", "value": "android:id/title"},
@@ -35,7 +34,10 @@ class BaseView(SeleniumActions):
         "CallRecordEnableText": {"by": "id", "value": "android:id/title", "text": "Call Record Enable"},
         "CallRecordEnableBox": {"by": "zpath", "value": "com.esi_estech.ditto:id/confirm_button"},
         "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/recordButton"},
-        "ConfirmButton": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"}
+        "ConfirmButton": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
+        "CrashOkButton": {"by": "id", "value": "com.esi_estech.ditto:id/acra_crash_ok_button"},
+        "CrashOkButton2": {"by": "id", "value": "android:id/button1", "text": "OK"},
+        "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"}
     }
 
     def __init__(self):
