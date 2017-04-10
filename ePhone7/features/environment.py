@@ -54,6 +54,9 @@ def after_step(context, step):
             with open(xml_fullpath, 'w') as _f:
                 _f.write(xml.encode('utf8'))
             base_view.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
+        # elif step.name == 'The reboot alert window appears':
+        #     # handle rebooting the ePhone7 before continuing
+        #     base_view.close_appum()
     logging.pop_msg_src()
 
 
