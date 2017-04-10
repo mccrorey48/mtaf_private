@@ -916,11 +916,6 @@ def i_touch_the_cancel_button(context):
 
 
 @step("I touch the contact listing  I want to call")
-def i_touch_the_contact_listing__i_want_to_call(context):
-    pass
-
-
-@step("I touch the contact listing I want to call")
 def i_touch_the_contact_listing_i_want_to_call(context):
     pass
 
