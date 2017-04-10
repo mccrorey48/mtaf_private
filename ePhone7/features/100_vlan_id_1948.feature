@@ -10,7 +10,7 @@ Feature: As a user I want to set up the VLAN (R2D2-1948)
     Then I see the Network Settings view
     And I enable VLAN
 
-  @wip
+  @wip @sprint
   Scenario: I set a valid VLAN ID and priority
     When I enter a VLAN identifier between 1 and 4094
     And I enter a VLAN priority between 0 and 7

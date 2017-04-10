@@ -3,7 +3,7 @@ Feature: As a user I want to use and manage my contact lists
   Background: I am at the Contacts view
     Given I am logged in to the ePhone7
     Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When I touch the Contacts button
+    When I touch the "Contacts" button
     Then the Contacts view appears
     And I see the Personal, Coworkers, Favorites and Groups tabs
 
@@ -61,7 +61,7 @@ Feature: As a user I want to use and manage my contact lists
     Then My updated Favorite contacts are shown on the display
 
   Scenario: I want to set the Favorites status of multiple Personal contacts
-    Given I touch the Personal tab
+    Given I touch the "Personal" tab
     Then My Personal contacts are shown on the display
     When I long-press a contact list item
     Then An "Add Multiple Favorites" confirmation dialog appears

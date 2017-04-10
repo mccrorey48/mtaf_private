@@ -6,7 +6,7 @@ Feature: As a user I want to navigate to different views using the touch screen
 
   @regression
   Scenario: I go to the Contacts view
-    Given I touch the Contacts button
+    Given I touch the "Contacts" button
     Then the Contacts view appears
     And I see the Personal, Coworkers, Favorites and Groups tabs
 

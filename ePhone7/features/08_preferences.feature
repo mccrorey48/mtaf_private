@@ -82,7 +82,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     And I touch "OK"
     Then The Contacts tab window disappears
     When I close the Preferences window
-    And I touch the Contacts button
+    And I touch the "Contacts" button
     Then The new default tab is selected
 
   Scenario: I want to forward incoming calls when I do not answer
