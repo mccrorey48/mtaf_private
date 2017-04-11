@@ -8,3 +8,4 @@ from .history import history_view
 from .voicemail import voicemail_view
 from .keypad import keypad_view
 from .prefs import prefs_view
+from .network import network_view

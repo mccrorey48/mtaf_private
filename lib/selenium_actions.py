@@ -119,21 +119,14 @@ class SeleniumActions(Tc):
         try:
             if 'parent_key' in locator:
                 parent = self.find_named_element(locator['parent_key'])
-                elem = self.find_sub_element_by_locator(parent, locator, timeout)
+                self.find_sub_element_by_locator(parent, locator, timeout)
             else:
-                elem = self.find_element_by_locator(locator, timeout)
+                self.find_element_by_locator(locator, timeout)
         except Ux:
             return False
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
-        # if the locator has a "text" attribute, verify that the text in the element matches
-        if 'text' not in locator:
-            return True
-        else:
-            if elem.text == locator['text']:
-                return True
-            else:
-                return False
+        return True
 
     @Trace(log)
     def element_is_not_present(self, name, timeout=1):
@@ -233,7 +226,7 @@ class SeleniumActions(Tc):
             else:
                 elems = self.driver.find_elements(locator['by'], locator['value'])
             if "text" in locator:
-                elems = [elem for elem in elems if elem.text == locator["text"]]
+                elems = [elem for elem in elems if elem.text.strip() == locator["text"]]
             if len(elems) == 1:
                 return elems[0]
         else:

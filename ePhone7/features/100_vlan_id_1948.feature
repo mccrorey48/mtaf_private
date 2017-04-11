@@ -1,44 +1,55 @@
+@sprint @regression
 Feature: As a user I want to set up the VLAN (R2D2-1948)
 
   Background: I am at the Network Settings view and VLAN is enabled
-    Given I am logged in to the ePhone7
-    When I touch the Preferences icon
-    Then the Preferences window appears
-    When I touch the "System" menu category
-    Then A submenu appears with a "Network" option
-    When I touch the "Network" option
-    Then I see the Network Settings view
-    And I enable VLAN
+    Given [background] I am logged in to the ePhone7
+    When [background] I touch the Preferences icon
+    Then [background] the Preferences window appears
+    When [background] I touch the "System" menu category
+    Then [background] A submenu appears with a "Network" option
+    When [background] I touch the "Network" option
+    Then [background] I see the Network Settings view
+    And [background] I touch the VLAN Enable button
+    And [background] the Enable button is active
+    And [background] the Disable button is inactive
 
-  @wip @sprint
   Scenario: I set a valid VLAN ID and priority
     When I enter a VLAN identifier between 1 and 4094
-    And I enter a VLAN priority between 0 and 7
-    And I touch "Save and Reboot"
-    Then The reboot alert window appears
+    And [network] I enter a VLAN priority between 0 and 7
+    And [network] I touch "Save and Reboot"
+    Then [network] The reboot alert window appears
+    And I wait for the phone to restart
 
-#  @wip
   Scenario: I can't set an invalid VLAN ID
-    Given The VLAN Enable button is active
-    When I enter a VLAN identifier greater than 4094
-    And I enter a VLAN priority between 0 and 7
-    And I touch "Save and Reboot"
-    Then I see a warning message and the phone does not reboot
-    When I touch "OK"
-    Then I see the Network Settings view
+    When [network] I enter a VLAN identifier greater than 4094
+    And [network] I enter a VLAN priority between 0 and 7
+    And [network] I touch "Save and Reboot"
+    Then [network] I see an "Invalid VLAN Identifier" alert
+    When [network] I touch "OK" on the "Invalid VLAN Identifier" alert
+    Then [network] I see the Network Settings view
+    And [network] I touch the back arrow at the top of the Network Settings view
+    Then [prefs] the Preferences window appears
+    When [prefs] I touch the "X" icon
+    Then [prefs] the Preferences window disappears
 
-#  @wip
   Scenario: I can't set an invalid VLAN prority
-    Given The VLAN Enable button is active
     When I enter a VLAN identifier between 1 and 4094
     And I enter a VLAN priority greater than 7
-    And I touch "Save and Reboot"
-    Then I see a warning message and the phone does not reboot
-    When I touch "OK"
-    Then I see the Network Settings view
+    And [network] I touch "Save and Reboot"
+    Then I see an "Invalid VLAN Priority" alert
+    When I touch "OK" on the "Invalid VLAN Priority" alert
+    Then [network] I see the Network Settings view
+    And [network] I touch the back arrow at the top of the Network Settings view
+    Then [prefs] the Preferences window appears
+    When [prefs] I touch the "X" icon
+    Then [prefs] the Preferences window disappears
 
-#  @wip
   Scenario: I disable VLAN
-    Given The VLAN Enable button is active
     When I touch the VLAN Disable button
-    And the Disable button is active
+    And [network] the Disable button is active
+    And [network] the Enable button is inactive
+    Then [network] I see the Network Settings view
+    And [network] I touch the back arrow at the top of the Network Settings view
+    Then [prefs] the Preferences window appears
+    When [prefs] I touch the "X" icon
+    Then [prefs] the Preferences window disappears

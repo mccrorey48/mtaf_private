@@ -24,7 +24,7 @@ class PrefsView(BaseView):
         "AppVersion": {"by": "id", "value": "com.esi_estech.ditto:id/app_version"},
         "AutoAnswerSwitch": {"by": "id", "value": "com.esi_estech.ditto:id/settings_list_auto_answer_switch"},
         "CallForwardingOptions": {"by": "zpath", "value": "//el/ll[3]/tv", "text": "Call Forwarding Options"},
-        "Close": {"by": "id", "value": "com.esi_estech.ditto:id/close_button"},
+        "CloseButton": {"by": "id", "value": "com.esi_estech.ditto:id/close_button"},
         "DisplayBrightness": {"by": "zpath", "value": "//lv/ll[8]/tv", "text": "Display Brightness"},
         "DisplaySleepTimer": {"by": "zpath", "value": "//lv/ll[9]/tv", "text": "Display Sleep Timer"},
         "eHelp": {"by": "zpath", "value": "//lv/ll[4]/tv", "text": "eHelp"},
@@ -36,7 +36,6 @@ class PrefsView(BaseView):
         "MenuItems": {"by": "zpath", "value": "//el/ll"},
         "MenuItemNetworkText": {"by": "zpath", "value": "//el/ll/tv", "text": "Network"},
         "NeedHelp": {"by": "zpath", "value": "//el/rl[1]/tv[1]", "text": "Need Help?"},
-        "NetworkSaveAndReboot": {"by": "id", "value": "com.esi_estech.ditto:id/save_nw_config"},
         "NetworkSettingsLabel": {"by": "id", "value": "com.esi_estech.ditto:id/preferences_label", "text": "Network Settings"},
         "Personal": {"by": "zpath", "value": "//el/rl[2]/tv[1]", "text": "Personal"},
         "Phone": {"by": "zpath", "value": "//el/rl[3]/tv[1]", "text": "Phone"},
@@ -103,7 +102,7 @@ class PrefsView(BaseView):
 
     @Trace(log)
     def exit_prefs(self):
-        self.click_named_element('Close')
+        self.click_named_element('CloseButton')
 
     @Trace(log)
     def get_app_version(self):

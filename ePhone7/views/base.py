@@ -1,11 +1,11 @@
 import os
-from time import sleep
+from time import sleep, time
 import lib.logging_esi as logging_esi
 from PIL import Image
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.touch_action import TouchAction
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
 from lib.wrappers import Trace
 from lib.android import expand_zpath
 
@@ -37,6 +37,10 @@ class BaseView(SeleniumActions):
         "ConfirmButton": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
         "CrashOkButton": {"by": "id", "value": "com.esi_estech.ditto:id/acra_crash_ok_button"},
         "CrashOkButton2": {"by": "id", "value": "android:id/button1", "text": "OK"},
+        "E7HasStoppedOk": {"by": "id", "value": "android:id/button1"},
+        "E7HasStoppedText": {"by": "id", "value": "android:id/message", "text": "Unfortunately, ePhone7 has stopped."},
+        "NetworkErrorRetry": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
+        "NetworkErrorText": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertDialogTitle", "text": "Network Error"},
         "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"}
     }
 
@@ -157,20 +161,29 @@ class BaseView(SeleniumActions):
         center = (el.location['x'] + (el.size['width'] / 2), el.location['y'] + (el.size['height'] / 2))
         SeleniumActions.driver.tap([center], duration)
 
-    def update_remote(self, caps_tag):
-        if caps_tag != self.caps_tag:
-            driver = webdriver.Remote(cfg.site["SeleniumUrl"], cfg.caps[caps_tag])
+    def update_remote(self, caps_tag, force=False, timeout=30):
+        if force or caps_tag != self.caps_tag:
+            start_time = time()
+            while True:
+                try:
+                    driver = webdriver.Remote(cfg.site["SeleniumUrl"], cfg.caps[caps_tag])
+                    break
+                except WebDriverException:
+                    if time() - start_time < timeout:
+                        log.info("retrying webdriver.Remote(%s, %s)" % (cfg.site["SeleniumUrl"], cfg.caps[caps_tag]))
+                    else:
+                        raise Ux("timed out waiting to connect to webdriver")
             self.caps_tag = caps_tag
             driver.implicitly_wait(cfg.site['DefaultTimeout'])
             return driver
 
     @Trace(log)
-    def open_appium(self, caps_tag='nolaunch'):
+    def open_appium(self, caps_tag='nolaunch', force=False, timeout=30):
         if cfg.site['Mock']:
             SeleniumActions.driver = MockDriver()
         else:
             log.debug('opening appium')
-            SeleniumActions.driver = self.update_remote(caps_tag)
+            SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
         pass
 
     @Trace(log)
@@ -187,6 +200,41 @@ class BaseView(SeleniumActions):
             SeleniumActions.driver = None
             self.caps_tag = None
         pass
+
+    @Trace(log)
+    def startup(self):
+        self.open_appium('nolaunch', force=True, timeout=60)
+        retry_main = False
+        while True:
+            try:
+                current_activity = self.driver.current_activity
+                log.debug("startup: current_activity = " + current_activity)
+                if current_activity == '.activities.MainViewActivity':
+                    if retry_main:
+                        break
+                    sleep(10)
+                    retry_main = True
+                    continue
+                if current_activity == 'util.crashreporting.EPhoneCrashReportDialog':
+                    retry_main = False
+                    self.click_named_element('CrashOkButton')
+                    sleep(5)
+                    continue
+                if current_activity == '.activities.AutoLoginActivity':
+                    retry_main = False
+                    if self.element_is_present('NetworkErrorText'):
+                        log.debug("startup: NetworkErrorText present")
+                        self.click_named_element('NetworkErrorRetry')
+                    elif self.element_is_present('E7HasStoppedText'):
+                        log.debug("startup: E7HasStoppedText present")
+                        self.click_named_element('E7HasStoppedOk')
+                    elif self.element_is_present('RegRetryButton'):
+                        log.debug("startup: RegRetryButton present")
+                        self.click_named_element('RegRetryButton')
+                    continue
+            except WebDriverException:
+                log.debug("startup: got WebDriverException (ignoring)")
+                sleep(5)
 
     @Trace(log)
     def wait_for_activity(self, activity, timeout=30):

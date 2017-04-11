@@ -42,6 +42,8 @@ def run_features(features_dir, site_tag, run_tags, version):
     with capture() as out:
         main()
     json_repr = '\n'.join(out[0][:out[0].rindex(']') + 1].split('\n'))
+    with open('output_pre.json', 'w') as f:
+        f.write(json_repr)
     data = json.loads(json_repr)
     if len(data):
         data[0]["start_time"] = start_time.strftime("%X")
@@ -56,6 +58,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
     print 'writing to db_name %s, server %s:' % (db_name, server)
     client = MongoClient(server)
     db = client[db_name]
+    step_re = re.compile('\s*(\[\s*([^]]*\S)\s*\]\s*)?\s*(.*\S)\s*')
     if len(features) and 'start_time' in features[0] and 'start_date' in features[0]:
         start_datetime = datetime.strptime("%s %s" % (features[0]['start_date'], features[0]['start_time']), '%x %X')
     else:
@@ -113,8 +116,11 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
             scenario['time'] = start_datetime.strftime('%X')
             scenario['date'] = start_datetime.strftime('%x')
             for step in scenario['steps']:
-                step['text'] = step['name']
-                del step['name']
+                m = step_re.match(step['name'])
+                if m:
+                    step['text'] = m.group(3)
+                else:
+                    step['text'] = step['name']
                 if 'result' in step:
                     # once a step in a scenario fails, the rest of the steps will be skipped
                     # so step won't have a 'result' attribute and they will be assigne "skipped"
@@ -126,10 +132,13 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     elif step['status'] == 'passed':
                         # "passed" steps can be fake or background, fake gets priority if both apply
                         if mock_detector.match(step['text']):
-                            step['status'] = 'fake'
+                            if step['name'] in background_steps:
+                                step['status'] = 'fake bg'
+                            else:
+                                step['status'] = 'fake'
                             step['duration'] = 0.1
                             scenario_has_fakes = True
-                        elif step['text'] in background_steps:
+                        elif step['name'] in background_steps:
                             step['status'] = 'background'
                         else:
                             scenario_has_passes = True
@@ -145,6 +154,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     step['status'] = 'skipped'
                     scenario_has_skips = True
                     step['duration'] = 0.0
+                del step['name']
             #
             # scenario_has status table
             # ------------------------------------------------------------------------
@@ -239,7 +249,7 @@ if __name__ == '__main__':
     parser.add_argument("-t", "--site_tag", type=str, default='mm', help="site tag (default mm)")
     parser.add_argument("-v", "--version", type=str, default='1.2.0', help="apk version (default 1.2.0)")
     args = parser.parse_args()
-    mock_detector = MockDetector(path.join(args.features_directory, "steps", "steps.py"),
+    mock_detector = MockDetector(path.join(args.features_directory, "steps"),
                             fake_tag='fake' in args.run_tags.split(','))
     if args.json_file:
         with open(args.json_file) as fp:

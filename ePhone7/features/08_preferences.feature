@@ -1,9 +1,9 @@
 Feature: As a user I want to view and change detailed settings that control my phone's operation
 
   Background: I am logged in and at the Preferences view
-    Given I am logged in to the ePhone7
-    Then I close all open submenus
-    And I see the Need Help, Personal, Phone and System category elements
+    Given [background] I am logged in to the ePhone7
+    Then [background] I close all open submenus
+    And [background] I see the Need Help, Personal, Phone and System category elements
 
   Scenario: I want to get instructions for using my phone
     When I touch "Need Help"
@@ -33,7 +33,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     When I swipe the screen from right to left
     Then an "Active Call Dialpad" window appears
     When I swipe the screen from right to left
-    Then A "Preferences Screen" window appears
+    Then the Preferences window appears
 
   Scenario: I want to sign in to gmail and download my Personal contacts
     Given I am not signed in to my gmail account

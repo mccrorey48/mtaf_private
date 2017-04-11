@@ -1,12 +1,12 @@
 import re
 from lib.user_exception import UserException as Ux
+import os
 
 step_re = re.compile('''@[^(]+\(['"](.+)['"]\)''')
 def_re = re.compile('def\s+([^(]+)(.+)')
 
 
 def sort(filename):
-    print "filename is " + filename
     step_defs = {}
     prefix_lines = []
     current_key = None
@@ -15,7 +15,7 @@ def sort(filename):
         for lnum, line in enumerate(lines):
             m = step_re.match(line)
             if m:
-                step_key = m.group(1).lower().translate(None, '''"'{}_-!/,''')
+                step_key = m.group(1).lower().translate(None, '''"'[]{}_-!/,''')
                 step_key = '_'.join(step_key.split())
                 if step_key in step_defs:
                     raise Ux("duplicate step name on line %s" % (lnum + 1) )
@@ -43,7 +43,9 @@ def sort(filename):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("filename", type=str)
+    parser.add_argument("--steps_dir", type=str, default='ePhone7/features/steps')
     args = parser.parse_args()
-    if args.filename:
-        sort(args.filename)
+    for filename in [name for name in os.listdir(args.steps_dir) if name.endswith('.py')]:
+        relpath = os.path.join(args.steps_dir, filename)
+        print "sorting " + relpath
+        sort(os.path.join(args.steps_dir, filename))

@@ -1,11 +1,13 @@
 @sprint @regression
 Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
 
+  Background: I am at the Dial view
+    Given [background] I am logged in to the ePhone7
+    Then [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    When [background] I touch the Dial button
+    Then [background] the Dial view appears
+
   Scenario: I want to see the OTA server setting
-    Given I am logged in to the ePhone7
-    Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When I touch the Dial button
-    Then the Dial view appears
     When I dial the Production OTA Server direct code
     And I touch the Call button
     Then the "OTA Server Update" popup appears
@@ -20,10 +22,6 @@ Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
     Then the Current OTA Server popup disappears
 
   Scenario: I want to change the OTA server setting to Alpha
-    Given I am logged in to the ePhone7
-    Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When I touch the Dial button
-    Then the Dial view appears
     When I dial the Production OTA Server direct code
     And I touch the call button
     Then the "OTA Server Update" popup appears
@@ -50,10 +48,6 @@ Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
     Then the Current OTA Server popup disappears
 
   Scenario: I want to change the OTA server setting to Beta
-    Given I am logged in to the ePhone7
-    Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When I touch the Dial button
-    Then the Dial view appears
     When I dial the Production OTA Server direct code
     And I touch the call button
     Then the "OTA Server Update" popup appears
@@ -80,10 +74,6 @@ Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
     Then the Current OTA Server popup disappears
 
   Scenario: I want to change the OTA server setting to Production
-    Given I am logged in to the ePhone7
-    Then I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When I touch the Dial button
-    Then the Dial view appears
     When I dial the Beta OTA Server direct code
     And I touch the call button
     Then the "OTA Server Update" popup appears

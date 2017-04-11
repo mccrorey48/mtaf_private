@@ -13,7 +13,8 @@ def before_all(context):
         cfg_server = 'vqda1'
     cfg.set_site(cfg_server, site_tag)
     if 'fake' not in str(context._config.tags).split(','):
-        base_view.open_appium()
+        # base_view.open_appium()
+        base_view.startup()
 
 
 def before_feature(context, feature):

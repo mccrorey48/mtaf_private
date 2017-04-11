@@ -1,6 +1,7 @@
 from behave import *
 from ePhone7.views import *
 import re
+from time import sleep
 
 
 @step("A call between two other accounts has been parked by the called account")
@@ -130,11 +131,6 @@ def a_message_indicates_that_calls_are_being_forwarded_to_voicemail(context):
 
 @step("A popup informs me that help email has been sent to my email address")
 def a_popup_informs_me_that_help_email_has_been_sent_to_my_email_address(context):
-    pass
-
-
-@step('A "Preferences Screen" window appears')
-def a_preferences_screen_window_appears(context):
     pass
 
 
@@ -364,7 +360,7 @@ def i_am_logged_in_to_the_ephone7(context):
         # base_view.close_appium()
         # base_view.open_appium()
         # if prefs_view.element_is_present('Preferences'):
-        #     prefs_view.click_named_element('Close')
+        #     prefs_view.exit_prefs()
         if not user_view.element_is_present('UserHeaderName', timeout=120):
             login_view.login()
             tnc_view.accept_tnc()
@@ -422,8 +418,11 @@ def i_close_the_contact_detail_screen(context):
     pass
 
 
-@step("I close the Preferences window")
+@when("I close the Preferences window")
 def i_close_the_preferences_window(context):
+    """
+    :type context: behave.runner.Context
+    """
     pass
 
 
@@ -431,15 +430,6 @@ def i_close_the_preferences_window(context):
 def i_dial_the_codename_direct_code(context, code_name):
     if 'fake' not in str(context._config.tags).split(','):
         keypad_view.dial_name(code_name)
-
-
-@step("I enable VLAN")
-def i_enable_vlan(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        elem = prefs_view.find_named_element('VlanEnable')
-        if elem.get_attribute('checked') == 'false':
-            elem.click()
-            assert elem.get_attribute('checked') == 'true'
 
 
 @step("I end the call")
@@ -466,37 +456,18 @@ def i_enter_a_group_name(context):
 @step("I enter a VLAN identifier between 1 and 4094")
 def i_enter_a_vlan_identifier_between_1_and_4094(context):
     if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.find_named_element('VlanIdentifier').clear()
-        prefs_view.send_keycode('KEYCODE_2')
-        prefs_view.send_keycode('KEYCODE_0')
-        prefs_view.send_keycode('KEYCODE_BACK')
-
-
-@step("I enter a VLAN identifier greater than 4094")
-def i_enter_a_vlan_identifier_greater_than_4094(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.find_named_element('VlanIdentifier').clear()
-        prefs_view.send_keycode('KEYCODE_4')
-        prefs_view.send_keycode('KEYCODE_3')
-        prefs_view.send_keycode('KEYCODE_3')
-        prefs_view.send_keycode('KEYCODE_3')
-        prefs_view.send_keycode('KEYCODE_BACK')
-
-
-@step("I enter a VLAN priority between 0 and 7")
-def i_enter_a_vlan_priority_between_0_and_7(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.find_named_element('VlanPriority').clear()
-        prefs_view.send_keycode('KEYCODE_3')
-        prefs_view.send_keycode('KEYCODE_BACK')
+        network_view.find_named_element('VlanIdentifier').clear()
+        network_view.send_keycode('KEYCODE_2')
+        network_view.send_keycode('KEYCODE_0')
+        network_view.send_keycode('KEYCODE_BACK')
 
 
 @step("I enter a VLAN priority greater than 7")
 def i_enter_a_vlan_priority_greater_than_7(context):
     if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.find_named_element('VlanPriority').clear()
-        prefs_view.send_keycode('KEYCODE_8')
-        prefs_view.send_keycode('KEYCODE_BACK')
+        network_view.find_named_element('VlanPriority').clear()
+        network_view.send_keycode('KEYCODE_8')
+        network_view.send_keycode('KEYCODE_BACK')
 
 
 @step("I enter my email address")
@@ -626,15 +597,13 @@ def i_scroll_down_to_the_call_record_enable_setting(context):
 
 @step("I scroll to the top of the Advanced Options view")
 def i_scroll_to_the_top_of_the_advanced_options_view(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
-@step("I see a warning message and the phone does not reboot")
-def i_see_a_warning_message_and_the_phone_does_not_reboot(context):
-    pass
+@then('I see an "Invalid VLAN Priority" alert')
+def i_see_an_invalid_vlan_priority_alert(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        assert network_view.element_is_present('InvalidVlanPriority'), "Expected Invalid VLAN Priority alert"
 
 
 @step("I see the All and Missed tabs at the top of the screen")
@@ -671,12 +640,6 @@ def i_see_the_keypad(context):
 @step("I see the Need Help, Personal, Phone and System category elements")
 def i_see_the_need_help_personal_phone_and_system_category_elements(context):
     pass
-
-
-@step("I see the Network Settings view")
-def i_see_the_network_settings_view(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert prefs_view.element_is_present('NetworkSettingsLabel')
 
 
 @step("I see the New, Saved and Trash tabs at the top of the screen")
@@ -809,6 +772,12 @@ def i_touch_ok(context):
     pass
 
 
+@when('I touch "OK" on the "Invalid VLAN Priority" alert')
+def i_touch_ok_on_the_invalid_vlan_priority_alert(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        network_view.click_named_element('InvalidVlanOk')
+
+
 @step('I touch "OK" on the popup')
 def i_touch_ok_on_the_popup(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -828,13 +797,6 @@ def i_touch_phone(context):
 @step('I touch "Ringtones"')
 def i_touch_ringtones(context):
     pass
-
-
-@step('I touch "Save and Reboot"')
-def i_touch_save_and_reboot(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.click_named_element('NetworkSaveAndReboot')
-        pass
 
 
 @step('I touch "Screen Timeout"')
@@ -1044,6 +1006,14 @@ def i_touch_the_new_voicemail_element(context):
     pass
 
 
+@when('I touch the "OK" button')
+def i_touch_the_ok_button(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
+
+
 @step('I touch the "Personal" tab')
 def i_touch_the_personal_tab(context):
     pass
@@ -1091,7 +1061,13 @@ def i_touch_the_utilities_option(context):
 @step("I touch the VLAN Disable button")
 def i_touch_the_vlan_disable_button(context):
     if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.click_named_element('VlanDisable')
+        network_view.click_named_element('VlanDisable')
+
+
+@step("I touch the VLAN Enable button")
+def i_touch_the_vlan_enable_button(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        network_view.click_named_element('VlanEnable')
 
 
 @step("I touch the Voicemail button")
@@ -1117,11 +1093,6 @@ def i_touch_the_voicmail_button(context):
 
 @step("I touch the white star icon")
 def i_touch_the_white_star_icon(context):
-    pass
-
-
-@step('I touch the "X" icon')
-def i_touch_the_x_icon(context):
     pass
 
 
@@ -1153,6 +1124,14 @@ def i_uncheck_the_call_record_enable_checkbox(context):
 @step("I use the keypad to filter the list of contacts")
 def i_use_the_keypad_to_filter_the_list_of_contacts(context):
     pass
+
+
+@step("I wait for the phone to restart")
+def i_wait_for_the_phone_to_restart(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        base_view.close_appium()
+        sleep(30)
+        base_view.startup()
 
 
 @step("My account does not have two-step verification enabled")
@@ -1253,6 +1232,18 @@ def only_the_current_ringtone_has_a_dot_next_to_it(context):
 @step("Only the new ringtone has a dot next to it")
 def only_the_new_ringtone_has_a_dot_next_to_it(context):
     pass
+
+
+@step('[prefs] I touch the "X" icon')
+def prefs_i_touch_the_x_icon(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.click_named_element('CloseButton')
+
+
+@step("[prefs] the Preferences window appears")
+def prefs_the_preferences_window_appears(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        assert prefs_view.element_is_present('Preferences')
 
 
 @step("Someone calls me")
@@ -1442,11 +1433,6 @@ def the_dial_view_appears(context):
         assert keypad_view.element_is_present('DialPad')
 
 
-@step("the Disable button is active")
-def the_disable_button_is_active(context):
-    pass
-
-
 @step("the Do Not Disturb icon is blue")
 def the_do_not_disturb_icon_is_blue(context):
     pass
@@ -1597,26 +1583,15 @@ def the_position_of_the_slider_control_changes(context):
     pass
 
 
-@step("the Preferences window appears")
-def the_preferences_window_appears(context):
+@step("[prefs] the Preferences window disappears")
+def prefs_the_preferences_window_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
-        assert prefs_view.element_is_present('Preferences')
-
-
-@step("the Preferences window disappears")
-def the_preferences_window_disappears(context):
-    pass
+        assert prefs_view.element_is_not_present('Preferences')
 
 
 @step("the previously added contact is not on the list with checkboxes")
 def the_previously_added_contact_is_not_on_the_list_with_checkboxes(context):
     pass
-
-
-@step("The reboot alert window appears")
-def the_reboot_alert_window_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert prefs_view.element_is_present("VlanRebootAlert")
 
 
 @step("the Record button is gray")
