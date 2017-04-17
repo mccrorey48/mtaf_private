@@ -91,14 +91,17 @@ class Trace(object):
                 retval = f(*args, **kwargs)
                 self.elapsed_time = time() - start_time
             except Fx as e:
+                self.elapsed_time = time() - start_time
                 logger.warn(('%%s %%s%%-%ds FAIL - %%s' % (35 - logging_esi.trace_indent))
                             % (self.prefix(), f.func_name, sp(), e.get_msg()))
                 raise Fx('calling %s' % f.func_name)
             except Tx as e:
+                self.elapsed_time = time() - start_time
                 logger.warn(('%%s %%s%%-%ds FAIL - %%s' % (35 - logging_esi.trace_indent))
                             % (self.prefix(), f.func_name, sp(), e.get_msg()))
                 raise Tx('User timeout exception: calling %s' % f.func_name)
             except:
+                self.elapsed_time = time() - start_time
                 (exc_type, value, tb) = sys.exc_info()
                 if exc_type == Ux:
                     logger.warn(('%%s %%-%ds EXCEPTION:      %%s: %%s' % (35 - logging_esi.trace_indent))
