@@ -11,9 +11,9 @@ def reboot():
     prefs_view.click_named_element('System')
     prefs_view.element_is_present('MenuItemNetworkText')
     prefs_view.click_named_element('MenuItemNetworkText')
-    assert prefs_view.element_is_present('NetworkSettingsLabel')
-    prefs_view.click_named_element('NetworkSaveAndReboot')
-    assert prefs_view.element_is_present("VlanRebootAlert")
+    assert network_view.element_is_present('NetworkSettingsLabel')
+    network_view.click_named_element('NetworkSaveAndReboot')
+    assert network_view.element_is_present("VlanRebootAlert")
     base_view.close_appium()
     sleep(30)
 

@@ -36,7 +36,6 @@ class PrefsView(BaseView):
         "MenuItems": {"by": "zpath", "value": "//el/ll"},
         "MenuItemNetworkText": {"by": "zpath", "value": "//el/ll/tv", "text": "Network"},
         "NeedHelp": {"by": "zpath", "value": "//el/rl[1]/tv[1]", "text": "Need Help?"},
-        "NetworkSettingsLabel": {"by": "id", "value": "com.esi_estech.ditto:id/preferences_label", "text": "Network Settings"},
         "Personal": {"by": "zpath", "value": "//el/rl[2]/tv[1]", "text": "Personal"},
         "Phone": {"by": "zpath", "value": "//el/rl[3]/tv[1]", "text": "Phone"},
         "PhoneUpdates": {"by": "zpath", "value": "//lv/ll[10]/tv", "text": "Phone Updates"},
@@ -44,11 +43,6 @@ class PrefsView(BaseView):
         "Ringtones": {"by": "zpath", "value": "//lv/ll[7]/tv", "text": "Ringtones"},
         "SignInWithGoogle": {"by": "zpath", "value": "//lv/ll[2]/tv", "text": "Sign in with Google"},
         "System": {"by": "zpath", "value": "//el/rl[4]/tv[1]", "text": "System"},
-        "VlanDisable": {"by": "id", "value": "com.esi_estech.ditto:id/vlan_disable"},
-        "VlanEnable": {"by": "id", "value": "com.esi_estech.ditto:id/vlan_enable"},
-        "VlanRebootAlert": {"by": "id", "value": "com.esi_estech.ditto:id/count_down_label"},
-        "VlanIdentifier": {"by": "id", "value": "com.esi_estech.ditto:id/nw_config_vlan_identifier_new_value"},
-        "VlanPriority": {"by": "id", "value": "com.esi_estech.ditto:id/nw_config_vlan_priority_new_value"},
         "VolumeSettings": {"by": "zpath", "value": "//lv/ll[6]/tv", "text": "Volume Settings"}
     }
 
