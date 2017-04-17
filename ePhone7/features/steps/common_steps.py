@@ -1,6 +1,5 @@
 from behave import *
 from ePhone7.views import *
-import re
 from time import sleep
 
 
@@ -14,11 +13,6 @@ def a_call_history_window_appears(context):
     pass
 
 
-@step("A check mark appears in the box")
-def a_check_mark_appears_in_the_box(context):
-    pass
-
-
 @step('A "Clear All User Data" confirmation dialog appears')
 def a_clear_all_user_data_confirmation_dialog_appears(context):
     pass
@@ -29,23 +23,8 @@ def a_confirmation_dialog_appears(context):
     pass
 
 
-@step("A contact detail screen appears with a white star icon")
-def a_contact_detail_screen_appears_with_a_white_star_icon(context):
-    pass
-
-
-@step("A contact detail screen appears with a yellow star icon")
-def a_contact_detail_screen_appears_with_a_yellow_star_icon(context):
-    pass
-
-
 @step('A "Contact Management" window appears')
 def a_contact_management_window_appears(context):
-    pass
-
-
-@step("A Create New Group popup appears")
-def a_create_new_group_popup_appears(context):
     pass
 
 
@@ -69,16 +48,6 @@ def a_google_dialog_appears_with_a_place_to_enter_my_password(context):
     pass
 
 
-@step("A Google login screen appears")
-def a_google_login_screen_appears(context):
-    pass
-
-
-@step("A keypad appears")
-def a_keypad_appears(context):
-    pass
-
-
 @step("A keypad appears with a list of contacts")
 def a_keypad_appears_with_a_list_of_contacts(context):
     pass
@@ -86,11 +55,6 @@ def a_keypad_appears_with_a_list_of_contacts(context):
 
 @step("A list of contacts containing the partial number appears above the keypad")
 def a_list_of_contacts_containing_the_partial_number_appears_above_the_keypad(context):
-    pass
-
-
-@step("A list of Coworker contacts appears")
-def a_list_of_coworker_contacts_appears(context):
     pass
 
 
@@ -232,11 +196,6 @@ def a_visual_voicemail_window_appears(context):
     pass
 
 
-@step("A voicemail detail window appears")
-def a_voicemail_detail_window_appears(context):
-    pass
-
-
 @step('A "Voicemail Playback" window appears')
 def a_voicemail_playback_window_appears(context):
     pass
@@ -307,16 +266,6 @@ def a_window_with_a_voice_call_slider_appears(context):
     pass
 
 
-@step("Add and Delete buttons are not visible")
-def add_and_delete_buttons_are_not_visible(context):
-    pass
-
-
-@step("Add and Delete buttons are visible")
-def add_and_delete_buttons_are_visible(context):
-    pass
-
-
 @step('An "Account Deleted" popup appears')
 def an_account_deleted_popup_appears(context):
     pass
@@ -333,24 +282,15 @@ def an_active_call_screen_window_appears(context):
         base_view.find_named_element('ActiveCallScreen')
 
 
-@step('An "Add Multiple Favorites" confirmation dialog appears')
-def an_add_multiple_favorites_confirmation_dialog_appears(context):
-    pass
-
-
-@step("Any existing Favorite contacts have a yellow start icon")
-def any_existing_favorite_contacts_have_a_yellow_start_icon(context):
-    pass
-
-
-@step("Any other contacts have a white start icon")
-def any_other_contacts_have_a_white_start_icon(context):
-    pass
-
-
 @step("Both windows disappear")
 def both_windows_disappear(context):
     pass
+
+
+@step("[dial] I touch the Call button")
+def dial__i_touch_the_call_button(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        dial_view.click_named_element('FuncKeyCall')
 
 
 @step("I am logged in to the ePhone7")
@@ -387,25 +327,9 @@ def i_answer_the_call(context):
         user_view.softphones[context.caller_name].wait_for_call_status('call', user_view.call_status_wait)
 
 
-@step("I can choose Cancel or OK by touching the corresponding button")
-def i_can_choose_cancel_or_ok_by_touching_the_corresponding_button(context):
-    pass
-
-
 @step("I can see my personal contacts")
 def i_can_see_my_personal_contacts(context):
     pass
-
-
-@step("I check the Call Record Enable checkbox")
-def i_check_the_call_record_enable_checkbox(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        cbs = base_view.find_named_elements("AdvancedCheckbox")
-        assert len(cbs) > 2, "Expected >2 AdvancedCheckbox elements, got %s" % len(cbs)
-        if cbs[1].get_attribute('checked') == 'false':
-            cbs[1].click()
-            checked = cbs[1].get_attribute('checked')
-            assert checked == 'true'
 
 
 @step("I close all open submenus")
@@ -413,23 +337,9 @@ def i_close_all_open_submenus(context):
     pass
 
 
-@step("I close the contact detail screen")
-def i_close_the_contact_detail_screen(context):
-    pass
-
-
 @when("I close the Preferences window")
 def i_close_the_preferences_window(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
-
-
-@step("I dial the {code_name} direct code")
-def i_dial_the_codename_direct_code(context, code_name):
-    if 'fake' not in str(context._config.tags).split(','):
-        keypad_view.dial_name(code_name)
 
 
 @step("I end the call")
@@ -445,11 +355,6 @@ def i_enter_a_10digit_phone_number_using_the_keypad(context):
 
 @step("I enter a Coworker contact number using the keypad")
 def i_enter_a_coworker_contact_number_using_the_keypad(context):
-    pass
-
-
-@step("I enter a group name")
-def i_enter_a_group_name(context):
     pass
 
 
@@ -472,11 +377,6 @@ def i_enter_a_vlan_priority_greater_than_7(context):
 
 @step("I enter my email address")
 def i_enter_my_email_address(context):
-    pass
-
-
-@step("I enter my Google user id and password")
-def i_enter_my_google_user_id_and_password(context):
     pass
 
 
@@ -512,32 +412,26 @@ def i_enter_the_call_park_queue_number(context):
 
 @step("I go to the Contacts view")
 def i_go_to_the_contacts_view(context):
-    # user_view.goto_tab('Contacts')
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.goto_tab('Contacts')
 
 
 @step("I go to the Home view")
 def i_go_to_the_home_view(context):
-    # user_view.goto_tab('Contacts')
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.goto_tab('Contacts')
 
 
 @step("I go to the New Voicemail view")
 def i_go_to_the_new_voicemail_view(context):
-    # contacts_view.goto_tab('Personal')
-    pass
-
-
-@step("I go to the Personal tab")
-def i_go_to_the_personal_tab(context):
-    # contacts_view.goto_tab('Personal')
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        contacts_view.goto_tab('Personal')
 
 
 @step("I go to the Saved Voicemail view")
 def i_go_to_the_saved_voicemail_view(context):
-    # contacts_view.goto_tab('Personal')
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        contacts_view.goto_tab('Personal')
 
 
 @step("I have at least one new voicemail")
@@ -555,18 +449,13 @@ def i_ignore_the_call(context):
     pass
 
 
-@step("I long-press a contact list item")
-def i_longpress_a_contact_list_item(context):
-    pass
-
-
 @step("I make a call to a coworker contact")
 def i_make_a_call_to_a_coworker_contact(context):
     if 'fake' not in str(context._config.tags).split(','):
         context.softphone = user_view.configure_called_answer_ring()
-        keypad_view.dial_number(context.softphone.number)
-        keypad_view.click_named_element('FuncKeyCall')
-        context.softphone.wait_for_call_status('early', keypad_view.call_status_wait)
+        dial_view.dial_number(context.softphone.number)
+        dial_view.click_named_element('FuncKeyCall')
+        context.softphone.wait_for_call_status('early', dial_view.call_status_wait)
 
 
 @step("I receive a call")
@@ -580,37 +469,10 @@ def i_receive_a_new_voicemail(context):
     pass
 
 
-@step("I scroll down to the Call Record Enable setting")
-def i_scroll_down_to_the_call_record_enable_setting(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        elems = base_view.find_named_elements('AdvancedItems')
-        assert len(elems) > 1
-        base_view.scroll(elems[-1], elems[0])
-        length = len(base_view.find_named_elements('CallRecordEnableText'))
-        # one retry in case the scroll didn't work
-        if length != 1:
-            elems = base_view.find_named_elements('AdvancedItems')
-            assert len(elems) > 1
-            base_view.scroll(elems[-1], elems[0])
-        assert length == 1, "Expected exactly one CallRecordEnableText element, got %s" % length
-
-
-@step("I scroll to the top of the Advanced Options view")
-def i_scroll_to_the_top_of_the_advanced_options_view(context):
-    pass
-
-
 @then('I see an "Invalid VLAN Priority" alert')
 def i_see_an_invalid_vlan_priority_alert(context):
     if 'fake' not in str(context._config.tags).split(','):
         assert network_view.element_is_present('InvalidVlanPriority'), "Expected Invalid VLAN Priority alert"
-
-
-@step("I see the All and Missed tabs at the top of the screen")
-def i_see_the_all_and_missed_tabs_at_the_top_of_the_screen(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        history_view.find_named_element('All')
-        history_view.find_named_element('Missed')
 
 
 @step("I see the call at the top of the All History view")
@@ -623,62 +485,18 @@ def i_see_the_call_at_the_top_of_the_missed_history_view(context):
     pass
 
 
-@step("I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen")
-def i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bottom_of_the_screen(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        user_view.find_named_element('Contacts')
-        user_view.find_named_element('History')
-        user_view.find_named_element('Voicemail')
-        user_view.find_named_element('Keypad')
-
-
 @step("I see the keypad")
 def i_see_the_keypad(context):
     pass
 
 
-@step("I see the Need Help, Personal, Phone and System category elements")
-def i_see_the_need_help_personal_phone_and_system_category_elements(context):
-    pass
-
-
-@step("I see the New, Saved and Trash tabs at the top of the screen")
-def i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert voicemail_view.element_is_present('New')
-        assert voicemail_view.element_is_present('Saved')
-        assert voicemail_view.element_is_present('Trash')
-
-
-@step("I see the Personal, Coworkers, Favorites and Groups tabs")
-def i_see_the_personal_coworkers_favorites_and_groups_tabs(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert contacts_view.element_is_present('Personal')
-        assert contacts_view.element_is_present('Coworkers')
-        assert contacts_view.element_is_present('Favorites')
-        assert contacts_view.element_is_present('Groups')
-
-
 @step("I swipe down twice")
 def i_swipe_down_twice(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
 @step("I swipe the screen from right to left")
 def i_swipe_the_screen_from_right_to_left(context):
-    pass
-
-
-@step("I touch a check a box next to a contact")
-def i_touch_a_check_a_box_next_to_a_contact(context):
-    pass
-
-
-@step("I touch a contact element")
-def i_touch_a_contact_element(context):
     pass
 
 
@@ -767,11 +585,6 @@ def i_touch_next(context):
     pass
 
 
-@step('I touch "OK"')
-def i_touch_ok(context):
-    pass
-
-
 @when('I touch "OK" on the "Invalid VLAN Priority" alert')
 def i_touch_ok_on_the_invalid_vlan_priority_alert(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -814,17 +627,6 @@ def i_touch_system(context):
     pass
 
 
-@step('I touch the "About" menu item')
-def i_touch_the_about_menu_item(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.click_named_element('About')
-
-
-@step("I touch the Add button")
-def i_touch_the_add_button(context):
-    pass
-
-
 @step("I touch the All tab")
 def i_touch_the_all_tab(context):
     pass
@@ -851,12 +653,6 @@ def i_touch_the_button_for_another_timer_setting(context):
     pass
 
 
-@step("I touch the Call button")
-def i_touch_the_call_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        keypad_view.click_named_element('FuncKeyCall')
-
-
 @step('I touch the "Call Forward Busy" section')
 def i_touch_the_call_forward_busy_section(context):
     pass
@@ -877,24 +673,8 @@ def i_touch_the_cancel_button(context):
     pass
 
 
-@step("I touch the contact listing  I want to call")
+@step("I touch the contact listing I want to call")
 def i_touch_the_contact_listing_i_want_to_call(context):
-    pass
-
-
-@step('I touch the "Contacts" button')
-def i_touch_the_contacts_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_named_element('Contacts')
-
-
-@step("I touch the Coworkers tab")
-def i_touch_the_coworkers_tab(context):
-    pass
-
-
-@step("I touch the Create button")
-def i_touch_the_create_button(context):
     pass
 
 
@@ -903,90 +683,13 @@ def i_touch_the_current_time_zone_text(context):
     pass
 
 
-@step("I touch the Delete button")
-def i_touch_the_delete_button(context):
-    pass
-
-
-@step("I touch the Delete icon")
-def i_touch_the_delete_icon(context):
-    pass
-
-
-@step("I touch the Dial button")
-def i_touch_the_dial_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_named_element('Keypad')
-
-
 @step("I touch the Do Not Disturb icon")
 def i_touch_the_do_not_disturb_icon(context):
     pass
 
 
-@step("I touch the Done button")
-def i_touch_the_done_button(context):
-    pass
-
-
-@step("I touch the Favorites star icon on some contacts")
-def i_touch_the_favorites_star_icon_on_some_contacts(context):
-    pass
-
-
-@step("I touch the Favorites tab")
-def i_touch_the_favorites_tab(context):
-    pass
-
-
-@step("I touch the Forward icon")
-def i_touch_the_forward_icon(context):
-    pass
-
-
-@step("I touch the Groups tab")
-def i_touch_the_groups_tab(context):
-    pass
-
-
-@step("I touch the handset icon")
-def i_touch_the_handset_icon(context):
-    pass
-
-
-@step("I touch the handset icon on a contact list item")
-def i_touch_the_handset_icon_on_a_contact_list_item(context):
-    pass
-
-
-@step("I touch the History button")
-def i_touch_the_history_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_named_element('History')
-
-
 @step("I touch the Missed tab")
 def i_touch_the_missed_tab(context):
-    pass
-
-
-@step("I touch the name of a contact")
-def i_touch_the_name_of_a_contact(context):
-    pass
-
-
-@step("I touch the name of a contact that is not a Favorite")
-def i_touch_the_name_of_a_contact_that_is_not_a_favorite(context):
-    pass
-
-
-@step("I touch the name of a personal Group list")
-def i_touch_the_name_of_a_personal_group_list(context):
-    pass
-
-
-@step("I touch the name of a system Group list")
-def i_touch_the_name_of_a_system_group_list(context):
     pass
 
 
@@ -996,56 +699,9 @@ def i_touch_the_network_option(context):
         prefs_view.click_named_element('MenuItemNetworkText')
 
 
-@step("I touch the New tab")
-def i_touch_the_new_tab(context):
-    pass
-
-
-@step("I touch the new voicemail element")
-def i_touch_the_new_voicemail_element(context):
-    pass
-
-
 @when('I touch the "OK" button')
 def i_touch_the_ok_button(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
-
-
-@step('I touch the "Personal" tab')
-def i_touch_the_personal_tab(context):
-    pass
-
-
-@step("I touch the Preferences icon")
-def i_touch_the_preferences_icon(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_named_element('PrefsButton')
-
-
-@step("I touch the Save icon")
-def i_touch_the_save_icon(context):
-    pass
-
-
-@step("I touch the Saved tab")
-def i_touch_the_saved_tab(context):
-    pass
-
-
-@step('I touch the "Sign in with Google" banner')
-def i_touch_the_sign_in_with_google_banner(context):
-    # contacts_view.click_named_element('GoogleSignInBanner')
-    pass
-
-
-@step('I touch the "System" menu category')
-def i_touch_the_system_menu_category(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.hide_list_items()
-        prefs_view.click_named_element('System')
 
 
 @step("I touch the Trash tab")
@@ -1058,46 +714,8 @@ def i_touch_the_utilities_option(context):
     pass
 
 
-@step("I touch the VLAN Disable button")
-def i_touch_the_vlan_disable_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.click_named_element('VlanDisable')
-
-
-@step("I touch the VLAN Enable button")
-def i_touch_the_vlan_enable_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.click_named_element('VlanEnable')
-
-
-@step("I touch the Voicemail button")
-def i_touch_the_voicemail_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_named_element('Voicemail')
-
-
-@step("I touch the voicemail element")
-def i_touch_the_voicemail_element(context):
-    pass
-
-
 @step("I touch the voicemail icon")
 def i_touch_the_voicemail_icon(context):
-    pass
-
-
-@step("I touch the Voicmail button")
-def i_touch_the_voicmail_button(context):
-    pass
-
-
-@step("I touch the white star icon")
-def i_touch_the_white_star_icon(context):
-    pass
-
-
-@step("I touch the yellow star icon")
-def i_touch_the_yellow_star_icon(context):
     pass
 
 
@@ -1111,21 +729,6 @@ def i_touch_walkthrough(context):
     pass
 
 
-@step("I uncheck the Call Record Enable checkbox")
-def i_uncheck_the_call_record_enable_checkbox(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        cbs = base_view.find_named_elements("AdvancedCheckbox")
-        assert len(cbs) > 2, "Expected >2 AdvancedCheckbox elements, got %s" % len(cbs)
-        if cbs[1].get_attribute('checked') == 'true':
-            cbs[1].click()
-            assert cbs[1].get_attribute('checked') == 'false'
-
-
-@step("I use the keypad to filter the list of contacts")
-def i_use_the_keypad_to_filter_the_list_of_contacts(context):
-    pass
-
-
 @step("I wait for the phone to restart")
 def i_wait_for_the_phone_to_restart(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -1134,43 +737,13 @@ def i_wait_for_the_phone_to_restart(context):
         base_view.startup()
 
 
-@step("My account does not have two-step verification enabled")
+@step("my account does not have two-step verification enabled")
 def my_account_does_not_have_twostep_verification_enabled(context):
     pass
 
 
-@step("My Coworker contacts are displayed in a list with checkboxes")
-def my_coworker_contacts_are_displayed_in_a_list_with_checkboxes(context):
-    pass
-
-
-@step("My Coworker contacts are each listed with a handset icon")
-def my_coworker_contacts_are_each_listed_with_a_handset_icon(context):
-    pass
-
-
-@step("My Coworker contacts are shown on the display")
-def my_coworker_contacts_are_shown_on_the_display(context):
-    pass
-
-
-@step("My Favorite contacts appear on the Coworkers contacts list")
+@step("my Favorite contacts appear on the Coworkers contacts list")
 def my_favorite_contacts_appear_on_the_coworkers_contacts_list(context):
-    pass
-
-
-@step("My Favorite contacts are shown on the display")
-def my_favorite_contacts_are_shown_on_the_display(context):
-    pass
-
-
-@step("My Google contacts are shown on the display")
-def my_google_contacts_are_shown_on_the_display(context):
-    pass
-
-
-@step("My Group Lists are shown on the display")
-def my_group_lists_are_shown_on_the_display(context):
     pass
 
 
@@ -1179,43 +752,23 @@ def my_new_voicemails_are_listed(context):
     pass
 
 
-@step("My Personal contacts are each listed with a handset icon")
-def my_personal_contacts_are_each_listed_with_a_handset_icon(context):
-    pass
-
-
-@step("My Personal contacts are shown on the display")
-def my_personal_contacts_are_shown_on_the_display(context):
-    pass
-
-
-@step("My phone calls back the caller")
+@step("my phone calls back the caller")
 def my_phone_calls_back_the_caller(context):
     pass
 
 
-@step("My phone calls the contact")
-def my_phone_calls_the_contact(context):
-    pass
-
-
-@step("My phone calls the number")
+@step("my phone calls the number")
 def my_phone_calls_the_number(context):
     pass
 
 
-@step("My phone calls the voicemail sender")
+@step("my phone calls the voicemail sender")
 def my_phone_calls_the_voicemail_sender(context):
     pass
 
 
 @step("my saved voicemails are listed")
 def my_saved_voicemails_are_listed(context):
-    pass
-
-
-@step("My updated Favorite contacts are shown on the display")
-def my_updated_favorite_contacts_are_shown_on_the_display(context):
     pass
 
 
@@ -1234,18 +787,6 @@ def only_the_new_ringtone_has_a_dot_next_to_it(context):
     pass
 
 
-@step('[prefs] I touch the "X" icon')
-def prefs_i_touch_the_x_icon(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.click_named_element('CloseButton')
-
-
-@step("[prefs] the Preferences window appears")
-def prefs_the_preferences_window_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert prefs_view.element_is_present('Preferences')
-
-
 @step("Someone calls me")
 def someone_calls_me(context):
     pass
@@ -1254,12 +795,6 @@ def someone_calls_me(context):
 @step('the "Account Deleted" popup disappears')
 def the_account_deleted_popup_disappears(context):
     pass
-
-
-@step("the Advanced Options view appears")
-def the_advanced_options_view_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert base_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
 
 
 @step("the Advanced Options view disappears")
@@ -1328,68 +863,9 @@ def the_caller_leaves_a_voicemail(context):
     pass
 
 
-@step("the color toggles between yellow and white")
-def the_color_toggles_between_yellow_and_white(context):
-    pass
-
-
-@step("the contact is not shown on the contact list for the group")
-def the_contact_is_not_shown_on_the_contact_list_for_the_group(context):
-    pass
-
-
-@step("the contact is not shown on the display")
-def the_contact_is_not_shown_on_the_display(context):
-    pass
-
-
-@step("the contact is shown on the contact list for the group")
-def the_contact_is_shown_on_the_contact_list_for_the_group(context):
-    pass
-
-
-@step("the contact is shown on the display")
-def the_contact_is_shown_on_the_display(context):
-    pass
-
-
-@step("the contact list for the group is displayed")
-def the_contact_list_for_the_group_is_displayed(context):
-    pass
-
-
-@step("the contacts are shown with a Favorites star icon next to each one")
-def the_contacts_are_shown_with_a_favorites_star_icon_next_to_each_one(context):
-    pass
-
-
 @step("the Contacts tab window disappears")
 def the_contacts_tab_window_disappears(context):
     pass
-
-
-@step("the Contacts view appears")
-def the_contacts_view_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert contacts_view.element_is_present('ContactsList')
-
-
-@step('the correct version is displayed')
-def the_correct_version_is_displayed(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        about_popup = prefs_view.find_named_element('AppVersion')
-        source = about_popup.text
-        prefs_view.click_named_element('AboutOk')
-        prefs_view.click_named_element('System')
-        m = re.match('App Version : (\S*)', source.encode('utf8'))
-        if m is None:
-            print("Unknown Version")
-        else:
-            version = m.group(1)
-            print("\nVersion = %s" % version)
-            expected = context.config.userdata.get('version')
-            assert version == expected, "Incorrect Version: expected %s, got %s" % (expected, version)
-        pass
 
 
 @step("the coworker contact answers the call")
@@ -1408,13 +884,13 @@ def the_current_default_tab_is_selected(context):
 @step("the Current OTA Server popup appears")
 def the_current_ota_server_popup_appears(context):
     if 'fake' not in str(context._config.tags).split(','):
-        assert(keypad_view.element_is_present('CurrentOtaPopup'))
+        assert(dial_view.element_is_present('CurrentOtaPopup'))
 
 
 @step("the Current OTA Server popup disappears")
 def the_current_ota_server_popup_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
-        assert(keypad_view.element_is_not_present('CurrentOtaPopup'))
+        assert(dial_view.element_is_not_present('CurrentOtaPopup'))
 
 
 @step("the current time zone text is shown")
@@ -1425,12 +901,6 @@ def the_current_time_zone_text_is_shown(context):
 @step("the current timer setting is selected")
 def the_current_timer_setting_is_selected(context):
     pass
-
-
-@step("the Dial view appears")
-def the_dial_view_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert keypad_view.element_is_present('DialPad')
 
 
 @step("the Do Not Disturb icon is blue")
@@ -1456,17 +926,6 @@ def the_do_not_disturb_icon_turns_red(context):
 @step("the Google dialog disappears")
 def the_google_dialog_disappears(context):
     pass
-
-
-@step("the Group list contacts are displayed in a list with checkboxes")
-def the_group_list_contacts_are_displayed_in_a_list_with_checkboxes(context):
-    pass
-
-
-@step("the History view appears")
-def the_history_view_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert history_view.element_is_present('HistoryList')
 
 
 @step("the in-call window appears")
@@ -1512,7 +971,7 @@ def the_menu_disappears(context):
 @step('the message "{message}" is shown')
 def the_message_message_is_shown(context, message):
     if 'fake' not in str(context._config.tags).split(','):
-        text = keypad_view.find_named_element('OtaUpdatePopupContent').text
+        text = dial_view.find_named_element('OtaUpdatePopupContent').text
         assert text == message, "expected %s, got %s" % (message, text)
 
 
@@ -1536,11 +995,6 @@ def the_new_timer_setting_is_selected(context):
     pass
 
 
-@step("the new voicemail is the first item listed")
-def the_new_voicemail_is_the_first_item_listed(context):
-    pass
-
-
 @step("the New Voicemail view appears")
 def the_new_voicemail_view_appears(context):
     pass
@@ -1549,18 +1003,13 @@ def the_new_voicemail_view_appears(context):
 @step('the "OTA Server Update" popup appears')
 def the_ota_server_update_popup_appears(context):
     if 'fake' not in str(context._config.tags).split(','):
-        assert(keypad_view.element_is_present('OtaUpdatePopup'))
+        assert(dial_view.element_is_present('OtaUpdatePopup'))
 
 
 @step('the "OTA Server Update" popup disappears')
 def the_ota_server_update_popup_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
-        assert(keypad_view.element_is_not_present('OtaUpdatePopup'))
-
-
-@step("the personal group list is shown on the display")
-def the_personal_group_list_is_shown_on_the_display(context):
-    pass
+        assert(dial_view.element_is_not_present('OtaUpdatePopup'))
 
 
 @step("the popup disappears")
@@ -1580,17 +1029,6 @@ def the_popup_shows_the_current_ota_environment_name(context):
 
 @step("the position of the slider control changes")
 def the_position_of_the_slider_control_changes(context):
-    pass
-
-
-@step("[prefs] the Preferences window disappears")
-def prefs_the_preferences_window_disappears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert prefs_view.element_is_not_present('Preferences')
-
-
-@step("the previously added contact is not on the list with checkboxes")
-def the_previously_added_contact_is_not_on_the_list_with_checkboxes(context):
     pass
 
 
@@ -1647,16 +1085,6 @@ def the_sleep_timer_setting_window_disappears(context):
     pass
 
 
-@step("the star turns white")
-def the_star_turns_white(context):
-    pass
-
-
-@step("the star turns yellow")
-def the_star_turns_yellow(context):
-    pass
-
-
 @step('the toggle handle is in the "Off" position')
 def the_toggle_handle_is_in_the_off_position(context):
     pass
@@ -1679,41 +1107,6 @@ def the_toggle_handle_stays_in_the_on_position(context):
 
 @step("the VLAN Enable button is active")
 def the_vlan_enable_button_is_active(context):
-    pass
-
-
-@step("the voicemail audio plays back")
-def the_voicemail_audio_plays_back(context):
-    pass
-
-
-@step("the voicemail detail window disappears")
-def the_voicemail_detail_window_disappears(context):
-    pass
-
-
-@step("the voicemail is also available in the destination contact's new voicemails list")
-def the_voicemail_is_also_available_in_the_destination_contacts_new_voicemails_list(context):
-    pass
-
-
-@step("the voicemail is no longer listed")
-def the_voicemail_is_no_longer_listed(context):
-    pass
-
-
-@step("the voicemail is still the first item in the view")
-def the_voicemail_is_still_the_first_item_in_the_view(context):
-    pass
-
-
-@step("the voicemail is the first item listed")
-def the_voicemail_is_the_first_item_listed(context):
-    pass
-
-
-@step("the Voicemail view appears")
-def the_voicemail_view_appears(context):
     pass
 
 
