@@ -184,7 +184,6 @@ class BaseView(SeleniumActions):
         else:
             log.debug('opening appium')
             SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
-        pass
 
     @Trace(log)
     def close_appium(self):
@@ -199,7 +198,6 @@ class BaseView(SeleniumActions):
             SeleniumActions.driver.quit()
             SeleniumActions.driver = None
             self.caps_tag = None
-        pass
 
     @Trace(log)
     def startup(self):
@@ -214,13 +212,11 @@ class BaseView(SeleniumActions):
                         break
                     sleep(10)
                     retry_main = True
-                    continue
-                if current_activity == 'util.crashreporting.EPhoneCrashReportDialog':
+                elif current_activity == '.util.crashreporting.EPhoneCrashReportDialog':
                     retry_main = False
                     self.click_named_element('CrashOkButton')
                     sleep(5)
-                    continue
-                if current_activity == '.activities.AutoLoginActivity':
+                elif current_activity == '.activities.AutoLoginActivity':
                     retry_main = False
                     if self.element_is_present('NetworkErrorText'):
                         log.debug("startup: NetworkErrorText present")
@@ -231,10 +227,16 @@ class BaseView(SeleniumActions):
                     elif self.element_is_present('RegRetryButton'):
                         log.debug("startup: RegRetryButton present")
                         self.click_named_element('RegRetryButton')
-                    continue
+                else:
+                    raise Ux('unexpected current_activity value: %s' % current_activity)
             except WebDriverException:
                 log.debug("startup: got WebDriverException (ignoring)")
                 sleep(5)
+        pass
+
+    @Trace(log)
+    def shutdown(self):
+        self.close_appium()
 
     @Trace(log)
     def wait_for_activity(self, activity, timeout=30):
