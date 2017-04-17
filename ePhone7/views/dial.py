@@ -11,7 +11,7 @@ from lib.user_exception import UserException as Ux
 log = logging.get_logger('esi.keypad_view')
 
 
-class KeypadView(UserView):
+class DialView(UserView):
 
     locators = {
         "CurrentOtaPopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server" },
@@ -66,7 +66,7 @@ class KeypadView(UserView):
 
 
     def __init__(self):
-        super(KeypadView, self).__init__()
+        super(DialView, self).__init__()
         self.png_file_base = 'keypad'
 
     @Trace(log)
@@ -104,5 +104,5 @@ class KeypadView(UserView):
     def dial_name(self, name):
         self.dial_number(self.numbers[name])
 
-keypad_view = KeypadView()
+dial_view = DialView()
 

@@ -98,7 +98,7 @@ buttons = {
     'Contacts': {'view': contacts_view, 'tabs': ('Personal', 'Coworkers', 'Favorites', 'Groups')},
     'History': {'view': history_view, 'tabs': ('All', 'Missed')},
     'Voicemail': {'view': voicemail_view, 'tabs': ('New', 'Saved', 'Trash')},
-    'Keypad': {'view': keypad_view, 'tabs': ()}
+    'Keypad': {'view': dial_view, 'tabs': ()}
 }
 
 @Trace(log)
@@ -109,10 +109,10 @@ def get_nav_views2(version):
             log.info("view = %s" % button)
             if button == 'Keypad':
                 save_xml_and_screenshot('keypad_%s' % version, version)
-                keypad_view.dial_name('Advanced Settings')
-                keypad_view.click_named_element('FuncKeyCall')
+                dial_view.dial_name('Advanced Settings')
+                dial_view.click_named_element('FuncKeyCall')
                 save_xml_and_screenshot('settings_%s' % version, version)
-                keypad_view.send_keycode('KEYCODE_BACK')
+                dial_view.send_keycode('KEYCODE_BACK')
             else:
                 for tab in buttons[button]['tabs']:
                     log.info("calling goto_tab(%s)" % tab)
@@ -126,7 +126,7 @@ def get_nav_views2(version):
 if __name__ == '__main__':
     _version = 'not_retrieved'
     # try:
-    base_view.open_appium('main')
+    base_view.startup()
     user_view.goto_prefs()
     _version = prefs_view.get_app_version()
     save_xml_and_screenshot('prefs_%s' % _version, _version)
@@ -134,10 +134,10 @@ if __name__ == '__main__':
     print "version = %s" % _version
     try:
         get_call_views(_version)
-        base_view.close_appium()
-        base_view.open_appium('main')
+        base_view.shutdown()
+        base_view.startup()
         get_nav_views2(_version)
-        base_view.close_appium()
+        base_view.shutdown()
     except Ux as _e:
         save_xml_and_screenshot('user_exception_handler', _version)
         log.warn('UserException: %s' % _e)
