@@ -137,7 +137,7 @@ if __name__ == '__main__':
                                                  '<target config directory>/<db_name>.json\n' +
                                                  '  "restore" replaces <db_name> with data from ' +
                                                  '<target config directory>/<db_name>.json')
-    parser.add_argument("-s", "--server", type=str, default='vqda',
+    parser.add_argument("-s", "--server", type=str, default='vqda1',
                         help="(optional) specify mongodb server, default 'vqda'")
     parser.add_argument("-o", "--output_file", default=None,
                         help="dump writes JSON to output file, restore writes JSON to output file,\n" +
@@ -146,7 +146,7 @@ if __name__ == '__main__':
     parser.add_argument("target", type=str, choices=targets.keys(),
                         help='indicates databases to dump or restore:\n' +
                              '  e7_site: db name e7_site; config directory ePhone7/config\n' +
-                             '  e7_all: db names e7_site, caps, colors; config directory ePhone7/config\n' +
+                             '  e7_all: db names e7_site, e7_caps, e7_colors; config directory ePhone7/config\n' +
                              '  ccd_site: db name ccd_site; config directory ccd/config\n')
     args = parser.parse_args()
     db_names = targets[args.target]['db_names']

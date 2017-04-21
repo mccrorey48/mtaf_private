@@ -15,7 +15,13 @@ def sort(filename):
         for lnum, line in enumerate(lines):
             m = step_re.match(line)
             if m:
-                step_key = '_'.join(' '.join([group.lower().translate(None, '''"'[]{}_-!/,''') for group in step_re.match(line).groups() if group is not None]).split(' '))
+                # make a copy of m.groups() and replace periods with spaces
+                groups = []
+                for group in m.groups():
+                    if group is not None:
+                        group = ' '.join(group.split('.'))
+                    groups.append(group)
+                step_key = '_'.join(' '.join([group.lower().translate(None, '''"'[]{}_-!/,.''') for group in groups if group is not None]).split(' '))
                 if step_key in step_defs:
                     raise Ux("duplicate step name on line %s" % (lnum + 1) )
                 else:

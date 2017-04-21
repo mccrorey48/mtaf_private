@@ -1,7 +1,10 @@
 from behave import *
 from ePhone7.views import *
 from time import sleep
-
+from prefs import *
+from user import *
+from advanced import *
+from lib.user_exception import UserException as Ux
 
 @step("A call between two other accounts has been parked by the called account")
 def a_call_between_two_other_accounts_has_been_parked_by_the_called_account(context):
@@ -143,12 +146,6 @@ def a_submenu_appears_with_a_default_contacts_tab_option(context):
 @step('A submenu appears with a "Manage Accounts" option')
 def a_submenu_appears_with_a_manage_accounts_option(context):
     pass
-
-
-@step('A submenu appears with a "Network" option')
-def a_submenu_appears_with_a_network_option(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.element_is_present('MenuItemNetworkText')
 
 
 @step('A submenu appears with a "Ringtones" option')
@@ -490,6 +487,59 @@ def i_see_the_keypad(context):
     pass
 
 
+@then("I set the OTA server")
+def i_set_the_ota_server(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.goto_tab('Dial')
+        ota_server = context.config.userdata.get('ota_server')
+        text = ''
+        expected = ''
+        if context.app_version == '1.0.9' and ota_server == 'alpha':
+            # special case for version 1.0.9, doesn't understand the number dialed by
+            # dial_view.dial_by_name("Alpha OTA Server")
+            dial_view.dial_name('Beta OTA Server')
+            dial_view.click_named_element('FuncKeyCall')
+            text = dial_view.find_named_element('OtaUpdatePopupContent').text
+            expected = 'BETA OTA Server Enabled'
+            assert text == expected, "expected %s, got %s" % (expected, text)
+            base_view.click_named_element('OtaServerOk')
+            dial_view.dial_name('Advanced Settings')
+            dial_view.click_named_element('FuncKeyCall')
+            assert base_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
+            elems = base_view.find_named_elements('AdvancedItems')
+            assert len(elems) > 1
+            base_view.scroll(elems[-1], elems[0])
+            if not base_view.element_is_present('TestOtaServerUrlText'):
+                # one retry in case the scroll didn't work
+                base_view.scroll(elems[-1], elems[0])
+            base_view.click_named_element('TestOtaServerUrlText')
+            el = base_view.find_named_element('TestOtaEditText')
+            el.clear()
+            el.set_text(el.text[:-5])
+        else:
+            if ota_server == 'beta':
+                dial_view.dial_name('Beta OTA Server')
+                dial_view.click_named_element('FuncKeyCall')
+                text = dial_view.find_named_element('OtaUpdatePopupContent').text
+                expected = 'Beta OTA Server Enabled'
+            elif ota_server == 'alpha':
+                dial_view.dial_name('Alpha OTA Server')
+                dial_view.click_named_element('FuncKeyCall')
+                text = dial_view.find_named_element('OtaUpdatePopupContent').text
+                expected = 'Production OTA Server Enabled'
+            elif ota_server == 'production':
+                dial_view.dial_name('Production OTA Server')
+                dial_view.click_named_element('FuncKeyCall')
+                text = dial_view.find_named_element('OtaUpdatePopupContent').text
+                expected = 'Production OTA Server Enabled'
+            else:
+                raise Ux('unknown expected ota_server defined: %s' % ota_server)
+            assert text == expected, "expected %s, got %s" % (expected, text)
+        base_view.click_named_element('OtaAddressOk')
+        base_view.send_keycode('KEYCODE_BACK')
+        sleep(5)
+
+
 @step("I swipe down twice")
 def i_swipe_down_twice(context):
     pass
@@ -594,7 +644,7 @@ def i_touch_ok_on_the_invalid_vlan_priority_alert(context):
 @step('I touch "OK" on the popup')
 def i_touch_ok_on_the_popup(context):
     if 'fake' not in str(context._config.tags).split(','):
-        base_view.click_named_element("ConfirmButton")
+        base_view.click_named_element("OtaServerOk")
 
 
 @step('I touch "Personal"')
@@ -693,12 +743,6 @@ def i_touch_the_missed_tab(context):
     pass
 
 
-@step('I touch the "Network" option')
-def i_touch_the_network_option(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.click_named_element('MenuItemNetworkText')
-
-
 @when('I touch the "OK" button')
 def i_touch_the_ok_button(context):
     pass
@@ -770,6 +814,25 @@ def my_phone_calls_the_voicemail_sender(context):
 @step("my saved voicemails are listed")
 def my_saved_voicemails_are_listed(context):
     pass
+
+
+@given("my system version needs to be upgraded")
+def my_system_version_needs_to_be_upgraded(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        context.execute_steps(u"""
+            Given I am logged in to the ePhone7
+            When  [user] I touch the Preferences icon
+            Then  [prefs] the Preferences window appears
+            When  [prefs] I touch the "System" menu category
+            And   [prefs] I touch the "About ePhone7" menu item
+            Then  [prefs] I read the displayed versions for the app and AOSP
+            When  [prefs] I touch the "X" icon
+            Then  [prefs] the Preferences window disappears
+            """)
+        if context.aosp_version != context.config.userdata.get('downgrade_aosp'):
+            base_view.force_aosp_downgrade()
+        if context.app_version != context.config.userdata.get('downgrade_app'):
+            base_view.force_app_downgrade()
 
 
 @step("Only the contact I touched is listed")

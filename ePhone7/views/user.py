@@ -18,11 +18,11 @@ class UserView(BaseView):
         "RecordActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/recordImageButton"},
         "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
         "Contacts": {"by": "zpath", "value": "//tw/rl[1]/ll/tv", "text": "Contacts"},
+        "Dial": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
         "DndButton": {"by": "accessibility id", "value": "Do not Disturb"},
         "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endButtonImage"},
         "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
         "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
-        "Keypad": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
         "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
         "IncomingCallIgnore": {"by": "id", "value": "com.esi_estech.ditto:id/ignore_button"},
         "IncomingCallAnswerToSpeaker": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_speaker_button"},
@@ -42,7 +42,7 @@ class UserView(BaseView):
     def __init__(self):
         super(UserView, self).__init__()
         self.cfg = cfg
-        self.tab_names = ('Contacts', 'History', 'Voicemail', 'Keypad')
+        self.tab_names = ('Contacts', 'History', 'Voicemail', 'Dial')
         self.png_file_base = 'user'
         self.expected_tab = None
         self.active_tab = None

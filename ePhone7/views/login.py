@@ -31,3 +31,4 @@ class LoginView(BaseView):
         self.wait_for_activity('.settings.ui.TermsAndConditionsScreen')
 
 login_view = LoginView()
+

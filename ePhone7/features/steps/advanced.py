@@ -4,7 +4,7 @@ from time import sleep
 
 
 @step("[advanced] I {action} the Call Record Enable checkbox")
-def advanced_i_check_the_call_record_enable_checkbox(context, action):
+def advanced__i_action_the_call_record_enable_checkbox(context, action):
     if 'fake' not in str(context._config.tags).split(','):
         cbs = base_view.find_named_elements("AdvancedCheckbox")
         assert len(cbs) > 2, "Expected >2 AdvancedCheckbox elements, got %s" % len(cbs)
@@ -24,13 +24,10 @@ def advanced__i_scroll_down_to_the_call_record_enable_setting(context):
         elems = base_view.find_named_elements('AdvancedItems')
         assert len(elems) > 1
         base_view.scroll(elems[-1], elems[0])
-        length = len(base_view.find_named_elements('CallRecordEnableText'))
-        # one retry in case the scroll didn't work
-        if length != 1:
-            elems = base_view.find_named_elements('AdvancedItems')
-            assert len(elems) > 1
+        if not base_view.element_is_present('CallRecordEnableText'):
+            # one retry in case the scroll didn't work
             base_view.scroll(elems[-1], elems[0])
-        assert length == 1, "Expected exactly one CallRecordEnableText element, got %s" % length
+            assert base_view.element_is_present('CallRecordEnableText')
 
 
 @step("[advanced] the Advanced Options view appears")

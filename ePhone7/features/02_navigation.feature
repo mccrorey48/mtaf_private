@@ -20,7 +20,7 @@ Feature: As a user I want to navigate to different views using the touch screen
   Scenario: I go to the Voicemail view
     Given [user] I touch the Voicemail button
     Then  [voicemail] the Voicemail view appears
-    And   [ voicemail] I see the New, Saved and Trash tabs at the top of the screen
+    And   [voicemail] I see the New, Saved and Trash tabs at the top of the screen
 
   @regression
   Scenario: I go to the Dial view

@@ -140,3 +140,13 @@ class Trace(object):
                     log_fn('%s %s returned %s [%.3fs]' % (self.prefix(), f.func_name, returned, self.elapsed_time))
             return retval
         return wrapped_f
+
+
+# for debugging, set Trace = SkipTrace to avoid stepping into the Trace wrapper
+class SkipTrace(Trace):
+    def __init__(self, *args, **kwargs):
+        super(SkipTrace, self).__init__(*args, **kwargs)
+    def __call__(self, f):
+        return f
+
+

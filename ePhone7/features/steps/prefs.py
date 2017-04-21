@@ -1,6 +1,34 @@
 from behave import *
 from ePhone7.views import *
 import re
+from lib.user_exception import UserException as Ux
+
+
+@step('[prefs] A submenu appears with a "Network" option')
+def prefs__a_submenu_appears_with_a_network_option(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.element_is_present('MenuItemNetworkText')
+
+
+@then("[prefs] I read the displayed versions for the app and AOSP")
+def prefs__i_read_the_displayed_versions_for_the_app_and_aosp(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        app_version = prefs_view.find_named_element('AppVersion').text
+        aosp_version = prefs_view.find_named_element('SystemVersion').text
+        prefs_view.click_named_element('AboutOk')
+        prefs_view.click_named_element('System')
+        m = re.match('App Version : (\S*)', app_version.encode('utf8'))
+        if m is None:
+            context.app_version = "Unknown Version"
+        else:
+            context.app_version = m.group(1)
+            print("\nVersion = %s" % context.app_version)
+        m = re.match('System Version : (\S*)', aosp_version.encode('utf8'))
+        if m is None:
+            context.aosp_version = "Unknown Version"
+        else:
+            context.aosp_version = m.group(1)
+            print("\nVersion = %s" % context.aosp_version)
 
 
 @step("[prefs] I see the Need Help, Personal, Phone and System category elements")
@@ -8,17 +36,35 @@ def prefs__i_see_the_need_help_personal_phone_and_system_category_elements(conte
     pass
 
 
-@step('[prefs] I touch the "About" menu item')
-def prefs__i_touch_the_about_menu_item(context):
+@step('[prefs] I touch the "{name}" menu item')
+def prefs__i_touch_the_about_menu_item(context, name):
     if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.click_named_element('About')
+        elems = prefs_view.find_named_elements('MenuItemTexts')
+        for elem in elems:
+            if elem.text == name:
+                elem.click()
+                break
+        else:
+            raise Ux('No menu item text element with text="%s" was found' % name)
 
 
-@step('[prefs] I touch the "System" menu category')
-def prefs__i_touch_the_system_menu_category(context):
+@step('[prefs] I touch the "Network" option')
+def prefs__i_touch_the_network_option(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.click_named_element('MenuItemNetworkText')
+
+
+@step('[prefs] I touch the "{name}" menu category')
+def prefs__i_touch_the_system_menu_category(context, name):
     if 'fake' not in str(context._config.tags).split(','):
         prefs_view.hide_list_items()
-        prefs_view.click_named_element('System')
+        elems = prefs_view.find_named_elements('MenuCategories')
+        for elem in elems:
+            if elem.text == name:
+                elem.click()
+                break
+        else:
+            raise Ux('No menu category element with text="%s" was found' % name)
 
 
 @step('[prefs] I touch the "X" icon')
@@ -27,22 +73,20 @@ def prefs__i_touch_the_x_icon(context):
         prefs_view.click_named_element('CloseButton')
 
 
-@step('[prefs] the correct version is displayed')
-def prefs__the_correct_version_is_displayed(context):
+@step('[prefs] the {name} app and AOSP versions are displayed')
+def prefs__the_name_app_and_aosp_versions_are_displayed(context, name):
     if 'fake' not in str(context._config.tags).split(','):
-        about_popup = prefs_view.find_named_element('AppVersion')
-        source = about_popup.text
-        prefs_view.click_named_element('AboutOk')
-        prefs_view.click_named_element('System')
-        m = re.match('App Version : (\S*)', source.encode('utf8'))
-        if m is None:
-            print("Unknown Version")
+        if name == 'current':
+            expect_app_version = context.config.userdata.get('current_app')
+            expect_aosp_version = context.config.userdata.get('current_aosp')
+        elif name == 'downgrade':
+            expect_app_version = context.config.userdata.get('downgrade_app')
+            expect_aosp_version = context.config.userdata.get('downgrade_aosp')
         else:
-            version = m.group(1)
-            print("\nVersion = %s" % version)
-            expected = context.config.userdata.get('version')
-            assert version == expected, "Incorrect Version: expected %s, got %s" % (expected, version)
-        pass
+            expect_app_version = 'version name not specified'
+            expect_aosp_version = 'version name not specified'
+        assert context.app_version == expect_app_version, "Incorrect App Version: expected %s, got %s" % (expect_app_version, context.app_version)
+        assert context.aosp_version == expect_aosp_version, "Incorrect System Version: expected %s, got %s" % (expect_aosp_version, context.aosp_version)
 
 
 @step("[prefs] the Preferences window appears")
@@ -55,5 +99,12 @@ def prefs__the_preferences_window_appears(context):
 def prefs__the_preferences_window_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
         assert prefs_view.element_is_not_present('Preferences')
+
+
+@step('[prefs] I touch the "Check for System Update" option')
+def step_impl(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.click_named_element('SystemUpdate')
+        pass
 
 

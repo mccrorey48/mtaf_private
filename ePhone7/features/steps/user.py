@@ -34,7 +34,9 @@ def user__i_touch_the_history_button(context):
 @step("[user] I touch the Preferences icon")
 def user__i_touch_the_preferences_icon(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_named_element('PrefsButton')
+        prefs_view.driver.tap([(559,74)])
+        # user_view.click_named_element('PrefsButton')
+        pass
 
 
 @step("[user] I touch the Voicemail button")

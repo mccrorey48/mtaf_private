@@ -2,6 +2,11 @@ import serial
 from lib.user_exception import UserException as Ux
 import socket
 from time import time
+from contextlib import contextmanager
+import lib.logging_esi as logging_esi
+from lib.wrappers import Trace
+
+log = logging_esi.get_logger('esi.spud_serial')
 
 
 class SpudSerial:
@@ -14,10 +19,19 @@ class SpudSerial:
         except serial.serialutil.SerialException:
             raise Ux('serial port %s not available' % serial_device)
         self.cwd = None
-        self.do_action({'cmd': 'cd', 'new_cwd': 'data'})
+        self.do_action({'cmd': 'cd\n', 'new_cwd': 'data'})
 
     def get_prompt(self):
         return 'root@r2d2:/' + self.cwd + ' # '
+
+    @contextmanager
+    def with_timeout(self, timeout):
+        old_timeout = self.connection.timeout
+        log.debug("changing timeout from %.3f to %.3f" % (old_timeout, timeout))
+        self.connection.timeout = timeout
+        yield
+        log.debug("changing timeout from %.3f to %.3f" % (self.connection.timeout, old_timeout))
+        self.connection.timeout = old_timeout
 
     @classmethod
     def get_my_ip_addr(cls):
@@ -27,36 +41,16 @@ class SpudSerial:
         s.close()
         return ip_addr
 
-    def readall(self, timeout=1):
+    @Trace(log)
+    def expect(self, cmd, expect_text, timeout=5):
         """
-            read the serial port one character at a time, until subsequent calls do
-            not return a character for "timeout" seconds
-        """
-        reply = ''
-        start_time = None
-        while True:
-            c = self.connection.read()
-            if not len(c):
-                if start_time is None:
-                    start_time = time()
-                elif time() - start_time > timeout:
-                    return reply
-            elif c != '\r':
-                start_time = None
-                reply += c
-
-    def expect(self, cmd, expect_text, timeout=1):
-        """
-            truncate cmd at first linefeed (no multiline commands) then add '\n';
-            write the '\n'-terminated cmd to the serial port (cmd can be empty string);
-            read the serial port one character at a time and add to 'reply' string,
-            until 'reply' ends with expect_text;
-            expect the reply to start with the echo of the command, and remove it;
+            write 'cmd' to the serial port;
+            read the serial port one character at a time and add to 'reply' string, skipping '\r' characters, 
+                until 'reply' ends with 'expect_text';
             if no expect_text received after 'timeout' seconds, raise an exception;
-            if expect_text is received, return 'reply.
+            if expect_text is received, return 'reply'.
         """
         reply = ''
-        cmd = cmd.split('\n')[0] + '\n'
         self.connection.write(cmd)
         start_time = time()
         while True:
@@ -65,22 +59,48 @@ class SpudSerial:
                 reply += c
             elapsed = time() - start_time
             if reply.endswith(expect_text):
-                if not reply.startswith(cmd):
-                    raise Ux('reply "%s" does not start with "%s"' % (reply, cmd))
-                return reply[len(cmd):], elapsed
+                return reply, elapsed
             if time() - start_time > timeout:
-                raise Ux("expect: %s second timeout exceeded waiting for %s" % (timeout, expect_text))
+                raise Ux("expect: %s second timeout exceeded waiting for %s; reply = '%s'" % (timeout, expect_text, reply))
 
+    @Trace(log)
+    def flush(self, timeout=5):
+        """
+            read the serial port one character at a time and add to 'reply' string, skipping '\r' characters, 
+                until no characters have been received for 'timeout' seconds;
+            return 'reply'.
+        """
+        start_time = time()
+        with self.with_timeout(timeout):
+            reply = ''
+            while True:
+                c = self.connection.read(timeout)
+                if len(c) == 0:
+                    return reply, time() - start_time
+                if c != '\r':
+                    reply += c
+
+    @Trace(log)
     def do_action(self, action):
+        """
+            wrapper for calling "expect"
+            - populates the "cmd", "expect_text" and "timeout" arguments from "action" attributes
+            - if "expect" attribute is None or is missing or has length 0, sets the "expect_text"
+              argument to the current prompt string (which gets dynamically modified by the "new_cwd" attribute)
+        """
         if 'new_cwd' in action and action['new_cwd'] is not None:
             self.cwd = action['new_cwd']
         if 'timeout' in action:
             timeout = action['timeout']
         else:
             timeout = 1
-        if 'expect' in action and len(action['expect']):
-            reply, elapsed = self.expect(action['cmd'], action['expect'], timeout)
-            return reply, elapsed
+        if 'expect' not in action or action['expect'] is None or len(action['expect']) == 0:
+            expected = self.get_prompt()
         else:
-            reply, elapsed = self.expect(action['cmd'], self.get_prompt(), timeout)
-            return reply[:-1 * len(self.get_prompt())], elapsed
+            expected = action['expect']
+        log.debug("sending cmd = " + repr(action['cmd']))
+        reply, elapsed = self.expect(action['cmd'], expected, timeout)
+        for line in reply.split('\n'):
+            log.debug(line)
+        log.debug('Elapsed Time: %5.3f' % elapsed)
+        return reply, elapsed

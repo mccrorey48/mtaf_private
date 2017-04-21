@@ -13,6 +13,8 @@ from ePhone7.utils.configure import cfg
 from lib.android import MockDriver
 from lib.selenium_actions import SeleniumActions
 from lib.user_exception import UserException as Ux
+from pyand import ADB, Fastboot
+from ePhone7.utils.spud_serial import SpudSerial
 
 log = logging_esi.get_logger('esi.settings_view')
 
@@ -34,14 +36,18 @@ class BaseView(SeleniumActions):
         "CallRecordEnableText": {"by": "id", "value": "android:id/title", "text": "Call Record Enable"},
         "CallRecordEnableBox": {"by": "zpath", "value": "com.esi_estech.ditto:id/confirm_button"},
         "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/recordButton"},
-        "ConfirmButton": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
+        "OtaServerOk": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
+        "OtaAddressOk": {"by": "id", "value": "android:id/button1"},
         "CrashOkButton": {"by": "id", "value": "com.esi_estech.ditto:id/acra_crash_ok_button"},
         "CrashOkButton2": {"by": "id", "value": "android:id/button1", "text": "OK"},
         "E7HasStoppedOk": {"by": "id", "value": "android:id/button1"},
         "E7HasStoppedText": {"by": "id", "value": "android:id/message", "text": "Unfortunately, ePhone7 has stopped."},
         "NetworkErrorRetry": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
         "NetworkErrorText": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertDialogTitle", "text": "Network Error"},
-        "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"}
+        "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
+        "TestOtaAlertTitle": {"by": "id", "value": "com.esi_estech.ditto:id/alertTitle", "text": "Set OTA Server Address"},
+        "TestOtaEditText": {"by": "id", "value": "android:id/edit"},
+        "TestOtaServerUrlText": {"by": "id", "value": "android:id/title", "text": "Test OTA Server URL"}
     }
 
     def __init__(self):
@@ -200,6 +206,45 @@ class BaseView(SeleniumActions):
             self.caps_tag = None
 
     @Trace(log)
+    def force_aosp_downgrade(self):
+
+        actions = [
+            {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Hit any key to stop autoboot:', 'timeout': 30},
+            {'cmd': '\n', 'expect': '=> ', 'timeout': 5},
+            {'cmd': 'mmc dev 2\n', 'expect': 'mmc2(part 0) is current device\n=> '},
+            {'cmd': 'mmc setdsr 2\n', 'expect': 'set dsr OK, force rescan\n=> '},
+            {'cmd': 'fastboot\n', 'expect': '0x4\nUSB_RESET\nUSB_PORT_CHANGE 0x4\n'}
+        ]
+
+        serial_dev = '/dev/ttyUSB0'
+        ss = SpudSerial(serial_dev)
+        for action in actions:
+            (reply, elapsed) = ss.do_action(action)
+            log.debug('[%5.3fs] cmd %s, expect %s, received %d chars' % (elapsed, repr(action['cmd']), repr(action['expect']), len(reply)))
+            ss.connection.reset_input_buffer()
+        fb = Fastboot()
+        fb_cmds = [
+            "flash boot ePhone7/aosps/2.1.3/boot.img",
+            "flash system ePhone7/aosps/2.1.3/system.img",
+            "flash recovery ePhone7/aosps/2.1.3/recovery.img",
+            "reboot"
+        ]
+        for cmd in fb_cmds:
+            log.debug(">>> fastboot " + cmd)
+            log.debug(fb.run_cmd(cmd))
+
+    @Trace(log)
+    def force_app_downgrade(self):
+        serial_dev = '/dev/ttyUSB0'
+        ss = SpudSerial(serial_dev)
+        adb = ADB()
+        adb.run_cmd("install -r ePhone7/apks/10_0_9.apk")
+        action = {'cmd': 'reboot\n', 'new_cwd': '', 'timeout': 30}
+        (reply, elapsed) = ss.do_action(action)
+        log.debug('[%5.3fs] cmd %s, expect %s, received %d chars' % (elapsed, repr(action['cmd']), repr(action['expect']), len(reply)))
+
+
+    @Trace(log)
     def startup(self):
         self.open_appium('nolaunch', force=True, timeout=60)
         retry_main = False
@@ -227,12 +272,20 @@ class BaseView(SeleniumActions):
                     elif self.element_is_present('RegRetryButton'):
                         log.debug("startup: RegRetryButton present")
                         self.click_named_element('RegRetryButton')
+                elif current_activity == '.settings.ui.LoginActivity':
+                    from ePhone7.views import login_view
+                    login_view.login()
+                elif current_activity == '.settings.ui.TermsAndConditionsScreen':
+                    from ePhone7.views import tnc_view
+                    tnc_view.accept_tnc()
+                elif current_activity == '.util.AppIntroActivity':
+                    from ePhone7.views import app_intro_view
+                    app_intro_view.skip_intro()
                 else:
                     raise Ux('unexpected current_activity value: %s' % current_activity)
             except WebDriverException:
                 log.debug("startup: got WebDriverException (ignoring)")
                 sleep(5)
-        pass
 
     @Trace(log)
     def shutdown(self):

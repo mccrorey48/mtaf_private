@@ -55,14 +55,18 @@ def pjl_log_cb(level, _str, _len):
             log.debug(line)
 
 
+# make this global to see if end-of-execution shutdown works better
+# (previously it was a SoftphoneManager class attribute)
+softphones = {}
+
+
 class SoftphoneManager():
 
-    softphones = {}
-
     def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp):
-        if uri not in self.softphones:
-            self.softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp)
-        return self.softphones[uri]
+        global softphones
+        if uri not in softphones:
+            softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp)
+        return softphones[uri]
 
 
 class Softphone:

@@ -1,7 +1,8 @@
 from ePhone7.utils.configure import cfg
 from ePhone7.views import *
 from time import sleep
-from Tkinter import Tk, Frame, Button, Text, NORMAL, DISABLED, Scrollbar
+from Tkinter import Tk, Frame, Button, Text, NORMAL, DISABLED, Scrollbar, Entry, Label, StringVar, HORIZONTAL
+from lib.user_exception import UserException as Ux
 import sys
 cfg.set_site('vqda1', 'mm')
 
@@ -21,35 +22,18 @@ def reboot():
     sleep(30)
 
 
-def login():
-    print "logging in"
-    login_view.login()
-
-
-def accept_tnc():
-    print "accepting terms and conditions"
-    tnc_view.accept_tnc()
-
-
-def get_current_activity():
-    print "current activity: " + base_view.driver.current_activity
-
-
-def skip_walkthrough():
-    print "skipping walkthrough"
-    app_intro_view.skip_intro()
-
-
 class Command(object):
-    def __init__(self, text, fn):
+    def __init__(self, text, name):
         self.text = text
-        self.fn = fn
+        self.name = name
 
 commands = []
-commands.append(Command("Get Current Activity", get_current_activity))
-commands.append(Command("Log In", login))
-commands.append(Command("Accept T&C", accept_tnc))
-commands.append(Command("Skip Walkthrough", skip_walkthrough))
+commands.append(Command("Get Current Activity", "get_current_activity"))
+commands.append(Command("Log In", "login"))
+commands.append(Command("Accept T&C", "accept_tnc"))
+commands.append(Command("Skip Walkthrough", "skip_walkthrough"))
+commands.append(Command("Log Out", "logout"))
+commands.append(Command("Restart Appium", "restart_appium"))
 
 
 class ScrolledLogwin(Text):
@@ -81,6 +65,7 @@ class ScrolledLogwin(Text):
         self.delete('0.0', 'end - %d lines' % self.scrollback)
         self.see('end')
         self.configure(state=DISABLED)
+        self.update_idletasks()
 
 
 class LogFrame(Frame):
@@ -103,18 +88,33 @@ class TestGui(Frame):
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="tan")
+        self.globals = globals()
         self.btns = []
         self.btn_frame = Frame(self, bg="cyan")
         row = None
         for row, cmd in enumerate(commands):
-            btn = Button(self.btn_frame, text=cmd.text, command=cmd.fn, state=DISABLED)
+            btn = Button(self.btn_frame, text=cmd.text, command=lambda name=cmd.name: self.do_cmd(name), state=DISABLED)
             self.btns.append(btn)
             # print "button %s at row %s" % (cmd.text, row)
             btn.grid(row=row, column=0, sticky='w', padx=5, pady=5)
+        self.repl_frame = Frame(self.btn_frame, bg='brown')
+        btn = Button(self.repl_frame, text="evaluate:", command=self.repl_eval, state=DISABLED)
+        self.btns.append(btn)
+        self.repl_var = StringVar()
+        self.repl_frame.entry = Entry(self.repl_frame, width=60, textvariable=self.repl_var)
+        self.repl_frame.hsb = Scrollbar(self.repl_frame, orient=HORIZONTAL, command=self.repl_frame.entry.xview)
+        self.repl_frame.entry["xscrollcommand"] = self.repl_frame.hsb.set
+        btn.grid(row=0, column=0, padx=5, pady=5)
+        # self.repl_frame.grid_columnconfigure(1, weight=1)
+        self.repl_frame.entry.grid(row=0, column=1, padx=5, pady=5, sticky='ew')
+        self.repl_frame.hsb.grid(row=1, column=1, sticky='ew')
+        row += 1
+        self.repl_frame.grid(row=row, column=0, sticky='ew', padx=5, pady=5)
         self.quit = Button(self.btn_frame, text="Quit", command=self.quit)
         row += 1
         # print "button Quit at row %s" % row
         self.quit.grid(row=row, column=0, sticky='w', padx=5, pady=5)
+        # self.grid_columnconfigure(0, weight=1)
         self.btn_frame.grid(row=0, column=0, sticky='ew', padx=5, pady=5)
         self.logframe = LogFrame(self)
         sys.stdout = self.logframe
@@ -122,14 +122,57 @@ class TestGui(Frame):
         self.logframe.grid(row=1, column=0, padx=5, pady=5)
         self.grid(row=0, column=0, padx=5, pady=5, sticky='ew')
         print "Opening Appium...",
-        self.update_idletasks()
+        # self.update_idletasks()
         self.after(500, self.open_appium)
 
+    def repl_eval(self):
+        cmd = self.repl_var.get()
+        exec(cmd, self.globals)
+        pass
+
     def open_appium(self):
-        base_view.open_appium()
+        try:
+            base_view.open_appium()
+        except Ux as e:
+            print "UserException in open_appium: %s" % e.msg
+            self.after(1000, self.open_appium)
+        else:
+            print "Done"
+            for btn in self.btns:
+                btn.configure(state=NORMAL)
+
+    def close_appium(self):
+        base_view.close_appium()
         print "Done"
         for btn in self.btns:
-            btn.configure(state=NORMAL)
+            btn.configure(state=DISABLED)
+
+    def do_cmd(self, name):
+        if name == 'get_current_activity':
+            print "current activity: " + base_view.driver.current_activity
+        else:
+            if name == 'login':
+                print "logging in"
+                login_view.login()
+            elif name == 'restart_appium':
+                print "Closing Appium...",
+                self.update_idletasks()
+                self.update_idletasks()
+                self.after(500, self.close_appium)
+                print "Opening Appium...",
+                self.update_idletasks()
+                self.update_idletasks()
+                self.after(500, self.open_appium)
+            elif name == 'accept_tnc':
+                print "accepting terms and conditions"
+                tnc_view.accept_tnc()
+            elif name == 'skip_walkthrough':
+                print "skipping walkthrough"
+                app_intro_view.skip_intro()
+                tnc_view.accept_tnc()
+            else:
+                raise Ux('command %s not defined' % name)
+            print "current activity: " + base_view.driver.current_activity
 
     def __del__(self):
         base_view.close_appium()
