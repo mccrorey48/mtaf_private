@@ -490,33 +490,15 @@ def i_see_the_keypad(context):
 @then("I set the OTA server")
 def i_set_the_ota_server(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.goto_tab('Dial')
         ota_server = context.config.userdata.get('ota_server')
+        app_version = context.app_version
         text = ''
         expected = ''
-        if context.app_version == '1.0.9' and ota_server == 'alpha':
-            # special case for version 1.0.9, doesn't understand the number dialed by
-            # dial_view.dial_by_name("Alpha OTA Server")
-            dial_view.dial_name('Beta OTA Server')
-            dial_view.click_named_element('FuncKeyCall')
-            text = dial_view.find_named_element('OtaUpdatePopupContent').text
-            expected = 'BETA OTA Server Enabled'
-            assert text == expected, "expected %s, got %s" % (expected, text)
-            base_view.click_named_element('OtaServerOk')
-            dial_view.dial_name('Advanced Settings')
-            dial_view.click_named_element('FuncKeyCall')
-            assert base_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
-            elems = base_view.find_named_elements('AdvancedItems')
-            assert len(elems) > 1
-            base_view.scroll(elems[-1], elems[0])
-            if not base_view.element_is_present('TestOtaServerUrlText'):
-                # one retry in case the scroll didn't work
-                base_view.scroll(elems[-1], elems[0])
-            base_view.click_named_element('TestOtaServerUrlText')
-            el = base_view.find_named_element('TestOtaEditText')
-            el.clear()
-            el.set_text(el.text[:-5])
+        if context.app_version == '1.0.10' and ota_server == 'alpha':
+            # special case for version 1.0.10, directly enter the upgrade url
+            user_view.set_alpha_ota_server()
         else:
+            user_view.goto_tab('Dial')
             if ota_server == 'beta':
                 dial_view.dial_name('Beta OTA Server')
                 dial_view.click_named_element('FuncKeyCall')
@@ -535,9 +517,9 @@ def i_set_the_ota_server(context):
             else:
                 raise Ux('unknown expected ota_server defined: %s' % ota_server)
             assert text == expected, "expected %s, got %s" % (expected, text)
-        base_view.click_named_element('OtaAddressOk')
-        base_view.send_keycode('KEYCODE_BACK')
-        sleep(5)
+            base_view.click_named_element('OtaAddressOk')
+            base_view.send_keycode('KEYCODE_BACK')
+            sleep(5)
 
 
 @step("I swipe down twice")
@@ -773,11 +755,78 @@ def i_touch_walkthrough(context):
     pass
 
 
+@step("I verify the system and app versions are current")
+def i_verify_the_system_and_app_versions_are_current(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        context.execute_steps(u"""
+            Given I am logged in to the ePhone7
+            When  [user] I touch the Preferences icon
+            Then  [prefs] the Preferences window appears
+            When  [prefs] I touch the "System" menu category
+            And   [prefs] I touch the "About ePhone7" menu item
+            Then  [prefs] I read the displayed versions for the app and AOSP
+            When  [prefs] I touch the "X" icon
+            Then  [prefs] the Preferences window disappears
+            """)
+    app_actual = context.app_version
+    aosp_actual = context.aosp_version
+    app_expect = context.config.userdata.get('current_app')
+    aosp_expect = context.config.userdata.get('current_aosp')
+    assert context.app_version == context.config.userdata.get('current_app'), "Expected app version %s, got %s" % (app_expect, app_actual)
+    assert context.aosp_version == context.config.userdata.get('current_aosp'), "Expected aosp version %s, got %s" % (aosp_expect, aosp_actual)
+
+
 @step("I wait for the phone to restart")
 def i_wait_for_the_phone_to_restart(context):
     if 'fake' not in str(context._config.tags).split(','):
         base_view.close_appium()
         sleep(30)
+        base_view.open_appium('nolaunch', force=True, timeout=60)
+        base_view.startup()
+
+
+@then("I wait for the phone to upgrade and reboot")
+def i_wait_for_the_phone_to_upgrade_and_reboot(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        # poll and do nothing while current activity is .OtaAppActivity
+        # (this loop is expected continue while the new software is being downloaded;
+        # it should end when the reboot begins, so that trying to read the current activity
+        # via Appium raises an exception)
+        while True:
+            try:
+                sleep(5)
+                current_activity = base_view.driver.current_activity
+                if current_activity != '.OtaAppActivity':
+                    break
+            except:
+                base_view.close_appium()
+                break
+        # turn on USB access for adb and Appium via the spud port
+        import os
+        from ePhone7.utils.spud_serial import SpudSerial
+        ip_addr = SpudSerial.get_my_ip_addr()
+        actions = [
+            {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120},
+            {'cmd': 'cd /data/misc/adb\n', 'new_cwd': 'data/misc/adb'},
+            {'cmd': 'alias tftp="busybox tftp"\n', 'new_cwd': None},
+            {'cmd': 'tftp -g -r adbkey.pub -l adb_keys %s\n' % ip_addr, 'new_cwd': None},
+            {'cmd': 'chown system adb_keys\n', 'new_cwd': None},
+            {'cmd': 'chmod 640 adb_keys\n', 'new_cwd': None},
+            {'cmd': 'cd /data/property\n', 'new_cwd': 'data/property'},
+            {'cmd': 'echo -n mtp,adb > persist.sys.usb.config\n', 'new_cwd': None},
+            {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120}
+        ]
+        # put the adb public key in the /tftpboot directory so the tftp action can upload it to the phone
+        with open(os.path.join(os.getenv('HOME'), '.android', 'adbkey.pub')) as input_file:
+            with open('/tftpboot/adbkey.pub', 'w') as output_file:
+                key = input_file.read()
+                output_file.write(key + '\n')
+        ss = SpudSerial('/dev/ttyUSB0', pwd_check=False)
+        for action in actions:
+            ss.do_action(action)
+        # at this point the reboot of Android should be complete with USB debug enabled, so we
+        # call base_view.startup() to get the ePhone7 app into the right state
+        base_view.open_appium('nolaunch', force=True, timeout=60)
         base_view.startup()
 
 
@@ -829,10 +878,26 @@ def my_system_version_needs_to_be_upgraded(context):
             When  [prefs] I touch the "X" icon
             Then  [prefs] the Preferences window disappears
             """)
-        if context.aosp_version != context.config.userdata.get('downgrade_aosp'):
-            base_view.force_aosp_downgrade()
-        if context.app_version != context.config.userdata.get('downgrade_app'):
-            base_view.force_app_downgrade()
+        need_aosp_downgrade = context.aosp_version != context.config.userdata.get('downgrade_aosp')
+        need_app_downgrade = context.app_version != context.config.userdata.get('downgrade_app')
+        if need_aosp_downgrade or need_app_downgrade:
+            base_view.close_appium()
+            if need_aosp_downgrade:
+                base_view.force_aosp_downgrade()
+            if need_app_downgrade:
+                base_view.force_app_downgrade()
+            base_view.open_appium('nolaunch', force=True, timeout=60)
+            base_view.startup()
+            context.execute_steps(u"""
+                Given I am logged in to the ePhone7
+                When  [user] I touch the Preferences icon
+                Then  [prefs] the Preferences window appears
+                When  [prefs] I touch the "System" menu category
+                And   [prefs] I touch the "About ePhone7" menu item
+                Then  [prefs] I read the displayed versions for the app and AOSP
+                When  [prefs] I touch the "X" icon
+                Then  [prefs] the Preferences window disappears
+                """)
 
 
 @step("Only the contact I touched is listed")
@@ -863,7 +928,7 @@ def the_account_deleted_popup_disappears(context):
 @step("the Advanced Options view disappears")
 def the_advanced_options_view_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
-        assert base_view.element_is_not_present('AdvancedOptions'), "Expected Advanced Options view to disappear but it did not"
+        assert user_view.element_is_not_present('AdvancedOptions'), "Expected Advanced Options view to disappear but it did not"
 
 
 @step("the Call Forward icon is blue")

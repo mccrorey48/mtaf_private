@@ -105,7 +105,7 @@ class Trace(object):
                 (exc_type, value, tb) = sys.exc_info()
                 if exc_type == Ux:
                     logger.warn(('%%s %%-%ds EXCEPTION:      %%s: %%s' % (35 - logging_esi.trace_indent))
-                                % (self.prefix(), f.func_name, value.__class__.__name__, value))
+                                % (self.prefix(), f.func_name, value.__class__.__name__, value.text))
                 else:
                     logger.warn(('%%s %%-%ds EXCEPTION:      %%s: %%s [%%s]' % (35 - logging_esi.trace_indent))
                                 % (self.prefix(), f.func_name, value.__class__.__name__,
@@ -116,7 +116,7 @@ class Trace(object):
                         self.except_cb(exc_type, value, tb)
                     except:
                         pass
-                raise Ux('calling %s from %s' % (f.func_name, "%s:%s" % tuple(inspect.stack()[1][1:3])), False)
+                raise Ux('calling %s from %s' % (f.func_name, "%s:%s" % tuple(inspect.stack()[1][1:3])), sp=False)
             finally:
                 logging_esi.trace_indent -= 1
                 val_reprs = []

@@ -109,6 +109,10 @@ class SeleniumActions(Tc):
             raise Ux('WebDriverException ' + e.message)
 
     @Trace(log)
+    def tap(self, positions, duration=200):
+        self.driver.tap(positions, duration)
+
+    @Trace(log)
     def element_is_present(self, name, timeout=10):
         # waits 'timeout' seconds for exactly one element with the indicated name to be present
         # and returns True if that happens, False otherwise

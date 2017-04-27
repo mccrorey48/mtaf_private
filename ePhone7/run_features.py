@@ -26,15 +26,25 @@ def capture():
         out[1] = out[1].getvalue()
 
 
-def run_features(features_dir, site_tag, run_tags, version):
+def run_features(features_dir, site_tag, run_tags, current_aosp, downgrade_aosp, current_app, downgrade_app, ota_server,
+                 stop=False):
     sys.argv = [re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])]
     sys.argv.append('-D')
-    sys.argv.append('version=%s' % version)
+    sys.argv.append('current_aosp=%s' % current_aosp)
+    sys.argv.append('-D')
+    sys.argv.append('downgrade_aosp=%s' % downgrade_aosp)
+    sys.argv.append('-D')
+    sys.argv.append('current_app=%s' % current_app)
+    sys.argv.append('-D')
+    sys.argv.append('downgrade_app=%s' % downgrade_app)
+    sys.argv.append('-D')
+    sys.argv.append('ota_server=%s' % ota_server)
     sys.argv.append('-D')
     sys.argv.append('site_tag=%s' % site_tag)
     if run_tags:
         sys.argv.append('--tags=%s' % run_tags)
-    sys.argv.append('--stop')
+    if stop:
+        sys.argv.append('--stop')
     sys.argv.append('-f')
     sys.argv.append('json.pretty')
     sys.argv.append(features_dir)
@@ -233,6 +243,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
 if __name__ == '__main__':
     import argparse
     from os import path
+    import spur
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description='  runs behave test on specified features directory and saves' +
                                                  '  the results on a mongodb running on a specified server\n')
@@ -247,15 +258,44 @@ if __name__ == '__main__':
                         help="(optional) specify mongodb server, default vqda1")
     parser.add_argument("-r", "--run_tags", type=str, default='wip', help="run tags (comma separated list)")
     parser.add_argument("-t", "--site_tag", type=str, default='mm', help="site tag (default mm)")
-    parser.add_argument("-v", "--version", type=str, default='1.2.0', help="apk version (default 1.2.0)")
+    parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.1.3', help="apk version (default 2.1.3)")
+    parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
+    parser.add_argument("-a", "--downgrade_app", type=str, default='1.0.10', help="apk version (default 1.0.10)")
     args = parser.parse_args()
     mock_detector = MockDetector(path.join(args.features_directory, "steps"),
                             fake_tag='fake' in args.run_tags.split(','))
+
+    shell = spur.SshShell(
+        hostname='ec2-52-36-62-239.us-west-2.compute.amazonaws.com',
+        username='ubuntu',
+        private_key_file='ePhone7/keys/OTAServer2.pem',
+        missing_host_key=spur.ssh.MissingHostKey.accept
+    )
+
+    with shell:
+        result = shell.run(['cat', '/www/aus/otatest/build.prop'])
+
+    current_aosp='Unknown'
+    current_app='Unknown'
+    aosp_prefix = 'ro.build.id='
+    aosp_new_prefix = 'system.version='
+    app_prefix = 'app.version='
+    for line in result.output.split('\n'):
+        line = line.strip()
+        if line.startswith(aosp_prefix):
+            current_aosp = line[len(aosp_prefix):]
+        elif line.startswith(aosp_new_prefix):
+            current_aosp = line[len(aosp_new_prefix):]
+        elif line.startswith(app_prefix):
+            current_app = line[len(app_prefix):]
+
+
     if args.json_file:
         with open(args.json_file) as fp:
             features = json.load(fp)
     else:
-        features = run_features(args.features_directory, args.site_tag, args.run_tags, args.version)
+        features = run_features(args.features_directory, args.site_tag, args.run_tags, current_aosp,
+                                args.downgrade_aosp, current_app, args.downgrade_app, args.ota_server)
     configuration = "site_tag:%s, run_tags:%s" % (args.site_tag, args.run_tags)
     write_result_to_db(args.server, args.db_name, args.test_class, args.environment, configuration, mock_detector, features)
 

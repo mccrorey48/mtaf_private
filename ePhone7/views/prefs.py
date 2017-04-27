@@ -45,6 +45,7 @@ class PrefsView(BaseView):
         "System": {"by": "zpath", "value": "//el/rl[4]/tv[1]", "text": "System"},
         "SystemUpdate": {"by": "id", "value": "com.esi_estech.ditto:id/aosp_update_row"},
         "SystemVersion": {"by": "id", "value": "com.esi_estech.ditto:id/system_version"},
+        "UpgradeButton": {"by": "id", "value": "com.fsl.android.ota:id/upgrade_button"},
         "VolumeSettings": {"by": "zpath", "value": "//lv/ll[6]/tv", "text": "Volume Settings"}
     }
 

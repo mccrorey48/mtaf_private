@@ -126,6 +126,7 @@ def get_nav_views2(version):
 if __name__ == '__main__':
     _version = 'not_retrieved'
     # try:
+    base_view.open_appium('nolaunch', force=True, timeout=60)
     base_view.startup()
     user_view.goto_prefs()
     _version = prefs_view.get_app_version()
@@ -134,10 +135,11 @@ if __name__ == '__main__':
     print "version = %s" % _version
     try:
         get_call_views(_version)
-        base_view.shutdown()
+        base_view.close_appium()
+        base_view.open_appium('nolaunch', force=True, timeout=60)
         base_view.startup()
         get_nav_views2(_version)
-        base_view.shutdown()
+        base_view.close_appium()
     except Ux as _e:
         save_xml_and_screenshot('user_exception_handler', _version)
         log.warn('UserException: %s' % _e)

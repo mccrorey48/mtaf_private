@@ -53,10 +53,6 @@ class BaseView(SeleniumActions):
         SeleniumActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration)
 
     @Trace(log)
-    def tap(self, x, y, duration=200):
-        SeleniumActions.driver.tap([(x, y)], duration)
-
-    @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder):
         sleep(5)
         fullpath = os.path.join(screenshot_folder, filebase + '.png')
@@ -135,7 +131,7 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def tap_element(self, el, duration=200):
         center = (el.location['x'] + (el.size['width'] / 2), el.location['y'] + (el.size['height'] / 2))
-        SeleniumActions.driver.tap([center], duration)
+        self.tap([center], duration)
 
     def update_remote(self, caps_tag):
         if caps_tag != self.caps_tag:

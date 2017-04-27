@@ -161,7 +161,7 @@ class ContactsView(UserView):
 
     @Trace(log)
     def scroll_to_top_of_list(self):
-        self.tap(560, 210, duration=1000)
+        self.tap([(560, 210)], duration=1000)
         sleep(2)
 
     @Trace(log)

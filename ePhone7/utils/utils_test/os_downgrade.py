@@ -33,4 +33,3 @@ adb = ADB()
 adb.run_cmd("install -r ePhone7/apks/10_0_9.apk")
 action = {'cmd': 'reboot\n', 'new_cwd': '', 'timeout': 30}
 (reply, elapsed) = ss.do_action(action)
-print '[%5.3fs] cmd %s, expect %s, received %d chars' % (elapsed, repr(action['cmd']), repr(action['expect']), len(reply))

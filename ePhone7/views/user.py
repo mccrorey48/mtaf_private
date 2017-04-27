@@ -15,6 +15,8 @@ log = logging_esi.get_logger('esi.user_view')
 class UserView(BaseView):
 
     locators = {
+        "AdvancedOptions": {"by": "zpath", "value": "//sp/rl/v[1]/fl/ll/fl/rv/tv[1]"},
+        "AdvancedItems": {"by": "id", "value": "android:id/title"},
         "RecordActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/recordImageButton"},
         "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
         "Contacts": {"by": "zpath", "value": "//tw/rl[1]/ll/tv", "text": "Contacts"},
@@ -34,8 +36,11 @@ class UserView(BaseView):
         "PrefsButtonz": {"by": "zpath", "value": "//rl[2]/bt[5]"},
         "SettingsButton": {"by": "zpath", "value": "//sv/fl/fl[3]"},
         "SettingsButtonText": {"by": "zpath", "value": "//sv/fl/fl[3]/ll/tv"},
+        "TestOtaAlertTitle": {"by": "id", "value": "com.esi_estech.ditto:id/alertTitle", "text": "Set OTA Server Address"},
+        "TestOtaEditText": {"by": "id", "value": "android:id/edit"},
+        "TestOtaServerUrlText": {"by": "id", "value": "android:id/title", "text": "Test OTA Server URL"},
+        "UseTestOtaServerText": {"by": "id", "value": "android:id/title", "text": "Use Test OTA Server"},
         "UserHeaderName": {"by": "id", "value": "com.esi_estech.ditto:id/user_header_name"},
-        "UserProximityStatus": {"by": "id", "value": "com.esi_estech.ditto:id/user_proximity_status"},
         "Voicemail": {"by": "zpath", "value": "//tw/rl[3]/ll/tv", "text": "Voicemail"}
     }
 
@@ -55,6 +60,41 @@ class UserView(BaseView):
     #     prefs_view.logout()
     #     prefs_view.logout_confirm()
     #     self.wait_for_condition_true(lambda: remote.current_activity == '.settings.ui.LoginActivity')
+
+    @Trace(log)
+    def set_alpha_ota_server(self):
+        from ePhone7.views import dial_view
+        self.goto_tab('Dial')
+        dial_view.dial_name('Advanced Settings')
+        dial_view.click_named_element('FuncKeyCall')
+        if not self.element_is_present('AdvancedOptions'):
+            raise Ux("Expected Advanced Options view to appear but it did not")
+        elems = self.find_named_elements('AdvancedItems')
+        if len(elems) == 0:
+            raise Ux('No "AvancedItems" elements found')
+        self.scroll(elems[-1], elems[0])
+        if not self.element_is_present('TestOtaServerUrlText'):
+            # one retry in case the scroll didn't work
+            self.scroll(elems[-1], elems[0])
+        use_ota_text = self.find_named_element('UseTestOtaServerText')
+        text_ycenter = use_ota_text.location['y'] + (use_ota_text.size['height'] / 2)
+        checkboxes = self.find_named_elements('AdvancedCheckbox')
+        for cb in checkboxes:
+            min_y = cb.location['y']
+            max_y = min_y + cb.size['height']
+            if min_y < text_ycenter < max_y:
+                break
+        else:
+            raise Ux('"Use Test OTA Server" checkbox not found')
+        if cb.get_attribute('checked') == 'false':
+            cb.click()
+        self.click_named_element('TestOtaServerUrlText')
+        ota_url = self.find_named_element('TestOtaEditText')
+        ota_url.clear()
+        ota_url.set_text('http://52.36.62.239/aus/')
+        self.click_named_element('OtaAddressOk')
+        self.send_keycode('KEYCODE_BACK')
+        sleep(5)
 
     @Trace(log)
     def set_dnd(self, on=True):

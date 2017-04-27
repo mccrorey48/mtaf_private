@@ -11,7 +11,7 @@ from advanced import *
 @then('[background] A submenu appears with a "Network" option')
 def background__a_submenu_appears_with_a_network_option(context):
     if 'fake' not in str(context._config.tags).split(','):
-        a_submenu_appears_with_a_network_option(context)
+        prefs__a_submenu_appears_with_a_network_option(context)
 
 
 @given("[background] I am logged in to the ePhone7")
@@ -101,7 +101,7 @@ def background__i_touch_the_history_button(context):
 @when('[background] I touch the "Network" option')
 def background__i_touch_the_network_option(context):
     if 'fake' not in str(context._config.tags).split(','):
-        i_touch_the_network_option(context)
+        prefs__i_touch_the_network_option(context)
 
 
 @when("[background] I touch the Preferences icon")
@@ -110,10 +110,10 @@ def background__i_touch_the_preferences_icon(context):
         user__i_touch_the_preferences_icon(context)
 
 
-@when('[background] I touch the "System" menu category')
-def background__i_touch_the_system_menu_category(context):
+@when('[background] I touch the "{name}" menu category')
+def background__i_touch_the_system_menu_category(context, name):
     if 'fake' not in str(context._config.tags).split(','):
-        prefs__i_touch_the_system_menu_category(context)
+        prefs__i_touch_the_name_menu_category(context, name)
 
 
 @step("[background] I touch the VLAN Enable button")

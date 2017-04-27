@@ -30,8 +30,6 @@ class BaseView(SeleniumActions):
 
     locators = {
         "ActiveCallScreen": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_call_details"},
-        "AdvancedOptions": {"by": "zpath", "value": "//sp/rl/v[1]/fl/ll/fl/rv/tv[1]"},
-        "AdvancedItems": {"by": "id", "value": "android:id/title"},
         "AdvancedCheckbox": {"by": "id", "value": "com.esi_estech.ditto:id/checkbox"},
         "CallRecordEnableText": {"by": "id", "value": "android:id/title", "text": "Call Record Enable"},
         "CallRecordEnableBox": {"by": "zpath", "value": "com.esi_estech.ditto:id/confirm_button"},
@@ -44,10 +42,7 @@ class BaseView(SeleniumActions):
         "E7HasStoppedText": {"by": "id", "value": "android:id/message", "text": "Unfortunately, ePhone7 has stopped."},
         "NetworkErrorRetry": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
         "NetworkErrorText": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertDialogTitle", "text": "Network Error"},
-        "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
-        "TestOtaAlertTitle": {"by": "id", "value": "com.esi_estech.ditto:id/alertTitle", "text": "Set OTA Server Address"},
-        "TestOtaEditText": {"by": "id", "value": "android:id/edit"},
-        "TestOtaServerUrlText": {"by": "id", "value": "android:id/title", "text": "Test OTA Server URL"}
+        "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"}
     }
 
     def __init__(self):
@@ -79,10 +74,6 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def swipe(self, origin_x, origin_y, destination_x, destination_y, duration):
         SeleniumActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration)
-
-    @Trace(log)
-    def tap(self, x, y, duration=200):
-        SeleniumActions.driver.tap([(x, y)], duration)
 
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder=None):
@@ -129,7 +120,7 @@ class BaseView(SeleniumActions):
         # im.paste(color_band, crop_points, 0)
         # im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after_%s.png' % suffix))
         if self.color_match(tab_color, active_color):
-            log.debug('tab_coloetr is "active": %s' % repr(tab_color))
+            log.debug('tab_color is "active": %s' % repr(tab_color))
             return 'active_color'
         elif self.color_match(tab_color, inactive_color):
             log.debug('tab_color is "inactive": %s' % repr(tab_color))
@@ -165,7 +156,7 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def tap_element(self, el, duration=200):
         center = (el.location['x'] + (el.size['width'] / 2), el.location['y'] + (el.size['height'] / 2))
-        SeleniumActions.driver.tap([center], duration)
+        self.tap([center], duration)
 
     def update_remote(self, caps_tag, force=False, timeout=30):
         if force or caps_tag != self.caps_tag:
@@ -197,17 +188,19 @@ class BaseView(SeleniumActions):
             log.debug('appium is already closed')
         else:
             log.debug('closing appium')
-            logcat = SeleniumActions.driver.get_log('logcat')
-            with open('log/e7_logcat.log', 'w') as f:
-                for line in [item['message'] for item in logcat]:
-                    f.write(line.encode('utf-8') + '\n')
-            SeleniumActions.driver.quit()
+            try:
+                logcat = SeleniumActions.driver.get_log('logcat')
+                with open('log/e7_logcat.log', 'w') as f:
+                    for line in [item['message'] for item in logcat]:
+                        f.write(line.encode('utf-8') + '\n')
+                SeleniumActions.driver.quit()
+            except WebDriverException:
+                log.debug("got WebDriverException, assuming appium already closed")
             SeleniumActions.driver = None
             self.caps_tag = None
 
     @Trace(log)
     def force_aosp_downgrade(self):
-
         actions = [
             {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Hit any key to stop autoboot:', 'timeout': 30},
             {'cmd': '\n', 'expect': '=> ', 'timeout': 5},
@@ -215,7 +208,6 @@ class BaseView(SeleniumActions):
             {'cmd': 'mmc setdsr 2\n', 'expect': 'set dsr OK, force rescan\n=> '},
             {'cmd': 'fastboot\n', 'expect': '0x4\nUSB_RESET\nUSB_PORT_CHANGE 0x4\n'}
         ]
-
         serial_dev = '/dev/ttyUSB0'
         ss = SpudSerial(serial_dev)
         for action in actions:
@@ -232,26 +224,24 @@ class BaseView(SeleniumActions):
         for cmd in fb_cmds:
             log.debug(">>> fastboot " + cmd)
             log.debug(fb.run_cmd(cmd))
+        ss.do_action({'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
 
     @Trace(log)
     def force_app_downgrade(self):
         serial_dev = '/dev/ttyUSB0'
         ss = SpudSerial(serial_dev)
         adb = ADB()
-        adb.run_cmd("install -r ePhone7/apks/10_0_9.apk")
-        action = {'cmd': 'reboot\n', 'new_cwd': '', 'timeout': 30}
+        log.debug(adb.run_cmd("install -r ePhone7/apks/10_0_10.apk").encode('string_escape'))
+        action = {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120}
         (reply, elapsed) = ss.do_action(action)
-        log.debug('[%5.3fs] cmd %s, expect %s, received %d chars' % (elapsed, repr(action['cmd']), repr(action['expect']), len(reply)))
-
 
     @Trace(log)
     def startup(self):
-        self.open_appium('nolaunch', force=True, timeout=60)
         retry_main = False
         while True:
             try:
                 current_activity = self.driver.current_activity
-                log.debug("startup: current_activity = " + current_activity)
+                log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
                     if retry_main:
                         break
@@ -278,18 +268,18 @@ class BaseView(SeleniumActions):
                 elif current_activity == '.settings.ui.TermsAndConditionsScreen':
                     from ePhone7.views import tnc_view
                     tnc_view.accept_tnc()
+                elif current_activity == '.OtaAppActivity':
+                    self.driver.send_keycode('KEYCODE_BACK')
                 elif current_activity == '.util.AppIntroActivity':
                     from ePhone7.views import app_intro_view
                     app_intro_view.skip_intro()
                 else:
                     raise Ux('unexpected current_activity value: %s' % current_activity)
-            except WebDriverException:
-                log.debug("startup: got WebDriverException (ignoring)")
                 sleep(5)
-
-    @Trace(log)
-    def shutdown(self):
-        self.close_appium()
+            except Ux as e:
+                log.debug(e.msg)
+                self.close_appium()
+                self.open_appium()
 
     @Trace(log)
     def wait_for_activity(self, activity, timeout=30):
