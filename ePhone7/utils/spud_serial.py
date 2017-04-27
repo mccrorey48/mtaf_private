@@ -11,7 +11,7 @@ log = logging_esi.get_logger('esi.spud_serial')
 
 class SpudSerial:
 
-    def __init__(self, serial_device):
+    def __init__(self, serial_device, pwd_check = True):
         try:
             # current user has to belong to "dialout" group or be superuser
             # to open the serial port
@@ -19,7 +19,8 @@ class SpudSerial:
         except serial.serialutil.SerialException:
             raise Ux('serial port %s not available' % serial_device)
         self.cwd = None
-        self.do_action({'cmd': 'cd\n', 'new_cwd': 'data'})
+        if pwd_check:
+            self.do_action({'cmd': 'cd\n', 'new_cwd': 'data'})
 
     def get_prompt(self):
         return 'root@r2d2:/' + self.cwd + ' # '
@@ -50,18 +51,26 @@ class SpudSerial:
             if no expect_text received after 'timeout' seconds, raise an exception;
             if expect_text is received, return 'reply'.
         """
+        log.debug('expect: cmd "%s", expect_text "%s"' % (repr(cmd), repr(expect_text)))
         reply = ''
-        self.connection.write(cmd)
+        log_str = ''
+        if len(cmd):
+            self.connection.write(cmd)
         start_time = time()
         while True:
             c = self.connection.read()
-            if c != '\r':
+            if len(c) and c != '\r' and ord(c) < 0xff:
                 reply += c
+                if c == '\n':
+                    log.debug('>>' + log_str.encode('string_escape'))
+                    log_str = ''
+                else:
+                    log_str += c
             elapsed = time() - start_time
             if reply.endswith(expect_text):
                 return reply, elapsed
             if time() - start_time > timeout:
-                raise Ux("expect: %s second timeout exceeded waiting for %s; reply = '%s'" % (timeout, expect_text, reply))
+                raise Ux("expect: %s second timeout exceeded waiting for %s; reply = '%s'" % (timeout, expect_text, reply.encode('string_escape')))
 
     @Trace(log)
     def flush(self, timeout=5):
@@ -98,9 +107,8 @@ class SpudSerial:
             expected = self.get_prompt()
         else:
             expected = action['expect']
-        log.debug("sending cmd = " + repr(action['cmd']))
         reply, elapsed = self.expect(action['cmd'], expected, timeout)
         for line in reply.split('\n'):
-            log.debug(line)
+            log.debug(line.encode('string_escape'))
         log.debug('Elapsed Time: %5.3f' % elapsed)
         return reply, elapsed

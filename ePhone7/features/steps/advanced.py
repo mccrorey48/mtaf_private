@@ -21,7 +21,7 @@ def advanced__i_action_the_call_record_enable_checkbox(context, action):
 @step("[advanced] I scroll down to the Call Record Enable setting")
 def advanced__i_scroll_down_to_the_call_record_enable_setting(context):
     if 'fake' not in str(context._config.tags).split(','):
-        elems = base_view.find_named_elements('AdvancedItems')
+        elems = user_view.find_named_elements('AdvancedItems')
         assert len(elems) > 1
         base_view.scroll(elems[-1], elems[0])
         if not base_view.element_is_present('CallRecordEnableText'):
@@ -33,6 +33,6 @@ def advanced__i_scroll_down_to_the_call_record_enable_setting(context):
 @step("[advanced] the Advanced Options view appears")
 def advanced__the_advanced_options_view_appears(context):
     if 'fake' not in str(context._config.tags).split(','):
-        assert base_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
+        assert user_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
 
 

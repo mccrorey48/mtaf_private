@@ -14,6 +14,7 @@ def before_all(context):
     cfg.set_site(cfg_server, site_tag)
     if 'fake' not in str(context._config.tags).split(','):
         # base_view.open_appium()
+        base_view.open_appium('nolaunch', force=True, timeout=60)
         base_view.startup()
 
 

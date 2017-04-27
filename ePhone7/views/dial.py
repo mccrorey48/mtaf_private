@@ -4,6 +4,7 @@ import lib.logging_esi as logging
 
 from ePhone7.utils.configure import cfg
 from ePhone7.views.user import UserView
+from ePhone7.views.base import base_view
 from ePhone7.utils.get_softphone import get_softphone
 from lib.wrappers import Trace
 from lib.user_exception import UserException as Ux
@@ -64,7 +65,6 @@ class DialView(UserView):
         "Advanced Settings": "*1987"
     }
 
-
     def __init__(self):
         super(DialView, self).__init__()
         self.png_file_base = 'keypad'
@@ -103,6 +103,7 @@ class DialView(UserView):
     @Trace(log)
     def dial_name(self, name):
         self.dial_number(self.numbers[name])
+
 
 dial_view = DialView()
 

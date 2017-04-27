@@ -10,6 +10,12 @@ def prefs__a_submenu_appears_with_a_network_option(context):
         prefs_view.element_is_present('MenuItemNetworkText')
 
 
+@then('[prefs] an upgrade is found and an "Upgrade" button appears')
+def prefs__an_upgrade_is_found_and_an_upgrade_button_appears(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.element_is_present('UpgradeButton')
+
+
 @then("[prefs] I read the displayed versions for the app and AOSP")
 def prefs__i_read_the_displayed_versions_for_the_app_and_aosp(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -36,8 +42,27 @@ def prefs__i_see_the_need_help_personal_phone_and_system_category_elements(conte
     pass
 
 
+@step('[prefs] I touch the "Check for System Update" option')
+def prefs__i_touch_the_check_for_system_update_option(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.click_named_element('SystemUpdate')
+
+
+@step('[prefs] I touch the "{name}" menu category')
+def prefs__i_touch_the_name_menu_category(context, name):
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs_view.hide_list_items()
+        elems = prefs_view.find_named_elements('MenuCategories')
+        for elem in elems:
+            if elem.text == name:
+                elem.click()
+                break
+        else:
+            raise Ux('No menu category element with text="%s" was found' % name)
+
+
 @step('[prefs] I touch the "{name}" menu item')
-def prefs__i_touch_the_about_menu_item(context, name):
+def prefs__i_touch_the_name_menu_item(context, name):
     if 'fake' not in str(context._config.tags).split(','):
         elems = prefs_view.find_named_elements('MenuItemTexts')
         for elem in elems:
@@ -54,17 +79,10 @@ def prefs__i_touch_the_network_option(context):
         prefs_view.click_named_element('MenuItemNetworkText')
 
 
-@step('[prefs] I touch the "{name}" menu category')
-def prefs__i_touch_the_system_menu_category(context, name):
+@step('[prefs] I touch the "Upgrade" button')
+def prefs__i_touch_the_upgrade_button(context):
     if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.hide_list_items()
-        elems = prefs_view.find_named_elements('MenuCategories')
-        for elem in elems:
-            if elem.text == name:
-                elem.click()
-                break
-        else:
-            raise Ux('No menu category element with text="%s" was found' % name)
+        prefs_view.click_named_element('UpgradeButton')
 
 
 @step('[prefs] I touch the "X" icon')
@@ -99,12 +117,5 @@ def prefs__the_preferences_window_appears(context):
 def prefs__the_preferences_window_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
         assert prefs_view.element_is_not_present('Preferences')
-
-
-@step('[prefs] I touch the "Check for System Update" option')
-def step_impl(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs_view.click_named_element('SystemUpdate')
-        pass
 
 
