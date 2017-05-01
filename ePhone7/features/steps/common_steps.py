@@ -496,7 +496,7 @@ def i_set_the_ota_server(context):
         expected = ''
         if context.app_version == '1.0.10' and ota_server == 'alpha':
             # special case for version 1.0.10, directly enter the upgrade url
-            user_view.set_alpha_ota_server()
+            user_view.set_alpha_ota_server(ota_server)
         else:
             user_view.goto_tab('Dial')
             if ota_server == 'beta':
@@ -883,9 +883,9 @@ def my_system_version_needs_to_be_upgraded(context):
         if need_aosp_downgrade or need_app_downgrade:
             base_view.close_appium()
             if need_aosp_downgrade:
-                base_view.force_aosp_downgrade()
+                base_view.force_aosp_downgrade(context.config.userdata.get('downgrade_aosp'))
             if need_app_downgrade:
-                base_view.force_app_downgrade()
+                base_view.force_app_downgrade(context.config.userdata.get('downgrade_app'))
             base_view.open_appium('nolaunch', force=True, timeout=60)
             base_view.startup()
             context.execute_steps(u"""

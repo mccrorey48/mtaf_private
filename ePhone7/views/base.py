@@ -200,7 +200,7 @@ class BaseView(SeleniumActions):
             self.caps_tag = None
 
     @Trace(log)
-    def force_aosp_downgrade(self):
+    def force_aosp_downgrade(self, version):
         actions = [
             {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Hit any key to stop autoboot:', 'timeout': 30},
             {'cmd': '\n', 'expect': '=> ', 'timeout': 5},
@@ -216,9 +216,9 @@ class BaseView(SeleniumActions):
             ss.connection.reset_input_buffer()
         fb = Fastboot()
         fb_cmds = [
-            "flash boot ePhone7/aosps/2.1.3/boot.img",
-            "flash system ePhone7/aosps/2.1.3/system.img",
-            "flash recovery ePhone7/aosps/2.1.3/recovery.img",
+            "flash boot %s" % os.path.join(os.getenv("AOSPS_HOME"), version, "boot.img"),
+            "flash system %s" % os.path.join(os.getenv("AOSPS_HOME"), version, "system.img"),
+            "flash recovery %s" % os.path.join(os.getenv("AOSPS_HOME"), version, "recovery.img"),
             "reboot"
         ]
         for cmd in fb_cmds:
@@ -227,11 +227,11 @@ class BaseView(SeleniumActions):
         ss.do_action({'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
 
     @Trace(log)
-    def force_app_downgrade(self):
+    def force_app_downgrade(self, version):
         serial_dev = '/dev/ttyUSB0'
         ss = SpudSerial(serial_dev)
         adb = ADB()
-        log.debug(adb.run_cmd("install -r ePhone7/apks/10_0_10.apk").encode('string_escape'))
+        log.debug(adb.run_cmd("install -r %s.apk" % os.path.join(os.getenv('APKS_HOME'), version)).encode('string_escape'))
         action = {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120}
         (reply, elapsed) = ss.do_action(action)
 

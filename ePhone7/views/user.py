@@ -62,7 +62,7 @@ class UserView(BaseView):
     #     self.wait_for_condition_true(lambda: remote.current_activity == '.settings.ui.LoginActivity')
 
     @Trace(log)
-    def set_alpha_ota_server(self):
+    def set_alpha_ota_server(self, ota_server):
         from ePhone7.views import dial_view
         self.goto_tab('Dial')
         dial_view.dial_name('Advanced Settings')
@@ -91,7 +91,10 @@ class UserView(BaseView):
         self.click_named_element('TestOtaServerUrlText')
         ota_url = self.find_named_element('TestOtaEditText')
         ota_url.clear()
-        ota_url.set_text('http://52.36.62.239/aus/')
+        if ota_server == 'alpha':
+            ota_url.set_text('http://52.36.62.239/aus/')
+        else:
+            ota_url.set_text('http://52.36.62.239/aus/beta/')
         self.click_named_element('OtaAddressOk')
         self.send_keycode('KEYCODE_BACK')
         sleep(5)

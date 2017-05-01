@@ -7,6 +7,7 @@ import contextlib
 from datetime import datetime, timedelta
 from lib.mock_steps import MockDetector
 import lib.logging_esi as logging
+from lib.user_exception import UserException as Ux
 log = logging.get_logger('esi.run_features')
 
 
@@ -242,8 +243,9 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
 
 if __name__ == '__main__':
     import argparse
-    from os import path
+    from os import path, getenv, listdir, mkdir
     import spur
+    import shutil
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description='  runs behave test on specified features directory and saves' +
                                                  '  the results on a mongodb running on a specified server\n')
@@ -265,39 +267,107 @@ if __name__ == '__main__':
     mock_detector = MockDetector(path.join(args.features_directory, "steps"),
                             fake_tag='fake' in args.run_tags.split(','))
 
-    shell = spur.SshShell(
-        hostname='ec2-52-36-62-239.us-west-2.compute.amazonaws.com',
-        username='ubuntu',
-        private_key_file='ePhone7/keys/OTAServer2.pem',
-        missing_host_key=spur.ssh.MissingHostKey.accept
-    )
+    try:
+        build_prop_server = getenv('EPHONE7_BUILD_PROP_SERVER')
+        if not build_prop_server:
+            build_prop_server = 'ec2-52-36-62-239.us-west-2.compute.amazonaws.com'
+        build_image_server = getenv('EPHONE7_BUILD_IMAGE_SERVER')
+        if not build_image_server:
+            build_image_server = '10.3.1.164'
+        aosps_home = getenv('AOSPS_HOME')
+        if not aosps_home:
+            raise Ux('environment variable AOSPS_HOME must be set to a valid directory')
+        apks_home = getenv('APKS_HOME')
+        if not apks_home:
+            raise Ux('environment variable APKS_HOME must be set to a valid directory')
 
-    with shell:
-        result = shell.run(['cat', '/www/aus/otatest/build.prop'])
+        # make sure both aosps_home and apks_home directories exist
+        try:
+            mkdir(aosps_home)
+        except OSError:
+            pass
+        try:
+            mkdir(apks_home)
+        except OSError:
+            pass
 
-    current_aosp='Unknown'
-    current_app='Unknown'
-    aosp_prefix = 'ro.build.id='
-    aosp_new_prefix = 'system.version='
-    app_prefix = 'app.version='
-    for line in result.output.split('\n'):
-        line = line.strip()
-        if line.startswith(aosp_prefix):
-            current_aosp = line[len(aosp_prefix):]
-        elif line.startswith(aosp_new_prefix):
-            current_aosp = line[len(aosp_new_prefix):]
-        elif line.startswith(app_prefix):
-            current_app = line[len(app_prefix):]
+        # get the current version from the build server
+        shell = spur.SshShell(
+            hostname=build_prop_server,
+            username='ubuntu',
+            private_key_file='ePhone7/keys/OTAServer2.pem',
+            missing_host_key=spur.ssh.MissingHostKey.accept
+        )
+        with shell:
+            if args.ota_server == 'alpha':
+                result = shell.run(['cat', '/www/aus/otatest/build.prop'])
+            else:
+                result = shell.run(['cat', '/www/aus/beta/otatest/build.prop'])
+        current_aosp = None
+        current_app = None
+        aosp_prefix = 'ro.build.id='
+        aosp_new_prefix = 'system.version='
+        app_prefix = 'app.version='
+        for line in result.output.split('\n'):
+            line = line.strip()
+            if line.startswith(aosp_prefix):
+                current_aosp = line[len(aosp_prefix):]
+            elif line.startswith(aosp_new_prefix):
+                current_aosp = line[len(aosp_new_prefix):]
+            elif line.startswith(app_prefix):
+                current_app = line[len(app_prefix):]
+        if current_aosp is None:
+            raise Ux("current_aosp not found")
+        elif current_app is None:
+            raise Ux("current_app not found")
 
+        # make sure the downgrade versions of the aosp and apk are available
+        aosp_dirs = listdir(aosps_home)
+        apks = listdir(apks_home)
+        if not args.downgrade_aosp in aosp_dirs:
+            mkdir(path.join(aosps_home, args.downgrade_aosp))
+        shell = spur.SshShell(
+            hostname=build_image_server,
+            username='root',
+            password='root',
+            missing_host_key=spur.ssh.MissingHostKey.accept
+        )
+        aosp_downgrade_images = listdir(path.join(aosps_home, args.downgrade_aosp))
+        with shell:
+            for basename in ['boot', 'system', 'recovery']:
+                img_filename = basename + '.img'
+                remote_img_path = 'aosps/%s/%s' % ('_'.join(['build'] + args.downgrade_aosp.split('.')), img_filename)
+                print "remote file: " + remote_img_path
+                local_img_path = path.join(aosps_home, args.downgrade_aosp, img_filename)
+                print "local file: " + local_img_path + '...',
+                if img_filename in aosp_downgrade_images:
+                    print "already downloaded to test host"
+                else:
+                    print "downloading to test host"
+                    with shell.open(remote_img_path, 'rb') as remote_file:
+                        with open(local_img_path, 'wb') as local_file:
+                            shutil.copyfileobj(remote_file, local_file)
+            apk_filename = 'update.apk.%02d%02d%02d' % tuple([int(n) for n in args.downgrade_app.split('.')])
+            remote_apk_path = 'apks/' + apk_filename
+            local_apk_path = path.join(apks_home, apk_filename)
+            print "remote file: " + remote_apk_path
+            print "local file: " + remote_apk_path + '...',
+            if apk_filename in apks:
+                print "already downloaded to test host"
+            else:
+                print "downloading to test host"
+                with shell.open(remote_apk_path, 'rb') as remote_file:
+                    with open(local_apk_path, 'wb') as local_file:
+                        shutil.copyfileobj(remote_file, local_file)
 
-    if args.json_file:
-        with open(args.json_file) as fp:
-            features = json.load(fp)
-    else:
-        features = run_features(args.features_directory, args.site_tag, args.run_tags, current_aosp,
-                                args.downgrade_aosp, current_app, args.downgrade_app, args.ota_server)
-    configuration = "site_tag:%s, run_tags:%s" % (args.site_tag, args.run_tags)
-    write_result_to_db(args.server, args.db_name, args.test_class, args.environment, configuration, mock_detector, features)
-
-
+        if args.json_file:
+            with open(args.json_file) as fp:
+                features = json.load(fp)
+        else:
+            features = run_features(args.features_directory, args.site_tag, args.run_tags, current_aosp,
+                                    args.downgrade_aosp, current_app, args.downgrade_app, args.ota_server)
+        configuration = "site_tag:%s, run_tags:%s" % (args.site_tag, args.run_tags)
+        write_result_to_db(args.server, args.db_name, args.test_class, args.environment, configuration, mock_detector, features)
+    except Ux as e:
+        print "User Exception: " + e.get_msg()
 
