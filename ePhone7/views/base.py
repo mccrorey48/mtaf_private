@@ -236,9 +236,10 @@ class BaseView(SeleniumActions):
         (reply, elapsed) = ss.do_action(action)
 
     @Trace(log)
-    def startup(self):
+    def startup(self, timeout=600):
+        start_time = time()
         retry_main = False
-        while True:
+        while time() - start_time < timeout:
             try:
                 current_activity = self.driver.current_activity
                 log.debug("startup: current_activity = " + repr(current_activity))
@@ -280,6 +281,8 @@ class BaseView(SeleniumActions):
                 log.debug(e.msg)
                 self.close_appium()
                 self.open_appium()
+        else:
+            raise Ux('failed to restart ePhone7 within %d seconds' % timeout)
 
     @Trace(log)
     def wait_for_activity(self, activity, timeout=30):
