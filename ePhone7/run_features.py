@@ -7,6 +7,7 @@ import contextlib
 from datetime import datetime, timedelta
 from lib.mock_steps import MockDetector
 import lib.logging_esi as logging
+from ePhone7.utils.configure import cfg
 from lib.user_exception import UserException as Ux
 log = logging.get_logger('esi.run_features')
 
@@ -246,40 +247,38 @@ if __name__ == '__main__':
     from os import path, getenv, listdir, mkdir
     import spur
     import shutil
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
-                                     description='  runs behave test on specified features directory and saves' +
-                                                 '  the results on a mongodb running on a specified server\n')
-    parser.add_argument("-d", "--db_name", type=str, default='e7_results', help="name of db")
-    parser.add_argument("-c", "--test_class", type=str, default='regression',
-                        help="class of test, e.g. regression, smoke etc.")
-    parser.add_argument("-e", "--environment", type=str, default='production', help="environment e.g. production")
-    parser.add_argument("-f", "--features_directory", type=str, default='ePhone7/features',
-                        help="operation to perform")
-    parser.add_argument("-j", "--json_file", type=str, help="JSON file to load instead of running features")
-    parser.add_argument("-s", "--server", type=str, default='vqda1',
-                        help="(optional) specify mongodb server, default vqda1")
-    parser.add_argument("-r", "--run_tags", type=str, default='wip', help="run tags (comma separated list)")
-    parser.add_argument("-t", "--site_tag", type=str, default='mm', help="site tag (default mm)")
-    parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.1.3', help="apk version (default 2.1.3)")
-    parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
-    parser.add_argument("-a", "--downgrade_app", type=str, default='1.0.10', help="apk version (default 1.0.10)")
-    args = parser.parse_args()
-    mock_detector = MockDetector(path.join(args.features_directory, "steps"),
-                            fake_tag='fake' in args.run_tags.split(','))
 
     try:
-        build_prop_server = getenv('EPHONE7_BUILD_PROP_SERVER')
-        if not build_prop_server:
-            build_prop_server = 'ec2-52-36-62-239.us-west-2.compute.amazonaws.com'
-        build_image_server = getenv('EPHONE7_BUILD_IMAGE_SERVER')
-        if not build_image_server:
-            build_image_server = '10.3.1.164'
-        aosps_home = getenv('AOSPS_HOME')
-        if not aosps_home:
-            raise Ux('environment variable AOSPS_HOME must be set to a valid directory')
-        apks_home = getenv('APKS_HOME')
-        if not apks_home:
-            raise Ux('environment variable APKS_HOME must be set to a valid directory')
+        # get site name from environment
+        mtaf_site = getenv('MTAF_SITE')
+        if not mtaf_site:
+            raise Ux('MTAF_SITE must be defined in the run-time environment')
+        parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+                                         description='  runs behave test on specified features directory and saves' +
+                                                     '  the results on a mongodb running on a specified server\n')
+        parser.add_argument("-d", "--db_name", type=str, default='e7_results', help="name of db")
+        parser.add_argument("-c", "--test_class", type=str, default='regression',
+                            help="class of test, e.g. regression, smoke etc.")
+        parser.add_argument("-e", "--environment", type=str, default='production', help="environment e.g. production")
+        parser.add_argument("-f", "--features_directory", type=str, default='ePhone7/features',
+                            help="operation to perform")
+        parser.add_argument("-j", "--json_file", type=str, help="JSON file to load instead of running features")
+        parser.add_argument("-s", "--server", type=str, default='vqda1',
+                            help="(optional) specify mongodb server, default vqda1")
+        parser.add_argument("-r", "--run_tags", type=str, default='wip', help="run tags (comma separated list)")
+        parser.add_argument("-t", "--site_tag", type=str, default=mtaf_site, help="site tag (default %s)" % mtaf_site)
+        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.1.3', help="apk version (default 2.1.3)")
+        parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
+        parser.add_argument("-a", "--downgrade_app", type=str, default='1.0.10', help="apk version (default 1.0.10)")
+        args = parser.parse_args()
+        cfg.set_site(args.site_tag)
+        build_prop_server = cfg.BuildPropServer
+        build_image_server = cfg.BuildImageServer
+        aosps_home = cfg.AospsHome
+        apks_home = cfg.ApksHome
+        mock_detector = MockDetector(path.join(args.features_directory, "steps"),
+                                fake_tag='fake' in args.run_tags.split(','))
+
 
         # make sure both aosps_home and apks_home directories exist
         try:
@@ -293,7 +292,7 @@ if __name__ == '__main__':
 
         # get the current version from the build server
         shell = spur.SshShell(
-            hostname=build_prop_server,
+            hostname=cfg.build_prop_server,
             username='ubuntu',
             private_key_file='ePhone7/keys/OTAServer2.pem',
             missing_host_key=spur.ssh.MissingHostKey.accept
