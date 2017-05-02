@@ -347,12 +347,13 @@ if __name__ == '__main__':
                     with shell.open(remote_img_path, 'rb') as remote_file:
                         with open(local_img_path, 'wb') as local_file:
                             shutil.copyfileobj(remote_file, local_file)
-            apk_filename = 'update.apk.%02d%02d%02d' % tuple([int(n) for n in args.downgrade_app.split('.')])
-            remote_apk_path = 'apks/' + apk_filename
-            local_apk_path = path.join(apks_home, apk_filename)
+            remote_apk_filename = 'update.apk.%02d%02d%02d' % tuple([int(n) for n in args.downgrade_app.split('.')])
+            local_apk_filename = args.downgrade_app + '.apk'
+            remote_apk_path = 'apks/' + remote_apk_filename
+            local_apk_path = path.join(apks_home, local_apk_filename)
             print "remote file: " + remote_apk_path
             print "local file: " + remote_apk_path + '...',
-            if apk_filename in apks:
+            if local_apk_filename in apks:
                 print "already downloaded to test host"
             else:
                 print "downloading to test host"
