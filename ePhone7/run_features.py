@@ -271,14 +271,13 @@ if __name__ == '__main__':
         parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
         parser.add_argument("-a", "--downgrade_app", type=str, default='1.0.10', help="apk version (default 1.0.10)")
         args = parser.parse_args()
-        cfg.set_site(args.site_tag)
-        build_prop_server = cfg.BuildPropServer
-        build_image_server = cfg.BuildImageServer
-        aosps_home = cfg.AospsHome
-        apks_home = cfg.ApksHome
+        cfg.set_site(args.server, args.site_tag)
+        build_prop_server = cfg.site["BuildPropServer"]
+        build_image_server = cfg.site["BuildImageServer"]
+        aosps_home = cfg.site["AospsHome"]
+        apks_home = cfg.site["ApksHome"]
         mock_detector = MockDetector(path.join(args.features_directory, "steps"),
                                 fake_tag='fake' in args.run_tags.split(','))
-
 
         # make sure both aosps_home and apks_home directories exist
         try:
@@ -292,7 +291,7 @@ if __name__ == '__main__':
 
         # get the current version from the build server
         shell = spur.SshShell(
-            hostname=cfg.build_prop_server,
+            hostname=build_prop_server,
             username='ubuntu',
             private_key_file='ePhone7/keys/OTAServer2.pem',
             missing_host_key=spur.ssh.MissingHostKey.accept

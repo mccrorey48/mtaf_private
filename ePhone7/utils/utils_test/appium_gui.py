@@ -6,8 +6,10 @@ from Tkinter import Tk, Frame, Button, Text, NORMAL, DISABLED, Scrollbar, Entry,
 from lib.user_exception import UserException as Ux
 from pyand import ADB
 import sys
+import os
 import lib.logging_esi as logging
-cfg.set_site('vqda1', 'mm')
+site_tag = os.getenv('MTAF_SITE')
+cfg.set_site('vqda1', site_tag)
 log = logging.get_logger('esi.appium_gui')
 
 
@@ -211,7 +213,7 @@ class TestGui(Frame):
             elif name == 'set_alpha_ota_server':
                 print "Setting alpha OTA server...",
                 user_view.goto_tab('Dial')
-                user_view.set_alpha_ota_server()
+                user_view.set_ota_server('alpha')
                 print "Done"
             elif name == 'install_apk':
                 print "Installing APK 10.0.10 using adb...",
@@ -227,7 +229,9 @@ class TestGui(Frame):
 
     def install_apk(self):
         adb = ADB()
-        output = adb.run_cmd("install -r ePhone7/apks/10_0_10.apk")
+        apk_path = os.path.join(cfg.site["ApksHome"], "1.0.10.apk")
+        print "Installing " + apk_path
+        output = adb.run_cmd("install -r -d %s" % apk_path)
         for line in output.split('\n'):
             log.debug(line.encode('string_escape'))
 

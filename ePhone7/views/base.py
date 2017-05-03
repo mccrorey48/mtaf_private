@@ -216,9 +216,9 @@ class BaseView(SeleniumActions):
             ss.connection.reset_input_buffer()
         fb = Fastboot()
         fb_cmds = [
-            "flash boot %s" % os.path.join(os.getenv("AOSPS_HOME"), version, "boot.img"),
-            "flash system %s" % os.path.join(os.getenv("AOSPS_HOME"), version, "system.img"),
-            "flash recovery %s" % os.path.join(os.getenv("AOSPS_HOME"), version, "recovery.img"),
+            "flash boot %s" % os.path.join(cfg.site["AospsHome"], version, "boot.img"),
+            "flash system %s" % os.path.join(cfg.site["AospsHome"], version, "system.img"),
+            "flash recovery %s" % os.path.join(cfg.site["AospsHome"], version, "recovery.img"),
             "reboot"
         ]
         for cmd in fb_cmds:
@@ -231,49 +231,81 @@ class BaseView(SeleniumActions):
         serial_dev = '/dev/ttyUSB0'
         ss = SpudSerial(serial_dev)
         adb = ADB()
-        log.debug(adb.run_cmd("install -r %s.apk" % os.path.join(os.getenv('APKS_HOME'), version)).encode('string_escape'))
+        log.debug(adb.run_cmd("install -r -d %s.apk" % os.path.join(cfg.site["ApksHome"], version)).encode('string_escape'))
         action = {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120}
         (reply, elapsed) = ss.do_action(action)
 
     @Trace(log)
     def startup(self, timeout=600):
         start_time = time()
-        retry_main = False
+        retrying_main = False
+        tried_crash_ok = False
+        tried_net_retry = False
+        tried_reg_retry = False
+        tried_e7_stopped = False
+        tried_login = False
+        tried_tnc = False
+        tried_intro = False
+        tried_ota = False
         while time() - start_time < timeout:
             try:
                 current_activity = self.driver.current_activity
                 log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
-                    if retry_main:
+                    if retrying_main:
                         break
                     sleep(10)
-                    retry_main = True
+                    retrying_main = True
                 elif current_activity == '.util.crashreporting.EPhoneCrashReportDialog':
-                    retry_main = False
+                    if tried_crash_ok:
+                        raise Ux("got activity .util.crashreporting.EPhoneCrashReportDialog twice")
+                    retrying_main = False
                     self.click_named_element('CrashOkButton')
+                    tried_crash_ok = True
                     sleep(5)
                 elif current_activity == '.activities.AutoLoginActivity':
-                    retry_main = False
+                    retrying_main = False
                     if self.element_is_present('NetworkErrorText'):
+                        if tried_net_retry:
+                            raise Ux("got Network Error Retry popup twice")
                         log.debug("startup: NetworkErrorText present")
                         self.click_named_element('NetworkErrorRetry')
+                        tried_net_retry = True
                     elif self.element_is_present('E7HasStoppedText'):
+                        if tried_e7_stopped:
+                            raise Ux("got ePhone7 Stopped popup twice")
                         log.debug("startup: E7HasStoppedText present")
                         self.click_named_element('E7HasStoppedOk')
+                        tried_e7_stopped = True
                     elif self.element_is_present('RegRetryButton'):
+                        if tried_reg_retry:
+                            raise Ux("got Registration Retry popup twice")
                         log.debug("startup: RegRetryButton present")
                         self.click_named_element('RegRetryButton')
+                        tried_reg_retry = True
                 elif current_activity == '.settings.ui.LoginActivity':
+                    if tried_login:
+                        raise Ux("got activity .settings.ui.LoginActivity twice")
                     from ePhone7.views import login_view
                     login_view.login()
+                    tried_login = True
                 elif current_activity == '.settings.ui.TermsAndConditionsScreen':
+                    if tried_tnc:
+                        raise Ux("got activity .settings.ui.TermsAndConditionsScreen twice")
                     from ePhone7.views import tnc_view
                     tnc_view.accept_tnc()
+                    tried_tnc = True
                 elif current_activity == '.OtaAppActivity':
+                    if tried_ota:
+                        raise Ux("got activity .OtaAppActivity twice")
                     self.driver.send_keycode('KEYCODE_BACK')
+                    tried_ota = True
                 elif current_activity == '.util.AppIntroActivity':
+                    if tried_intro:
+                        raise Ux("got activity .util.AppIntroActivity twice")
                     from ePhone7.views import app_intro_view
                     app_intro_view.skip_intro()
+                    tried_intro = True
                 else:
                     raise Ux('unexpected current_activity value: %s' % current_activity)
                 sleep(5)

@@ -62,7 +62,7 @@ class UserView(BaseView):
     #     self.wait_for_condition_true(lambda: remote.current_activity == '.settings.ui.LoginActivity')
 
     @Trace(log)
-    def set_alpha_ota_server(self, ota_server):
+    def set_ota_server(self, ota_server):
         from ePhone7.views import dial_view
         self.goto_tab('Dial')
         dial_view.dial_name('Advanced Settings')

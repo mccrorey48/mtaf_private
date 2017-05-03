@@ -496,7 +496,7 @@ def i_set_the_ota_server(context):
         expected = ''
         if context.app_version == '1.0.10' and ota_server == 'alpha':
             # special case for version 1.0.10, directly enter the upgrade url
-            user_view.set_alpha_ota_server(ota_server)
+            user_view.set_ota_server(ota_server)
         else:
             user_view.goto_tab('Dial')
             if ota_server == 'beta':
@@ -806,7 +806,7 @@ def i_wait_for_the_phone_to_upgrade_and_reboot(context):
         from ePhone7.utils.spud_serial import SpudSerial
         ip_addr = SpudSerial.get_my_ip_addr()
         actions = [
-            {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120},
+            {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 600},
             {'cmd': 'cd /data/misc/adb\n', 'new_cwd': 'data/misc/adb'},
             {'cmd': 'alias tftp="busybox tftp"\n', 'new_cwd': None},
             {'cmd': 'tftp -g -r adbkey.pub -l adb_keys %s\n' % ip_addr, 'new_cwd': None},
