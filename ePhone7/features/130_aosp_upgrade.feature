@@ -15,3 +15,8 @@ Feature: As a user I want to to update my phone's software to the latest version
     Then  I wait for the phone to upgrade and reboot
     And   I verify the system and app versions are current
 
+  @2_3_0dg
+  Scenario: Downgrade AOSP to 2.3.0
+    Given I am logged in to the ePhone7
+    Then  I downgrade my AOSP from 2.3.6 to 2.3.0
+

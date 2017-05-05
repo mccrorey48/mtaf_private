@@ -2,10 +2,19 @@ from ePhone7.utils.configure import cfg
 from ePhone7.views import base_view
 import lib.logging_esi as logging
 from os import path, makedirs
+import sys
 log = logging.get_logger('esi.environment')
 
 
+def run_substep(context):
+    def wrapped(step_name):
+        context.is_substep = True
+        context.execute_steps(unicode('Then ' + step_name))
+    return wrapped
+
 def before_all(context):
+    context.is_substep = False
+    context.run_substep = run_substep(context)
     site_tag = context.config.userdata.get('site_tag')
     if 'cfg_server' in context.config.userdata:
         cfg_server = context.config.userdata.get('cfg_server')
@@ -37,11 +46,18 @@ def after_scenario(context, scenario):
 
 
 def before_step(context, step):
+    if context.is_substep:
+        sys.stdout.write("substep = " + step.name)
+    else:
+        print("step = " + step.name)
     logging.push_msg_src('    step: %s' % step.name[:30])
     log.info('step.name: %s' % step.name)
 
 
 def after_step(context, step):
+    if context.is_substep:
+        print(',%s,%.3f' % (step.status, step.duration))
+        context.is_substep = False
     if 'fake' not in str(context._config.tags).split(','):
         if step.status == 'failed':
             xml = base_view.get_source()

@@ -487,7 +487,7 @@ def i_see_the_keypad(context):
     pass
 
 
-@then("I set the OTA server")
+@step("I set the OTA server")
 def i_set_the_ota_server(context):
     if 'fake' not in str(context._config.tags).split(','):
         ota_server = context.config.userdata.get('ota_server')
@@ -508,7 +508,7 @@ def i_set_the_ota_server(context):
                 dial_view.dial_name('Alpha OTA Server')
                 dial_view.click_named_element('FuncKeyCall')
                 text = dial_view.find_named_element('OtaUpdatePopupContent').text
-                expected = 'Production OTA Server Enabled'
+                expected = 'Alpha OTA Server Enabled'
             elif ota_server == 'production':
                 dial_view.dial_name('Production OTA Server')
                 dial_view.click_named_element('FuncKeyCall')
@@ -517,7 +517,7 @@ def i_set_the_ota_server(context):
             else:
                 raise Ux('unknown expected ota_server defined: %s' % ota_server)
             assert text == expected, "expected %s, got %s" % (expected, text)
-            base_view.click_named_element('OtaAddressOk')
+            base_view.click_named_element('OtaServerOk')
             base_view.send_keycode('KEYCODE_BACK')
             sleep(5)
 
@@ -758,16 +758,14 @@ def i_touch_walkthrough(context):
 @step("I verify the system and app versions are current")
 def i_verify_the_system_and_app_versions_are_current(context):
     if 'fake' not in str(context._config.tags).split(','):
-        context.execute_steps(u"""
-            Given I am logged in to the ePhone7
-            When  [user] I touch the Preferences icon
-            Then  [prefs] the Preferences window appears
-            When  [prefs] I touch the "System" menu category
-            And   [prefs] I touch the "About ePhone7" menu item
-            Then  [prefs] I read the displayed versions for the app and AOSP
-            When  [prefs] I touch the "X" icon
-            Then  [prefs] the Preferences window disappears
-            """)
+        context.run_substeps('Given I am logged in to the ePhone7')
+        context.run_substeps('When  [user] I touch the Preferences icon')
+        context.run_substeps('Then  [prefs] the Preferences window appears')
+        context.run_substeps('When  [prefs] I touch the "System" menu category')
+        context.run_substeps('And   [prefs] I touch the "About ePhone7" menu item')
+        context.run_substeps('Then  [prefs] I read the displayed versions for the app and AOSP')
+        context.run_substeps('When  [prefs] I touch the "X" icon')
+        context.run_substeps('Then  [prefs] the Preferences window disappears')
     app_actual = context.app_version
     aosp_actual = context.aosp_version
     app_expect = context.config.userdata.get('current_app')
@@ -865,19 +863,34 @@ def my_saved_voicemails_are_listed(context):
     pass
 
 
+@step("I downgrade my AOSP from {old_version} to {new_version}")
+def i_downgrade_my_aosp_from_old_version_to_new_version(context, old_version, new_version):
+    if 'fake' not in str(context._config.tags).split(','):
+        context.run_substep('I am logged in to the ePhone7')
+        context.run_substep('[user] I touch the Preferences icon')
+        context.run_substep('[prefs] the Preferences window appears')
+        context.run_substep('[prefs] I touch the "System" menu category')
+        context.run_substep('[prefs] I touch the "About ePhone7" menu item')
+        context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
+        context.run_substep('[prefs] I touch the "X" icon')
+        context.run_substep('[prefs] the Preferences window disappears')
+        if context.aosp_version == old_version:
+            base_view.close_appium()
+            base_view.force_aosp_downgrade(new_version)
+            base_view.open_appium('nolaunch', force=True, timeout=60)
+            base_view.startup()
+
 @given("my system version needs to be upgraded")
 def my_system_version_needs_to_be_upgraded(context):
     if 'fake' not in str(context._config.tags).split(','):
-        context.execute_steps(u"""
-            Given I am logged in to the ePhone7
-            When  [user] I touch the Preferences icon
-            Then  [prefs] the Preferences window appears
-            When  [prefs] I touch the "System" menu category
-            And   [prefs] I touch the "About ePhone7" menu item
-            Then  [prefs] I read the displayed versions for the app and AOSP
-            When  [prefs] I touch the "X" icon
-            Then  [prefs] the Preferences window disappears
-            """)
+        context.run_substeps('Given I am logged in to the ePhone7')
+        context.run_substeps('When  [user] I touch the Preferences icon')
+        context.run_substeps('Then  [prefs] the Preferences window appears')
+        context.run_substeps('When  [prefs] I touch the "System" menu category')
+        context.run_substeps('And   [prefs] I touch the "About ePhone7" menu item')
+        context.run_substeps('Then  [prefs] I read the displayed versions for the app and AOSP')
+        context.run_substeps('When  [prefs] I touch the "X" icon')
+        context.run_substeps('Then  [prefs] the Preferences window disappears')
         need_aosp_downgrade = context.aosp_version != context.config.userdata.get('downgrade_aosp')
         need_app_downgrade = context.app_version != context.config.userdata.get('downgrade_app')
         if need_aosp_downgrade or need_app_downgrade:
@@ -888,16 +901,14 @@ def my_system_version_needs_to_be_upgraded(context):
                 base_view.force_app_downgrade(context.config.userdata.get('downgrade_app'))
             base_view.open_appium('nolaunch', force=True, timeout=60)
             base_view.startup()
-            context.execute_steps(u"""
-                Given I am logged in to the ePhone7
-                When  [user] I touch the Preferences icon
-                Then  [prefs] the Preferences window appears
-                When  [prefs] I touch the "System" menu category
-                And   [prefs] I touch the "About ePhone7" menu item
-                Then  [prefs] I read the displayed versions for the app and AOSP
-                When  [prefs] I touch the "X" icon
-                Then  [prefs] the Preferences window disappears
-                """)
+            context.run_substeps('Given I am logged in to the ePhone7')
+            context.run_substeps('When  [user] I touch the Preferences icon')
+            context.run_substeps('Then  [prefs] the Preferences window appears')
+            context.run_substeps('When  [prefs] I touch the "System" menu category')
+            context.run_substeps('And   [prefs] I touch the "About ePhone7" menu item')
+            context.run_substeps('Then  [prefs] I read the displayed versions for the app and AOSP')
+            context.run_substeps('When  [prefs] I touch the "X" icon')
+            context.run_substeps('Then  [prefs] the Preferences window disappears')
 
 
 @step("Only the contact I touched is listed")

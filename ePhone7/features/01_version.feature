@@ -8,6 +8,7 @@ Feature: The version of the software should be correct
     When  [prefs] I touch the "System" menu category
     And   [prefs] I touch the "About ePhone7" menu item
     Then  [prefs] I read the displayed versions for the app and AOSP
-    And   [prefs] the current app and AOSP versions are displayed
     When  [prefs] I touch the "X" icon
     Then  [prefs] the Preferences window disappears
+    And   [prefs] I upgrade the phone if the versions are not correct
+

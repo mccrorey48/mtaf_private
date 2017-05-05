@@ -98,6 +98,12 @@ def background__i_touch_the_history_button(context):
         user__i_touch_the_history_button(context)
 
 
+@when('[background] I touch the "{name}" menu category')
+def background__i_touch_the_name_menu_category(context, name):
+    if 'fake' not in str(context._config.tags).split(','):
+        prefs__i_touch_the_name_menu_category(context, name)
+
+
 @when('[background] I touch the "Network" option')
 def background__i_touch_the_network_option(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -108,12 +114,6 @@ def background__i_touch_the_network_option(context):
 def background__i_touch_the_preferences_icon(context):
     if 'fake' not in str(context._config.tags).split(','):
         user__i_touch_the_preferences_icon(context)
-
-
-@when('[background] I touch the "{name}" menu category')
-def background__i_touch_the_system_menu_category(context, name):
-    if 'fake' not in str(context._config.tags).split(','):
-        prefs__i_touch_the_name_menu_category(context, name)
 
 
 @step("[background] I touch the VLAN Enable button")

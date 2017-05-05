@@ -91,20 +91,23 @@ def prefs__i_touch_the_x_icon(context):
         prefs_view.click_named_element('CloseButton')
 
 
-@step('[prefs] the {name} app and AOSP versions are displayed')
-def prefs__the_name_app_and_aosp_versions_are_displayed(context, name):
+@step("[prefs] I upgrade the phone if the versions are not correct")
+def prefs__i_upgrade_the_phone_if_the_versions_are_not_correct(context):
     if 'fake' not in str(context._config.tags).split(','):
-        if name == 'current':
-            expect_app_version = context.config.userdata.get('current_app')
-            expect_aosp_version = context.config.userdata.get('current_aosp')
-        elif name == 'downgrade':
-            expect_app_version = context.config.userdata.get('downgrade_app')
-            expect_aosp_version = context.config.userdata.get('downgrade_aosp')
-        else:
-            expect_app_version = 'version name not specified'
-            expect_aosp_version = 'version name not specified'
-        assert context.app_version == expect_app_version, "Incorrect App Version: expected %s, got %s" % (expect_app_version, context.app_version)
-        assert context.aosp_version == expect_aosp_version, "Incorrect System Version: expected %s, got %s" % (expect_aosp_version, context.aosp_version)
+        current_app = context.config.userdata.get('current_app')
+        current_aosp = context.config.userdata.get('current_aosp')
+        if current_app != context.app_version or current_aosp != context.aosp_version:
+            context.run_substep('I set the OTA server')
+            context.run_substep('[user] I touch the Preferences icon')
+            context.run_substep('[prefs] the Preferences window appears')
+            context.run_substep('[prefs] I touch the "System" menu category')
+            context.run_substep('[prefs] I touch the "Updates" menu item')
+            if prefs_view.element_is_present('SystemUpdate'):
+                context.run_substep('[prefs] I touch the "Check for System Update" option')
+                context.run_substep('[prefs] an upgrade is found and an "Upgrade" button appears')
+                context.run_substep('[prefs] I touch the "Upgrade" button')
+            context.run_substep('I wait for the phone to upgrade and reboot')
+            context.run_substep('I verify the system and app versions are current')
 
 
 @step("[prefs] the Preferences window appears")
