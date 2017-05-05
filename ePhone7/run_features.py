@@ -53,13 +53,52 @@ def run_features(features_dir, site_tag, run_tags, current_aosp, downgrade_aosp,
     start_time = datetime.now()
     with capture() as out:
         main()
-    json_repr = '\n'.join(out[0][:out[0].rindex(']') + 1].split('\n'))
-    with open('output_pre.json', 'w') as f:
-        f.write(json_repr)
+    with open('main.json', 'w') as f:
+        f.write(out[0])
+    json_start_index = out[0].find('\n[') + 1
+    if json_start_index == -1:
+        not_json_prefix = ''
+    else:
+        not_json_prefix = out[0][:json_start_index]
+    printed_steps = []
+    current_step = None
+    for line in not_json_prefix.strip().split('\n'):
+        (type, name) = line.split(' = ')
+        if type == 'step':
+            if current_step is not None:
+                printed_steps.append(current_step)
+            current_step = {"name": name, "substeps": []}
+        elif type == 'substep' and current_step is not None:
+            splitname = name.split(',')
+            substep = {
+                "text": ' '.join(splitname[:-2]),
+                "result": {
+                    "status": splitname[-2],
+                    "duration": splitname[-1]
+                },
+            }
+            current_step["substeps"].append(substep)
+    if current_step is not None:
+        printed_steps.append(current_step)
+    json_repr = '\n'.join(out[0][out[0].index('\n[') + 1:out[0].rindex(']') + 1].split('\n'))
     data = json.loads(json_repr)
     if len(data):
         data[0]["start_time"] = start_time.strftime("%X")
         data[0]["start_date"] = start_time.strftime("%x")
+    for element in data[0]["elements"]:
+        if element["keyword"] == "Scenario":
+            new_steps = []
+            for step in element["steps"]:
+                if "result" in step:
+                    # if it gets to here, the step was executed and should be on the printed_steps list
+                    if len(printed_steps) == 0:
+                        raise Ux("Error processing new_steps list, printed_steps empty")
+                    printed_step = printed_steps.pop(0)
+                    if printed_step["name"] != step["name"]:
+                        raise Ux("Error processing new_steps list, step name mismatch")
+                    step["substeps"] = printed_step["substeps"]
+                new_steps.append(step)
+            element["steps"] = new_steps
     json_repr = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
     with open('output.json', 'w') as f:
         f.write(json_repr)
@@ -167,6 +206,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     scenario_has_skips = True
                     step['duration'] = 0.0
                 del step['name']
+
             #
             # scenario_has status table
             # ------------------------------------------------------------------------

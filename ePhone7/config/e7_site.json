@@ -295,6 +295,8 @@
     ],
     "mm": [
         {
+            "AospsHome": "/home/mmccrorey/aosps",
+            "ApksHome": "/home/mmccrorey/apks",
             "BuildImageServer": "10.3.1.164",
             "BuildPropServer": "ec2-52-36-62-239.us-west-2.compute.amazonaws.com",
             "ColorsFolder": "ePhone7/utils",
