@@ -63,6 +63,8 @@ def run_features(features_dir, site_tag, run_tags, current_aosp, downgrade_aosp,
     printed_steps = []
     current_step = None
     for line in not_json_prefix.strip().split('\n'):
+        if len(line.split(' = ')) != 2:
+            continue
         (type, name) = line.split(' = ')
         if type == 'step':
             if current_step is not None:

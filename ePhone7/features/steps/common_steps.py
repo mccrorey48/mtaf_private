@@ -863,22 +863,23 @@ def my_saved_voicemails_are_listed(context):
     pass
 
 
-@step("I downgrade my AOSP from {old_version} to {new_version}")
-def i_downgrade_my_aosp_from_old_version_to_new_version(context, old_version, new_version):
+@step("I downgrade my AOSP to {new_aosp} and app to {new_app}")
+def i_downgrade_my_aosp_to_new_aosp_and_app_to_new_app(context, new_aosp, new_app):
     if 'fake' not in str(context._config.tags).split(','):
-        context.run_substep('I am logged in to the ePhone7')
-        context.run_substep('[user] I touch the Preferences icon')
-        context.run_substep('[prefs] the Preferences window appears')
-        context.run_substep('[prefs] I touch the "System" menu category')
-        context.run_substep('[prefs] I touch the "About ePhone7" menu item')
-        context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
-        context.run_substep('[prefs] I touch the "X" icon')
-        context.run_substep('[prefs] the Preferences window disappears')
-        if context.aosp_version == old_version:
-            base_view.close_appium()
-            base_view.force_aosp_downgrade(new_version)
-            base_view.open_appium('nolaunch', force=True, timeout=60)
-            base_view.startup()
+        # context.run_substep('I am logged in to the ePhone7')
+        # context.run_substep('[user] I touch the Preferences icon')
+        # context.run_substep('[prefs] the Preferences window appears')
+        # context.run_substep('[prefs] I touch the "System" menu category')
+        # context.run_substep('[prefs] I touch the "About ePhone7" menu item')
+        # context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
+        # context.run_substep('[prefs] I touch the "X" icon')
+        # context.run_substep('[prefs] the Preferences window disappears')
+        # if context.aosp_version == old_version:
+        #     base_view.close_appium()
+        base_view.force_aosp_downgrade(new_aosp)
+        base_view.force_app_downgrade(new_app)
+        #     base_view.open_appium('nolaunch', force=True, timeout=60)
+        #     base_view.startup()
 
 @given("my system version needs to be upgraded")
 def my_system_version_needs_to_be_upgraded(context):

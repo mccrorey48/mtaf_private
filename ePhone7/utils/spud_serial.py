@@ -1,7 +1,7 @@
 import serial
 from lib.user_exception import UserException as Ux
 import socket
-from time import time
+from time import time, sleep
 from contextlib import contextmanager
 import lib.logging_esi as logging_esi
 from lib.wrappers import Trace
@@ -58,7 +58,12 @@ class SpudSerial:
             self.connection.write(cmd)
         start_time = time()
         while True:
-            c = self.connection.read()
+            try:
+                c = self.connection.read()
+            except serial.SerialException as e:
+                log.debug("ignoring SerialException: %s" % e)
+                c = ''
+                sleep(1)
             if len(c) and c != '\r' and ord(c) < 0xff:
                 reply += c
                 if c == '\n':
