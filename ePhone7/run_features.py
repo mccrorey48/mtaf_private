@@ -310,7 +310,8 @@ if __name__ == '__main__':
         parser.add_argument("-r", "--run_tags", type=str, default='wip', help="run tags (comma separated list)")
         parser.add_argument("-t", "--site_tag", type=str, default=mtaf_site, help="site tag (default %s)" % mtaf_site)
         parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.1.3', help="apk version (default 2.1.3)")
-        parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
+        parser.add_argument("-O", "--ota_server", type=str, default='alpha', choices=['alpha', 'beta', 'eng', 'prod'],
+                            help="OTA server (default alpha")
         parser.add_argument("-a", "--downgrade_app", type=str, default='1.0.10', help="apk version (default 1.0.10)")
         args = parser.parse_args()
         cfg.set_site(args.server, args.site_tag)
@@ -339,10 +340,7 @@ if __name__ == '__main__':
             missing_host_key=spur.ssh.MissingHostKey.accept
         )
         with shell:
-            if args.ota_server == 'alpha':
-                result = shell.run(['cat', '/www/aus/otatest/build.prop'])
-            else:
-                result = shell.run(['cat', '/www/aus/beta/otatest/build.prop'])
+            result = shell.run(['cat', '/www/aus/releases/%s/build.prop' % args.ota_server])
         current_aosp = None
         current_app = None
         aosp_prefix = 'ro.build.id='
