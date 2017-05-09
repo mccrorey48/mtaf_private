@@ -50,7 +50,18 @@ class MockDetector:
             if is_mock[key]:
                 self.mock_steps.append(key)
         re_split = re.compile('{[^}]*}')
-        self.splits = [re_split.split(text) for text in self.mock_steps if len(re_split.split(text)) > 1]
+        self.splits = []
+        for text in self.mock_steps:
+            items = re_split.split(text)
+            if len(items) > 1:
+                # only add to self.splits if the text contains a match for re_split
+                # but first escape '[' and ']' since we use it in a regex later
+                new_split = []
+                for item in items:
+                    item = '\]'.join(item.split(']'))
+                    item = '\['.join(item.split('['))
+                    new_split.append(item)
+                self.splits.append(new_split)
 
     def match(self, step_name):
         if step_name.lower() in self.mock_steps:

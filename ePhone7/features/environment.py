@@ -4,7 +4,7 @@ import lib.logging_esi as logging
 from os import path, makedirs
 import sys
 log = logging.get_logger('esi.environment')
-
+substeps=''
 
 def run_substep(context):
     def wrapped(step_name):
@@ -13,6 +13,8 @@ def run_substep(context):
     return wrapped
 
 def before_all(context):
+    global substeps
+    substeps=''
     context.is_substep = False
     context.run_substep = run_substep(context)
     site_tag = context.config.userdata.get('site_tag')
@@ -46,17 +48,19 @@ def after_scenario(context, scenario):
 
 
 def before_step(context, step):
+    global substeps
     if context.is_substep:
-        sys.stdout.write("substep = " + step.name)
+        substeps += "substep = %s" % step.name
     else:
-        print("step = " + step.name)
+        substeps += "step = %s\n" % step.name
     logging.push_msg_src('    step: %s' % step.name[:30])
     log.info('step.name: %s' % step.name)
 
 
 def after_step(context, step):
+    global substeps
     if context.is_substep:
-        print(',%s,%.3f' % (step.status, step.duration))
+        substeps += (',%s,%.3f\n' % (step.status, step.duration))
         context.is_substep = False
     if 'fake' not in str(context._config.tags).split(','):
         if step.status == 'failed':
@@ -80,4 +84,6 @@ def after_step(context, step):
 
 def after_all(context):
     base_view.close_appium()
+    with open('steps.txt', 'w') as f:
+        f.write(substeps)
 

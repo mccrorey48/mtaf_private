@@ -863,7 +863,7 @@ def my_saved_voicemails_are_listed(context):
     pass
 
 
-@step("I downgrade my AOSP to {new_aosp} and app to {new_app}")
+@step("I downgrade my AOSP to {new_aosp}")
 def i_downgrade_my_aosp_to_new_aosp_and_app_to_new_app(context, new_aosp, new_app):
     if 'fake' not in str(context._config.tags).split(','):
         # context.run_substep('I am logged in to the ePhone7')
@@ -877,7 +877,7 @@ def i_downgrade_my_aosp_to_new_aosp_and_app_to_new_app(context, new_aosp, new_ap
         # if context.aosp_version == old_version:
         #     base_view.close_appium()
         base_view.force_aosp_downgrade(new_aosp)
-        base_view.force_app_downgrade(new_app)
+        # base_view.force_app_downgrade(new_app)
         #     base_view.open_appium('nolaunch', force=True, timeout=60)
         #     base_view.startup()
 
@@ -893,7 +893,11 @@ def my_system_version_needs_to_be_upgraded(context):
         context.run_substeps('When  [prefs] I touch the "X" icon')
         context.run_substeps('Then  [prefs] the Preferences window disappears')
         need_aosp_downgrade = context.aosp_version != context.config.userdata.get('downgrade_aosp')
-        need_app_downgrade = context.app_version != context.config.userdata.get('downgrade_app')
+        downgrade_app_version = context.config.userdata.get('downgrade_app')
+        if downgrade_app_version is None:
+            need_app_downgrade = False
+        else:
+            need_app_downgrade = context.app_version != downgrade_app_version
         if need_aosp_downgrade or need_app_downgrade:
             base_view.close_appium()
             if need_aosp_downgrade:

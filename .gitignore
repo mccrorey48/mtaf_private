@@ -7,4 +7,6 @@ output_pre.json
 *.html
 xml_not_retrieved
 exception.xml
-steps.out
+main.json
+steps.txt
+substeps.txt

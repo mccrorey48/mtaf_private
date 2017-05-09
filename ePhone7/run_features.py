@@ -55,11 +55,8 @@ def run_features(features_dir, site_tag, run_tags, current_aosp, downgrade_aosp,
         main()
     with open('main.json', 'w') as f:
         f.write(out[0])
-    json_start_index = out[0].find('\n[') + 1
-    if json_start_index == -1:
-        not_json_prefix = ''
-    else:
-        not_json_prefix = out[0][:json_start_index]
+    with open('steps.txt', 'r') as f:
+        not_json_prefix = f.read()
     printed_steps = []
     current_step = None
     for line in not_json_prefix.strip().split('\n'):
@@ -82,7 +79,7 @@ def run_features(features_dir, site_tag, run_tags, current_aosp, downgrade_aosp,
             current_step["substeps"].append(substep)
     if current_step is not None:
         printed_steps.append(current_step)
-    json_repr = '\n'.join(out[0][out[0].index('\n[') + 1:out[0].rindex(']') + 1].split('\n'))
+    json_repr = '\n'.join(out[0][:out[0].rindex(']') + 1].split('\n'))
     data = json.loads(json_repr)
     if len(data):
         data[0]["start_time"] = start_time.strftime("%X")
@@ -184,7 +181,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                         scenario_has_fails = True
                     elif step['status'] == 'passed':
                         # "passed" steps can be fake or background, fake gets priority if both apply
-                        if mock_detector.match(step['text']):
+                        if mock_detector.match(step['name']):
                             if step['name'] in background_steps:
                                 step['status'] = 'fake bg'
                             else:
@@ -309,10 +306,9 @@ if __name__ == '__main__':
                             help="(optional) specify mongodb server, default vqda1")
         parser.add_argument("-r", "--run_tags", type=str, default='wip', help="run tags (comma separated list)")
         parser.add_argument("-t", "--site_tag", type=str, default=mtaf_site, help="site tag (default %s)" % mtaf_site)
-        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.1.3', help="apk version (default 2.1.3)")
-        parser.add_argument("-O", "--ota_server", type=str, default='alpha', choices=['alpha', 'beta', 'eng', 'prod'],
-                            help="OTA server (default alpha")
-        parser.add_argument("-a", "--downgrade_app", type=str, default='1.0.10', help="apk version (default 1.0.10)")
+        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.2', help="aosp downgrade version (default 2.3.2)")
+        parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
+        parser.add_argument("-a", "--downgrade_app", type=str, default=None, help="apk downgrade version (default None)")
         args = parser.parse_args()
         cfg.set_site(args.server, args.site_tag)
         build_prop_server = cfg.site["BuildPropServer"]
@@ -385,19 +381,20 @@ if __name__ == '__main__':
                     with shell.open(remote_img_path, 'rb') as remote_file:
                         with open(local_img_path, 'wb') as local_file:
                             shutil.copyfileobj(remote_file, local_file)
-            remote_apk_filename = 'update.apk.%02d%02d%02d' % tuple([int(n) for n in args.downgrade_app.split('.')])
-            local_apk_filename = args.downgrade_app + '.apk'
-            remote_apk_path = 'apks/' + remote_apk_filename
-            local_apk_path = path.join(apks_home, local_apk_filename)
-            print "remote file: " + remote_apk_path
-            print "local file: " + remote_apk_path + '...',
-            if local_apk_filename in apks:
-                print "already downloaded to test host"
-            else:
-                print "downloading to test host"
-                with shell.open(remote_apk_path, 'rb') as remote_file:
-                    with open(local_apk_path, 'wb') as local_file:
-                        shutil.copyfileobj(remote_file, local_file)
+            if args.downgrade_app is not None:
+                remote_apk_filename = 'update.apk.%02d%02d%02d' % tuple([int(n) for n in args.downgrade_app.split('.')])
+                local_apk_filename = args.downgrade_app + '.apk'
+                remote_apk_path = 'apks/' + remote_apk_filename
+                local_apk_path = path.join(apks_home, local_apk_filename)
+                print "remote file: " + remote_apk_path
+                print "local file: " + remote_apk_path + '...',
+                if local_apk_filename in apks:
+                    print "already downloaded to test host"
+                else:
+                    print "downloading to test host"
+                    with shell.open(remote_apk_path, 'rb') as remote_file:
+                        with open(local_apk_path, 'wb') as local_file:
+                            shutil.copyfileobj(remote_file, local_file)
 
         if args.json_file:
             with open(args.json_file) as fp:

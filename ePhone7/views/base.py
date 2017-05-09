@@ -42,7 +42,9 @@ class BaseView(SeleniumActions):
         "E7HasStoppedText": {"by": "id", "value": "android:id/message", "text": "Unfortunately, ePhone7 has stopped."},
         "NetworkErrorRetry": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
         "NetworkErrorText": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertDialogTitle", "text": "Network Error"},
-        "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"}
+        "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
+        "ReleaseNotes": {"by": "id", "value": "com.esi_estech.ditto:id/release_notes"},
+        "ReleaseNotesOK": {"by": "id", "value": "android:id/button1"}
     }
 
     def __init__(self):
