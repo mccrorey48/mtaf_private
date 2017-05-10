@@ -284,12 +284,6 @@ def both_windows_disappear(context):
     pass
 
 
-@step("[dial] I touch the Call button")
-def dial__i_touch_the_call_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        dial_view.click_named_element('FuncKeyCall')
-
-
 @step("I am logged in to the ePhone7")
 def i_am_logged_in_to_the_ephone7(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -337,6 +331,25 @@ def i_close_all_open_submenus(context):
 @when("I close the Preferences window")
 def i_close_the_preferences_window(context):
     pass
+
+
+@step("I downgrade my AOSP to {new_aosp}")
+def i_downgrade_my_aosp_to_newaosp(context, new_aosp):
+    if 'fake' not in str(context._config.tags).split(','):
+        # context.run_substep('I am logged in to the ePhone7')
+        # context.run_substep('[user] I touch the Preferences icon')
+        # context.run_substep('[prefs] the Preferences window appears')
+        # context.run_substep('[prefs] I touch the "System" menu category')
+        # context.run_substep('[prefs] I touch the "About ePhone7" menu item')
+        # context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
+        # context.run_substep('[prefs] I touch the "X" icon')
+        # context.run_substep('[prefs] the Preferences window disappears')
+        # if context.aosp_version == old_version:
+        #     base_view.close_appium()
+        base_view.force_aosp_downgrade(new_aosp)
+        # base_view.force_app_downgrade(new_app)
+        #     base_view.open_appium('nolaunch', force=True, timeout=60)
+        #     base_view.startup()
 
 
 @step("I end the call")
@@ -757,21 +770,21 @@ def i_touch_walkthrough(context):
 
 @step("I verify the system and app versions are current")
 def i_verify_the_system_and_app_versions_are_current(context):
+    context.run_substep('I am logged in to the ePhone7')
+    context.run_substep('[user] I touch the Preferences icon')
+    context.run_substep('[prefs] the Preferences window appears')
+    context.run_substep('[prefs] I touch the "System" menu category')
+    context.run_substep('[prefs] I touch the "About ePhone7" menu item')
+    context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
+    context.run_substep('[prefs] I touch the "X" icon')
+    context.run_substep('[prefs] the Preferences window disappears')
     if 'fake' not in str(context._config.tags).split(','):
-        context.run_substeps('Given I am logged in to the ePhone7')
-        context.run_substeps('When  [user] I touch the Preferences icon')
-        context.run_substeps('Then  [prefs] the Preferences window appears')
-        context.run_substeps('When  [prefs] I touch the "System" menu category')
-        context.run_substeps('And   [prefs] I touch the "About ePhone7" menu item')
-        context.run_substeps('Then  [prefs] I read the displayed versions for the app and AOSP')
-        context.run_substeps('When  [prefs] I touch the "X" icon')
-        context.run_substeps('Then  [prefs] the Preferences window disappears')
-    app_actual = context.app_version
-    aosp_actual = context.aosp_version
-    app_expect = context.config.userdata.get('current_app')
-    aosp_expect = context.config.userdata.get('current_aosp')
-    assert context.app_version == context.config.userdata.get('current_app'), "Expected app version %s, got %s" % (app_expect, app_actual)
-    assert context.aosp_version == context.config.userdata.get('current_aosp'), "Expected aosp version %s, got %s" % (aosp_expect, aosp_actual)
+        app_actual = context.app_version
+        aosp_actual = context.aosp_version
+        app_expect = context.config.userdata.get('current_app')
+        aosp_expect = context.config.userdata.get('current_aosp')
+        assert context.app_version == context.config.userdata.get('current_app'), "Expected app version %s, got %s" % (app_expect, app_actual)
+        assert context.aosp_version == context.config.userdata.get('current_aosp'), "Expected aosp version %s, got %s" % (aosp_expect, aosp_actual)
 
 
 @step("I wait for the phone to restart")
@@ -862,24 +875,6 @@ def my_phone_calls_the_voicemail_sender(context):
 def my_saved_voicemails_are_listed(context):
     pass
 
-
-@step("I downgrade my AOSP to {new_aosp}")
-def i_downgrade_my_aosp_to_new_aosp_and_app_to_new_app(context, new_aosp, new_app):
-    if 'fake' not in str(context._config.tags).split(','):
-        # context.run_substep('I am logged in to the ePhone7')
-        # context.run_substep('[user] I touch the Preferences icon')
-        # context.run_substep('[prefs] the Preferences window appears')
-        # context.run_substep('[prefs] I touch the "System" menu category')
-        # context.run_substep('[prefs] I touch the "About ePhone7" menu item')
-        # context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
-        # context.run_substep('[prefs] I touch the "X" icon')
-        # context.run_substep('[prefs] the Preferences window disappears')
-        # if context.aosp_version == old_version:
-        #     base_view.close_appium()
-        base_view.force_aosp_downgrade(new_aosp)
-        # base_view.force_app_downgrade(new_app)
-        #     base_view.open_appium('nolaunch', force=True, timeout=60)
-        #     base_view.startup()
 
 @given("my system version needs to be upgraded")
 def my_system_version_needs_to_be_upgraded(context):

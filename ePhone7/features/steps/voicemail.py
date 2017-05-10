@@ -52,6 +52,9 @@ def voicemail__i_touch_the_delete_icon(context):
 
 @step("[voicemail] I touch the Forward icon")
 def voicemail__i_touch_the_forward_icon(context):
+    """
+    :type context: behave.runner.Context
+    """
     pass
 
 

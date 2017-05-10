@@ -71,10 +71,9 @@ def run_features(features_dir, site_tag, run_tags, current_aosp, downgrade_aosp,
             splitname = name.split(',')
             substep = {
                 "text": ' '.join(splitname[:-2]),
-                "result": {
-                    "status": splitname[-2],
-                    "duration": splitname[-1]
-                },
+                "keyword": "Substep",
+                "status": splitname[-2],
+                "duration": splitname[-1]
             }
             current_step["substeps"].append(substep)
     if current_step is not None:
@@ -109,10 +108,10 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
     client = MongoClient(server)
     db = client[db_name]
     step_re = re.compile('\s*(\[\s*([^]]*\S)\s*\]\s*)?\s*(.*\S)\s*')
-    if len(features) and 'start_time' in features[0] and 'start_date' in features[0]:
-        start_datetime = datetime.strptime("%s %s" % (features[0]['start_date'], features[0]['start_time']), '%x %X')
-    else:
-        start_datetime = datetime.now()
+    # if len(features) and 'start_time' in features[0] and 'start_date' in features[0]:
+    #     start_datetime = datetime.strptime("%s %s" % (features[0]['start_date'], features[0]['start_time']), '%x %X')
+    # else:
+    start_datetime = datetime.now()
     test_start = {
         'app': 'ePhone7',
         'build': '',
@@ -177,6 +176,13 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     # status in the "else" branch of this "if" statement
                     step['status'] = step['result']['status']
                     step['duration'] = step['result']['duration']
+                    if "substeps" in step:
+                        for substep in step["substeps"]:
+                            if substep["status"] == 'failed':
+                                step['status'] = 'failed'
+                            elif substep['status'] == 'passed':
+                                if mock_detector.match(substep["text"]):
+                                    substep['status'] = 'fake'
                     if step['status'] == 'failed':
                         scenario_has_fails = True
                     elif step['status'] == 'passed':
@@ -287,36 +293,12 @@ if __name__ == '__main__':
     import spur
     import shutil
 
-    try:
-        # get site name from environment
-        mtaf_site = getenv('MTAF_SITE')
-        if not mtaf_site:
-            raise Ux('MTAF_SITE must be defined in the run-time environment')
-        parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
-                                         description='  runs behave test on specified features directory and saves' +
-                                                     '  the results on a mongodb running on a specified server\n')
-        parser.add_argument("-d", "--db_name", type=str, default='e7_results', help="name of db")
-        parser.add_argument("-c", "--test_class", type=str, default='regression',
-                            help="class of test, e.g. regression, smoke etc.")
-        parser.add_argument("-e", "--environment", type=str, default='production', help="environment e.g. production")
-        parser.add_argument("-f", "--features_directory", type=str, default='ePhone7/features',
-                            help="operation to perform")
-        parser.add_argument("-j", "--json_file", type=str, help="JSON file to load instead of running features")
-        parser.add_argument("-s", "--server", type=str, default='vqda1',
-                            help="(optional) specify mongodb server, default vqda1")
-        parser.add_argument("-r", "--run_tags", type=str, default='wip', help="run tags (comma separated list)")
-        parser.add_argument("-t", "--site_tag", type=str, default=mtaf_site, help="site tag (default %s)" % mtaf_site)
-        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.2', help="aosp downgrade version (default 2.3.2)")
-        parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
-        parser.add_argument("-a", "--downgrade_app", type=str, default=None, help="apk downgrade version (default None)")
-        args = parser.parse_args()
+    def get_downgrade_images(args):
         cfg.set_site(args.server, args.site_tag)
         build_prop_server = cfg.site["BuildPropServer"]
         build_image_server = cfg.site["BuildImageServer"]
         aosps_home = cfg.site["AospsHome"]
         apks_home = cfg.site["ApksHome"]
-        mock_detector = MockDetector(path.join(args.features_directory, "steps"),
-                                fake_tag='fake' in args.run_tags.split(','))
 
         # make sure both aosps_home and apks_home directories exist
         try:
@@ -396,6 +378,40 @@ if __name__ == '__main__':
                         with open(local_apk_path, 'wb') as local_file:
                             shutil.copyfileobj(remote_file, local_file)
 
+
+    try:
+        # get site name from environment
+        mtaf_site = getenv('MTAF_SITE')
+        if not mtaf_site:
+            raise Ux('MTAF_SITE must be defined in the run-time environment')
+        parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+                                         description='  runs behave test on specified features directory and saves' +
+                                                     '  the results on a mongodb running on a specified server\n')
+        parser.add_argument("-d", "--db_name", type=str, default='e7_results', help="name of db")
+        parser.add_argument("-c", "--test_class", type=str, default='regression',
+                            help="class of test, e.g. regression, smoke etc.")
+        parser.add_argument("-e", "--environment", type=str, default='production', help="environment e.g. production")
+        parser.add_argument("-f", "--features_directory", type=str, default='ePhone7/features',
+                            help="operation to perform")
+        parser.add_argument("-j", "--json_file", type=str, help="JSON file to load instead of running features")
+        parser.add_argument("-s", "--server", type=str, default='vqda1',
+                            help="(optional) specify mongodb server, default vqda1")
+        parser.add_argument("-r", "--run_tags", type=str, default='wip', help="run tags (comma separated list)")
+        parser.add_argument("-t", "--site_tag", type=str, default=mtaf_site, help="site tag (default %s)" % mtaf_site)
+        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.2', help="aosp downgrade version (default 2.3.2)")
+        parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
+        parser.add_argument("-a", "--downgrade_app", type=str, default=None, help="apk downgrade version (default None)")
+        args = parser.parse_args()
+        fake_tag = 'fake' in args.run_tags.split(',')
+        mock_detector = MockDetector(path.join(args.features_directory, "steps"),
+                                fake_tag=fake_tag)
+        if fake_tag:
+            current_app = '1.3.6'
+            current_aosp = '2.3.8'
+        else:
+            current_app = args.current_app
+            current_aosp = args.current_aosp
+            get_downgrade_images(args)
         if args.json_file:
             with open(args.json_file) as fp:
                 features = json.load(fp)

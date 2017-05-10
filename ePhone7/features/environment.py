@@ -50,6 +50,8 @@ def after_scenario(context, scenario):
 def before_step(context, step):
     global substeps
     if context.is_substep:
+        if substeps[-1] != '\n':
+            substeps += ',passed,0.000\n'
         substeps += "substep = %s" % step.name
     else:
         substeps += "step = %s\n" % step.name

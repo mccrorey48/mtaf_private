@@ -4,27 +4,28 @@ import os
 
 step_re = re.compile('''@[^(]+\(['"](.+)['"]\)''')
 def_re = re.compile('\s*def\s')
+nonspace_line_re = re.compile('(\s*)\S')
 pass_re = re.compile('\s*pass')
+single_quoted_re = re.compile("(?ms)[ \t]*'''.*?'''\n?")
+double_quoted_re = re.compile('(?ms)[ \t]*""".*?"""\n?')
 comment_re = re.compile('\s*#')
-exec_steps_re = re.compile('\s*context\.execute_steps')
-end_exec_steps_re = re.compile("\s*'''\)")
-fake_re = re.compile("\s*'''\)")
+fake_re = re.compile("(\s*)if ['\"]fake['\"] not in str")
 
 class MockDetector:
     def __init__(self, step_directory, fake_tag=False):
         is_mock = {}
-        current_key = None
-        quoted = False
-        fake = False
+        # fake_indent = None
+        # skip_fake_block = False
+        step_is_fake = False
         for filename in [name for name in os.listdir(step_directory) if name.endswith('.py')]:
             with open(os.path.join(step_directory, filename)) as f:
-                lines = f.readlines()
+                current_key = None
+                text = f.read()
+                # remove triple-quoted text
+                text = ''.join(single_quoted_re.split(text))
+                text = ''.join(double_quoted_re.split(text))
+                lines = text.split('\n')
                 for lnum, line in enumerate(lines):
-                    if '"""' in line:
-                        quoted = not quoted
-                        continue
-                    if quoted:
-                        continue
                     m = step_re.match(line)
                     if m:
                         step_key = m.group(1).lower()
@@ -33,17 +34,36 @@ class MockDetector:
                             raise Ux("duplicate step name on line %s" % (lnum + 1) )
                         else:
                             is_mock[step_key] = True
-                        fake = False
+                        # any "if fake" blocks ended when a new step started
+                        # skip_fake_block = False
+                        step_is_fake = False
                         current_key = step_key
                     else:
-                        if 'fake' in line:
+                        # when "fake" is one of the tags passed to behave,
+                        # and the word "fake" is mentioned in the executable code of a step,
+                        # assume that the entire step is adequately faked (no real AUT interaction)
+                        m = fake_re.match(line)
+                        if m:
                             if fake_tag:
-                                fake = True
+                                # skip_fake_block = True
+                                # fake_indent = len(m.group(1))
+                                step_is_fake = True
                             continue
-                        if fake:
+                        # if this step is assumed to be adequately faked, skip lines until another step match occurs
+                        if step_is_fake:
                             continue
-                        if current_key and len(line.strip()):
-                            if not (('def' in line) or ('pass' in line) or comment_re.match(line)):
+                        # for steps that don't mention "fake", see if there are any lines that should be
+                        # counted as implementation, and if so, set is_mock[current_key] to False
+                        m = nonspace_line_re.match(line)
+                        if m:
+                            if comment_re.match(line):
+                                continue
+                            if 'def' in line or 'pass' in line:
+                                continue
+                            if 'run_substep' in line:
+                                continue
+                            # if it gets to here, this should be an actual non-fake executable line
+                            if current_key is not None:
                                 is_mock[current_key] = False
         self.mock_steps = []
         for key in sorted(is_mock.keys()):

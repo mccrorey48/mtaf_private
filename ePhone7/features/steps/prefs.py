@@ -2,6 +2,8 @@ from behave import *
 from ePhone7.views import *
 import re
 from lib.user_exception import UserException as Ux
+import lib.logging_esi as logging
+log = logging.get_logger('esi.prefs')
 
 
 @step('[prefs] A submenu appears with a "Network" option')
@@ -96,18 +98,26 @@ def prefs__i_upgrade_the_phone_if_the_versions_are_not_correct(context):
     if 'fake' not in str(context._config.tags).split(','):
         current_app = context.config.userdata.get('current_app')
         current_aosp = context.config.userdata.get('current_aosp')
-        if current_app != context.app_version or current_aosp != context.aosp_version:
-            context.run_substep('I set the OTA server')
-            context.run_substep('[user] I touch the Preferences icon')
-            context.run_substep('[prefs] the Preferences window appears')
-            context.run_substep('[prefs] I touch the "System" menu category')
-            context.run_substep('[prefs] I touch the "Updates" menu item')
-            if prefs_view.element_is_present('SystemUpdate'):
-                context.run_substep('[prefs] I touch the "Check for System Update" option')
-                context.run_substep('[prefs] an upgrade is found and an "Upgrade" button appears')
-                context.run_substep('[prefs] I touch the "Upgrade" button')
-            context.run_substep('I wait for the phone to upgrade and reboot')
-            context.run_substep('I verify the system and app versions are current')
+        log.debug("installed versions: app %s, aosp %s" % (context.app_version, context.aosp_version))
+        log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
+        app_upgrade_required = current_app is not None and current_app != context.app_version
+        aosp_upgrade_required = current_aosp is not None and current_aosp != context.aosp_version
+    else:
+        app_upgrade_required = True
+        aosp_upgrade_required = True
+    if aosp_upgrade_required or app_upgrade_required:
+        log.debug("checking for updates")
+        context.run_substep('I set the OTA server')
+        context.run_substep('[user] I touch the Preferences icon')
+        context.run_substep('[prefs] the Preferences window appears')
+        context.run_substep('[prefs] I touch the "System" menu category')
+        context.run_substep('[prefs] I touch the "Updates" menu item')
+        if prefs_view.element_is_present('SystemUpdate'):
+            context.run_substep('[prefs] I touch the "Check for System Update" option')
+            context.run_substep('[prefs] an upgrade is found and an "Upgrade" button appears')
+            context.run_substep('[prefs] I touch the "Upgrade" button')
+        context.run_substep('I wait for the phone to upgrade and reboot')
+        context.run_substep('I verify the system and app versions are current')
 
 
 @step("[prefs] the Preferences window appears")
