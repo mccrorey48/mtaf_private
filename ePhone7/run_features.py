@@ -138,7 +138,6 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
         feature_has_fakes = False
         feature_has_fails = False
         feature_has_passes = False
-        feature_has_incompletes = False
         feature['start_id'] = start_id
         feature['test_class'] = test_class
         feature['text'] = feature['name']
@@ -214,63 +213,35 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     step['duration'] = 0.0
                 del step['name']
 
-            #
-            # scenario_has status table
-            # ------------------------------------------------------------------------
-            #   fakes   |    skips     |      fails     |    passes    ||   status
-            # ------------------------------------------------------------------------
-            #   False   |    False     |      False     |    False     ||   undefined
-            #   False   |    False     |      False     |    True      ||   passed
-            #   False   |    False     |      True      |    False     ||   failed
-            #   False   |    False     |      True      |    True      ||   failed
-            #   False   |    True      |      False     |    False     ||   skipped
-            #   False   |    True      |      False     |    True      ||   incomplete
-            #   False   |    True      |      True      |    False     ||   failed
-            #   False   |    True      |      True      |    True      ||   failed
-            #   True    |    False     |      False     |    False     ||   fake
-            #   True    |    False     |      False     |    True      ||   fake
-            #   True    |    False     |      True      |    False     ||   fake
-            #   True    |    False     |      True      |    True      ||   fake
-            #   True    |    True      |      False     |    False     ||   fake
-            #   True    |    True      |      False     |    True      ||   fake
-            #   True    |    True      |      True      |    False     ||   fake
-            #   True    |    True      |      True      |    True      ||   fake
-            #
-            if scenario_has_fakes:
-                scenario['status'] = 'fake'
-                feature_has_fakes = True
-            elif scenario_has_fails:
+            if scenario_has_fails:
                 scenario['status'] = 'failed'
                 feature_has_fails = True
             elif scenario_has_skips:
-                if scenario_has_passes:
-                    scenario['status'] = 'incomplete'
-                    feature_has_incompletes = True
-                else:
-                    scenario['status'] = 'skipped'
-                    feature_has_skips = True
+                scenario['status'] = 'skipped'
+                feature_has_skips = True
+            elif scenario_has_fakes:
+                scenario['status'] = 'fake'
+                feature_has_fakes = True
             elif scenario_has_passes:
                 scenario['status'] = 'passed'
                 feature_has_passes = True
             else:
-                scenario['status'] = 'undefined'
+                # no steps
+                scenario['status'] = 'fake'
+                feature_has_fakes = True
+
         del feature['elements']
-        if feature_has_fakes:
+        if feature_has_fails:
+            feature['status'] = 'failed'
+        elif feature_has_fakes:
             feature['status'] = 'fake'
-        elif feature_has_fails:
-            if feature_has_skips:
-                feature['status'] = 'incomplete'
-            else:
-                feature['status'] = 'failed'
-        elif feature_has_incompletes:
-            feature['status'] = 'incomplete'
-        elif feature_has_passes:
-            if feature_has_skips:
-                feature['status'] = 'incomplete'
-            else:
-                feature['status'] = 'passed'
         elif feature_has_skips:
-            feature['status'] = 'skipped'
+            if feature_has_passes:
+                feature['status'] = 'incomplete'
+            else:
+                feature['status'] = 'skipped'
+        elif feature_has_passes:
+            feature['status'] = 'passed'
         else:
             feature['status'] = 'undefined'
         db['features'].insert_one(feature)
