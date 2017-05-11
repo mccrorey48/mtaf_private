@@ -2,7 +2,6 @@ from ePhone7.utils.configure import cfg
 from ePhone7.views import base_view
 import lib.logging_esi as logging
 from os import path, makedirs
-import sys
 log = logging.get_logger('esi.environment')
 substeps=''
 

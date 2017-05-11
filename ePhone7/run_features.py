@@ -9,6 +9,7 @@ from lib.mock_steps import MockDetector
 import lib.logging_esi as logging
 from ePhone7.utils.configure import cfg
 from lib.user_exception import UserException as Ux
+from lib.wrappers import Trace
 log = logging.get_logger('esi.run_features')
 
 
@@ -28,6 +29,7 @@ def capture():
         out[1] = out[1].getvalue()
 
 
+@Trace(log)
 def run_features(features_dir, site_tag, run_tags, current_aosp, downgrade_aosp, current_app, downgrade_app, ota_server,
                  stop=False):
     sys.argv = [re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])]
@@ -172,7 +174,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     step['text'] = step['name']
                 if 'result' in step:
                     # once a step in a scenario fails, the rest of the steps will be skipped
-                    # so step won't have a 'result' attribute and they will be assigne "skipped"
+                    # so step won't have a 'result' attribute and they will be assigned "skipped"
                     # status in the "else" branch of this "if" statement
                     step['status'] = step['result']['status']
                     step['duration'] = step['result']['duration']
@@ -293,23 +295,8 @@ if __name__ == '__main__':
     import spur
     import shutil
 
-    def get_downgrade_images(args):
-        cfg.set_site(args.server, args.site_tag)
+    def get_current_versions(args):
         build_prop_server = cfg.site["BuildPropServer"]
-        build_image_server = cfg.site["BuildImageServer"]
-        aosps_home = cfg.site["AospsHome"]
-        apks_home = cfg.site["ApksHome"]
-
-        # make sure both aosps_home and apks_home directories exist
-        try:
-            mkdir(aosps_home)
-        except OSError:
-            pass
-        try:
-            mkdir(apks_home)
-        except OSError:
-            pass
-
         # get the current version from the build server
         shell = spur.SshShell(
             hostname=build_prop_server,
@@ -336,6 +323,22 @@ if __name__ == '__main__':
             raise Ux("current_aosp not found")
         elif current_app is None:
             raise Ux("current_app not found")
+        return current_app, current_aosp
+
+    def get_downgrade_images(args):
+        build_image_server = cfg.site["BuildImageServer"]
+        aosps_home = cfg.site["AospsHome"]
+        apks_home = cfg.site["ApksHome"]
+
+        # make sure both aosps_home and apks_home directories exist
+        try:
+            mkdir(aosps_home)
+        except OSError:
+            pass
+        try:
+            mkdir(apks_home)
+        except OSError:
+            pass
 
         # make sure the downgrade versions of the aosp and apk are available
         aosp_dirs = listdir(aosps_home)
@@ -398,7 +401,7 @@ if __name__ == '__main__':
                             help="(optional) specify mongodb server, default vqda1")
         parser.add_argument("-r", "--run_tags", type=str, default='wip', help="run tags (comma separated list)")
         parser.add_argument("-t", "--site_tag", type=str, default=mtaf_site, help="site tag (default %s)" % mtaf_site)
-        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.2', help="aosp downgrade version (default 2.3.2)")
+        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.7', help="aosp downgrade version (default 2.3.7)")
         parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
         parser.add_argument("-a", "--downgrade_app", type=str, default=None, help="apk downgrade version (default None)")
         args = parser.parse_args()
@@ -409,8 +412,8 @@ if __name__ == '__main__':
             current_app = '1.3.6'
             current_aosp = '2.3.8'
         else:
-            current_app = args.current_app
-            current_aosp = args.current_aosp
+            cfg.set_site(args.server, args.site_tag)
+            current_app, current_aosp = get_current_versions(args)
             get_downgrade_images(args)
         if args.json_file:
             with open(args.json_file) as fp:

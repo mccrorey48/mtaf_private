@@ -807,7 +807,7 @@ def i_wait_for_the_phone_to_upgrade_and_reboot(context):
             try:
                 sleep(5)
                 current_activity = base_view.driver.current_activity
-                if current_activity != '.OtaAppActivity':
+                if current_activity != '.OtaAppActivity' or current_activity == '.activities.MainViewActivity':
                     break
             except:
                 base_view.close_appium()

@@ -255,6 +255,8 @@ class BaseView(SeleniumActions):
                 log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
                     if retrying_main:
+                        # get rid of the release notes screen if present
+                        self.send_keycode('KEYCODE_BACK')
                         break
                     sleep(10)
                     retrying_main = True
@@ -300,7 +302,7 @@ class BaseView(SeleniumActions):
                 elif current_activity == '.OtaAppActivity':
                     if tried_ota:
                         raise Ux("got activity .OtaAppActivity twice")
-                    self.driver.send_keycode('KEYCODE_BACK')
+                    self.send_keycode('KEYCODE_BACK')
                     tried_ota = True
                 elif current_activity == '.util.AppIntroActivity':
                     if tried_intro:
