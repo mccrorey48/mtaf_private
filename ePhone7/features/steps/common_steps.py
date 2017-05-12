@@ -876,39 +876,43 @@ def my_saved_voicemails_are_listed(context):
     pass
 
 
-@given("my system version needs to be upgraded")
+@step("my system version needs to be upgraded")
 def my_system_version_needs_to_be_upgraded(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        context.run_substeps('Given I am logged in to the ePhone7')
-        context.run_substeps('When  [user] I touch the Preferences icon')
-        context.run_substeps('Then  [prefs] the Preferences window appears')
-        context.run_substeps('When  [prefs] I touch the "System" menu category')
-        context.run_substeps('And   [prefs] I touch the "About ePhone7" menu item')
-        context.run_substeps('Then  [prefs] I read the displayed versions for the app and AOSP')
-        context.run_substeps('When  [prefs] I touch the "X" icon')
-        context.run_substeps('Then  [prefs] the Preferences window disappears')
-        need_aosp_downgrade = context.aosp_version != context.config.userdata.get('downgrade_aosp')
-        downgrade_app_version = context.config.userdata.get('downgrade_app')
-        if downgrade_app_version is None:
+        context.run_substep('I am logged in to the ePhone7')
+        context.run_substep('[user] I touch the Preferences icon')
+        context.run_substep('[prefs] the Preferences window appears')
+        context.run_substep('[prefs] I touch the "System" menu category')
+        context.run_substep('[prefs] I touch the "About ePhone7" menu item')
+        context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
+        context.run_substep('[prefs] I touch the "X" icon')
+        context.run_substep('[prefs] the Preferences window disappears')
+        if 'fake' in str(context._config.tags).split(','):
+            need_aosp_downgrade = False
             need_app_downgrade = False
         else:
-            need_app_downgrade = context.app_version != downgrade_app_version
+            need_aosp_downgrade = context.aosp_version != context.config.userdata.get('downgrade_aosp')
+            downgrade_app_version = context.config.userdata.get('downgrade_app')
+            if downgrade_app_version is None:
+                need_app_downgrade = False
+            else:
+                need_app_downgrade = context.app_version != downgrade_app_version
         if need_aosp_downgrade or need_app_downgrade:
-            base_view.close_appium()
-            if need_aosp_downgrade:
-                base_view.force_aosp_downgrade(context.config.userdata.get('downgrade_aosp'))
-            if need_app_downgrade:
-                base_view.force_app_downgrade(context.config.userdata.get('downgrade_app'))
-            base_view.open_appium('nolaunch', force=True, timeout=60)
-            base_view.startup()
-            context.run_substeps('Given I am logged in to the ePhone7')
-            context.run_substeps('When  [user] I touch the Preferences icon')
-            context.run_substeps('Then  [prefs] the Preferences window appears')
-            context.run_substeps('When  [prefs] I touch the "System" menu category')
-            context.run_substeps('And   [prefs] I touch the "About ePhone7" menu item')
-            context.run_substeps('Then  [prefs] I read the displayed versions for the app and AOSP')
-            context.run_substeps('When  [prefs] I touch the "X" icon')
-            context.run_substeps('Then  [prefs] the Preferences window disappears')
+            if 'fake' not in str(context._config.tags).split(','):
+                base_view.close_appium()
+                if need_aosp_downgrade:
+                    base_view.force_aosp_downgrade(context.config.userdata.get('downgrade_aosp'))
+                if need_app_downgrade:
+                    base_view.force_app_downgrade(context.config.userdata.get('downgrade_app'))
+                base_view.open_appium('nolaunch', force=True, timeout=60)
+                base_view.startup()
+            context.run_substep('I am logged in to the ePhone7')
+            context.run_substep('[user] I touch the Preferences icon')
+            context.run_substep('[prefs] the Preferences window appears')
+            context.run_substep('[prefs] I touch the "System" menu category')
+            context.run_substep('[prefs] I touch the "About ePhone7" menu item')
+            context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
+            context.run_substep('[prefs] I touch the "X" icon')
+            context.run_substep('[prefs] the Preferences window disappears')
 
 
 @step("Only the contact I touched is listed")

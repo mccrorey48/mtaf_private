@@ -9,7 +9,7 @@ pass_re = re.compile('\s*pass')
 single_quoted_re = re.compile("(?ms)[ \t]*'''.*?'''\n?")
 double_quoted_re = re.compile('(?ms)[ \t]*""".*?"""\n?')
 comment_re = re.compile('\s*#')
-fake_re = re.compile("(\s*)if ['\"]fake['\"] not in str")
+fake_re = re.compile("(\s*)if ['\"]fake['\"]")
 
 class MockDetector:
     def __init__(self, step_directory, fake_tag=False):

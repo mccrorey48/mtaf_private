@@ -81,24 +81,27 @@ def run_features(features_dir, site_tag, run_tags, current_aosp, downgrade_aosp,
     if current_step is not None:
         printed_steps.append(current_step)
     json_repr = '\n'.join(out[0][:out[0].rindex(']') + 1].split('\n'))
+    with open('json_repr.json', 'w') as f:
+        f.write(json_repr)
     data = json.loads(json_repr)
     if len(data):
         data[0]["start_time"] = start_time.strftime("%X")
         data[0]["start_date"] = start_time.strftime("%x")
-    for element in data[0]["elements"]:
-        if element["keyword"] == "Scenario":
-            new_steps = []
-            for step in element["steps"]:
-                if "result" in step:
-                    # if it gets to here, the step was executed and should be on the printed_steps list
-                    if len(printed_steps) == 0:
-                        raise Ux("Error processing new_steps list, printed_steps empty")
-                    printed_step = printed_steps.pop(0)
-                    if printed_step["name"] != step["name"]:
-                        raise Ux("Error processing new_steps list, step name mismatch")
-                    step["substeps"] = printed_step["substeps"]
-                new_steps.append(step)
-            element["steps"] = new_steps
+    for feature in data:
+        for element in feature["elements"]:
+            if element["keyword"] == "Scenario":
+                new_steps = []
+                for step in element["steps"]:
+                    if "result" in step:
+                        # if it gets to here, the step was executed and should be on the printed_steps list
+                        if len(printed_steps) == 0:
+                            raise Ux("Error processing new_steps list, printed_steps empty")
+                        printed_step = printed_steps.pop(0)
+                        if printed_step["name"] != step["name"]:
+                            raise Ux("Error processing new_steps list, step name mismatch")
+                        step["substeps"] = printed_step["substeps"]
+                    new_steps.append(step)
+                element["steps"] = new_steps
     json_repr = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
     with open('output.json', 'w') as f:
         f.write(json_repr)
