@@ -56,6 +56,7 @@ def user__i_touch_the_ok_button(context):
     """
     pass
 
+
 @step("[user] I touch the Preferences icon")
 def user__i_touch_the_preferences_icon(context):
     if 'fake' not in str(context._config.tags).split(','):

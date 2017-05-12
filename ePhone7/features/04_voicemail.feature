@@ -100,7 +100,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Delete icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  I touch the Trash tab
+    When  [voicemail] I touch the Trash tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears

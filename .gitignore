@@ -1,6 +1,7 @@
 .idea/
 wav/
 *.pyc
+json_repr.json
 output.json
 output_pre.json
 *.csv

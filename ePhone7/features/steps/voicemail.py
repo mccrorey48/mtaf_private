@@ -83,6 +83,11 @@ def voicemail__i_touch_the_saved_tab(context):
     pass
 
 
+@step("[voicemail] I touch the Trash tab")
+def voicemail__i_touch_the_trash_tab(context):
+    pass
+
+
 @step("[voicemail] I touch the voicemail element")
 def voicemail__i_touch_the_voicemail_element(context):
     pass

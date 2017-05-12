@@ -93,6 +93,7 @@ def prefs__i_touch_the_delete_icon(context):
     """
     pass
 
+
 @step('[prefs] I touch the "{name}" menu category')
 def prefs__i_touch_the_name_menu_category(context, name):
     if 'fake' not in str(context._config.tags).split(','):

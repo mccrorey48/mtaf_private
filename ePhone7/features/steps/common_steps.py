@@ -51,22 +51,22 @@ def a_google_dialog_appears_with_a_place_to_enter_my_password(context):
     pass
 
 
-@step("A keypad appears with a list of contacts")
+@step("[user] A keypad appears with a list of contacts")
 def a_keypad_appears_with_a_list_of_contacts(context):
     pass
 
 
-@step("A list of contacts containing the partial number appears above the keypad")
+@step("[dial] A list of contacts containing the partial number appears above the keypad")
 def a_list_of_contacts_containing_the_partial_number_appears_above_the_keypad(context):
     pass
 
 
-@step("A list of Coworker contacts containing the partial name appears above the keypad")
+@step("[dial] A list of Coworker contacts containing the partial name appears above the keypad")
 def a_list_of_coworker_contacts_containing_the_partial_name_appears_above_the_keypad(context):
     pass
 
 
-@step("A list of Personal contacts containing the partial name appears above the keypad")
+@step("[dial] A list of Personal contacts containing the partial name appears above the keypad")
 def a_list_of_personal_contacts_containing_the_partial_name_appears_above_the_keypad(context):
     pass
 
@@ -365,7 +365,7 @@ def i_enter_part_of_a_coworker_contact_name_using_the_keypad(context):
     pass
 
 
-@step("I enter part of a Coworker contact number using the keypad")
+@step("[dial] I enter part of a Coworker contact number using the keypad")
 def i_enter_part_of_a_coworker_contact_number_using_the_keypad(context):
     pass
 
@@ -386,7 +386,7 @@ def i_go_to_the_contacts_view(context):
         user_view.goto_tab('Contacts')
 
 
-@step("I go to the Home view")
+@step("[user] I go to the Home view")
 def i_go_to_the_home_view(context):
     if 'fake' not in str(context._config.tags).split(','):
         user_view.goto_tab('Contacts')
@@ -445,7 +445,7 @@ def i_see_an_invalid_vlan_priority_alert(context):
         assert network_view.element_is_present('InvalidVlanPriority'), "Expected Invalid VLAN Priority alert"
 
 
-@step("I see the call at the top of the All History view")
+@step("[history] I see the call at the top of the All History view")
 def i_see_the_call_at_the_top_of_the_all_history_view(context):
     pass
 
@@ -455,7 +455,7 @@ def i_see_the_call_at_the_top_of_the_missed_history_view(context):
     pass
 
 
-@step("I see the keypad")
+@step("[dial] I see the keypad")
 def i_see_the_keypad(context):
     pass
 
@@ -617,7 +617,7 @@ def i_touch_system(context):
     pass
 
 
-@step("I touch the All tab")
+@step("[history] I touch the All tab")
 def i_touch_the_all_tab(context):
     pass
 
@@ -643,7 +643,7 @@ def i_touch_the_button_for_another_timer_setting(context):
     pass
 
 
-@step("I touch the Call Forward icon")
+@step("[user] I touch the Call Forward icon")
 def i_touch_the_call_forward_icon(context):
     pass
 
@@ -658,7 +658,7 @@ def i_touch_the_cancel_button(context):
     pass
 
 
-@step("I touch the contact listing I want to call")
+@step("[dial] I touch the contact listing I want to call")
 def i_touch_the_contact_listing_i_want_to_call(context):
     pass
 
@@ -668,7 +668,7 @@ def i_touch_the_current_time_zone_text(context):
     pass
 
 
-@step("I touch the Do Not Disturb icon")
+@step("[user] I touch the Do Not Disturb icon")
 def i_touch_the_do_not_disturb_icon(context):
     pass
 
@@ -680,11 +680,6 @@ def i_touch_the_missed_tab(context):
 
 @when('I touch the "OK" button')
 def i_touch_the_ok_button(context):
-    pass
-
-
-@step("I touch the Trash tab")
-def i_touch_the_trash_tab(context):
     pass
 
 
@@ -855,7 +850,7 @@ def my_system_version_needs_to_be_upgraded(context):
             context.run_substep('[prefs] the Preferences window disappears')
 
 
-@step("Only the contact I touched is listed")
+@step("[dial] Only the contact I touched is listed")
 def only_the_contact_i_touched_is_listed(context):
     pass
 
@@ -916,22 +911,22 @@ def the_advanced_options_view_disappears(context):
         assert user_view.element_is_not_present('AdvancedOptions'), "Expected Advanced Options view to disappear but it did not"
 
 
-@step("the Call Forward icon is blue")
+@step("[user] the Call Forward icon is blue")
 def the_call_forward_icon_is_blue(context):
     pass
 
 
-@step("the Call Forward icon is red")
+@step("[user] the Call Forward icon is red")
 def the_call_forward_icon_is_red(context):
     pass
 
 
-@step("the call has a blue handset icon with an incoming arrow")
+@step("[history] the call has a blue handset icon with an incoming arrow")
 def the_call_has_a_blue_handset_icon_with_an_incoming_arrow(context):
     pass
 
 
-@step("the call has a green handset icon with an outgoing arrow")
+@step("[history] the call has a green handset icon with an outgoing arrow")
 def the_call_has_a_green_handset_icon_with_an_outgoing_arrow(context):
     pass
 
@@ -1011,22 +1006,22 @@ def the_current_timer_setting_is_selected(context):
     pass
 
 
-@step("the Do Not Disturb icon is blue")
+@step("[user] the Do Not Disturb icon is blue")
 def the_do_not_disturb_icon_is_blue(context):
     pass
 
 
-@step("the Do Not Disturb icon is red")
+@step("[user] the Do Not Disturb icon is red")
 def the_do_not_disturb_icon_is_red(context):
     pass
 
 
-@step("the Do Not Disturb icon turns blue")
+@step("[user] the Do Not Disturb icon turns blue")
 def the_do_not_disturb_icon_turns_blue(context):
     pass
 
 
-@step("the Do Not Disturb icon turns red")
+@step("[user] the Do Not Disturb icon turns red")
 def the_do_not_disturb_icon_turns_red(context):
     pass
 
@@ -1056,7 +1051,7 @@ def the_incoming_call_window_disappears(context):
     pass
 
 
-@step("the keypad disappears")
+@step("[user] the keypad disappears")
 def the_keypad_disappears(context):
     pass
 
