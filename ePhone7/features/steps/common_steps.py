@@ -96,11 +96,6 @@ def a_message_indicates_that_calls_are_being_forwarded_to_voicemail(context):
     pass
 
 
-@step("A popup informs me that help email has been sent to my email address")
-def a_popup_informs_me_that_help_email_has_been_sent_to_my_email_address(context):
-    pass
-
-
 @step("a Record button is visible")
 def a_record_button_is_visible(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -125,11 +120,6 @@ def a_sleep_timer_setting_window_appears_with_buttons_for_various_timer_settings
 
 @step('A submenu appears with a "Brightness" option')
 def a_submenu_appears_with_a_brightness_option(context):
-    pass
-
-
-@step('A submenu appears with a "Call Forwarding Options" option')
-def a_submenu_appears_with_a_call_forwarding_options_option(context):
     pass
 
 
@@ -183,11 +173,6 @@ def a_submenu_opens_with_a_walkthrough_option(context):
     pass
 
 
-@step("A submenu opens with an eHelp option")
-def a_submenu_opens_with_an_ehelp_option(context):
-    pass
-
-
 @step('A "Visual Voicemail" window appears')
 def a_visual_voicemail_window_appears(context):
     pass
@@ -210,16 +195,6 @@ def a_window_appears_with_a_button_for_each_contacts_tab(context):
 
 @step('A window appears with a "Check Ethernet" option')
 def a_window_appears_with_a_check_ethernet_option(context):
-    pass
-
-
-@step("A window appears with a list of contacts")
-def a_window_appears_with_a_list_of_contacts(context):
-    pass
-
-
-@step('A window appears with a section labeled "Call Forward Busy"')
-def a_window_appears_with_a_section_labeled_call_forward_busy(context):
     pass
 
 
@@ -358,16 +333,6 @@ def i_end_the_call(context):
         user_view.end_call()
 
 
-@step("I enter a 10-digit phone number using the keypad")
-def i_enter_a_10digit_phone_number_using_the_keypad(context):
-    pass
-
-
-@step("I enter a Coworker contact number using the keypad")
-def i_enter_a_coworker_contact_number_using_the_keypad(context):
-    pass
-
-
 @step("I enter a VLAN identifier between 1 and 4094")
 def i_enter_a_vlan_identifier_between_1_and_4094(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -412,11 +377,6 @@ def i_enter_part_of_a_personal_contact_name_using_the_keypad(context):
 
 @step("I enter part of a Personal contact number using the keypad")
 def i_enter_part_of_a_personal_contact_number_using_the_keypad(context):
-    pass
-
-
-@step("I enter the call park queue number")
-def i_enter_the_call_park_queue_number(context):
     pass
 
 
@@ -575,11 +535,6 @@ def i_touch_call_forwarding(context):
     pass
 
 
-@step('I touch "Call Forwarding Options"')
-def i_touch_call_forwarding_options(context):
-    pass
-
-
 @step('I touch "Check Ethernet"')
 def i_touch_check_ethernet(context):
     pass
@@ -605,11 +560,6 @@ def i_touch_default_contacts_tab(context):
     pass
 
 
-@step('I touch "eHelp"')
-def i_touch_ehelp(context):
-    pass
-
-
 @step('I touch "Factory Reset"')
 def i_touch_factory_reset(context):
     pass
@@ -620,13 +570,13 @@ def i_touch_manage_accounts(context):
     pass
 
 
-@step('I touch "Need Help"')
-def i_touch_need_help(context):
+@step('I touch "Next"')
+def i_touch_next(context):
     pass
 
 
-@step('I touch "Next"')
-def i_touch_next(context):
+@step('I touch "OK"')
+def i_touch_ok(context):
     pass
 
 
@@ -640,11 +590,6 @@ def i_touch_ok_on_the_invalid_vlan_priority_alert(context):
 def i_touch_ok_on_the_popup(context):
     if 'fake' not in str(context._config.tags).split(','):
         base_view.click_named_element("OtaServerOk")
-
-
-@step('I touch "Personal"')
-def i_touch_personal(context):
-    pass
 
 
 @step('I touch "Phone"')
@@ -695,11 +640,6 @@ def i_touch_the_button_for_another_tab(context):
 
 @step("I touch the button for another timer setting")
 def i_touch_the_button_for_another_timer_setting(context):
-    pass
-
-
-@step('I touch the "Call Forward Busy" section')
-def i_touch_the_call_forward_busy_section(context):
     pass
 
 
@@ -930,6 +870,36 @@ def only_the_new_ringtone_has_a_dot_next_to_it(context):
     pass
 
 
+@step('[prefs] A submenu appears with a "Call Forwarding Options" option')
+def prefs__a_submenu_appears_with_a_call_forwarding_options_option(context):
+    pass
+
+
+@step("[prefs] A window appears with a list of contacts")
+def prefs__a_window_appears_with_a_list_of_contacts(context):
+    pass
+
+
+@step('[prefs] A window appears with a section labeled "Call Forward Busy"')
+def prefs__a_window_appears_with_a_section_labeled_call_forward_busy(context):
+    pass
+
+
+@step('[prefs] I touch "Call Forwarding Options"')
+def prefs__i_touch_call_forwarding_options(context):
+    pass
+
+
+@step('[prefs] I touch "Personal"')
+def prefs__i_touch_personal(context):
+    pass
+
+
+@step('[prefs] I touch the "Call Forward Busy" section')
+def prefs__i_touch_the_call_forward_busy_section(context):
+    pass
+
+
 @step("Someone calls me")
 def someone_calls_me(context):
     pass
@@ -973,11 +943,6 @@ def the_call_has_a_red_handset_icon_with_a_missed_arrow(context):
 
 @step("the call has a voicemail icon")
 def the_call_has_a_voicemail_icon(context):
-    pass
-
-
-@step("the Call Park icon")
-def the_call_park_icon(context):
     pass
 
 
@@ -1260,6 +1225,11 @@ def the_window_contains_a_slider_control(context):
 
 @step("the window disappears")
 def the_window_disappears(context):
+    pass
+
+
+@step("[user] I touch the Call Park icon")
+def user__i_touch_the_call_park_icon(context):
     pass
 
 

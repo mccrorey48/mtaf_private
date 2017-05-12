@@ -17,7 +17,6 @@ Feature: As a user I want to keep access to my voicemail after I stop using a VL
     Then  [background] The reboot alert window appears
     And   [background] I wait for the phone to restart
 
-#  @wip
   Scenario: I have my new and saved voicemails after disabling the VLAN
     Given I have at least one saved voicemail
     And   I have at least one new voicemail

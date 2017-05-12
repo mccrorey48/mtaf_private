@@ -1,3 +1,4 @@
+@regression
 Feature: As a user, I should be able to change the settings on my ePhone7 using control buttons on the display
 
   Background: I am logged in and at the Home view
@@ -11,10 +12,10 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     When  Someone calls me
     Then  The caller gets a voicemail prompt
     When  The caller leaves a message
-    And   I touch the Voicemail button
-    Then  I see the New, Saved and Trash tabs at the top of the screen
-    When  I touch the New tab
-    Then  The new voicemail is the first item listed
+    And   [user] I touch the Voicemail button
+    Then  [voicemail] I see the New, Saved and Trash tabs at the top of the screen
+    When  [voicemail] I touch the New tab
+    Then  [voicemail] The new voicemail is the first item listed
 
   Scenario: I want to deactivate Do Not Disturb
     Given The Do Not Disturb icon is red
@@ -25,9 +26,9 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
 
   Scenario: I want to pick up a parked incoming call
     Given A call between two other accounts has been parked by the called account
-    When  The Call Park icon
-    Then  A keypad appears
-    When  I enter the call park queue number
+    When  [user] I touch the Call Park icon
+    Then  [user] A keypad appears
+    When  [user] I enter the call park queue number
     Then  The caller is connected to my phone
 
 
@@ -35,10 +36,10 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     Given The Call Forward icon is blue
     When  I touch the Call Forward icon
     Then  A keypad appears with a list of contacts
-    When  I use the keypad to filter the list of contacts
-    And   I touch a contact element
-    Then  Only the contact I touched is listed
-    When  I touch the OK button
+    When  [user] I use the keypad to filter the list of contacts
+    And   [user] I touch a contact element
+    Then  [user] Only the contact I touched is listed
+    When  [user] I touch the OK button
     Then  The keypad disappears
     And   The Call Forward icon is red
     When  I go to the Home view
@@ -48,7 +49,7 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     Given The Call Forward icon is blue
     When  I touch the Call Forward icon
     Then  A keypad appears with a list of contacts
-    When  I touch the Voicemail button
+    When  [user] I touch the Voicemail button
     Then  The keypad disappears
     And   The Call Forward icon is red
     When  I go to the Home view

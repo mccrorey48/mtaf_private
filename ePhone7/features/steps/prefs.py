@@ -6,10 +6,20 @@ import lib.logging_esi as logging
 log = logging.get_logger('esi.prefs')
 
 
+@step("[prefs] A popup informs me that help email has been sent to my email address")
+def prefs__a_popup_informs_me_that_help_email_has_been_sent_to_my_email_address(context):
+    pass
+
+
 @step('[prefs] A submenu appears with a "Network" option')
 def prefs__a_submenu_appears_with_a_network_option(context):
     if 'fake' not in str(context._config.tags).split(','):
         prefs_view.element_is_present('MenuItemNetworkText')
+
+
+@step("[prefs] A submenu opens with an eHelp option")
+def prefs__a_submenu_opens_with_an_ehelp_option(context):
+    pass
 
 
 @then('[prefs] an upgrade is found and an "Upgrade" button appears')
@@ -44,11 +54,44 @@ def prefs__i_see_the_need_help_personal_phone_and_system_category_elements(conte
     pass
 
 
+@step("[prefs] I touch a contact element")
+def prefs__i_touch_a_contact_element(context):
+    pass
+
+
+@step('[prefs] I touch "eHelp"')
+def prefs__i_touch_ehelp(context):
+    pass
+
+
+@step('[prefs] I touch "Need Help"')
+def prefs__i_touch_need_help(context):
+    pass
+
+
+@step('[prefs] I touch "OK" on the email notification popup')
+def prefs__i_touch_ok_on_the_email_notification_popup(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        pass
+
+
 @step('[prefs] I touch the "Check for System Update" option')
 def prefs__i_touch_the_check_for_system_update_option(context):
     if 'fake' not in str(context._config.tags).split(','):
         prefs_view.click_named_element('SystemUpdate')
 
+
+@step("[prefs] I touch the Delete button")
+def prefs__i_touch_the_delete_button(context):
+    pass
+
+
+@when("[prefs] I touch the Delete icon")
+def prefs__i_touch_the_delete_icon(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
 
 @step('[prefs] I touch the "{name}" menu category')
 def prefs__i_touch_the_name_menu_category(context, name):
@@ -118,6 +161,12 @@ def prefs__i_upgrade_the_phone_if_the_versions_are_not_correct(context):
             context.run_substep('[prefs] I touch the "Upgrade" button')
         context.run_substep('I wait for the phone to upgrade and reboot')
         context.run_substep('I verify the system and app versions are current')
+
+
+@step("[prefs] the email notification popup disappears")
+def prefs__the_email_notification_popup_disappears(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        pass
 
 
 @step("[prefs] the Preferences window appears")

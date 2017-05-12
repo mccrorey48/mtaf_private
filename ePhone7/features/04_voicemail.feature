@@ -1,3 +1,4 @@
+@regression
 Feature: As a user I want to use and manage my voicemail lists
 
   Background: a new voicemail is shown in the New Voicemails view

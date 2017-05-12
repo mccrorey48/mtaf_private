@@ -137,8 +137,8 @@ def contacts__i_touch_the_groups_tab(context):
     pass
 
 
-@step("[contacts] I touch the handset icon on a contact list item")
-def contacts__i_touch_the_handset_icon_on_a_contact_list_item(context):
+@step("[contacts] I touch the handset icon")
+def contacts__i_touch_the_handset_icon(context):
     pass
 
 

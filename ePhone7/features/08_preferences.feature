@@ -1,3 +1,4 @@
+@regression
 Feature: As a user I want to view and change detailed settings that control my phone's operation
 
   Background: I am logged in and at the Preferences view
@@ -6,15 +7,15 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   [background] I see the Need Help, Personal, Phone and System category elements
 
   Scenario: I want to get instructions for using my phone
-    When  I touch "Need Help"
-    Then  A submenu opens with an eHelp option
-    When  I touch "eHelp"
-    Then  A popup informs me that help email has been sent to my email address
-    When  I touch "OK"
-    Then  The popup disappears
+    When  [prefs] I touch "Need Help"
+    Then  [prefs] A submenu opens with an eHelp option
+    When  [prefs] I touch "eHelp"
+    Then  [prefs] A popup informs me that help email has been sent to my email address
+    When  [prefs] I touch "OK" on the email notification popup
+    Then  [prefs] The email notification popup disappears
 
   Scenario: I want to see a walkthrough of my phone's features
-    When  I touch "Need Help"
+    When  [prefs] I touch "Need Help"
     Then  A submenu opens with a "Walkthrough" option
     When  I touch "Walkthrough"
     Then  A "Welcome to ePhone7!" window appears
@@ -33,12 +34,12 @@ Feature: As a user I want to view and change detailed settings that control my p
     When  I swipe the screen from right to left
     Then  an "Active Call Dialpad" window appears
     When  I swipe the screen from right to left
-    Then  the Preferences window appears
+    Then  [prefs] the Preferences window appears
 
   Scenario: I want to sign in to gmail and download my Personal contacts
     Given I am not signed in to my gmail account
     And   My account does not have two-step verification enabled
-    When  I touch "Personal"
+    When  [prefs] I touch "Personal"
     Then  A submenu appears with a "Sign in with Google" option
     When  I touch "Sign in with Google"
     Then  A Google dialog appears with a place to enter my email address
@@ -49,22 +50,22 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   I touch "Next"
     Then  The Google dialog disappears
     And   The "Sign in with Google" element label changes to "Manage Accounts"
-    When  I touch the "X" icon
-    Then  The Preferences window disappears
-    When  I touch the "Contacts" button
-    Then  the Contacts view appears
-    And   I see the Personal, Coworkers, Favorites and Groups tabs
-    When  I touch the "Personal" tab
+    When  [prefs] I touch the "X" icon
+    Then  [prefs] The Preferences window disappears
+    When  [user] I touch the "Contacts" button
+    Then  [contacts] the Contacts view appears
+    And   [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
+    When  [contacts] I touch the "Personal" tab
     Then  I can see my personal contacts
 
 
   Scenario: I want to sign out of gmail and remove my Personal contacts
     Given I am signed in to my gmail account
-    When  I touch "Personal"
+    When  [prefs] I touch "Personal"
     Then  A submenu appears with a "Manage Accounts" option
     When  I touch "Manage Accounts"
     Then  A "Sign Out of Google Account" dialog appears
-    When  I touch the Delete icon
+    When  [prefs] I touch the Delete icon
     Then  A confirmation dialog appears
     When  I touch "OK"
     Then  An "Account Deleted" popup appears
@@ -73,7 +74,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   The "Manage Accounts" element label changes to "Sign in with Google"
 
   Scenario: I want to change my default Contacts tab
-    When  I touch "Personal"
+    When  [prefs] I touch "Personal"
     Then  A submenu appears with a "Default Contacts Tab" option
     When  I touch "Default Contacts Tab"
     Then  A window appears with a button for each Contacts tab
@@ -82,18 +83,18 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   I touch "OK"
     Then  The Contacts tab window disappears
     When  I close the Preferences window
-    And   I touch the "Contacts" button
+    And   [user] I touch the "Contacts" button
     Then  The new default tab is selected
 
   Scenario: I want to forward incoming calls when I do not answer
-    When  I touch "Personal"
-    Then  A submenu appears with a "Call Forwarding Options" option
-    When  I touch "Call Forwarding Options"
+    When  [prefs] I touch "Personal"
+    Then  [prefs] A submenu appears with a "Call Forwarding Options" option
+    When  [prefs] I touch "Call Forwarding Options"
     Then  A window appears with a section labeled "Call Forward No Answer"
     And   The section labeled "Call Forward No Answer" is not highlighted
     When  I touch the "Call Forward No Answer" section
-    Then  A window appears with a list of contacts
-    And   I touch a contact element
+    Then  [prefs] A window appears with a list of contacts
+    And   [prefs] I touch a contact element
     Then  Only the contact I touched is listed
     When  I touch "OK"
     Then  Both windows disappear
@@ -102,9 +103,9 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   The section labeled "Call Forward No Answer" is highlighted
 
   Scenario: I want to stop forwarding incoming calls when I do not answer
-    When  I touch "Personal"
-    Then  A submenu appears with a "Call Forwarding Options" option
-    When  I touch "Call Forwarding Options"
+    When  [prefs] I touch "Personal"
+    Then  [prefs] A submenu appears with a "Call Forwarding Options" option
+    When  [prefs] I touch "Call Forwarding Options"
     Then  A window appears with a section labeled "Call Forward No Answer"
     And   The section labeled "Call Forward No Answer" is highlighted
     When  I touch the "Call Forward No Answer" section
@@ -113,27 +114,27 @@ Feature: As a user I want to view and change detailed settings that control my p
     Then  The window disappears
 
   Scenario: I want to forward incoming calls when my phone is busy
-    When  I touch "Personal"
-    Then  A submenu appears with a "Call Forwarding Options" option
-    When  I touch "Call Forwarding Options"
-    Then  A window appears with a section labeled "Call Forward Busy"
-    When  I touch the "Call Forward Busy" section
-    Then  A window appears with a list of contacts
-    And   I touch a contact element
+    When  [prefs] I touch "Personal"
+    Then  [prefs] A submenu appears with a "Call Forwarding Options" option
+    When  [prefs] I touch "Call Forwarding Options"
+    Then  [prefs] A window appears with a section labeled "Call Forward Busy"
+    When  [prefs] I touch the "Call Forward Busy" section
+    Then  [prefs] A window appears with a list of contacts
+    And   [prefs] I touch a contact element
     Then  Only the contact I touched is listed
     When  I touch "OK"
     Then  Both windows disappear
     When  I touch "Call Forwarding"
-    Then  A window appears with a section labeled "Call Forward Busy"
+    Then  [prefs] A window appears with a section labeled "Call Forward Busy"
     And   The section labeled "Call Forward No Answer" is highlighted
 
   Scenario: I want to stop forwarding incoming calls when my phone is busy
-    When  I touch "Personal"
-    Then  A submenu appears with a "Call Forwarding Options" option
-    When  I touch "Call Forwarding Options"
-    Then  A window appears with a section labeled "Call Forward Busy"
+    When  [prefs] I touch "Personal"
+    Then  [prefs] A submenu appears with a "Call Forwarding Options" option
+    When  [prefs] I touch "Call Forwarding Options"
+    Then  [prefs] A window appears with a section labeled "Call Forward Busy"
     And   The section labeled "Call Forward Busy" is highlighted
-    When  I touch the "Call Forward Busy" section
+    When  [prefs] I touch the "Call Forward Busy" section
     And   The section labeled "Call Forward Busy" is not highlighted
     When  I touch the "Cancel" button
     Then  The window disappears
@@ -295,8 +296,8 @@ Feature: As a user I want to view and change detailed settings that control my p
 
   Scenario: I want to see my phone's network settings
     When  I touch "System"
-    Then  A submenu appears with a "Network" option
-    When  I touch the "Network" option
+    Then  [prefs] A submenu appears with a "Network" option
+    When  [prefs] I touch the "Network" option
     Then  A window appears with a "Check Ethernet" option
     When  I touch "Check Ethernet"
     Then  The network settings are displayed

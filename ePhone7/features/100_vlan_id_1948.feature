@@ -1,4 +1,3 @@
-#@sprint @regression
 Feature: As a user I want to set up the VLAN (R2D2-1948)
 
   Background: I am at the Network Settings view and VLAN is enabled
