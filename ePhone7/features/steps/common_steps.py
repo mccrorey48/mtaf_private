@@ -51,26 +51,6 @@ def a_google_dialog_appears_with_a_place_to_enter_my_password(context):
     pass
 
 
-@step("[user] A keypad appears with a list of contacts")
-def a_keypad_appears_with_a_list_of_contacts(context):
-    pass
-
-
-@step("[dial] A list of contacts containing the partial number appears above the keypad")
-def a_list_of_contacts_containing_the_partial_number_appears_above_the_keypad(context):
-    pass
-
-
-@step("[dial] A list of Coworker contacts containing the partial name appears above the keypad")
-def a_list_of_coworker_contacts_containing_the_partial_name_appears_above_the_keypad(context):
-    pass
-
-
-@step("[dial] A list of Personal contacts containing the partial name appears above the keypad")
-def a_list_of_personal_contacts_containing_the_partial_name_appears_above_the_keypad(context):
-    pass
-
-
 @step("A menu appears with time zone choices")
 def a_menu_appears_with_time_zone_choices(context):
     pass
@@ -365,11 +345,6 @@ def i_enter_part_of_a_coworker_contact_name_using_the_keypad(context):
     pass
 
 
-@step("[dial] I enter part of a Coworker contact number using the keypad")
-def i_enter_part_of_a_coworker_contact_number_using_the_keypad(context):
-    pass
-
-
 @step("I enter part of a Personal contact name using the keypad")
 def i_enter_part_of_a_personal_contact_name_using_the_keypad(context):
     pass
@@ -382,12 +357,6 @@ def i_enter_part_of_a_personal_contact_number_using_the_keypad(context):
 
 @step("I go to the Contacts view")
 def i_go_to_the_contacts_view(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        user_view.goto_tab('Contacts')
-
-
-@step("[user] I go to the Home view")
-def i_go_to_the_home_view(context):
     if 'fake' not in str(context._config.tags).split(','):
         user_view.goto_tab('Contacts')
 
@@ -430,13 +399,37 @@ def i_make_a_call_to_a_coworker_contact(context):
 
 @step("I receive a call")
 def i_receive_a_call(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        context.caller_name, src_cfg = user_view.receive_call()
+    # if 'fake' not in str(context._config.tags).split(','):
+    #     context.caller_name, src_cfg = user_view.receive_call()
+    foo = 42
+    print(foo)
 
 
 @step("I receive a new voicemail")
 def i_receive_a_new_voicemail(context):
     pass
+
+
+@step("I receive and ignore a call")
+def i_receive_and_ignore_a_call(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        pass
+    context.run_substep("I receive a call")
+    # context.run_substep("the incoming call window appears")
+    # context.run_substep("I ignore the call")
+    # context.run_substep("the caller ends the call")
+    # context.run_substep("the incoming call window disappears")
+
+
+@step("I receive and ignore a call and the caller leaves a voicemail")
+def i_receive_and_ignore_a_call_and_the_caller_leaves_a_voicemail(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        context.run_substep("I receive a call")
+        context.run_substep("the incoming call window appears")
+        context.run_substep("I ignore the call")
+        context.run_substep("the caller leaves a voicemail")
+        context.run_substep("the incoming call window disappears")
+        context.run_substep("the caller ends the call")
 
 
 @then('I see an "Invalid VLAN Priority" alert')
@@ -445,18 +438,8 @@ def i_see_an_invalid_vlan_priority_alert(context):
         assert network_view.element_is_present('InvalidVlanPriority'), "Expected Invalid VLAN Priority alert"
 
 
-@step("[history] I see the call at the top of the All History view")
-def i_see_the_call_at_the_top_of_the_all_history_view(context):
-    pass
-
-
 @step("I see the call at the top of the Missed History view")
 def i_see_the_call_at_the_top_of_the_missed_history_view(context):
-    pass
-
-
-@step("[dial] I see the keypad")
-def i_see_the_keypad(context):
     pass
 
 
@@ -617,11 +600,6 @@ def i_touch_system(context):
     pass
 
 
-@step("[history] I touch the All tab")
-def i_touch_the_all_tab(context):
-    pass
-
-
 @step("I touch the Back button")
 def i_touch_the_back_button(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -643,11 +621,6 @@ def i_touch_the_button_for_another_timer_setting(context):
     pass
 
 
-@step("[user] I touch the Call Forward icon")
-def i_touch_the_call_forward_icon(context):
-    pass
-
-
 @step('I touch the "Call Forward No Answer" section')
 def i_touch_the_call_forward_no_answer_section(context):
     pass
@@ -658,18 +631,8 @@ def i_touch_the_cancel_button(context):
     pass
 
 
-@step("[dial] I touch the contact listing I want to call")
-def i_touch_the_contact_listing_i_want_to_call(context):
-    pass
-
-
 @step("I touch the current time zone text")
 def i_touch_the_current_time_zone_text(context):
-    pass
-
-
-@step("[user] I touch the Do Not Disturb icon")
-def i_touch_the_do_not_disturb_icon(context):
     pass
 
 
@@ -850,11 +813,6 @@ def my_system_version_needs_to_be_upgraded(context):
             context.run_substep('[prefs] the Preferences window disappears')
 
 
-@step("[dial] Only the contact I touched is listed")
-def only_the_contact_i_touched_is_listed(context):
-    pass
-
-
 @step("Only the current ringtone has a dot next to it")
 def only_the_current_ringtone_has_a_dot_next_to_it(context):
     pass
@@ -862,36 +820,6 @@ def only_the_current_ringtone_has_a_dot_next_to_it(context):
 
 @step("Only the new ringtone has a dot next to it")
 def only_the_new_ringtone_has_a_dot_next_to_it(context):
-    pass
-
-
-@step('[prefs] A submenu appears with a "Call Forwarding Options" option')
-def prefs__a_submenu_appears_with_a_call_forwarding_options_option(context):
-    pass
-
-
-@step("[prefs] A window appears with a list of contacts")
-def prefs__a_window_appears_with_a_list_of_contacts(context):
-    pass
-
-
-@step('[prefs] A window appears with a section labeled "Call Forward Busy"')
-def prefs__a_window_appears_with_a_section_labeled_call_forward_busy(context):
-    pass
-
-
-@step('[prefs] I touch "Call Forwarding Options"')
-def prefs__i_touch_call_forwarding_options(context):
-    pass
-
-
-@step('[prefs] I touch "Personal"')
-def prefs__i_touch_personal(context):
-    pass
-
-
-@step('[prefs] I touch the "Call Forward Busy" section')
-def prefs__i_touch_the_call_forward_busy_section(context):
     pass
 
 
@@ -909,26 +837,6 @@ def the_account_deleted_popup_disappears(context):
 def the_advanced_options_view_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
         assert user_view.element_is_not_present('AdvancedOptions'), "Expected Advanced Options view to disappear but it did not"
-
-
-@step("[user] the Call Forward icon is blue")
-def the_call_forward_icon_is_blue(context):
-    pass
-
-
-@step("[user] the Call Forward icon is red")
-def the_call_forward_icon_is_red(context):
-    pass
-
-
-@step("[history] the call has a blue handset icon with an incoming arrow")
-def the_call_has_a_blue_handset_icon_with_an_incoming_arrow(context):
-    pass
-
-
-@step("[history] the call has a green handset icon with an outgoing arrow")
-def the_call_has_a_green_handset_icon_with_an_outgoing_arrow(context):
-    pass
 
 
 @step("the call has a red handset icon with a missed arrow")
@@ -1006,26 +914,6 @@ def the_current_timer_setting_is_selected(context):
     pass
 
 
-@step("[user] the Do Not Disturb icon is blue")
-def the_do_not_disturb_icon_is_blue(context):
-    pass
-
-
-@step("[user] the Do Not Disturb icon is red")
-def the_do_not_disturb_icon_is_red(context):
-    pass
-
-
-@step("[user] the Do Not Disturb icon turns blue")
-def the_do_not_disturb_icon_turns_blue(context):
-    pass
-
-
-@step("[user] the Do Not Disturb icon turns red")
-def the_do_not_disturb_icon_turns_red(context):
-    pass
-
-
 @step("the Google dialog disappears")
 def the_google_dialog_disappears(context):
     pass
@@ -1048,11 +936,6 @@ def the_incoming_call_window_appears(context):
 
 @step("the incoming call window disappears")
 def the_incoming_call_window_disappears(context):
-    pass
-
-
-@step("[user] the keypad disappears")
-def the_keypad_disappears(context):
     pass
 
 
@@ -1223,8 +1106,64 @@ def the_window_disappears(context):
     pass
 
 
+@step("[user] A keypad appears with a list of contacts")
+def user__a_keypad_appears_with_a_list_of_contacts(context):
+    pass
+
+
+@step("[user] I go to the Home view")
+def user__i_go_to_the_home_view(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.goto_tab('Contacts')
+
+
+@step("[user] I touch the Call Forward icon")
+def user__i_touch_the_call_forward_icon(context):
+    pass
+
+
 @step("[user] I touch the Call Park icon")
 def user__i_touch_the_call_park_icon(context):
+    pass
+
+
+@step("[user] I touch the Do Not Disturb icon")
+def user__i_touch_the_do_not_disturb_icon(context):
+    pass
+
+
+@step("[user] the Call Forward icon is blue")
+def user__the_call_forward_icon_is_blue(context):
+    pass
+
+
+@step("[user] the Call Forward icon is red")
+def user__the_call_forward_icon_is_red(context):
+    pass
+
+
+@step("[user] the Do Not Disturb icon is blue")
+def user__the_do_not_disturb_icon_is_blue(context):
+    pass
+
+
+@step("[user] the Do Not Disturb icon is red")
+def user__the_do_not_disturb_icon_is_red(context):
+    pass
+
+
+@step("[user] the Do Not Disturb icon turns blue")
+def user__the_do_not_disturb_icon_turns_blue(context):
+    pass
+
+
+@step("[user] the Do Not Disturb icon turns red")
+def user__the_do_not_disturb_icon_turns_red(context):
+    pass
+
+
+@step("[user] the keypad disappears")
+def user__the_keypad_disappears(context):
     pass
 
 

@@ -95,7 +95,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     When  I touch the "Call Forward No Answer" section
     Then  [prefs] A window appears with a list of contacts
     And   [prefs] I touch a contact element
-    Then  Only the contact I touched is listed
+    Then  [prefs] Only the contact I touched is listed
     When  I touch "OK"
     Then  Both windows disappear
     When  I touch "Call Forwarding"
@@ -121,7 +121,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     When  [prefs] I touch the "Call Forward Busy" section
     Then  [prefs] A window appears with a list of contacts
     And   [prefs] I touch a contact element
-    Then  Only the contact I touched is listed
+    Then  [prefs] Only the contact I touched is listed
     When  I touch "OK"
     Then  Both windows disappear
     When  I touch "Call Forwarding"

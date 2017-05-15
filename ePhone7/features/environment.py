@@ -22,7 +22,8 @@ def before_all(context):
     else:
         cfg_server = 'vqda1'
     cfg.set_site(cfg_server, site_tag)
-    if 'fake' not in str(context._config.tags).split(','):
+    tags = str(context._config.tags).split(',')
+    if 'fake' not in tags and 'json' not in tags:
         # base_view.open_appium()
         base_view.open_appium('nolaunch', force=True, timeout=60)
         base_view.startup()

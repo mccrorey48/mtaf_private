@@ -79,7 +79,7 @@ def user__i_use_the_keypad_to_filter_the_list_of_contacts(context):
     pass
 
 
-@then("[user] Only the contact I touched is listed")
+@step("[user] Only the contact I touched is listed")
 def user__only_the_contact_i_touched_is_listed(context):
     """
     :type context: behave.runner.Context

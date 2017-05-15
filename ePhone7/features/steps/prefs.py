@@ -11,6 +11,11 @@ def prefs__a_popup_informs_me_that_help_email_has_been_sent_to_my_email_address(
     pass
 
 
+@step('[prefs] A submenu appears with a "Call Forwarding Options" option')
+def prefs__a_submenu_appears_with_a_call_forwarding_options_option(context):
+    pass
+
+
 @step('[prefs] A submenu appears with a "Network" option')
 def prefs__a_submenu_appears_with_a_network_option(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -19,6 +24,16 @@ def prefs__a_submenu_appears_with_a_network_option(context):
 
 @step("[prefs] A submenu opens with an eHelp option")
 def prefs__a_submenu_opens_with_an_ehelp_option(context):
+    pass
+
+
+@step('[prefs] A window appears with a list of contacts')
+def prefs__a_window_appears_with_a_list_of_contacts(context):
+    pass
+
+
+@step('[prefs] A window appears with a section labeled "Call Forward Busy"')
+def prefs__a_window_appears_with_a_section_labeled_call_forward_busy(context):
     pass
 
 
@@ -59,6 +74,11 @@ def prefs__i_touch_a_contact_element(context):
     pass
 
 
+@step('[prefs] I touch "Call Forwarding Options"')
+def prefs__i_touch_call_forwarding_options(context):
+    pass
+
+
 @step('[prefs] I touch "eHelp"')
 def prefs__i_touch_ehelp(context):
     pass
@@ -73,6 +93,16 @@ def prefs__i_touch_need_help(context):
 def prefs__i_touch_ok_on_the_email_notification_popup(context):
     if 'fake' not in str(context._config.tags).split(','):
         pass
+
+
+@step('[prefs] I touch "Personal"')
+def prefs__i_touch_personal(context):
+    pass
+
+
+@step('[prefs] I touch the "Call Forward Busy" section')
+def prefs__i_touch_the_call_forward_busy_section(context):
+    pass
 
 
 @step('[prefs] I touch the "Check for System Update" option')
@@ -162,6 +192,11 @@ def prefs__i_upgrade_the_phone_if_the_versions_are_not_correct(context):
             context.run_substep('[prefs] I touch the "Upgrade" button')
         context.run_substep('I wait for the phone to upgrade and reboot')
         context.run_substep('I verify the system and app versions are current')
+
+
+@step('[prefs] Only the contact I touched is listed')
+def prefs__only_the_contact_i_touched_is_listed(context):
+    pass
 
 
 @step("[prefs] the email notification popup disappears")
