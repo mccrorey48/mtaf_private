@@ -385,7 +385,7 @@ if __name__ == '__main__':
         if fake_tag:
             current_app = '1.3.6'
             current_aosp = '2.3.8'
-        else:
+        if not (fake_tag or args.json_file):
             cfg.set_site(args.server, args.site_tag)
             current_app, current_aosp = get_current_versions(args)
             get_downgrade_images(args)
