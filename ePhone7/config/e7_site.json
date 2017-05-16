@@ -63,7 +63,9 @@
             "UserId": "2012",
             "UserName": "Martin Two",
             "name": "R2d2User",
-            "type": "user"
+            "type": "user",
+            "AltUserId": "2012b",
+            "AltBPassword": "1t1520nt"
         },
         {
             "AccountPassword": "2206",
@@ -262,7 +264,9 @@
             "UserId": "2016",
             "UserName": "David ePhone7",
             "name": "R2d2User",
-            "type": "user"
+            "type": "user",
+            "AltUserId": "2016b",
+            "AltPassword": "6k2MzyeD"
         },
         {
             "AccountPassword": "2202",
