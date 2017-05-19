@@ -2,9 +2,11 @@ from behave import *
 from ePhone7.views import *
 from time import sleep
 from prefs import *
-from user import *
 from advanced import *
 from lib.user_exception import UserException as Ux
+from ePhone7.utils.get_softphone import get_softphone
+from ePhone7.utils.versions import *
+
 
 @step("A call between two other accounts has been parked by the called account")
 def a_call_between_two_other_accounts_has_been_parked_by_the_called_account(context):
@@ -288,23 +290,54 @@ def i_close_the_preferences_window(context):
     pass
 
 
-@step("I downgrade my AOSP to {new_aosp}")
-def i_downgrade_my_aosp_to_newaosp(context, new_aosp):
+@step("I downgrade my AOSP")
+def i_downgrade_my_aosp(context):
     if 'fake' not in str(context._config.tags).split(','):
-        # context.run_substep('I am logged in to the ePhone7')
-        # context.run_substep('[user] I touch the Preferences icon')
-        # context.run_substep('[prefs] the Preferences window appears')
-        # context.run_substep('[prefs] I touch the "System" menu category')
-        # context.run_substep('[prefs] I touch the "About ePhone7" menu item')
-        # context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
-        # context.run_substep('[prefs] I touch the "X" icon')
-        # context.run_substep('[prefs] the Preferences window disappears')
-        # if context.aosp_version == old_version:
-        #     base_view.close_appium()
-        base_view.force_aosp_downgrade(new_aosp)
-        # base_view.force_app_downgrade(new_app)
-        #     base_view.open_appium('nolaunch', force=True, timeout=60)
-        #     base_view.startup()
+        if context.needs_aosp_downgrade:
+            base_view.close_appium()
+            force_aosp_downgrade(context.config.userdata['downgrade_aosp'])
+            base_view.open_appium('nolaunch', force=True, timeout=60)
+            base_view.startup()
+
+
+@step("I downgrade my aosp to {downgrade_aosp_version} and app to {downgrade_app_version}")
+def i_downgrade_my_aosp_to_downgradeaospversion_and_app_to_downgradeappversion(context, downgrade_aosp_version, downgrade_app_version):
+    if 'fake' not in str(context._config.tags).split(','):
+        # if either aosp or app versions are different from the specified downgrade versions:
+        # 1. remove apk upgrades
+        # 2. check if an aosp downgrade is needed
+        # 3. if so, force an aosp downgrade
+        # 4. check if an app downgrade is still needed
+        # 5. if so, force an app downgrade
+        # 6. verify the new versions
+        installed_aosp_version, installed_app_version = get_installed_versions()
+        need_aosp_downgrade = installed_aosp_version != downgrade_aosp_version
+        need_app_downgrade = installed_app_version != downgrade_app_version
+        if need_aosp_downgrade or need_app_downgrade:
+            get_downgrade_images(downgrade_aosp_version, downgrade_app_version)
+            base_view.close_appium()
+            remove_apk_upgrades()
+            if need_aosp_downgrade:
+                force_aosp_downgrade(downgrade_aosp_version)
+            installed_aosp_version, installed_app_version = get_installed_versions()
+            need_app_downgrade = installed_app_version != downgrade_app_version
+            if need_app_downgrade:
+                force_app_downgrade(downgrade_app_version)
+            installed_aosp_version, installed_app_version = get_installed_versions()
+            assert installed_aosp_version == downgrade_aosp_version
+            assert installed_app_version == downgrade_app_version
+            base_view.open_appium('nolaunch', force=True, timeout=60)
+            base_view.startup()
+
+
+@then("I downgrade my app")
+def i_downgrade_my_app(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        if context.needs_app_downgrade:
+            base_view.close_appium()
+            force_app_downgrade(context.config.userdata['downgrade_app'])
+            base_view.open_appium('nolaunch', force=True, timeout=60)
+            base_view.startup()
 
 
 @step("I end the call")
@@ -393,16 +426,20 @@ def i_make_a_call_to_a_coworker_contact(context):
     if 'fake' not in str(context._config.tags).split(','):
         context.softphone = user_view.configure_called_answer_ring()
         dial_view.dial_number(context.softphone.number)
-        dial_view.click_named_element('FuncKeyCall')
+        dial_view.touch_dial_button()
         context.softphone.wait_for_call_status('early', dial_view.call_status_wait)
 
 
 @step("I receive a call")
 def i_receive_a_call(context):
-    # if 'fake' not in str(context._config.tags).split(','):
-    #     context.caller_name, src_cfg = user_view.receive_call()
-    foo = 42
-    print(foo)
+    if 'fake' not in str(context._config.tags).split(','):
+        try:
+            # use DefaultSoftphoneUser to call the ePhone7
+            context.caller_name, src_cfg = user_view.receive_call(wait_for_status='call', wait_timeout=10)
+        except Ux:
+            context.call_answered = False
+        else:
+            context.call_answered = True
 
 
 @step("I receive a new voicemail")
@@ -457,17 +494,17 @@ def i_set_the_ota_server(context):
             user_view.goto_tab('Dial')
             if ota_server == 'beta':
                 dial_view.dial_name('Beta OTA Server')
-                dial_view.click_named_element('FuncKeyCall')
+                dial_view.touch_dial_button()
                 text = dial_view.find_named_element('OtaUpdatePopupContent').text
                 expected = 'Beta OTA Server Enabled'
             elif ota_server == 'alpha':
                 dial_view.dial_name('Alpha OTA Server')
-                dial_view.click_named_element('FuncKeyCall')
+                dial_view.touch_dial_button()
                 text = dial_view.find_named_element('OtaUpdatePopupContent').text
                 expected = 'Alpha OTA Server Enabled'
             elif ota_server == 'production':
                 dial_view.dial_name('Production OTA Server')
-                dial_view.click_named_element('FuncKeyCall')
+                dial_view.touch_dial_button()
                 text = dial_view.find_named_element('OtaUpdatePopupContent').text
                 expected = 'Production OTA Server Enabled'
             else:
@@ -666,23 +703,41 @@ def i_touch_walkthrough(context):
     pass
 
 
+@step("I upgrade the phone if the versions are not correct")
+def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
+    installed_app = None
+    if 'fake' not in str(context._config.tags).split(','):
+        current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
+        installed_aosp, installed_app = get_installed_versions()
+        log.debug("installed versions: app %s, aosp %s" % (installed_app, installed_aosp))
+        log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
+        app_upgrade_required = current_app != installed_app
+        aosp_upgrade_required = current_aosp != installed_aosp
+    else:
+        app_upgrade_required = True
+        aosp_upgrade_required = True
+    if aosp_upgrade_required or app_upgrade_required:
+        log.debug("checking for updates")
+        context.run_substep('I set the OTA server')
+        context.run_substep('[user] I touch the Preferences icon')
+        context.run_substep('[prefs] the Preferences window appears')
+        context.run_substep('[prefs] I touch the "System" menu category')
+        context.run_substep('[prefs] I touch the "Updates" menu item')
+        if installed_app == '1.0.10':
+            context.run_substep('[prefs] I touch the "Check for System Update" option')
+            context.run_substep('[prefs] an upgrade is found and an "Upgrade" button appears')
+            context.run_substep('[prefs] I touch the "Upgrade" button')
+        context.run_substep('I wait for the phone to upgrade and reboot')
+        context.run_substep('I verify the system and app versions are current')
+
+
 @step("I verify the system and app versions are current")
 def i_verify_the_system_and_app_versions_are_current(context):
-    context.run_substep('I am logged in to the ePhone7')
-    context.run_substep('[user] I touch the Preferences icon')
-    context.run_substep('[prefs] the Preferences window appears')
-    context.run_substep('[prefs] I touch the "System" menu category')
-    context.run_substep('[prefs] I touch the "About ePhone7" menu item')
-    context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
-    context.run_substep('[prefs] I touch the "X" icon')
-    context.run_substep('[prefs] the Preferences window disappears')
     if 'fake' not in str(context._config.tags).split(','):
-        app_actual = context.app_version
-        aosp_actual = context.aosp_version
-        app_expect = context.config.userdata.get('current_app')
-        aosp_expect = context.config.userdata.get('current_aosp')
-        assert context.app_version == context.config.userdata.get('current_app'), "Expected app version %s, got %s" % (app_expect, app_actual)
-        assert context.aosp_version == context.config.userdata.get('current_aosp'), "Expected aosp version %s, got %s" % (aosp_expect, aosp_actual)
+        current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
+        installed_aosp, installed_app = get_installed_versions()
+        assert current_aosp == installed_aosp, "Expected aosp version %s, got %s" % (current_aosp, installed_aosp)
+        assert current_app == installed_app, "Expected app version %s, got %s" % (current_app, installed_app)
 
 
 @step("I wait for the phone to restart")
@@ -697,19 +752,16 @@ def i_wait_for_the_phone_to_restart(context):
 @then("I wait for the phone to upgrade and reboot")
 def i_wait_for_the_phone_to_upgrade_and_reboot(context):
     if 'fake' not in str(context._config.tags).split(','):
-        # poll and do nothing while current activity is .OtaAppActivity
-        # (this loop is expected continue while the new software is being downloaded;
-        # it should end when the reboot begins, so that trying to read the current activity
-        # via Appium raises an exception)
         while True:
+            # loop until ??
             try:
                 sleep(5)
                 current_activity = base_view.driver.current_activity
                 if current_activity != '.OtaAppActivity' or current_activity == '.activities.MainViewActivity':
                     break
             except:
-                base_view.close_appium()
                 break
+        base_view.close_appium()
         # turn on USB access for adb and Appium via the spud port
         import os
         from ePhone7.utils.spud_serial import SpudSerial
@@ -774,45 +826,6 @@ def my_saved_voicemails_are_listed(context):
     pass
 
 
-@step("my system version needs to be upgraded")
-def my_system_version_needs_to_be_upgraded(context):
-        context.run_substep('I am logged in to the ePhone7')
-        context.run_substep('[user] I touch the Preferences icon')
-        context.run_substep('[prefs] the Preferences window appears')
-        context.run_substep('[prefs] I touch the "System" menu category')
-        context.run_substep('[prefs] I touch the "About ePhone7" menu item')
-        context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
-        context.run_substep('[prefs] I touch the "X" icon')
-        context.run_substep('[prefs] the Preferences window disappears')
-        if 'fake' in str(context._config.tags).split(','):
-            need_aosp_downgrade = False
-            need_app_downgrade = False
-        else:
-            need_aosp_downgrade = context.aosp_version != context.config.userdata.get('downgrade_aosp')
-            downgrade_app_version = context.config.userdata.get('downgrade_app')
-            if downgrade_app_version is None:
-                need_app_downgrade = False
-            else:
-                need_app_downgrade = context.app_version != downgrade_app_version
-        if need_aosp_downgrade or need_app_downgrade:
-            if 'fake' not in str(context._config.tags).split(','):
-                base_view.close_appium()
-                if need_aosp_downgrade:
-                    base_view.force_aosp_downgrade(context.config.userdata.get('downgrade_aosp'))
-                if need_app_downgrade:
-                    base_view.force_app_downgrade(context.config.userdata.get('downgrade_app'))
-                base_view.open_appium('nolaunch', force=True, timeout=60)
-                base_view.startup()
-            context.run_substep('I am logged in to the ePhone7')
-            context.run_substep('[user] I touch the Preferences icon')
-            context.run_substep('[prefs] the Preferences window appears')
-            context.run_substep('[prefs] I touch the "System" menu category')
-            context.run_substep('[prefs] I touch the "About ePhone7" menu item')
-            context.run_substep('[prefs] I read the displayed versions for the app and AOSP')
-            context.run_substep('[prefs] I touch the "X" icon')
-            context.run_substep('[prefs] the Preferences window disappears')
-
-
 @step("Only the current ringtone has a dot next to it")
 def only_the_current_ringtone_has_a_dot_next_to_it(context):
     pass
@@ -851,7 +864,8 @@ def the_call_has_a_voicemail_icon(context):
 
 @step("the caller ends the call")
 def the_caller_ends_the_call(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        user_view.softphones[context.caller_name].end_call()
 
 
 @step("the caller gets a voicemail prompt")
@@ -914,6 +928,17 @@ def the_current_timer_setting_is_selected(context):
     pass
 
 
+@then("the ePhone7 app should not crash")
+def the_ephone7_app_should_not_crash(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        sleep(5)
+        try:
+            activity = base_view.driver.current_activity
+        except:
+            assert False, "could not read current activity"
+        assert activity == '.activities.MainViewActivity', 'Expected .activities.MainViewActivity, got %s' % activity
+
+
 @step("the Google dialog disappears")
 def the_google_dialog_disappears(context):
     pass
@@ -937,6 +962,22 @@ def the_incoming_call_window_appears(context):
 @step("the incoming call window disappears")
 def the_incoming_call_window_disappears(context):
     pass
+
+
+@when("the installed aosp is not the downgrade version")
+def the_installed_aosp_is_not_the_downgrade_version(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        downgrade_aosp = context.config.userdata['downgrade_aosp']
+        installed_aosp = context.config.userdata['installed_aosp']
+        context.needs_aosp_downgrade = installed_aosp != downgrade_aosp
+
+
+@when("the installed app is not the downgrade version")
+def the_installed_app_is_not_the_downgrade_version(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        downgrade_app = context.config.userdata['downgrade_app']
+        installed_app = context.config.userdata['installed_app']
+        context.needs_app_downgrade = installed_app != downgrade_app
 
 
 @step("the login screen appears")
@@ -1071,6 +1112,18 @@ def the_sleep_timer_setting_window_disappears(context):
     pass
 
 
+@step("the softphone answers the call")
+def the_softphone_answers_the_call(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        assert context.call_answered is True
+
+
+@step("the softphone is set to autoanswer")
+def the_softphone_is_set_to_autoanswer(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        context.softphone_alt.set_incoming_response(200)
+
+
 @step('the toggle handle is in the "Off" position')
 def the_toggle_handle_is_in_the_off_position(context):
     pass
@@ -1104,6 +1157,12 @@ def the_window_contains_a_slider_control(context):
 @step("the window disappears")
 def the_window_disappears(context):
     pass
+
+
+@given("there is a softphone registered on my ePhone7's user account")
+def there_is_a_softphone_registered_on_my_ephone7s_user_account(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        context.softphone_alt = get_softphone('R2d2AltUser')
 
 
 @step("[user] A keypad appears with a list of contacts")

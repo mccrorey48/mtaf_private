@@ -23,7 +23,7 @@ def usb_enable():
     serial_dev = '/dev/ttyUSB0'
     ss = SpudSerial(serial_dev)
     for action in actions:
-        (reply, elapsed) = ss.do_action(action)
+        (reply, elapsed, groups) = ss.do_action(action)
         lines = reply.split('\n')
         log.debug('cmd: %s\nelapsed: [%5.3f s]  \nreply: "%s"\n' % (action['cmd'], elapsed, lines[0].encode('string_escape')))
         for line in lines[1:]:

@@ -1,13 +1,12 @@
 from time import sleep
 
 import lib.logging_esi as logging_esi
-from lib.wrappers import Trace
-
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
+from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.base import BaseView
 from ePhone7.views.prefs import prefs_view
 from lib.user_exception import UserException as Ux
-from ePhone7.utils.get_softphone import get_softphone
+from lib.wrappers import Trace
 
 log = logging_esi.get_logger('esi.user_view')
 
@@ -66,7 +65,7 @@ class UserView(BaseView):
         from ePhone7.views import dial_view
         self.goto_tab('Dial')
         dial_view.dial_name('Advanced Settings')
-        dial_view.click_named_element('FuncKeyCall')
+        dial_view.touch_dial_button()
         if not self.element_is_present('AdvancedOptions'):
             raise Ux("Expected Advanced Options view to appear but it did not")
         elems = self.find_named_elements('AdvancedItems')
@@ -186,15 +185,17 @@ class UserView(BaseView):
         return self.active_tab == self.expected_tab
 
     @Trace(log)
-    def receive_call(self, caller_name=None):
+    def receive_call(self, caller_name=None, wait_for_status='early', wait_timeout=None):
         if caller_name is None:
             caller_name = cfg.site['DefaultSoftphoneUser']
+        if wait_timeout is None:
+            wait_timeout = self.call_status_wait
         self.softphones[caller_name] = get_softphone(caller_name)
         src_cfg = cfg.site['Users'][caller_name]
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         self.softphones[caller_name].make_call(dst_uri)
-        self.softphones[caller_name].wait_for_call_status('early', self.call_status_wait)
+        self.softphones[caller_name].wait_for_call_status(wait_for_status, wait_timeout)
         return caller_name, src_cfg
 
     @Trace(log)

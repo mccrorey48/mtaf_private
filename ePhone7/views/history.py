@@ -1,12 +1,11 @@
 from time import sleep
 
 import lib.logging_esi as logging
-from lib.wrappers import Trace
-
-from ePhone7.utils.configure import cfg
-from ePhone7.views.user import UserView
+from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
+from ePhone7.views.user import UserView
 from lib.user_exception import UserException as Ux
+from lib.wrappers import Trace
 
 log = logging.get_logger('esi.history_view')
 

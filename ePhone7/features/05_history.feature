@@ -7,7 +7,6 @@ Feature: As a user I want to see my call history and make calls from the listed 
     When  [background] I touch the History button
     Then  [background] I see the All and Missed tabs at the top of the screen
 
-  @wip
   Scenario: I want to see an answered call indicated on the All History view
     Given I receive and ignore a call
     When  [history] I touch the All tab

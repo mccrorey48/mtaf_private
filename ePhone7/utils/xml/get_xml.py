@@ -3,15 +3,8 @@ import os
 
 from selenium.common.exceptions import NoSuchElementException
 
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
 
-parser = argparse.ArgumentParser()
-parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local', 'ds'], help="specify site tag")
-parser.add_argument('-c', '--cfg_host', help='name of mongodb server for test configuration, default "vqda1"',
-                    default='vqda1')
-args = parser.parse_args()
-
-cfg.set_site(args.cfg_host, args.site_tag)
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views import *
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
@@ -110,7 +103,7 @@ def get_nav_views2(version):
             if button == 'Keypad':
                 save_xml_and_screenshot('keypad_%s' % version, version)
                 dial_view.dial_name('Advanced Settings')
-                dial_view.click_named_element('FuncKeyCall')
+                dial_view.touch_dial_button()
                 save_xml_and_screenshot('settings_%s' % version, version)
                 dial_view.send_keycode('KEYCODE_BACK')
             else:

@@ -3,6 +3,7 @@ from ePhone7.views import *
 import re
 from lib.user_exception import UserException as Ux
 import lib.logging_esi as logging
+from ePhone7.utils.versions import *
 log = logging.get_logger('esi.prefs')
 
 
@@ -167,42 +168,32 @@ def prefs__i_touch_the_x_icon(context):
         prefs_view.click_named_element('CloseButton')
 
 
-@step("[prefs] I upgrade the phone if the versions are not correct")
-def prefs__i_upgrade_the_phone_if_the_versions_are_not_correct(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        current_app = context.config.userdata.get('current_app')
-        current_aosp = context.config.userdata.get('current_aosp')
-        log.debug("installed versions: app %s, aosp %s" % (context.app_version, context.aosp_version))
-        log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
-        app_upgrade_required = current_app is not None and current_app != context.app_version
-        aosp_upgrade_required = current_aosp is not None and current_aosp != context.aosp_version
-    else:
-        app_upgrade_required = True
-        aosp_upgrade_required = True
-    if aosp_upgrade_required or app_upgrade_required:
-        log.debug("checking for updates")
-        context.run_substep('I set the OTA server')
-        context.run_substep('[user] I touch the Preferences icon')
-        context.run_substep('[prefs] the Preferences window appears')
-        context.run_substep('[prefs] I touch the "System" menu category')
-        context.run_substep('[prefs] I touch the "Updates" menu item')
-        if prefs_view.element_is_present('SystemUpdate'):
-            context.run_substep('[prefs] I touch the "Check for System Update" option')
-            context.run_substep('[prefs] an upgrade is found and an "Upgrade" button appears')
-            context.run_substep('[prefs] I touch the "Upgrade" button')
-        context.run_substep('I wait for the phone to upgrade and reboot')
-        context.run_substep('I verify the system and app versions are current')
-
-
 @step('[prefs] Only the contact I touched is listed')
 def prefs__only_the_contact_i_touched_is_listed(context):
     pass
+
+
+@step("[prefs] the current versions are installed")
+def prefs__the_current_versions_are_installed(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
+        installed_aosp, installed_app = get_installed_versions()
+        assert installed_aosp == current_aosp, "Expected installed aosp version %s, got %s" % (current_aosp, installed_aosp)
+        assert installed_app == current_app, "Expected installed app version %s, got %s" % (current_app, installed_app)
 
 
 @step("[prefs] the email notification popup disappears")
 def prefs__the_email_notification_popup_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
         pass
+
+
+@step("[prefs] the installed versions are displayed correctly")
+def prefs__the_installed_versions_are_displayed_correctly(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        installed_aosp, installed_app = get_installed_versions()
+        assert context.aosp_version == installed_aosp, "Expected displayed aosp version %s, got %s" % (installed_aosp, context.aosp_version)
+        assert context.app_version == installed_app, "Expected displayed app version %s, got %s" % (installed_app, context.app_version)
 
 
 @step("[prefs] the Preferences window appears")

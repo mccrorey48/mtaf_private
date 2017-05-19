@@ -1,8 +1,9 @@
 import argparse
-from lib.softphone.simple_pj import Softphone
 from time import sleep
+
 import lib.logging_esi as logging_esi
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
+from lib.softphone.simple_pj import Softphone
 
 # process command line arguments
 parser = argparse.ArgumentParser()

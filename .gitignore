@@ -8,3 +8,4 @@ exception.xml
 steps.txt
 substeps.txt
 *.json
+*.log

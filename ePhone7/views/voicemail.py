@@ -1,13 +1,11 @@
+import re
+import requests
 from time import sleep
 
 import lib.logging_esi as logging
-from lib.wrappers import Trace
-
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
 from ePhone7.views.user import UserView
-from lib.user_exception import UserException as Ux
-import re
-import requests
+from lib.wrappers import Trace
 
 log = logging.get_logger('esi.voicemail_view')
 

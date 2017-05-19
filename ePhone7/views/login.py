@@ -1,6 +1,6 @@
 import lib.logging_esi as logging
 
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
 from ePhone7.views.base import BaseView
 from lib.wrappers import Trace
 

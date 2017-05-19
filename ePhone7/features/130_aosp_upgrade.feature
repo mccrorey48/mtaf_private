@@ -1,22 +1,26 @@
 Feature: As a user I want to to update my phone's software to the latest version
 
-  @sprint @regression
-  Scenario: Performing an online upgrade to the Android and ePhone7 software
+  @wip
+  Scenario: Performing an online upgrade from 2.1.3/1.0.10
     Given I am logged in to the ePhone7
-    And   my system version needs to be upgraded
+    And   I downgrade my aosp to 2.1.3 and app to 1.0.10
     Then  I set the OTA server
     When  [user] I touch the Preferences icon
     Then  [prefs] the Preferences window appears
     When  [prefs] I touch the "System" menu category
     And   [prefs] I touch the "Updates" menu item
-#    And   [prefs] I touch the "Check for System Update" option
-#    Then  [prefs] an upgrade is found and an "Upgrade" button appears
-#    When  [prefs] I touch the "Upgrade" button
+    And   [prefs] I touch the "Check for System Update" option
+    Then  [prefs] an upgrade is found and an "Upgrade" button appears
+    When  [prefs] I touch the "Upgrade" button
     Then  I wait for the phone to upgrade and reboot
     And   I verify the system and app versions are current
 
-#  @2_3_7dg
-#  Scenario: Downgrade AOSP to 2.3.7
-#    Given I am logged in to the ePhone7
-#    Then  I downgrade my AOSP to 2.3.7
+  Scenario: Downgrade AOSP to 2.3.8/1.3.6
+    Given I am logged in to the ePhone7
+    Then  I downgrade my aosp to 2.3.8 and app to 1.3.6
+
+  @downgrade
+  Scenario: Downgrade AOSP to 2.1.3/1.0.10
+    Given I am logged in to the ePhone7
+    Then  I downgrade my aosp to 2.1.3 and app to 1.0.10
 

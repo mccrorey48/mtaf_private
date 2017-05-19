@@ -93,7 +93,7 @@ class Softphone:
                 self.account_info.pbfile_relpath = None
             else:
                 if pbfile == 'default':
-                    pbfile = '%s.wav' % self.number
+                    pbfile = '%s.wav' % ''.join(re.findall('\d', self.number))
                 self.account_info.pbfile_relpath = os.path.join(wav_dir, pbfile)
                 create_wav_file(self.account_info.pbfile_relpath, quiet)
             self.account_info.record = record
@@ -101,9 +101,13 @@ class Softphone:
 
     def __del__(self):
         if self.account_info.call:
-            log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
-            self.account_info.call.hangup()
-            self.wait_for_call_status('idle')
+            sleep(1)
+            # log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
+            try:
+                self.account_info.call.hangup()
+                self.wait_for_call_status('idle')
+            except TypeError:
+                pass
         self.lib.delete_account(self.uri)
 
     @Trace(log)
@@ -165,6 +169,10 @@ class Softphone:
         log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
         self.account_info.call.unhold()
         self.wait_for_call_status('call', timeout)
+
+    @Trace(log)
+    def set_incoming_response(self, code):
+        self.account_info.incoming_response = code
 
     @Trace(log)
     def send_response_code(self, code):

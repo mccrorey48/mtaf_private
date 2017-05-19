@@ -46,7 +46,7 @@ def dial__i_see_the_keypad(context):
 @step("[dial] I touch the Call button")
 def dial__i_touch_the_call_button(context):
     if 'fake' not in str(context._config.tags).split(','):
-        dial_view.click_named_element('FuncKeyCall')
+        dial_view.touch_dial_button()
 
 
 @step("[dial] I touch the contact listing I want to call")

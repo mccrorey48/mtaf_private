@@ -1,29 +1,21 @@
 import argparse
 import time
-
 import lib.logging_esi as logging_esi
-
 from lib.esi_result import EsiResult
 
 log = logging_esi.get_logger('esi.run_tests')
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('site_tag', choices=['mm', 'js', 'local', 'ds'],
-                    help='site tag, selects config/site_<tag>.json file')
 parser.add_argument('-f', '--failfast', help='stop testing when a test case fails', action='store_true')
 parser.add_argument('-m', '--mock', help='use mock driver', action='store_true')
 parser.add_argument('-l', '--log_host', help='name of mongodb server for logging')
-parser.add_argument('-c', '--cfg_host', help='name of mongodb server for test configuration, default "vqda"',
-                    default='vqda')
 parser.add_argument('--quiet', help='use -20db wave files', action='store_true')
 args = parser.parse_args()
 
 with logging_esi.msg_src_cm('run_tests'):
     import unittest
-    from ePhone7.utils.configure import cfg
-
-    cfg.set_site(args.cfg_host, args.site_tag)
+    from ePhone7.config.configure import cfg
 
     if args.log_host:
         log.set_db(args.log_host, 'results_ePhone7', time.strftime('%m_%d_%y-%H_%M_%S', time.localtime()))

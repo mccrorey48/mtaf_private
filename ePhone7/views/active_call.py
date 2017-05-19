@@ -1,7 +1,7 @@
 import lib.logging_esi as logging_esi
-from lib.wrappers import Trace
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
 from ePhone7.views.base import BaseView
+from lib.wrappers import Trace
 
 log = logging_esi.get_logger('esi.active_call_view')
 

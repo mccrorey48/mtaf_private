@@ -1,4 +1,4 @@
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
 from lib.softphone.simple_pj import SoftphoneManager
 
 softphone_manager = SoftphoneManager()

@@ -1,20 +1,20 @@
 import os
-from time import sleep, time
-import lib.logging_esi as logging_esi
 from PIL import Image
+from time import sleep, time
+
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.common.exceptions import WebDriverException
-from lib.wrappers import Trace
-from lib.android import expand_zpath
 
-from ePhone7.utils.configure import cfg
+import lib.logging_esi as logging_esi
+from ePhone7.config.configure import cfg
+from ePhone7.utils.spud_serial import SpudSerial
 from lib.android import MockDriver
+from lib.android import expand_zpath
 from lib.selenium_actions import SeleniumActions
 from lib.user_exception import UserException as Ux
-from pyand import ADB, Fastboot
-from ePhone7.utils.spud_serial import SpudSerial
+from lib.wrappers import Trace
 
 log = logging_esi.get_logger('esi.settings_view')
 
@@ -182,7 +182,10 @@ class BaseView(SeleniumActions):
             SeleniumActions.driver = MockDriver()
         else:
             log.debug('opening appium')
-            SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
+            try:
+                SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
+            except BaseException as e:
+                raise Ux(str(e))
 
     @Trace(log)
     def close_appium(self):
@@ -200,42 +203,6 @@ class BaseView(SeleniumActions):
                 log.debug("got WebDriverException, assuming appium already closed")
             SeleniumActions.driver = None
             self.caps_tag = None
-
-    @Trace(log)
-    def force_aosp_downgrade(self, version):
-        actions = [
-            {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Hit any key to stop autoboot:', 'timeout': 30},
-            {'cmd': '\n', 'expect': '=> ', 'timeout': 5},
-            {'cmd': 'mmc dev 2\n', 'expect': 'mmc2(part 0) is current device\n=> '},
-            {'cmd': 'mmc setdsr 2\n', 'expect': 'set dsr OK, force rescan\n=> '},
-            {'cmd': 'fastboot\n', 'expect': '0x4\nUSB_RESET\nUSB_PORT_CHANGE 0x4\n'}
-        ]
-        serial_dev = '/dev/ttyUSB0'
-        ss = SpudSerial(serial_dev)
-        for action in actions:
-            (reply, elapsed) = ss.do_action(action)
-            log.debug('[%5.3fs] cmd %s, expect %s, received %d chars' % (elapsed, repr(action['cmd']), repr(action['expect']), len(reply)))
-            ss.connection.reset_input_buffer()
-        fb = Fastboot()
-        fb_cmds = [
-            "flash boot %s" % os.path.join(cfg.site["AospsHome"], version, "boot.img"),
-            "flash system %s" % os.path.join(cfg.site["AospsHome"], version, "system.img"),
-            "flash recovery %s" % os.path.join(cfg.site["AospsHome"], version, "recovery.img"),
-            "reboot"
-        ]
-        for cmd in fb_cmds:
-            log.debug(">>> fastboot " + cmd)
-            log.debug(fb.run_cmd(cmd))
-        ss.do_action({'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
-
-    @Trace(log)
-    def force_app_downgrade(self, version):
-        serial_dev = '/dev/ttyUSB0'
-        ss = SpudSerial(serial_dev)
-        adb = ADB()
-        log.debug(adb.run_cmd("install -r -d %s.apk" % os.path.join(cfg.site["ApksHome"], version)).encode('string_escape'))
-        action = {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120}
-        (reply, elapsed) = ss.do_action(action)
 
     @Trace(log)
     def startup(self, timeout=600):

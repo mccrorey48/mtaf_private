@@ -1,13 +1,11 @@
 from time import sleep
 
 import lib.logging_esi as logging
-
-from ePhone7.utils.configure import cfg
-from ePhone7.views.user import UserView
-from ePhone7.views.base import base_view
+from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
-from lib.wrappers import Trace
+from ePhone7.views.user import UserView
 from lib.user_exception import UserException as Ux
+from lib.wrappers import Trace
 
 log = logging.get_logger('esi.keypad_view')
 
@@ -34,7 +32,7 @@ class DialView(UserView):
         "NumKeyStar": {"by": "zpath", "value": "//gv/ll/tv[@text='*']"},
         "NumKey0": {"by": "zpath", "value": "//gv/ll/tv[@text='0']"},
         "NumKeyPound": {"by": "zpath", "value": "//gv/ll/tv[@text='#']"},
-        "FuncKeyCall": {"by": "id", "value": "com.esi_estech.ditto:id/dialButton" },
+        "DialButton": {"by": "id", "value": "com.esi_estech.ditto:id/dialButton" },
         "FuncKeySearch": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_search_button_container" },
         "FuncKeyBksp": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_delete_button_container" },
         "OtaUpdatePopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server Update" },
@@ -75,11 +73,15 @@ class DialView(UserView):
         softphone.account_info.incoming_response = 200
         for n in list(cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]['UserId']):
             self.click_named_element('NumKey' + n)
-        self.click_named_element('FuncKeyCall')
+        self.touch_dial_button()
         softphone.wait_for_call_status('call', 20)
         sleep(10)
         self.click_named_element('EndActiveCall')
         softphone.wait_for_call_status('idle', 20)
+
+    @Trace(log)
+    def touch_dial_button(self):
+        self.click_named_element('DialButton')
 
     @Trace(log)
     def dial_number(self, number):

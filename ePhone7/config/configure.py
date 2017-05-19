@@ -1,9 +1,10 @@
 import os
 from pymongo import MongoClient
 from lib.mongo import merge_collection
+from lib.user_exception import UserException as Ux
 
 
-class Cfg:
+class Cfg(object):
 
     def __init__(self):
         self.cfg_folder_path = None
@@ -16,6 +17,16 @@ class Cfg:
         self.exec_dir = os.getcwd()
         self.caps = {}
         self.colors = {}
+        self.site_tag = os.getenv('MTAF_SITE')
+        if not self.site_tag:
+            raise Ux('MTAF_SITE must be defined in the run-time environment')
+        server = os.getenv('MTAF_DB_HOST')
+        if not server:
+            raise Ux('MTAF_DB_HOST must be defined in the run-time environment')
+        self.set_site(server, self.site_tag)
+
+    def get_site_tag(self):
+        return self.site_tag
 
     def set_site(self, cfg_server, site_tag):
         client = MongoClient(cfg_server)
@@ -37,3 +48,9 @@ class Cfg:
             self.colors_folder = os.path.join(self.exec_dir, self.site['ColorsFolder'])
 
 cfg = Cfg()
+
+if __name__ == '__main__':
+    import json
+    json_repr = json.dumps(cfg.__dict__, sort_keys=True, indent=4, separators=(',', ': '))
+    with open('cfg_site.json', 'w') as f:
+        f.write(json_repr)

@@ -5,13 +5,14 @@ from time import time, sleep
 from contextlib import contextmanager
 import lib.logging_esi as logging_esi
 from lib.wrappers import Trace
+import re
 
 log = logging_esi.get_logger('esi.spud_serial')
 
 
 class SpudSerial:
 
-    def __init__(self, serial_device, pwd_check = True):
+    def __init__(self, serial_device, pwd_check=True):
         try:
             # current user has to belong to "dialout" group or be superuser
             # to open the serial port
@@ -51,7 +52,10 @@ class SpudSerial:
             if no expect_text received after 'timeout' seconds, raise an exception;
             if expect_text is received, return 'reply'.
         """
-        log.debug('expect: cmd "%s", expect_text "%s"' % (repr(cmd), repr(expect_text)))
+        log.debug('cmd "%s", expect_text "%s"' % (repr(cmd), repr(expect_text)))
+        expect_text = '\('.join(expect_text.split('('))
+        expect_text = '\)'.join(expect_text.split(')'))
+        expect_re = re.compile('(?ms).*(' + expect_text + ')')
         reply = ''
         log_str = ''
         if len(cmd):
@@ -67,13 +71,14 @@ class SpudSerial:
             if len(c) and c != '\r' and ord(c) < 0xff:
                 reply += c
                 if c == '\n':
-                    log.debug('>>' + log_str.encode('string_escape'))
+                    # log.debug('>>' + log_str.encode('string_escape'))
                     log_str = ''
                 else:
                     log_str += c
             elapsed = time() - start_time
-            if reply.endswith(expect_text):
-                return reply, elapsed
+            match = expect_re.match(reply)
+            if match:
+                return reply, elapsed, match
             if time() - start_time > timeout:
                 raise Ux("expect: %s second timeout exceeded waiting for %s; reply = '%s'" % (timeout, expect_text, reply.encode('string_escape')))
 
@@ -112,8 +117,8 @@ class SpudSerial:
             expected = self.get_prompt()
         else:
             expected = action['expect']
-        reply, elapsed = self.expect(action['cmd'], expected, timeout)
-        for line in reply.split('\n'):
-            log.debug(line.encode('string_escape'))
-        log.debug('Elapsed Time: %5.3f' % elapsed)
-        return reply, elapsed
+        reply, elapsed, match = self.expect(action['cmd'], expected, timeout)
+        # for line in reply.split('\n'):
+        #     log.debug(line.encode('string_escape'))
+        log.debug('expect matched "%s" in %5.3f seconds' % (match.groups(), elapsed))
+        return reply, elapsed, match.groups()

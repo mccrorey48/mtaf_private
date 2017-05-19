@@ -1,6 +1,6 @@
 import argparse
 
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
 from lib.user_exception import UserException as Ux
 
 parser = argparse.ArgumentParser()

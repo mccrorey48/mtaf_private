@@ -1,31 +1,19 @@
-from ePhone7.utils.configure import cfg
+import os
+import sys
+from Tkinter import Tk, Frame, Button, Text, NORMAL, DISABLED, Scrollbar, Entry, StringVar, HORIZONTAL
+from time import sleep
+
+from pyand import ADB
+from selenium.common.exceptions import WebDriverException
+import lib.logging_esi as logging
+from ePhone7.config.configure import cfg
+from ePhone7.utils.spud_serial import SpudSerial
 from ePhone7.utils.usb_enable import usb_enable
 from ePhone7.views import *
-from time import sleep
-from Tkinter import Tk, Frame, Button, Text, NORMAL, DISABLED, Scrollbar, Entry, Label, StringVar, HORIZONTAL
 from lib.user_exception import UserException as Ux
-from pyand import ADB
-import sys
-import os
-import lib.logging_esi as logging
-site_tag = os.getenv('MTAF_SITE')
-cfg.set_site('vqda1', site_tag)
+from ePhone7.utils.versions import *
+
 log = logging.get_logger('esi.appium_gui')
-
-
-# def reboot():
-#     print "rebooting..."
-#     user_view.click_named_element('PrefsButton')
-#     assert prefs_view.element_is_present('Preferences')
-#     prefs_view.hide_list_items()
-#     prefs_view.click_named_element('System')
-#     prefs_view.element_is_present('MenuItemNetworkText')
-#     prefs_view.click_named_element('MenuItemNetworkText')
-#     assert network_view.element_is_present('NetworkSettingsLabel')
-#     network_view.click_named_element('NetworkSaveAndReboot')
-#     assert network_view.element_is_present("VlanRebootAlert")
-#     base_view.close_appium()
-#     sleep(30)
 
 
 class Command(object):
@@ -47,6 +35,10 @@ commands.append(Command("Skip Walkthrough", "skip_walkthrough"))
 commands.append(Command("Log Out", "logout"))
 commands.append(Command("Enable USB", "usb_enable", require_appium=False))
 commands.append(Command("Set Alpha OTA Server", "set_alpha_ota_server"))
+commands.append(Command("Reboot", "reboot", require_appium=False))
+commands.append(Command("Get Installed Versions", "get_installed_versions", require_appium=False))
+commands.append(Command("Get Current Versions", "get_current_versions", require_appium=False))
+commands.append(Command("Remove APK Upgrades", "remove_apk_upgrades", require_appium=False))
 
 
 class ScrolledLogwin(Text):
@@ -155,19 +147,24 @@ class TestGui(Frame):
         exec(cmd, self.globals)
         pass
 
-    def open_appium(self):
-        open_appium_retries = 5
-        while open_appium_retries:
+    def open_appium(self, max_attempts=10, retry_seconds=5):
+        attempts = 0
+        while attempts < max_attempts:
             try:
-                print "Opening Appium...",
+                if attempts > 0:
+                    print "\n(retrying) Opening Appium...",
+                else:
+                    print "Opening Appium...",
                 self.update_idletasks()
                 base_view.open_appium()
+                break
             except Ux as e:
                 print "UserException in open_appium: %s" % e.msg
                 print "retrying:",
-                self.after(1000, base_view.open_appium)
-            self.appium_is_open = True
-            break
+                sleep(retry_seconds)
+        else:
+            raise Ux("max attempts reached in open_appium")
+        self.appium_is_open = True
         print "Done"
         for btn in self.appium_btns:
             btn.configure(state=NORMAL)
@@ -183,6 +180,32 @@ class TestGui(Frame):
             btn.configure(state=DISABLED)
         for btn in self.noappium_btns:
             btn.configure(state=NORMAL)
+
+    @staticmethod
+    def log_action(spud_serial, action):
+        (reply, elapsed, groups) = spud_serial.do_action(action)
+        lines = reply.split('\n')
+        log.debug('cmd: %s\nelapsed: [%5.3f s]  \necho: "%s"\n' % (action['cmd'], elapsed, lines[0].encode('string_escape')))
+        for line in lines[1:]:
+            log.debug(' '*7 + line.encode('string_escape'))
+        log.debug('match: "%s"' % repr(groups()))
+
+    def reboot(self):
+        ss = SpudSerial('/dev/ttyUSB0')
+        self.log_action(ss, {'cmd': 'cd\n', 'new_cwd': 'data'})
+        self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Restarting system', 'timeout': 1})
+        self.log_action(ss, {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
+        # while True:
+        #     try:
+        #         activity = base_view.driver.current_activity
+        #         if activity is None:
+        #             pass
+        #         print activity
+        #         sleep(1)
+        #     except WebDriverException as e:
+        #         print "got WebDriverException: %s" % e
+        #         self.close_appium()
+        #         break
 
     def do_cmd(self, name):
         if name == 'get_current_activity':
@@ -222,12 +245,31 @@ class TestGui(Frame):
             elif name == 'skip_walkthrough':
                 print "skipping walkthrough"
                 app_intro_view.skip_intro()
+            elif name == 'reboot':
+                print "rebooting"
+                self.reboot()
+            elif name == 'get_installed_versions':
+                print "getting installed versions"
+                aosp, app = get_installed_versions()
+                print "aosp: %s, app: %s" % (aosp, app)
+            elif name == 'get_current_versions':
+                print "getting current versions"
+                aosp, app = get_current_versions('alpha')
+                print "aosp: %s, app: %s" % (aosp, app)
+            elif name == 'remove_apk_upgrades':
+                print "removing APK upgrades"
+                aosp, app = get_installed_versions()
+                print "  before: %s/%s" % (aosp, app)
+                remove_apk_upgrades()
+                aosp, app = get_installed_versions()
+                print "  after:  %s/%s" % (aosp, app)
             else:
                 raise Ux('command %s not defined' % name)
             if self.appium_is_open:
                 print "current activity: " + base_view.driver.current_activity
 
-    def install_apk(self):
+    @staticmethod
+    def install_apk():
         adb = ADB()
         apk_path = os.path.join(cfg.site["ApksHome"], "1.0.10.apk")
         print "Installing " + apk_path

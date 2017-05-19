@@ -63,9 +63,21 @@
             "UserId": "2012",
             "UserName": "Martin Two",
             "name": "R2d2User",
-            "type": "user",
-            "AltUserId": "2012b",
-            "AltBPassword": "1t1520nt"
+            "type": "user"
+        },
+        {
+            "AccountPassword": "",
+            "DomainName": "test2.test-eng.com",
+            "PhonePassword": "1t1520nt",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2012b",
+            "UserNameIncoming": "Martin Two",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "R2d2AltUser",
+            "pbfile": "wav/2012.wav",
+            "type": "user"
         },
         {
             "AccountPassword": "2206",
@@ -93,112 +105,6 @@
             ],
             "name": "Auto TesterH",
             "pbfile": "wav/2207.wav",
-            "type": "user"
-        }
-    ],
-    "js": [
-        {
-            "AospsHome": "/home/jsabugo/aosps",
-            "ApksHome": "/home/jsabugo/apks",
-            "BuildImageServer": "10.3.1.164",
-            "BuildPropServer": "ec2-52-36-62-239.us-west-2.compute.amazonaws.com",
-            "ColorsFolder": "ePhone7/utils",
-            "CsvFolder": "ePhone7/utils/csv",
-            "DefaultForwardAccount": "Auto TesterF",
-            "DefaultSoftphoneUser": "Auto TesterE",
-            "DefaultTimeout": 1,
-            "DnsList": [
-                "10.0.50.156",
-                "10.0.50.157"
-            ],
-            "Mock": false,
-            "NullSound": false,
-            "OauthHeaders": {
-                "content-type": "application/json"
-            },
-            "OauthURL": "https://pro.esiapi.io/aaa/v2",
-            "OauthUsername": "{\"username\":\"%s@%s\",\"password\":\"%s\"}",
-            "ScreenshotsFolder": "ePhone7/utils/screenshots",
-            "SeleniumUrl": "http://10.3.1.165:4723/wd/hub",
-            "TestScreenshotsFolder": "ePhone7/screenshots",
-            "UseTcp": false,
-            "VVMHeaders": {
-                "Authorization": "Bearer %s",
-                "Content-Type": "application/json"
-            },
-            "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
-            "XmlFolder": "ePhone7/utils/xml",
-            "type": "constants"
-        },
-        {
-            "AccountPassword": "2001",
-            "AllContacts": [
-                "2200",
-                "2201",
-                "2202",
-                "2203",
-                "2204"
-            ],
-            "CoworkerContacts": [
-                "2200",
-                "2201",
-                "2202",
-                "2203",
-                "2204",
-                "2205"
-            ],
-            "DomainName": "test2.test-eng.com",
-            "FavoriteContacts": [
-                "2200",
-                "2201",
-                "2202"
-            ],
-            "PhonePassword": "2001",
-            "UserId": "2001",
-            "UserName": "Jessica",
-            "name": "R2d2User",
-            "type": "user"
-        },
-        {
-            "AccountPassword": "2021",
-            "DomainName": "test2.test-eng.com",
-            "PhonePassword": "sAi8P9nQ",
-            "Proxy": "nr5.cpbx.esihs.net",
-            "UserId": "2021",
-            "UserNameIncoming": "Jessica Softphone",
-            "dns_list": [
-                "10.0.50.156"
-            ],
-            "name": "Jessica Softphone",
-            "pbfile": "wav/2021.wav",
-            "type": "user"
-        },
-        {
-            "AccountPassword": "2204",
-            "DomainName": "test2.test-eng.com",
-            "PhonePassword": "kVAsy1oc",
-            "Proxy": "nr5.cpbx.esihs.net",
-            "UserId": "2204",
-            "UserNameIncoming": "Auto Testerd",
-            "dns_list": [
-                "10.0.50.156"
-            ],
-            "name": "Auto TesterE",
-            "pbfile": "wav/2204.wav",
-            "type": "user"
-        },
-        {
-            "AccountPassword": "2205",
-            "DomainName": "test2.test-eng.com",
-            "PhonePassword": "nBiQ9DEG",
-            "Proxy": "nr5.cpbx.esihs.net",
-            "UserId": "2205",
-            "UserNameIncoming": "Auto Testerf",
-            "dns_list": [
-                "10.0.50.156"
-            ],
-            "name": "Auto TesterF",
-            "pbfile": "wav/2204.wav",
             "type": "user"
         }
     ],
@@ -264,9 +170,7 @@
             "UserId": "2016",
             "UserName": "David ePhone7",
             "name": "R2d2User",
-            "type": "user",
-            "AltUserId": "2016b",
-            "AltPassword": "6k2MzyeD"
+            "type": "user"
         },
         {
             "AccountPassword": "2202",
@@ -361,6 +265,20 @@
             "UserId": "2016",
             "UserName": "David ePhone7",
             "name": "R2d2User",
+            "type": "user"
+        },
+        {
+            "AccountPassword": "2016",
+            "DomainName": "test2.test-eng.com",
+            "PhonePassword": "6k2MzyeD",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2016b",
+            "UserNameIncoming": "Martin Two",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "R2d2AltUser",
+            "pbfile": "wav/2016.wav",
             "type": "user"
         },
         {

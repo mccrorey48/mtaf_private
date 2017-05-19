@@ -1,7 +1,9 @@
-from ePhone7.utils.configure import cfg
-from ePhone7.views import base_view
-import lib.logging_esi as logging
 from os import path, makedirs
+
+import lib.logging_esi as logging
+from ePhone7.config.configure import cfg
+from ePhone7.views import base_view
+
 log = logging.get_logger('esi.environment')
 substeps=''
 
@@ -16,12 +18,6 @@ def before_all(context):
     substeps=''
     context.is_substep = False
     context.run_substep = run_substep(context)
-    site_tag = context.config.userdata.get('site_tag')
-    if 'cfg_server' in context.config.userdata:
-        cfg_server = context.config.userdata.get('cfg_server')
-    else:
-        cfg_server = 'vqda1'
-    cfg.set_site(cfg_server, site_tag)
     tags = str(context._config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
         # base_view.open_appium()

@@ -8,7 +8,7 @@ from lib.user_exception import UserException as Ux
 @Trace(log)
 def set_alpha_ota_server():
     dial_view.dial_name('Advanced Settings')
-    dial_view.click_named_element('FuncKeyCall')
+    dial_view.touch_dial_button()
     assert user_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
     elems = user_view.find_named_elements('AdvancedItems')
     assert len(elems) > 1

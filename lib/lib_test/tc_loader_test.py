@@ -7,7 +7,7 @@ parser.add_argument('-c', '--cfg_host', help='name of mongodb server for test co
                     default='vqda')
 args = parser.parse_args()
 
-from ePhone7.utils.configure import cfg
+from ePhone7.config.configure import cfg
 
 cfg.set_site(args.cfg_host, args.site_tag)
 
