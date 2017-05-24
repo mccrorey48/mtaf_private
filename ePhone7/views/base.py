@@ -16,7 +16,7 @@ from lib.selenium_actions import SeleniumActions
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 
-log = logging_esi.get_logger('esi.settings_view')
+log = logging_esi.get_logger('esi.base_view')
 
 keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
 keycodes['KEYCODE_HOME'] = 3

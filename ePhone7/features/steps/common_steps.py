@@ -300,6 +300,12 @@ def i_downgrade_my_aosp(context):
             base_view.startup()
 
 
+@step("I downgrade my aosp and app to production version")
+def i_downgrade_my_aosp_and_app_to_production_version(context):
+    aosp, app = get_current_versions('prod')
+    i_downgrade_my_aosp_to_downgradeaospversion_and_app_to_downgradeappversion(context, aosp, app)
+
+
 @step("I downgrade my aosp to {downgrade_aosp_version} and app to {downgrade_app_version}")
 def i_downgrade_my_aosp_to_downgradeaospversion_and_app_to_downgradeappversion(context, downgrade_aosp_version, downgrade_app_version):
     if 'fake' not in str(context._config.tags).split(','):
@@ -328,6 +334,8 @@ def i_downgrade_my_aosp_to_downgradeaospversion_and_app_to_downgradeappversion(c
             assert installed_app_version == downgrade_app_version
             base_view.open_appium('nolaunch', force=True, timeout=60)
             base_view.startup()
+        else:
+            log.debug("did not need app or aosp downgrade")
 
 
 @then("I downgrade my app")
@@ -426,7 +434,6 @@ def i_make_a_call_to_a_coworker_contact(context):
     if 'fake' not in str(context._config.tags).split(','):
         context.softphone = user_view.configure_called_answer_ring()
         dial_view.dial_number(context.softphone.number)
-        dial_view.touch_dial_button()
         context.softphone.wait_for_call_status('early', dial_view.call_status_wait)
 
 
@@ -484,27 +491,22 @@ def i_see_the_call_at_the_top_of_the_missed_history_view(context):
 def i_set_the_ota_server(context):
     if 'fake' not in str(context._config.tags).split(','):
         ota_server = context.config.userdata.get('ota_server')
-        app_version = context.app_version
-        text = ''
-        expected = ''
-        if context.app_version == '1.0.10' and ota_server == 'alpha':
+        installed_aosp, installed_app = get_installed_versions()
+        if installed_app == '1.0.10' and ota_server == 'alpha':
             # special case for version 1.0.10, directly enter the upgrade url
             user_view.set_ota_server(ota_server)
         else:
             user_view.goto_tab('Dial')
             if ota_server == 'beta':
                 dial_view.dial_name('Beta OTA Server')
-                dial_view.touch_dial_button()
                 text = dial_view.find_named_element('OtaUpdatePopupContent').text
                 expected = 'Beta OTA Server Enabled'
             elif ota_server == 'alpha':
                 dial_view.dial_name('Alpha OTA Server')
-                dial_view.touch_dial_button()
                 text = dial_view.find_named_element('OtaUpdatePopupContent').text
                 expected = 'Alpha OTA Server Enabled'
             elif ota_server == 'production':
                 dial_view.dial_name('Production OTA Server')
-                dial_view.touch_dial_button()
                 text = dial_view.find_named_element('OtaUpdatePopupContent').text
                 expected = 'Production OTA Server Enabled'
             else:

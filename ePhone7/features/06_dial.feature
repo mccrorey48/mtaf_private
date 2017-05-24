@@ -8,7 +8,7 @@ Feature: As a user I want to make calls by directly entering all or part of a co
     Then  [dial] I see the keypad
 
   Scenario: I want to call a Coworker contact by entering the number
-    Given [dial] I enter a Coworker contact number using the keypad
+    Given [dial] I dial a Coworker contact number using the keypad
     When  [dial] I touch the Call button
     Then  My phone calls the number
 

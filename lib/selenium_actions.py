@@ -120,17 +120,21 @@ class SeleniumActions(Tc):
         # - "not element_is_present()" is true when timeout expires before exactly one matching element is found;
         # - "element_is_not_present()" is true when zero matching elements are found before timeout expires
         locator = self.get_locator(name)
-        try:
-            if 'parent_key' in locator:
-                parent = self.find_named_element(locator['parent_key'])
-                self.find_sub_element_by_locator(parent, locator, timeout)
-            else:
-                self.find_element_by_locator(locator, timeout)
-        except Ux:
-            return False
-        except WebDriverException as e:
-            raise Ux('WebDriverException ' + e.message)
-        return True
+        start_time = time()
+        while time() - start_time < timeout:
+            try:
+                if 'parent_key' in locator:
+                    parent = self.find_named_element(locator['parent_key'])
+                    elems = self.find_sub_elements_by_locator(parent, locator)
+                else:
+                    elems = self.find_elements_by_locator(locator)
+            except Ux:
+                return False
+            except WebDriverException as e:
+                raise Ux('WebDriverException ' + e.message)
+            if len(elems) == 1:
+                return True
+        return False
 
     @Trace(log)
     def element_is_not_present(self, name, timeout=1):

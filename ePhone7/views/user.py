@@ -64,8 +64,7 @@ class UserView(BaseView):
     def set_ota_server(self, ota_server):
         from ePhone7.views import dial_view
         self.goto_tab('Dial')
-        dial_view.dial_name('Advanced Settings')
-        dial_view.touch_dial_button()
+        dial_view.goto_settings()
         if not self.element_is_present('AdvancedOptions'):
             raise Ux("Expected Advanced Options view to appear but it did not")
         elems = self.find_named_elements('AdvancedItems')
@@ -136,16 +135,6 @@ class UserView(BaseView):
     @Trace(log)
     def end_call(self):
         self.click_named_element('EndActiveCall')
-
-    @Trace(log)
-    def goto_settings(self):
-        sleep(2.0)
-        self.swipe(515, 12, 515, 250, 400)
-        self.swipe(515, 12, 515, 250, 400)
-        elem = self.find_named_element('SettingsButtonText')
-        self.assert_element_text_ic(elem, 'settings', 'button')
-        # Touch settings, settings menu appears with "Apps" item
-        self.tap_element(elem)
 
     @Trace(log)
     def goto_tab(self, tab_name):

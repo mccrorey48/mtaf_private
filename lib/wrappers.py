@@ -103,13 +103,17 @@ class Trace(object):
             except:
                 self.elapsed_time = time() - start_time
                 (exc_type, value, tb) = sys.exc_info()
+                tb_array = traceback.extract_tb(tb)
                 if exc_type == Ux:
                     logger.warn(('%%s %%-%ds EXCEPTION:      %%s: %%s' % (35 - logging_esi.trace_indent))
                                 % (self.prefix(), f.func_name, value.__class__.__name__, value.text))
+                elif len(tb_array) < 2:
+                    logger.warn(('%%s %%-%ds EXCEPTION:      %%s: %%s' % (35 - logging_esi.trace_indent))
+                                % (self.prefix(), f.func_name, value.__class__.__name__, value.message))
                 else:
                     logger.warn(('%%s %%-%ds EXCEPTION:      %%s: %%s [%%s]' % (35 - logging_esi.trace_indent))
                                 % (self.prefix(), f.func_name, value.__class__.__name__,
-                                   '%s line %s in %s attempting "%s"' % traceback.extract_tb(tb)[1], value))
+                                   '%s line %s in %s attempting "%s"' % tb_array[1], value))
 
                 if self.except_cb:
                     try:

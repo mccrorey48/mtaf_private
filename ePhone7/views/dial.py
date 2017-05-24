@@ -68,6 +68,10 @@ class DialView(UserView):
         self.png_file_base = 'keypad'
 
     @Trace(log)
+    def goto_settings(self):
+        self.dial_name("Advanced Settings")
+
+    @Trace(log)
     def make_call_to_softphone(self):
         softphone = get_softphone()
         softphone.account_info.incoming_response = 200
@@ -101,6 +105,7 @@ class DialView(UserView):
             if displayed[-1] != digit:
                 self.click_named_element('Delete')
                 self.click_named_element(self.digit_names[digit])
+        self.touch_dial_button()
 
     @Trace(log)
     def dial_name(self, name):

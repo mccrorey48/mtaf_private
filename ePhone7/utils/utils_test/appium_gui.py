@@ -37,7 +37,9 @@ commands.append(Command("Enable USB", "usb_enable", require_appium=False))
 commands.append(Command("Set Alpha OTA Server", "set_alpha_ota_server"))
 commands.append(Command("Reboot", "reboot", require_appium=False))
 commands.append(Command("Get Installed Versions", "get_installed_versions", require_appium=False))
-commands.append(Command("Get Current Versions", "get_current_versions", require_appium=False))
+commands.append(Command("Get Alpha Current Versions", "get_alpha_current_versions", require_appium=False))
+commands.append(Command("Get Beta Current Versions", "get_beta_current_versions", require_appium=False))
+commands.append(Command("Get Production Current Versions", "get_prod_current_versions", require_appium=False))
 commands.append(Command("Remove APK Upgrades", "remove_apk_upgrades", require_appium=False))
 
 
@@ -188,7 +190,7 @@ class TestGui(Frame):
         log.debug('cmd: %s\nelapsed: [%5.3f s]  \necho: "%s"\n' % (action['cmd'], elapsed, lines[0].encode('string_escape')))
         for line in lines[1:]:
             log.debug(' '*7 + line.encode('string_escape'))
-        log.debug('match: "%s"' % repr(groups()))
+        log.debug('match: "%s"' % repr(match.groups()))
 
     def reboot(self):
         ss = SpudSerial('/dev/ttyUSB0')
@@ -252,9 +254,17 @@ class TestGui(Frame):
                 print "getting installed versions"
                 aosp, app = get_installed_versions()
                 print "aosp: %s, app: %s" % (aosp, app)
-            elif name == 'get_current_versions':
-                print "getting current versions"
+            elif name == 'get_alpha_current_versions':
+                print "getting current alpha versions"
                 aosp, app = get_current_versions('alpha')
+                print "aosp: %s, app: %s" % (aosp, app)
+            elif name == 'get_beta_current_versions':
+                print "getting current beta versions"
+                aosp, app = get_current_versions('beta')
+                print "aosp: %s, app: %s" % (aosp, app)
+            elif name == 'get_prod_current_versions':
+                print "getting current prod versions"
+                aosp, app = get_current_versions('prod')
                 print "aosp: %s, app: %s" % (aosp, app)
             elif name == 'remove_apk_upgrades':
                 print "removing APK upgrades"

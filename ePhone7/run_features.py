@@ -280,7 +280,7 @@ if __name__ == '__main__':
         parser.add_argument("-r", "--run_tags", type=str, default='', help="run tags (comma separated list)")
         parser.add_argument("-t", "--site_tag", type=str, default=mtaf_site, help="site tag (default %s)" % mtaf_site)
         parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.7', help="aosp downgrade version (default 2.3.7)")
-        parser.add_argument("-O", "--ota_server", type=str, default='alpha', help="OTA server (default alpha")
+        parser.add_argument("-O", "--ota_server", type=str, default='alpha', choices=['alpha', 'beta', 'prod'], help="OTA server (default alpha")
         parser.add_argument("-a", "--downgrade_app", type=str, default='1.3.6', help="apk downgrade version (default 1.3.6)")
         args = parser.parse_args()
         fake_tag = 'fake' in args.run_tags.split(',')
@@ -301,7 +301,7 @@ if __name__ == '__main__':
                 'stop': False
             }
             features = run_features(run_configuration)
-        installed_aosp, installed_app = get_installed_versions()
+        installed_aosp, installed_app = get_current_versions(args.ota_server)
         report_configuration = "site_tag:%s, run_tags:%s, installed_aosp:%s, installed_app:%s" % \
                         (cfg.get_site_tag(), args.run_tags, installed_aosp, installed_app)
         write_result_to_db(args.server, args.db_name, args.test_class, args.environment, report_configuration, mock_detector, features)
