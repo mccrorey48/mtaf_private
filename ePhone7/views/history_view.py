@@ -3,7 +3,7 @@ from time import sleep
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
-from ePhone7.views.user import UserView
+from ePhone7.views.user_view import UserView
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 
@@ -51,7 +51,7 @@ class HistoryView(UserView):
         self.click_element(call_icon)
         softphone.wait_for_call_status('call', 20)
         sleep(10)
-        self.click_named_element('EndActiveCall')
+        self.end_call()
         softphone.wait_for_call_status('idle', 20)
 
 

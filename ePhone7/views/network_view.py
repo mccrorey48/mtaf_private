@@ -1,8 +1,9 @@
 import lib.logging_esi as logging
 from lib.wrappers import Trace
-from ePhone7.views.base import BaseView
+from ePhone7.views.base_view import BaseView
 
 log = logging.get_logger('esi.network_view')
+
 
 class NetworkView(BaseView):
     locators = {
@@ -21,6 +22,7 @@ class NetworkView(BaseView):
 
     def __init__(self):
         super(NetworkView, self).__init__()
+        BaseView.network_view = self
 
     @Trace(log)
     def verify_view(self):

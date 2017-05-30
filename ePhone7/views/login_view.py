@@ -1,7 +1,7 @@
 import lib.logging_esi as logging
 
 from ePhone7.config.configure import cfg
-from ePhone7.views.base import BaseView
+from ePhone7.views.base_view import BaseView
 from lib.wrappers import Trace
 
 log = logging.get_logger('esi.login_view')
@@ -19,6 +19,7 @@ class LoginView(BaseView):
         super(LoginView, self).__init__()
         self.png_file_base = 'login'
         self.last_activity = None
+        BaseView.login_view = self
 
     @Trace(log)
     def login(self):

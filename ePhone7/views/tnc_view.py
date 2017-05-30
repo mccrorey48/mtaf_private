@@ -1,6 +1,6 @@
 import lib.logging_esi as logging
 
-from ePhone7.views.base import BaseView
+from ePhone7.views.base_view import BaseView
 from lib.wrappers import Trace
 
 log = logging.get_logger('esi.tnc_view')
@@ -17,6 +17,7 @@ class TncView(BaseView):
     def __init__(self):
         super(TncView, self).__init__()
         self.png_file_base = 'tnc'
+        BaseView.tnc_view = self
 
     @Trace(log)
     def accept_tnc(self):

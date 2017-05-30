@@ -4,7 +4,7 @@ from time import sleep
 
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
-from ePhone7.views.user import UserView
+from ePhone7.views.user_view import UserView
 from lib.wrappers import Trace
 
 log = logging.get_logger('esi.voicemail_view')
@@ -62,7 +62,7 @@ class VoicemailView(UserView):
         self.click_named_element('VmCallButton')
         softphone.wait_for_call_status('call', 20)
         sleep(10)
-        self.click_named_element('EndActiveCall')
+        self.end_call()
         softphone.wait_for_call_status('idle', 20)
         self.click_named_element('VmDetailHeader')
 

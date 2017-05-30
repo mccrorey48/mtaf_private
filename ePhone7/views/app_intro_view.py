@@ -1,6 +1,6 @@
 import lib.logging_esi as logging
 
-from ePhone7.views.base import BaseView
+from ePhone7.views.base_view import BaseView
 from lib.wrappers import Trace
 
 log = logging.get_logger('esi.app_intro_view')
@@ -15,6 +15,7 @@ class AppIntroView(BaseView):
     def __init__(self):
         super(AppIntroView, self).__init__()
         self.png_file_base = 'tnc'
+        BaseView.app_intro_view = self
 
     @Trace(log)
     def skip_intro(self):

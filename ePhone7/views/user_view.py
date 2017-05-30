@@ -3,8 +3,8 @@ from time import sleep
 import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
-from ePhone7.views.base import BaseView
-from ePhone7.views.prefs import prefs_view
+from ePhone7.views.base_view import BaseView
+from ePhone7.views.prefs_view import prefs_view
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 
@@ -14,14 +14,9 @@ log = logging_esi.get_logger('esi.user_view')
 class UserView(BaseView):
 
     locators = {
-        "AdvancedOptions": {"by": "zpath", "value": "//sp/rl/v[1]/fl/ll/fl/rv/tv[1]"},
-        "AdvancedItems": {"by": "id", "value": "android:id/title"},
-        "RecordActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/recordImageButton"},
-        "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
         "Contacts": {"by": "zpath", "value": "//tw/rl[1]/ll/tv", "text": "Contacts"},
         "Dial": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
         "DndButton": {"by": "accessibility id", "value": "Do not Disturb"},
-        "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endButtonImage"},
         "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
         "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
         "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
@@ -32,13 +27,10 @@ class UserView(BaseView):
         "IncomingCallCallerName": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_name"},
         "IncomingCallCallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_number"},
         "PrefsButton": {"by": "id", "value": "com.esi_estech.ditto:id/settings_button"},
-        "PrefsButtonz": {"by": "zpath", "value": "//rl[2]/bt[5]"},
+        "PrefsButtonz": {"by": "zpath", "value": "//rl/bt[4]"},
         "SettingsButton": {"by": "zpath", "value": "//sv/fl/fl[3]"},
         "SettingsButtonText": {"by": "zpath", "value": "//sv/fl/fl[3]/ll/tv"},
         "TestOtaAlertTitle": {"by": "id", "value": "com.esi_estech.ditto:id/alertTitle", "text": "Set OTA Server Address"},
-        "TestOtaEditText": {"by": "id", "value": "android:id/edit"},
-        "TestOtaServerUrlText": {"by": "id", "value": "android:id/title", "text": "Test OTA Server URL"},
-        "UseTestOtaServerText": {"by": "id", "value": "android:id/title", "text": "Use Test OTA Server"},
         "UserHeaderName": {"by": "id", "value": "com.esi_estech.ditto:id/user_header_name"},
         "Voicemail": {"by": "zpath", "value": "//tw/rl[3]/ll/tv", "text": "Voicemail"}
     }
@@ -59,43 +51,6 @@ class UserView(BaseView):
     #     prefs_view.logout()
     #     prefs_view.logout_confirm()
     #     self.wait_for_condition_true(lambda: remote.current_activity == '.settings.ui.LoginActivity')
-
-    @Trace(log)
-    def set_ota_server(self, ota_server):
-        from ePhone7.views import dial_view
-        self.goto_tab('Dial')
-        dial_view.goto_settings()
-        if not self.element_is_present('AdvancedOptions'):
-            raise Ux("Expected Advanced Options view to appear but it did not")
-        elems = self.find_named_elements('AdvancedItems')
-        if len(elems) == 0:
-            raise Ux('No "AvancedItems" elements found')
-        self.scroll(elems[-1], elems[0])
-        if not self.element_is_present('TestOtaServerUrlText'):
-            # one retry in case the scroll didn't work
-            self.scroll(elems[-1], elems[0])
-        use_ota_text = self.find_named_element('UseTestOtaServerText')
-        text_ycenter = use_ota_text.location['y'] + (use_ota_text.size['height'] / 2)
-        checkboxes = self.find_named_elements('AdvancedCheckbox')
-        for cb in checkboxes:
-            min_y = cb.location['y']
-            max_y = min_y + cb.size['height']
-            if min_y < text_ycenter < max_y:
-                break
-        else:
-            raise Ux('"Use Test OTA Server" checkbox not found')
-        if cb.get_attribute('checked') == 'false':
-            cb.click()
-        self.click_named_element('TestOtaServerUrlText')
-        ota_url = self.find_named_element('TestOtaEditText')
-        ota_url.clear()
-        if ota_server == 'alpha':
-            ota_url.set_text('http://52.36.62.239/aus/')
-        else:
-            ota_url.set_text('http://52.36.62.239/aus/beta/')
-        self.click_named_element('OtaAddressOk')
-        self.send_keycode('KEYCODE_BACK')
-        sleep(5)
 
     @Trace(log)
     def set_dnd(self, on=True):
@@ -134,7 +89,7 @@ class UserView(BaseView):
 
     @Trace(log)
     def end_call(self):
-        self.click_named_element('EndActiveCall')
+        self.active_call_view.end_call()
 
     @Trace(log)
     def goto_tab(self, tab_name):
@@ -210,7 +165,7 @@ class UserView(BaseView):
         caller_name, src_cfg = self.receive_call()
         self.click_named_element('IncomingCallAnswerToSpeaker')
         self.softphones[caller_name].wait_for_call_status('call', self.call_status_wait)
-        self.click_named_element('EndActiveCall')
+        self.end_call()
         self.softphones[caller_name].wait_for_call_status('idle', self.call_status_wait)
 
     @Trace(log)
@@ -220,7 +175,7 @@ class UserView(BaseView):
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('call', self.call_status_wait)
-        self.click_named_element('EndActiveCall')
+        self.end_call()
         softphone.wait_for_call_status('idle', self.call_status_wait)
 
     @Trace(log)

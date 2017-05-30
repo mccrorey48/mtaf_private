@@ -3,7 +3,7 @@ import re
 import lib.logging_esi as logging
 from lib.wrappers import Trace
 
-from ePhone7.views.base import BaseView
+from ePhone7.views.base_view import BaseView
 from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.prefs_view')
@@ -51,6 +51,7 @@ class PrefsView(BaseView):
 
     def __init__(self):
         super(PrefsView, self).__init__()
+        BaseView.prefs_view = self
 
     def hide_list_items(self):
         titles_shown = [el.text for el in self.find_named_elements('ListItemTitle')]

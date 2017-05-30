@@ -30,12 +30,8 @@ class BaseView(SeleniumActions):
 
     locators = {
         "ActiveCallScreen": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_call_details"},
-        "AdvancedCheckbox": {"by": "id", "value": "com.esi_estech.ditto:id/checkbox"},
-        "CallRecordEnableText": {"by": "id", "value": "android:id/title", "text": "Call Record Enable"},
-        "CallRecordEnableBox": {"by": "zpath", "value": "com.esi_estech.ditto:id/confirm_button"},
         "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/recordButton"},
         "OtaServerOk": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
-        "OtaAddressOk": {"by": "id", "value": "android:id/button1"},
         "CrashOkButton": {"by": "id", "value": "com.esi_estech.ditto:id/acra_crash_ok_button"},
         "CrashOkButton2": {"by": "id", "value": "android:id/button1", "text": "OK"},
         "E7HasStoppedOk": {"by": "id", "value": "android:id/button1"},

@@ -3,7 +3,7 @@ from time import sleep
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
-from ePhone7.views.user import UserView
+from ePhone7.views.user_view import UserView
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 
@@ -68,8 +68,9 @@ class DialView(UserView):
         self.png_file_base = 'keypad'
 
     @Trace(log)
-    def goto_settings(self):
-        self.dial_name("Advanced Settings")
+    def goto_advanced_settings(self):
+        self.dial_named_number("Advanced Settings")
+        self.touch_dial_button()
 
     @Trace(log)
     def make_call_to_softphone(self):
@@ -80,7 +81,7 @@ class DialView(UserView):
         self.touch_dial_button()
         softphone.wait_for_call_status('call', 20)
         sleep(10)
-        self.click_named_element('EndActiveCall')
+        self.end_call()
         softphone.wait_for_call_status('idle', 20)
 
     @Trace(log)
@@ -105,10 +106,9 @@ class DialView(UserView):
             if displayed[-1] != digit:
                 self.click_named_element('Delete')
                 self.click_named_element(self.digit_names[digit])
-        self.touch_dial_button()
 
     @Trace(log)
-    def dial_name(self, name):
+    def dial_named_number(self, name):
         self.dial_number(self.numbers[name])
 
 
