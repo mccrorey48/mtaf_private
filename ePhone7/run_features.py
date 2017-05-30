@@ -106,10 +106,10 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
     client = MongoClient(server)
     db = client[db_name]
     step_re = re.compile('\s*(\[\s*([^]]*\S)\s*\]\s*)?\s*(.*\S)\s*')
-    # if len(features) and 'start_time' in features[0] and 'start_date' in features[0]:
-    #     start_datetime = datetime.strptime("%s %s" % (features[0]['start_date'], features[0]['start_time']), '%x %X')
-    # else:
-    start_datetime = datetime.now()
+    if len(features) and 'start_time' in features[0] and 'start_date' in features[0]:
+        start_datetime = datetime.strptime("%s %s" % (features[0]['start_date'], features[0]['start_time']), '%x %X')
+    else:
+        start_datetime = datetime.now()
     test_start = {
         'app': 'ePhone7',
         'build': '',
@@ -140,6 +140,8 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
         del feature['name']
         feature['time'] = start_datetime.strftime('%X')
         feature['date'] = start_datetime.strftime('%x')
+        feature['order'] = iter_num
+        # feature['epoch_ms'] = int((start_datetime - datetime.utcfromtimestamp(0)).total_seconds() * 1000)
         background_steps = []
         feature['scenarios'] = []
         feature['duration'] = 0.0
@@ -203,6 +205,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     scenario['duration'] += step['duration']
                     feature['duration'] += step['duration']
                     start_datetime += timedelta(seconds=step['duration'])
+                    pass
                 else:
                     step['status'] = 'skipped'
                     scenario_has_skips = True
