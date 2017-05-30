@@ -1,4 +1,4 @@
-@regression
+#@regression
 Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
 
   Background: I am at the Dial view

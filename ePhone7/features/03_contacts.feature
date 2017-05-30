@@ -1,4 +1,4 @@
-@regression
+#@regression
 Feature: As a user I want to use and manage my contact lists
 
   Background: I am at the Contacts view

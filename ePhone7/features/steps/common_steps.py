@@ -1,8 +1,8 @@
 from behave import *
 from ePhone7.views import *
 from time import sleep
-from prefs import *
-from advanced import *
+from prefs_steps import *
+from advanced_steps import *
 from lib.user_exception import UserException as Ux
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.utils.versions import *
@@ -290,16 +290,6 @@ def i_close_the_preferences_window(context):
     pass
 
 
-@step("I downgrade my AOSP")
-def i_downgrade_my_aosp(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        if context.needs_aosp_downgrade:
-            base_view.close_appium()
-            force_aosp_downgrade(context.config.userdata['downgrade_aosp'])
-            base_view.open_appium('nolaunch', force=True, timeout=60)
-            base_view.startup()
-
-
 @step("I downgrade my aosp and app to production version")
 def i_downgrade_my_aosp_and_app_to_production_version(context):
     aosp, app = get_current_versions('prod')
@@ -434,19 +424,28 @@ def i_make_a_call_to_a_coworker_contact(context):
     if 'fake' not in str(context._config.tags).split(','):
         context.softphone = user_view.configure_called_answer_ring()
         dial_view.dial_number(context.softphone.number)
+        dial_view.touch_dial_button()
         context.softphone.wait_for_call_status('early', dial_view.call_status_wait)
 
 
-@step("I receive a call")
+@step("the ePhone7 and softphone simultaneously receive a call")
 def i_receive_a_call(context):
     if 'fake' not in str(context._config.tags).split(','):
         try:
             # use DefaultSoftphoneUser to call the ePhone7
             context.caller_name, src_cfg = user_view.receive_call(wait_for_status='call', wait_timeout=10)
-        except Ux:
+        except Ux as e:
             context.call_answered = False
+            log.warn("UserException: %s" % e)
+            raise e
         else:
             context.call_answered = True
+
+@step("I receive a call")
+def i_receive_a_call(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        # use DefaultSoftphoneUser to call the ePhone7
+        context.caller_name, src_cfg = user_view.receive_call(wait_timeout=10)
 
 
 @step("I receive a new voicemail")
@@ -490,31 +489,39 @@ def i_see_the_call_at_the_top_of_the_missed_history_view(context):
 @step("I set the OTA server")
 def i_set_the_ota_server(context):
     if 'fake' not in str(context._config.tags).split(','):
+        user_view.goto_tab("Dial")
         ota_server = context.config.userdata.get('ota_server')
-        installed_aosp, installed_app = get_installed_versions()
-        if installed_app == '1.0.10' and ota_server == 'alpha':
-            # special case for version 1.0.10, directly enter the upgrade url
-            user_view.set_ota_server(ota_server)
-        else:
-            user_view.goto_tab('Dial')
-            if ota_server == 'beta':
-                dial_view.dial_name('Beta OTA Server')
-                text = dial_view.find_named_element('OtaUpdatePopupContent').text
-                expected = 'Beta OTA Server Enabled'
-            elif ota_server == 'alpha':
-                dial_view.dial_name('Alpha OTA Server')
-                text = dial_view.find_named_element('OtaUpdatePopupContent').text
-                expected = 'Alpha OTA Server Enabled'
-            elif ota_server == 'production':
-                dial_view.dial_name('Production OTA Server')
-                text = dial_view.find_named_element('OtaUpdatePopupContent').text
-                expected = 'Production OTA Server Enabled'
-            else:
-                raise Ux('unknown expected ota_server defined: %s' % ota_server)
-            assert text == expected, "expected %s, got %s" % (expected, text)
-            base_view.click_named_element('OtaServerOk')
-            base_view.send_keycode('KEYCODE_BACK')
-            sleep(5)
+        dial_view.goto_advanced_settings()
+        advanced_settings_view.set_ota_server(ota_server)
+        # installed_aosp, installed_app = get_installed_versions()
+        # if installed_app == '1.0.10' and ota_server == 'alpha':
+        #     # special case for version 1.0.10, directly enter the upgrade url
+        #     user_view.goto_tab('Dial')
+        #     dial_view.goto_advanced_settings()
+        #     settings_view.set_ota_server(ota_server)
+        # else:
+        #     user_view.goto_tab('Dial')
+        #     if ota_server == 'beta':
+        #         dial_view.dial_named_number('Beta OTA Server')
+        #         dial_view.touch_dial_button()
+        #         text = dial_view.find_named_element('OtaUpdatePopupContent').text
+        #         expected = 'Beta OTA Server Enabled'
+        #     elif ota_server == 'alpha':
+        #         dial_view.dial_named_number('Alpha OTA Server')
+        #         dial_view.touch_dial_button()
+        #         text = dial_view.find_named_element('OtaUpdatePopupContent').text
+        #         expected = 'Alpha OTA Server Enabled'
+        #     elif ota_server == 'production':
+        #         dial_view.dial_named_number('Production OTA Server')
+        #         dial_view.touch_dial_button()
+        #         text = dial_view.find_named_element('OtaUpdatePopupContent').text
+        #         expected = 'Production OTA Server Enabled'
+        #     else:
+        #         raise Ux('unknown expected ota_server defined: %s' % ota_server)
+        #     assert text == expected, "expected %s, got %s" % (expected, text)
+        #     base_view.click_named_element('OtaServerOk')
+        #     base_view.send_keycode('KEYCODE_BACK')
+        #     sleep(5)
 
 
 @step("I swipe down twice")
@@ -851,7 +858,7 @@ def the_account_deleted_popup_disappears(context):
 @step("the Advanced Options view disappears")
 def the_advanced_options_view_disappears(context):
     if 'fake' not in str(context._config.tags).split(','):
-        assert user_view.element_is_not_present('AdvancedOptions'), "Expected Advanced Options view to disappear but it did not"
+        assert advanced_settings_view.element_is_not_present('AdvancedOptions'), "Expected Advanced Options view to disappear but it did not"
 
 
 @step("the call has a red handset icon with a missed arrow")

@@ -1,11 +1,11 @@
 from behave import *
 from common_steps import *
-from network import *
-from prefs import *
-from user import *
-from dial import *
-from history import *
-from advanced import *
+from network_steps import *
+from prefs_steps import *
+from user_steps import *
+from dial_steps import *
+from history_steps import *
+from advanced_steps import *
 
 
 @then('[background] A submenu appears with a "Network" option')

@@ -1,4 +1,4 @@
-@regression
+#@regression
 Feature: As a user, I should be able to change the settings on my ePhone7 using control buttons on the display
 
   Background: I am logged in and at the Home view

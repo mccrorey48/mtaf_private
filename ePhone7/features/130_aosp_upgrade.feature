@@ -28,7 +28,6 @@ Feature: As a user I want to to update my phone's software to the latest version
     Then  I wait for the phone to upgrade and reboot
     And   I verify the system and app versions are current
 
-  @wip
   Scenario: Performing an online upgrade from 2.3.8/1.3.6 to alpha
     Given I am logged in to the ePhone7
     Then  I downgrade my aosp to 2.3.8 and app to 1.3.6

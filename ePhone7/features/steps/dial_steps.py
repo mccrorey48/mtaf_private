@@ -20,7 +20,7 @@ def dial__a_list_of_personal_contacts_containing_the_partial_name_appears_above_
 @step("[dial] I dial the {code_name} direct code")
 def dial__i_dial_the_codename_direct_code(context, code_name):
     if 'fake' not in str(context._config.tags).split(','):
-        dial_view.dial_name(code_name)
+        dial_view.dial_named_number(code_name)
 
 
 @step("[dial] I enter a 10-digit phone number using the keypad")

@@ -1,4 +1,4 @@
-@regression
+#@regression
 Feature: As a user I want to see my call history and make calls from the listed items
 
   Background: I am in the History view

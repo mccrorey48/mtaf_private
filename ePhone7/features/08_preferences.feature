@@ -1,4 +1,4 @@
-@regression
+#@regression
 Feature: As a user I want to view and change detailed settings that control my phone's operation
 
   Background: I am logged in and at the Preferences view

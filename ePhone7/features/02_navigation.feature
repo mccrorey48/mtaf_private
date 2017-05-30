@@ -1,4 +1,4 @@
-@regression
+#@regression
 Feature: As a user I want to navigate to different views using the touch screen
 
   Background: I am at the Home view
