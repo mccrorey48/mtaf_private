@@ -100,7 +100,7 @@ def force_aosp_downgrade(version):
     for cmd in fb_cmds:
         log.debug(">>> fastboot " + cmd)
         log.debug(fb.run_cmd(cmd))
-    ss.do_action({'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
+    ss.do_action({'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 600})
 
 
 @Trace(log)
