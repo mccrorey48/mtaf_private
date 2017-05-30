@@ -91,7 +91,7 @@ buttons = {
     'Contacts': {'view': contacts_view, 'tabs': ('Personal', 'Coworkers', 'Favorites', 'Groups')},
     'History': {'view': history_view, 'tabs': ('All', 'Missed')},
     'Voicemail': {'view': voicemail_view, 'tabs': ('New', 'Saved', 'Trash')},
-    'Keypad': {'view': dial_view, 'tabs': ()}
+    'Dial': {'view': dial_view, 'tabs': ()}
 }
 
 @Trace(log)
@@ -102,7 +102,7 @@ def get_nav_views2(version):
             log.info("view = %s" % button)
             if button == 'Keypad':
                 save_xml_and_screenshot('keypad_%s' % version, version)
-                dial_view.dial_name('Advanced Settings')
+                dial_view.dial_named_number('Advanced Settings')
                 dial_view.touch_dial_button()
                 save_xml_and_screenshot('settings_%s' % version, version)
                 dial_view.send_keycode('KEYCODE_BACK')

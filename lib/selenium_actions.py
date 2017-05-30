@@ -132,6 +132,8 @@ class SeleniumActions(Tc):
                 return False
             except WebDriverException as e:
                 raise Ux('WebDriverException ' + e.message)
+            if 'text' in locator:
+                elems = [elem for elem in elems if elem.text == locator['text']]
             if len(elems) == 1:
                 return True
         return False

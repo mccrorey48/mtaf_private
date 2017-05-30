@@ -12,8 +12,8 @@ parser.add_argument("site_tag", type=str, choices=['mm', 'js', 'local'], help="s
 args = parser.parse_args()
 cfg.set_site(args.site_tag)
 
-from ePhone7.views.prefs import prefs_view
-from ePhone7.views.user import user_view
+from ePhone7.views.prefs_view import prefs_view
+from ePhone7.views.user_view import user_view
 
 
 def make_softphone_call():

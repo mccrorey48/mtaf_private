@@ -1,8 +1,8 @@
-from ePhone7.views.contacts import contacts_view
-from ePhone7.views.history import history_view
-from ePhone7.views.voicemail import voicemail_view
+from ePhone7.views.contacts_view import contacts_view
+from ePhone7.views.history_view import history_view
+from ePhone7.views.voicemail_view import voicemail_view
 # from ePhone7.views.keypad import keypad_view
-from ePhone7.views.user import user_view
+from ePhone7.views.user_view import user_view
 view_info = {
     'user': {
         'view_instance': user_view,
