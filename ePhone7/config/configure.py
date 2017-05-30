@@ -25,14 +25,11 @@ class Cfg(object):
             raise Ux('MTAF_DB_HOST must be defined in the run-time environment')
         self.set_site(server, self.site_tag)
 
-    def get_site_tag(self):
-        return self.site_tag
-
     def set_site(self, cfg_server, site_tag):
         client = MongoClient(cfg_server)
         db = client['e7_site']
-        site_collection = db[site_tag]
-        merge_collection(self.site, site_collection)
+        merge_collection(self.site, db[site_tag])
+        merge_collection(self.site, db["default"])
         db = client['e7_caps']
         for name in db.collection_names(False):
             self.caps[name] = {}

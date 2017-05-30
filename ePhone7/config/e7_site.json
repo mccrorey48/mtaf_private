@@ -1,14 +1,10 @@
 {
-    "ds": [
+    "default": [
         {
-            "AospsHome": "/home/mmccrorey/aosps",
-            "ApksHome": "/home/mmccrorey/apks",
             "BuildImageServer": "10.3.1.164",
             "BuildPropServer": "ec2-52-36-62-239.us-west-2.compute.amazonaws.com",
             "ColorsFolder": "ePhone7/utils",
             "CsvFolder": "ePhone7/utils/csv",
-            "DefaultForwardAccount": "Auto TesterH",
-            "DefaultSoftphoneUser": "Auto TesterG",
             "DefaultTimeout": 1,
             "DnsList": [
                 "10.0.50.156",
@@ -21,6 +17,9 @@
             },
             "OauthURL": "https://pro.esiapi.io/aaa/v2",
             "OauthUsername": "{\"username\":\"%s@%s\",\"password\":\"%s\"}",
+            "OtaAlphaUrl": "http://52.36.62.239/aus/",
+            "OtaBetaUrl": "http://52.36.62.239/aus/beta/",
+            "OtaProdUrl": "http://52.36.62.239/aus/beta/",
             "Quiet": true,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
             "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
@@ -32,6 +31,15 @@
             },
             "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
             "XmlFolder": "ePhone7/utils/xml",
+            "type": "constants"
+        }
+    ],
+    "ds": [
+        {
+            "AospsHome": "/home/mmccrorey/aosps",
+            "ApksHome": "/home/mmccrorey/apks",
+            "DefaultForwardAccount": "Auto TesterH",
+            "DefaultSoftphoneUser": "Auto TesterG",
             "type": "constants"
         },
         {
@@ -112,35 +120,8 @@
         {
             "AospsHome": "/home/mmccrorey/aosps",
             "ApksHome": "/home/mmccrorey/apks",
-            "BuildImageServer": "10.3.1.164",
-            "BuildPropServer": "ec2-52-36-62-239.us-west-2.compute.amazonaws.com",
-            "ColorsFolder": "ePhone7/utils",
-            "CsvFolder": "ePhone7/utils/csv",
             "DefaultForwardAccount": "Auto TesterD",
             "DefaultSoftphoneUser": "Auto TesterC",
-            "DefaultTimeout": 1,
-            "DnsList": [
-                "10.0.50.156",
-                "10.0.50.157"
-            ],
-            "Mock": false,
-            "NullSound": false,
-            "OauthHeaders": {
-                "content-type": "application/json"
-            },
-            "OauthURL": "https://pro.esiapi.io/aaa/v2",
-            "OauthUsername": "{\"username\":\"%s@%s\",\"password\":\"%s\"}",
-            "Quiet": true,
-            "ScreenshotsFolder": "ePhone7/utils/screenshots",
-            "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
-            "TestScreenshotsFolder": "ePhone7/screenshots",
-            "UseTcp": false,
-            "VVMHeaders": {
-                "Authorization": "Bearer %s",
-                "Content-Type": "application/json"
-            },
-            "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
-            "XmlFolder": "ePhone7/utils/xml",
             "type": "constants"
         },
         {
@@ -205,35 +186,8 @@
         {
             "AospsHome": "/home/mmccrorey/aosps",
             "ApksHome": "/home/mmccrorey/apks",
-            "BuildImageServer": "10.3.1.164",
-            "BuildPropServer": "ec2-52-36-62-239.us-west-2.compute.amazonaws.com",
-            "ColorsFolder": "ePhone7/utils",
-            "CsvFolder": "ePhone7/utils/csv",
             "DefaultForwardAccount": "Auto TesterD",
             "DefaultSoftphoneUser": "Auto TesterC",
-            "DefaultTimeout": 1,
-            "DnsList": [
-                "10.0.50.156",
-                "10.0.50.157"
-            ],
-            "Mock": false,
-            "NullSound": false,
-            "OauthHeaders": {
-                "content-type": "application/json"
-            },
-            "OauthURL": "https://pro.esiapi.io/aaa/v2",
-            "OauthUsername": "{\"username\":\"%s@%s\",\"password\":\"%s\"}",
-            "Quiet": true,
-            "ScreenshotsFolder": "ePhone7/utils/screenshots",
-            "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
-            "TestScreenshotsFolder": "ePhone7/screenshots",
-            "UseTcp": false,
-            "VVMHeaders": {
-                "Authorization": "Bearer %s",
-                "Content-Type": "application/json"
-            },
-            "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
-            "XmlFolder": "ePhone7/utils/xml",
             "aospshome": "/home/mmccrorey/aosps",
             "apkshome": "/home/mmccrorey/apks",
             "type": "constants"
@@ -312,20 +266,6 @@
     ],
     "mm_svlab": [
         {
-            "BuildImageServer": "10.3.1.164",
-            "BuildPropServer": "ec2-52-36-62-239.us-west-2.compute.amazonaws.com",
-            "ColorsFolder": "ePhone7/utils",
-            "CsvFolder": "ePhone7/utils/csv",
-            "DnsList": [
-                "10.0.50.156",
-                "10.0.50.157"
-            ],
-            "NullSound": false,
-            "Quiet": true,
-            "ScreenshotsFolder": "ePhone7/utils/screenshots",
-            "TestScreenshotsFolder": "ePhone7/screenshots",
-            "UseTcp": false,
-            "XmlFolder": "ePhone7/utils/xml",
             "aospshome": "/home/mmccrorey/aosps",
             "apkshome": "/home/mmccrorey/apks",
             "type": "constants"
