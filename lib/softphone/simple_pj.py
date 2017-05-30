@@ -99,16 +99,16 @@ class Softphone:
             self.account_info.record = record
             self.account_info.lib = self.lib
 
-    def __del__(self):
-        if self.account_info.call:
-            sleep(1)
-            # log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
-            try:
-                self.account_info.call.hangup()
-                self.wait_for_call_status('idle')
-            except TypeError:
-                pass
-        self.lib.delete_account(self.uri)
+    # def __del__(self):
+    #     if self.account_info.call:
+    #         sleep(1)
+    #         # log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
+    #         try:
+    #             self.account_info.call.hangup()
+    #             self.wait_for_call_status('idle')
+    #         except TypeError:
+    #             pass
+    #     self.lib.delete_account(self.uri)
 
     @Trace(log)
     def wait_for_call_status(self, desired_status, timeout=20, warn_only=False):
