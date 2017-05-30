@@ -35,6 +35,13 @@ def network__i_see_the_network_settings_view(context):
         assert network_view.element_is_present('NetworkSettingsLabel')
 
 
+@step("[network] I see the VLAN controls")
+def network__i_see_the_vlan_controls(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        assert network_view.element_is_present('VlanEnable')
+        assert network_view.element_is_present('VlanDisable')
+
+
 @when('[network] I touch "OK" on the "Invalid VLAN Identifier" alert')
 def network__i_touch_ok_on_the_invalid_vlan_identifier_alert(context):
     if 'fake' not in str(context._config.tags).split(','):

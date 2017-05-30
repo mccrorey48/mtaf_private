@@ -1,4 +1,4 @@
-@regression @wip
+@regression
 Feature: [bugfix] user's other phone autoanswering should not cause crash
 
   Scenario: softphone on same account autoanswers

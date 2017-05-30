@@ -428,19 +428,6 @@ def i_make_a_call_to_a_coworker_contact(context):
         context.softphone.wait_for_call_status('early', dial_view.call_status_wait)
 
 
-@step("the ePhone7 and softphone simultaneously receive a call")
-def i_receive_a_call(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        try:
-            # use DefaultSoftphoneUser to call the ePhone7
-            context.caller_name, src_cfg = user_view.receive_call(wait_for_status='call', wait_timeout=10)
-        except Ux as e:
-            context.call_answered = False
-            log.warn("UserException: %s" % e)
-            raise e
-        else:
-            context.call_answered = True
-
 @step("I receive a call")
 def i_receive_a_call(context):
     if 'fake' not in str(context._config.tags).split(','):
@@ -935,6 +922,20 @@ def the_current_time_zone_text_is_shown(context):
 @step("the current timer setting is selected")
 def the_current_timer_setting_is_selected(context):
     pass
+
+
+@step("the ePhone7 and softphone simultaneously receive a call")
+def the_ephone7_and_softphone_simultaneously_receive_a_call(context):
+    if 'fake' not in str(context._config.tags).split(','):
+        try:
+            # use DefaultSoftphoneUser to call the ePhone7
+            context.caller_name, src_cfg = user_view.receive_call(wait_for_status='call', wait_timeout=10)
+        except Ux as e:
+            context.call_answered = False
+            log.warn("UserException: %s" % e)
+            raise e
+        else:
+            context.call_answered = True
 
 
 @then("the ePhone7 app should not crash")
