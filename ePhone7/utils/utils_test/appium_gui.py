@@ -1,6 +1,7 @@
 import os
 import sys
-from Tkinter import Tk, Frame, Button, Text, NORMAL, DISABLED, Scrollbar, Entry, StringVar, HORIZONTAL
+from Tkinter import Tk, Frame, Button, Text, NORMAL, DISABLED, Scrollbar, Entry, StringVar, IntVar, HORIZONTAL
+from ttk import Combobox
 from time import sleep
 
 from pyand import ADB
@@ -12,6 +13,7 @@ from ePhone7.utils.usb_enable import usb_enable
 from ePhone7.views import *
 from lib.user_exception import UserException as Ux
 from ePhone7.utils.versions import *
+from lib.android import expand_zpath
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -91,12 +93,14 @@ class LogFrame(Frame):
 
 class TestGui(Frame):
 
+    elems = []
+    appium_is_open = False
+    appium_btns = []
+    noappium_btns = []
+    elem_indices = []
+
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="tan")
-        self.appium_is_open = False
-        self.globals = globals()
-        self.appium_btns = []
-        self.noappium_btns = []
         self.btn_frame = Frame(self, bg="cyan")
         row = None
         for row, cmd in enumerate(commands):
@@ -107,19 +111,35 @@ class TestGui(Frame):
                 self.noappium_btns.append(btn)
             # print "button %s at row %s" % (cmd.text, row)
             btn.grid(row=row, column=0, sticky='w', padx=2, pady=2)
-        self.repl_frame = Frame(self.btn_frame, bg='brown')
-        btn = Button(self.repl_frame, text="evaluate:", command=self.repl_eval, state=DISABLED)
-        self.noappium_btns.append(btn)
-        self.repl_var = StringVar()
-        self.repl_frame.entry = Entry(self.repl_frame, width=60, textvariable=self.repl_var)
-        self.repl_frame.hsb = Scrollbar(self.repl_frame, orient=HORIZONTAL, command=self.repl_frame.entry.xview)
-        self.repl_frame.entry["xscrollcommand"] = self.repl_frame.hsb.set
+        self.find_frame = Frame(self.btn_frame, bg='brown')
+        btn = Button(self.find_frame, text="find elements:", command=self.find_elements, state=DISABLED)
+        self.appium_btns.append(btn)
+        self.find_by_var = StringVar()
+        self.find_by_var.set('zpath')
+        self.find_frame.by = Combobox(self.find_frame, width=6, values=['zpath', 'xpath', 'id'], textvariable=self.find_by_var)
+        self.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
+        self.find_value_var = StringVar()
+        self.find_frame.value = Entry(self.find_frame, width=60, textvariable=self.find_value_var)
+        self.find_frame.hsb = Scrollbar(self.find_frame, orient=HORIZONTAL, command=self.find_frame.value.xview)
+        self.find_frame.value["xscrollcommand"] = self.find_frame.hsb.set
         btn.grid(row=0, column=0, padx=2, pady=2)
-        self.repl_frame.grid_columnconfigure(1, weight=1)
-        self.repl_frame.entry.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
-        self.repl_frame.hsb.grid(row=1, column=1, sticky='ew')
+        self.find_frame.grid_columnconfigure(1, weight=1)
+        self.find_frame.value.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
+        self.find_frame.hsb.grid(row=1, column=2, sticky='ew')
         row += 1
-        self.repl_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
+        self.find_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
+
+        self.attr_frame = Frame(self.btn_frame, bg='brown')
+        btn = Button(self.attr_frame, text="get element attributes:", command=self.get_elem_attrs, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=0, padx=2, pady=2)
+        self.elem_index = StringVar()
+        self.elem_index.set('')
+        self.attr_frame.index = Combobox(self.attr_frame, width=6, values=[], textvariable=self.elem_index)
+        self.attr_frame.index.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
+        row += 1
+        self.attr_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
+
         self.btn_frame.grid_columnconfigure(0, weight=1)
         self.btn_frame.grid(row=0, column=0, sticky='ew', padx=2, pady=2)
         self.logframe = LogFrame(self)
@@ -129,25 +149,45 @@ class TestGui(Frame):
         self.logframe.grid(row=1, column=0, padx=2, pady=2, sticky='news')
         self.bottom_frame = Frame(self, bg="cyan")
         self.bottom_frame.grid_columnconfigure(0, weight=1)
-        self.bottom_frame.Quit = Button(self.bottom_frame, text="Quit", command=self.quit)
+        self.bottom_frame.Quit = Button(self.bottom_frame, text="Quit", command=self.close_appium_and_quit)
         self.bottom_frame.Quit.grid(row=0, column=0, sticky='e', padx=2, pady=2)
         self.bottom_frame.grid(row=2, column=0, padx=2, pady=2, sticky='news')
         self.grid_columnconfigure(0, weight=1)
-        # self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
         self.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
-        # print "Opening Appium...",
-        # self.update_idletasks()
-        # self.after(500, self.open_appium)
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
         for btn in self.noappium_btns:
             btn.configure(state=NORMAL)
 
-    def repl_eval(self):
-        cmd = self.repl_var.get()
-        exec(cmd, self.globals)
-        pass
+    def close_appium_and_quit(self):
+        if self.appium_is_open:
+            self.close_appium()
+        root.destroy()
+
+    def find_elements(self):
+        by = self.find_by_var.get()
+        value = self.find_value_var.get()
+        if by == 'zpath':
+            value = expand_zpath(value)
+            by = 'xpath'
+            print "xpath = %s" % value
+        self.elems = base_view.driver.find_elements(by, value)
+        print "%s elements found" % len(self.elems)
+        elem_indices = [str(i) for i in range(len(self.elems))]
+        self.attr_frame.index.configure(values=elem_indices)
+        if len(elem_indices):
+            self.elem_index.set('0')
+        else:
+            self.elem_index.set('')
+
+    def get_elem_attrs(self):
+        text_index = self.elem_index.get()
+        if text_index == '':
+            return
+        index = int(text_index)
+        elem = self.elems[index]
+        print 'text: "%s", location: %s, size: %s' % (elem.text, elem.location, elem.size)
 
     def open_appium(self, max_attempts=10, retry_seconds=5):
         attempts = 0
@@ -190,7 +230,6 @@ class TestGui(Frame):
         log.debug('cmd: %s\nelapsed: [%5.3f s]  \necho: "%s"\n' % (action['cmd'], elapsed, lines[0].encode('string_escape')))
         for line in lines[1:]:
             log.debug(' '*7 + line.encode('string_escape'))
-        log.debug('match: "%s"' % repr(match.groups()))
 
     def reboot(self):
         ss = SpudSerial('/dev/ttyUSB0')
@@ -291,14 +330,25 @@ class TestGui(Frame):
         print "Closing Appium...",
         self.update_idletasks()
         self.after(500, base_view.close_appium)
+        sleep(1)
 
 
 root = Tk()
 root.wm_title("Appium test utility")
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
-app = TestGui(root)
-app.mainloop()
+_app = TestGui(root)
+
+
+def on_closing():
+    # if app.appium_is_open:
+    print "trying to close appium"
+    # app.close_appium()
+    sleep(5)
+    root.destroy()
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
+_app.mainloop()
 
 # base_view.startup()
 # login()
