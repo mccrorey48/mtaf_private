@@ -11,6 +11,7 @@ Feature: As a user I want to see my contact lists (R2D2-2054)
     Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are shown on the display
 
+  @wip
   Scenario: I want to see favorite Coworker contacts on the Favorites list
     Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are shown on the display

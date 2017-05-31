@@ -1,6 +1,7 @@
 from behave import *
 from ePhone7.views import *
 from ePhone7.config.configure import cfg
+from lib.wrappers import fake
 
 
 @step("[contacts] a check mark appears in the box")
@@ -69,9 +70,9 @@ def contacts__i_enter_my_google_user_id_and_password(context):
 
 
 @step("[contacts] I go to the Personal tab")
+@fake
 def contacts__i_go_to_the_personal_tab(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        contacts_view.goto_tab('Personal')
+    contacts_view.goto_tab('Personal')
 
 
 @step("[contacts] I long-press a contact list item")
@@ -80,12 +81,12 @@ def contacts__i_longpress_a_contact_list_item(context):
 
 
 @step("[contacts] I see the Personal, Coworkers, Favorites and Groups tabs")
+@fake
 def contacts__i_see_the_personal_coworkers_favorites_and_groups_tabs(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert contacts_view.element_is_present('Personal')
-        assert contacts_view.element_is_present('Coworkers')
-        assert contacts_view.element_is_present('Favorites')
-        assert contacts_view.element_is_present('Groups')
+    assert contacts_view.element_is_present('Personal')
+    assert contacts_view.element_is_present('Coworkers')
+    assert contacts_view.element_is_present('Favorites')
+    assert contacts_view.element_is_present('Groups')
 
 
 @step("[contacts] I touch a check a box next to a contact")
@@ -104,9 +105,9 @@ def contacts__i_touch_the_add_button(context):
 
 
 @step("[contacts] I touch the Coworkers tab")
+@fake
 def contacts__i_touch_the_coworkers_tab(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        contacts_view.goto_tab('Coworkers')
+    contacts_view.goto_tab('Coworkers')
 
 
 @step("[contacts] I touch the Create button")
@@ -170,9 +171,14 @@ def contacts__i_touch_the_personal_tab(context):
 
 
 @step('[contacts] I touch the "Sign in with Google" banner')
+@fake
 def contacts__i_touch_the_sign_in_with_google_banner(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        contacts_view.click_named_element('GoogleSignInBanner')
+    contacts_view.click_named_element('GoogleSignInBanner')
+
+
+@step("[contacts] I touch the star icons so Favorites are yellow and others are white")
+def contacts__i_touch_the_star_icons_so_favorites_are_yellow_and_others_are_white(context):
+    pass
 
 
 @step("[contacts] I touch the white star icon")
@@ -196,12 +202,11 @@ def contacts__my_coworker_contacts_are_each_listed_with_a_handset_icon(context):
 
 
 @step("[contacts] my Coworker contacts are shown on the display")
+@fake
 def contacts__my_coworker_contacts_are_shown_on_the_display(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
-        numbers = contacts_view.get_all_group_contacts(contacts_group)
-        assert set(numbers) == set(contacts_group), "expected %s, got %s" % (contacts_group, numbers)
-
+    contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
+    numbers = contacts_view.get_all_group_contacts(contacts_group)
+    assert set(numbers) == set(contacts_group), "expected %s, got %s" % (contacts_group, numbers)
 
 
 @step("[contacts] my Favorite contacts are shown on the display")
@@ -275,9 +280,9 @@ def contacts__the_contacts_are_shown_with_a_favorites_star_icon_next_to_each_one
 
 
 @step("[contacts] the Contacts view appears")
+@fake
 def contacts__the_contacts_view_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert contacts_view.element_is_present('ContactsList')
+    assert contacts_view.element_is_present('ContactsList')
 
 
 @step("[contacts] the Group list contacts are displayed in a list with checkboxes")
@@ -305,9 +310,3 @@ def contacts__the_star_turns_yellow(context):
     pass
 
 
-@when("[contacts] I touch the star icons so Favorites are yellow and others are white")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    pass

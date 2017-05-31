@@ -3,6 +3,7 @@ from lib.user_exception import UserException as Ux
 import os
 
 step_re = re.compile('''@[^(]+\(['"](.+)['"]\)''')
+fake_wrapper_re = re.compile('''@fake''')
 def_re = re.compile('\s*def\s')
 nonspace_line_re = re.compile('(\s*)\S')
 pass_re = re.compile('\s*pass')
@@ -43,7 +44,8 @@ class MockDetector:
                         # and the word "fake" is mentioned in the executable code of a step,
                         # assume that the entire step is adequately faked (no real AUT interaction)
                         m = fake_re.match(line)
-                        if m:
+                        m2 = fake_wrapper_re.match(line)
+                        if m or m2:
                             if fake_tag:
                                 # skip_fake_block = True
                                 # fake_indent = len(m.group(1))

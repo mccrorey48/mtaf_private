@@ -1,5 +1,6 @@
 from behave import *
 from ePhone7.views import *
+from lib.wrappers import fake
 
 
 @step("[dial] A list of contacts containing the partial number appears above the keypad")
@@ -18,12 +19,12 @@ def dial__a_list_of_personal_contacts_containing_the_partial_name_appears_above_
 
 
 @step("[dial] I dial the {code_name} direct code")
+@fake
 def dial__i_dial_the_codename_direct_code(context, code_name):
-    if 'fake' not in str(context._config.tags).split(','):
-        if code_name == "Advanced Settings":
-            dial_view.dial_star_1987()
-        else:
-            dial_view.dial_named_number(code_name)
+    if code_name == "Advanced Settings":
+        dial_view.dial_star_1987()
+    else:
+        dial_view.dial_named_number(code_name)
 
 
 @step("[dial] I enter a 10-digit phone number using the keypad")
@@ -63,8 +64,8 @@ def dial__only_the_contact_i_touched_is_listed(context):
 
 
 @step("[dial] the Dial view appears")
+@fake
 def dial__the_dial_view_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert dial_view.element_is_present('DialPad')
+    assert dial_view.element_is_present('DialPad')
 
 

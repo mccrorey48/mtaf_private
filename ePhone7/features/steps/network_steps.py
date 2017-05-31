@@ -1,109 +1,107 @@
 from behave import *
 from ePhone7.views import *
-import re
-from time import sleep
+from lib.wrappers import fake
 
 
 @step("[network] I enter a VLAN identifier greater than 4094")
+@fake
 def network__i_enter_a_vlan_identifier_greater_than_4094(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.find_named_element('VlanIdentifier').clear()
-        network_view.send_keycode('KEYCODE_4')
-        network_view.send_keycode('KEYCODE_0')
-        network_view.send_keycode('KEYCODE_9')
-        network_view.send_keycode('KEYCODE_5')
-        network_view.send_keycode('KEYCODE_BACK')
+    network_view.find_named_element('VlanIdentifier').clear()
+    network_view.send_keycode('KEYCODE_4')
+    network_view.send_keycode('KEYCODE_0')
+    network_view.send_keycode('KEYCODE_9')
+    network_view.send_keycode('KEYCODE_5')
+    network_view.send_keycode('KEYCODE_BACK')
 
 
 @step("[network] I enter a VLAN priority between 0 and 7")
+@fake
 def network__i_enter_a_vlan_priority_between_0_and_7(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.find_named_element('VlanPriority').clear()
-        network_view.send_keycode('KEYCODE_3')
-        network_view.send_keycode('KEYCODE_BACK')
+    network_view.find_named_element('VlanPriority').clear()
+    network_view.send_keycode('KEYCODE_3')
+    network_view.send_keycode('KEYCODE_BACK')
 
 
-@then('[network] I see an "Invalid VLAN Identifier" alert')
+@step('[network] I see an "Invalid VLAN Identifier" alert')
+@fake
 def network__i_see_an_invalid_vlan_identifier_alert(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert network_view.element_is_present('InvalidVlanId'), "Expected Invalid VLAN Identifier alert"
+    assert network_view.element_is_present('InvalidVlanId'), "Expected Invalid VLAN Identifier alert"
 
 
 @step("[network] I see the Network Settings view")
+@fake
 def network__i_see_the_network_settings_view(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert network_view.element_is_present('NetworkSettingsLabel')
+    assert network_view.element_is_present('NetworkSettingsLabel')
 
 
 @step("[network] I see the VLAN controls")
+@fake
 def network__i_see_the_vlan_controls(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert network_view.element_is_present('VlanEnable')
-        assert network_view.element_is_present('VlanDisable')
+    assert network_view.element_is_present('VlanEnable')
+    assert network_view.element_is_present('VlanDisable')
 
 
-@when('[network] I touch "OK" on the "Invalid VLAN Identifier" alert')
+@step('[network] I touch "OK" on the "Invalid VLAN Identifier" alert')
+@fake
 def network__i_touch_ok_on_the_invalid_vlan_identifier_alert(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.click_named_element('InvalidVlanOk')
+    network_view.click_named_element('InvalidVlanOk')
 
 
 @step('[network] I touch "Save and Reboot"')
+@fake
 def network__i_touch_save_and_reboot(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.click_named_element('NetworkSaveAndReboot')
-        pass
+    network_view.click_named_element('NetworkSaveAndReboot')
 
 
 @step("[network] I touch the back arrow at the top of the Network Settings view")
+@fake
 def network__i_touch_the_back_arrow_at_the_top_of_the_network_settings_view(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.click_named_element('NetworkSettingsBackButton')
+    network_view.click_named_element('NetworkSettingsBackButton')
 
 
 @step("[network] I touch the VLAN Disable button")
+@fake
 def network__i_touch_the_vlan_disable_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.click_named_element('VlanDisable')
+    network_view.click_named_element('VlanDisable')
 
 
 @step("[network] I touch the VLAN Enable button")
+@fake
 def network__i_touch_the_vlan_enable_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.click_named_element('VlanEnable')
+    network_view.click_named_element('VlanEnable')
 
 
 @step("[network] the Disable button is active")
+@fake
 def network__the_disable_button_is_active(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        elem = network_view.find_named_element('VlanDisable')
-        assert elem.get_attribute('checked') == 'true'
+    elem = network_view.find_named_element('VlanDisable')
+    assert elem.get_attribute('checked') == 'true'
 
 
 @step("[network] the Disable button is inactive")
+@fake
 def network__the_disable_button_is_inactive(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        elem = network_view.find_named_element('VlanDisable')
-        assert elem.get_attribute('checked') == 'false'
+    elem = network_view.find_named_element('VlanDisable')
+    assert elem.get_attribute('checked') == 'false'
 
 
 @step("[network] the Enable button is active")
+@fake
 def network__the_enable_button_is_active(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        elem = network_view.find_named_element('VlanEnable')
-        assert elem.get_attribute('checked') == 'true'
+    elem = network_view.find_named_element('VlanEnable')
+    assert elem.get_attribute('checked') == 'true'
 
 
 @step("[network] the Enable button is inactive")
+@fake
 def network__the_enable_button_is_inactive(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        elem = network_view.find_named_element('VlanEnable')
-        assert elem.get_attribute('checked') == 'false'
+    elem = network_view.find_named_element('VlanEnable')
+    assert elem.get_attribute('checked') == 'false'
 
 
 @step("[network] The reboot alert window appears")
+@fake
 def network__the_reboot_alert_window_appears(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert network_view.element_is_present("VlanRebootAlert")
+    assert network_view.element_is_present("VlanRebootAlert")
 
 

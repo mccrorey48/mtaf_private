@@ -64,6 +64,10 @@ class BaseView(SeleniumActions):
         SeleniumActions.driver.hide_keyboard()
 
     @Trace(log)
+    def long_press(self, element=None, x=None, y=None, duration=1000):
+        TouchAction(self.driver).long_press(element, x, y, duration).perform()
+
+    @Trace(log)
     def long_press_scroll(self, origin_el, destination_el):
         TouchAction(self.driver).long_press(origin_el).move_to(destination_el).release().perform()
 

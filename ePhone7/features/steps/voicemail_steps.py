@@ -1,8 +1,6 @@
 from behave import *
 from ePhone7.views import *
-import re
-from time import sleep
-
+from lib.wrappers import fake
 
 @step("[voicemail] A keypad appears")
 def voicemail__a_keypad_appears(context):
@@ -25,11 +23,11 @@ def voicemail__i_can_choose_cancel_or_ok_by_touching_the_corresponding_button(co
 
 
 @step("[voicemail] I see the New, Saved and Trash tabs at the top of the screen")
+@fake
 def voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        assert voicemail_view.element_is_present('New')
-        assert voicemail_view.element_is_present('Saved')
-        assert voicemail_view.element_is_present('Trash')
+    assert voicemail_view.element_is_present('New')
+    assert voicemail_view.element_is_present('Saved')
+    assert voicemail_view.element_is_present('Trash')
 
 
 @step("[voicemail] I touch a contact element")
@@ -37,11 +35,8 @@ def voicemail__i_touch_a_contact_element(context):
     pass
 
 
-@when("[voicemail] I touch OK")
+@step("[voicemail] I touch OK")
 def voicemail__i_touch_ok(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
@@ -52,9 +47,6 @@ def voicemail__i_touch_the_delete_icon(context):
 
 @step("[voicemail] I touch the Forward icon")
 def voicemail__i_touch_the_forward_icon(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
