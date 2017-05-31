@@ -43,6 +43,8 @@ commands.append(Command("Get Alpha Current Versions", "get_alpha_current_version
 commands.append(Command("Get Beta Current Versions", "get_beta_current_versions", require_appium=False))
 commands.append(Command("Get Production Current Versions", "get_prod_current_versions", require_appium=False))
 commands.append(Command("Remove APK Upgrades", "remove_apk_upgrades", require_appium=False))
+commands.append(Command("Get All Coworker Contacts", "get_all_coworker_contacts", require_appium=True))
+commands.append(Command("Dial *1987", "dial_star_1987", require_appium=True))
 
 
 class ScrolledLogwin(Text):
@@ -312,6 +314,15 @@ class TestGui(Frame):
                 remove_apk_upgrades()
                 aosp, app = get_installed_versions()
                 print "  after:  %s/%s" % (aosp, app)
+            elif name == 'get_all_coworker_contacts':
+                print "getting coworker contacts"
+                contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
+                nums = contacts_view.get_all_group_contacts(contacts_group)
+                print repr(nums)
+            elif name == 'dial_star_1987':
+                print "dialing *1987"
+                dial_view.dial_star_1987()
+                dial_view.touch_call_button()
             else:
                 raise Ux('command %s not defined' % name)
             if self.appium_is_open:

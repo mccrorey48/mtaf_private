@@ -4,9 +4,8 @@ Feature: As a user I want to use and manage my contact lists
   Background: I am at the Contacts view
     Given I am logged in to the ePhone7
     Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When  [user] I touch the "Contacts" button
-    Then  [contacts] the Contacts view appears
-    And   [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
+    When  [user] I touch the "Contacts" button and the Contacts view appears
+    Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
 
   Scenario: I want to import my Google contacts
     Given [contacts] I go to the Personal tab

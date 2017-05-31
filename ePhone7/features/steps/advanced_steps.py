@@ -23,11 +23,11 @@ def advanced__i_scroll_down_to_the_call_record_enable_setting(context):
     if 'fake' not in str(context._config.tags).split(','):
         elems = advanced_settings_view.find_named_elements('AdvancedItems')
         assert len(elems) > 1
-        base_view.scroll(elems[-1], elems[0])
+        advanced_settings_view.long_press_scroll(elems[-1], elems[0])
         if not advanced_settings_view.element_is_present('CallRecordEnableText'):
             # one retry in case the scroll didn't work
-            advanced_settings_view.scroll(elems[-1], elems[0])
-            assert advanced_settings_view.element_is_present('CallRecordEnableText')
+            advanced_settings_view.long_press_scroll(elems[-1], elems[0])
+            assert advanced_settings_view.element_is_present('CallRecordEnableText'), "Call Record Enable text not present"
 
 
 @step("[advanced] the Advanced Options view appears")

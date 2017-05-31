@@ -6,6 +6,7 @@ from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.user_view import UserView
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
+from appium.webdriver.common.touch_action import TouchAction
 
 log = logging.get_logger('esi.keypad_view')
 
@@ -110,6 +111,18 @@ class DialView(UserView):
     @Trace(log)
     def dial_named_number(self, name):
         self.dial_number(self.numbers[name])
+
+    @Trace(log)
+    def dial_star_1987(self):
+        TouchAction(self.driver).press(None, 131, 724).release().wait(250).perform()
+        TouchAction(self.driver).press(None, 131, 419).release().wait(250).perform()
+        TouchAction(self.driver).press(None, 469, 618).release().wait(250).perform()
+        TouchAction(self.driver).press(None, 300, 618).release().wait(250).perform()
+        TouchAction(self.driver).press(None, 131, 618).release().wait(250).perform()
+
+    @Trace(log)
+    def touch_call_button(self):
+        TouchAction(self.driver).press(None, 301, 821).release().perform()
 
 
 dial_view = DialView()

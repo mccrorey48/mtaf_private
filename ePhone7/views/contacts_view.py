@@ -16,9 +16,8 @@ class ContactsView(UserView):
     locators = {
         "ContactCallIcon": {"by": "id", "value": "com.esi_estech.ditto:id/call_button"},
         "ContactClose": {"by": "id", "value": "com.esi_estech.ditto:id/bottom_sheet_title_clear_button"},
-        "ContactName": {"by": "id", "value": "android:id/text1"},
-        "ContactNumber": {"by": "id", "value": "android:id/text2"},
-        "ContactNameSubElement": {"parent": "ContactParent", "by": "id", "value": "android:id/text1"},
+        "ContactName": {"by": "id", "value": "com.esi_estech.ditto:id/text1"},
+        "ContactNumber": {"by": "id", "value": "com.esi_estech.ditto:id/text2"},
         "ContactParent": {"by": "id", "value": "com.esi_estech.ditto:id/contact_list_item_layout"},
         "ContactsList": {"by": "id", "value": "com.esi_estech.ditto:id/contactsList"},
         "Coworkers": {"by": "id", "value": "com.esi_estech.ditto:id/ephone_contacts", "text": "Coworkers"},
@@ -94,7 +93,7 @@ class ContactsView(UserView):
         numbers = []
         while True:
             self.wait_for_no_duplicate_numbers()
-            # if the contact_number is on the display, break the while loop and don't scroll anymore
+            # if the contact_number is on the display, break the while loop and don't long_press_scroll anymore
             if contact_number in self.displayed_numbers:
                 break
             # otherwise add to the list of numbers already seen
@@ -144,7 +143,7 @@ class ContactsView(UserView):
         self.scroll_to_top_of_list()
         prev_numbers_len = 0
         numbers = []
-        # get all contacts shown, then scroll up and repeat
+        # get all contacts shown, then long_press_scroll up and repeat
         # until scrolling fails to show contacts not already in the list
         while True:
             self.wait_for_no_duplicate_numbers()
@@ -161,12 +160,25 @@ class ContactsView(UserView):
 
     @Trace(log)
     def scroll_to_top_of_list(self):
-        self.tap([(560, 210)], duration=1000)
-        sleep(2)
+        elems = self.find_named_elements("ContactName")
+        old_names = [el.text for el in elems]
+        if len(old_names) < 8:
+            return
+        while True:
+            contacts_view.short_press_scroll(elems[0], elems[-1])
+            elems = self.find_named_elements("ContactName")
+            new_name_count = 0
+            for name in [el.text for el in elems]:
+                if name not in old_names:
+                    old_names.append(name)
+                    new_name_count += 1
+            if new_name_count == 0:
+                break
+
 
     @Trace(log)
     def verify_contacts_list_test(self, contacts_group_name):
-        self.scroll_to_top_of_list(localhost)
+        self.scroll_to_top_of_list()
         contacts_group = cfg.site['Users']['R2d2User'][contacts_group_name]
         # wait for the contact list to appear
         self.find_named_element('FirstContactName', timeout=30)

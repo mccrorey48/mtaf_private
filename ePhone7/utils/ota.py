@@ -11,10 +11,10 @@ def set_alpha_ota_server():
     assert advanced_settings_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
     elems = advanced_settings_view.find_named_elements('AdvancedItems')
     assert len(elems) > 1
-    advanced_settings_view.scroll(elems[-1], elems[0])
+    advanced_settings_view.long_press_scroll(elems[-1], elems[0])
     if not advanced_settings_view.element_is_present('TestOtaServerUrlText'):
-        # one retry in case the scroll didn't work
-        advanced_settings_view.scroll(elems[-1], elems[0])
+        # one retry in case the long_press_scroll didn't work
+        advanced_settings_view.long_press_scroll(elems[-1], elems[0])
     use_ota_text = advanced_settings_view.find_named_element('UseTestOtaServerText')
     text_ycenter = use_ota_text.location['y'] + (use_ota_text.size['height'] / 2)
     checkboxes = advanced_settings_view.find_named_elements('AdvancedCheckbox')

@@ -9,7 +9,6 @@ from selenium.common.exceptions import WebDriverException
 
 import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
-from ePhone7.utils.spud_serial import SpudSerial
 from lib.android import MockDriver
 from lib.android import expand_zpath
 from lib.selenium_actions import SeleniumActions
@@ -65,9 +64,12 @@ class BaseView(SeleniumActions):
         SeleniumActions.driver.hide_keyboard()
 
     @Trace(log)
-    def scroll(self, origin_el, destination_el):
-        # SeleniumActions.driver.scroll(origin_el, destination_el)
+    def long_press_scroll(self, origin_el, destination_el):
         TouchAction(self.driver).long_press(origin_el).move_to(destination_el).release().perform()
+
+    @Trace(log)
+    def short_press_scroll(self, origin_el, destination_el):
+        TouchAction(self.driver).press(origin_el).move_to(destination_el).release().perform()
 
     @Trace(log)
     def swipe(self, origin_x, origin_y, destination_x, destination_y, duration):
@@ -221,7 +223,7 @@ class BaseView(SeleniumActions):
                         # get rid of the release notes screen if present
                         self.send_keycode('KEYCODE_BACK')
                         break
-                    sleep(10)
+                    sleep(2)
                     retrying_main = True
                 elif current_activity == '.util.crashreporting.EPhoneCrashReportDialog':
                     if tried_crash_ok:

@@ -25,6 +25,7 @@ class PrefsView(BaseView):
         "AutoAnswerSwitch": {"by": "id", "value": "com.esi_estech.ditto:id/settings_list_auto_answer_switch"},
         "CallForwardingOptions": {"by": "zpath", "value": "//el/ll[3]/tv", "text": "Call Forwarding Options"},
         "CloseButton": {"by": "id", "value": "com.esi_estech.ditto:id/close_button"},
+        "Collapse": {"by": "id", "value": "com.esi_estech.ditto:id/group_indicator_text", "text": "Collapse"},
         "DisplayBrightness": {"by": "zpath", "value": "//lv/ll[8]/tv", "text": "Display Brightness"},
         "DisplaySleepTimer": {"by": "zpath", "value": "//lv/ll[9]/tv", "text": "Display Sleep Timer"},
         "eHelp": {"by": "zpath", "value": "//lv/ll[4]/tv", "text": "eHelp"},

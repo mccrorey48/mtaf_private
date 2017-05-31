@@ -39,10 +39,10 @@ class AdvancedSettingsView(BaseView):
         elems = self.find_named_elements('AdvancedItems')
         if len(elems) == 0:
             raise Ux('No "AvancedItems" elements found')
-        self.scroll(elems[-1], elems[0])
+        self.long_press_scroll(elems[-1], elems[0])
         if not self.element_is_present('TestOtaServerUrlText'):
-            # one retry in case the scroll didn't work
-            self.scroll(elems[-1], elems[0])
+            # one retry in case the long_press_scroll didn't work
+            self.long_press_scroll(elems[-1], elems[0])
         use_ota_text = self.find_named_element('UseTestOtaServerText')
         text_ycenter = use_ota_text.location['y'] + (use_ota_text.size['height'] / 2)
         checkboxes = self.find_named_elements('AdvancedCheckbox')

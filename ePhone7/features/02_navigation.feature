@@ -6,9 +6,8 @@ Feature: As a user I want to navigate to different views using the touch screen
     Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
 
   Scenario: I go to the Contacts view
-    Given [user] I touch the "Contacts" button
-    Then  [contacts] the Contacts view appears
-    And   [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
+    Given [user] I touch the "Contacts" button and the Contacts view appears
+    Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
 
   Scenario: I go to the History view
     Given [user] I touch the History button

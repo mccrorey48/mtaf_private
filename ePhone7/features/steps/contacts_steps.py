@@ -1,5 +1,6 @@
 from behave import *
 from ePhone7.views import *
+from ePhone7.config.configure import cfg
 
 
 @step("[contacts] a check mark appears in the box")
@@ -104,7 +105,8 @@ def contacts__i_touch_the_add_button(context):
 
 @step("[contacts] I touch the Coworkers tab")
 def contacts__i_touch_the_coworkers_tab(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        contacts_view.goto_tab('Coworkers')
 
 
 @step("[contacts] I touch the Create button")
@@ -195,7 +197,11 @@ def contacts__my_coworker_contacts_are_each_listed_with_a_handset_icon(context):
 
 @step("[contacts] my Coworker contacts are shown on the display")
 def contacts__my_coworker_contacts_are_shown_on_the_display(context):
-    pass
+    if 'fake' not in str(context._config.tags).split(','):
+        contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
+        numbers = contacts_view.get_all_group_contacts(contacts_group)
+        assert set(numbers) == set(contacts_group), "expected %s, got %s" % (contacts_group, numbers)
+
 
 
 @step("[contacts] my Favorite contacts are shown on the display")
@@ -299,3 +305,9 @@ def contacts__the_star_turns_yellow(context):
     pass
 
 
+@when("[contacts] I touch the star icons so Favorites are yellow and others are white")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass

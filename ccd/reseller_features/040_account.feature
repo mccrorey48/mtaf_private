@@ -6,7 +6,6 @@ Feature: Reseller Account Management
     When I select a domain from the table
     Then the selected domain home page will load
 
-  @wip
   Scenario: Create an always timeframe
     When I go to the timeframes page
     And there are no timeframes listed in the table

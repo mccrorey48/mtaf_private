@@ -200,6 +200,13 @@ def prefs__the_installed_versions_are_displayed_correctly(context):
 def prefs__the_preferences_window_appears(context):
     if 'fake' not in str(context._config.tags).split(','):
         assert prefs_view.element_is_present('Preferences')
+        for i in range(5):
+            elems = prefs_view.find_named_elements('Collapse')
+            if len(elems) == 0:
+                break
+            elems[0].click()
+        else:
+            raise Ux("Failed to collapse expanded Preferences menu categories")
 
 
 @step("[prefs] the Preferences window disappears")

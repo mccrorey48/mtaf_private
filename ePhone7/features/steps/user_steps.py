@@ -31,10 +31,10 @@ def user__i_touch_a_contact_element(context):
     pass
 
 
-@step('[user] I touch the "Contacts" button')
+@step('[user] I touch the "Contacts" button and the Contacts view appears')
 def user__i_touch_the_contacts_button(context):
     if 'fake' not in str(context._config.tags).split(','):
-        user_view.click_named_element('Contacts')
+        user_view.goto_tab('Contacts')
 
 
 @step("[user] I touch the Dial button")
