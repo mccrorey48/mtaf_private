@@ -929,6 +929,8 @@ def the_ephone7_and_softphone_simultaneously_receive_a_call(context):
     if 'fake' not in str(context._config.tags).split(','):
         try:
             # use DefaultSoftphoneUser to call the ePhone7
+            # wait a second to make sure the system knows it is online
+            sleep(1)
             context.caller_name, src_cfg = user_view.receive_call(wait_for_status='call', wait_timeout=10)
         except Ux as e:
             context.call_answered = False
