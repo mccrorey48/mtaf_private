@@ -41,7 +41,7 @@ def contacts__add_and_delete_buttons_are_visible(context):
 
 @step('[contacts] An "Add Multiple Favorites" confirmation dialog appears')
 def contacts__an_add_multiple_favorites_confirmation_dialog_appears(context):
-    pass
+    contacts_view.see_multi_edit_dialog()
 
 
 @step("[contacts] Any existing Favorite contacts have a yellow start icon")
@@ -77,7 +77,7 @@ def contacts__i_go_to_the_personal_tab(context):
 
 @step("[contacts] I long-press a contact list item")
 def contacts__i_longpress_a_contact_list_item(context):
-    pass
+    contacts_view.long_press_first_contact()
 
 
 @step("[contacts] I see the Personal, Coworkers, Favorites and Groups tabs")
@@ -94,9 +94,10 @@ def contacts__i_touch_a_check_a_box_next_to_a_contact(context):
     pass
 
 
-@step('[contacts] I touch "OK"')
-def contacts__i_touch_ok(context):
-    pass
+@step('[contacts] I touch "OK" on the "Add Multiple Favorites" confirmation dialog')
+@fake
+def contacts__i_touch_ok_on_the_add_multiple_favorites_confirmation_dialog(context):
+    contacts_view.confirm_multi_edit()
 
 
 @step("[contacts] I touch the Add button")
@@ -131,8 +132,9 @@ def contacts__i_touch_the_favorites_star_icon_on_some_contacts(context):
 
 
 @step("[contacts] I touch the Favorites tab")
+@fake
 def contacts__i_touch_the_favorites_tab(context):
-    pass
+    contacts_view.goto_tab('Favorites')
 
 
 @step("[contacts] I touch the Groups tab")
@@ -176,9 +178,16 @@ def contacts__i_touch_the_sign_in_with_google_banner(context):
     contacts_view.click_named_element('GoogleSignInBanner')
 
 
+@when("[contacts] I touch the star icons so all are white")
+@fake
+def contacts__i_touch_the_star_icons_so_all_are_white(context):
+    contacts_view.clear_all_favorites()
+
+
 @step("[contacts] I touch the star icons so Favorites are yellow and others are white")
+@fake
 def contacts__i_touch_the_star_icons_so_favorites_are_yellow_and_others_are_white(context):
-    pass
+    contacts_view.set_all_favorites()
 
 
 @step("[contacts] I touch the white star icon")
@@ -196,9 +205,39 @@ def contacts__my_coworker_contacts_are_displayed_in_a_list_with_checkboxes(conte
     pass
 
 
-@step("[contacts] my Coworker contacts are each listed with a handset icon")
-def contacts__my_coworker_contacts_are_each_listed_with_a_handset_icon(context):
-    pass
+@step("[contacts] my Coworker contacts are each shown with a Favorites star icon")
+@fake
+def contacts__my_coworker_contacts_are_each_shown_with_a_favorites_star_icon(context):
+    # limit inspection to first 8 contacts because #9, if it exists, will be partly obscured
+    contacts_view.scroll_to_top_of_list()
+    names = contacts_view.find_named_elements('ContactName')[:8]
+    stars = contacts_view.find_named_elements('MultiEditFavoritesIndicator')[:8]
+    assert len(names) == len(stars), "Expected contact name count (%d) to equal star icon count (%d)" \
+                                     % (len(names), len(stars))
+    base_view.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+    for i in range(len(names)):
+        color = base_view.get_element_color_and_count('multi_edit', stars[i])
+        fail_msg = "No favorites icon found for contact name %s" % names[i].text
+        assert (base_view.color_match(color, cfg.colors['ContactsView']['favorite_on_color'])
+                or base_view.color_match(color, cfg.colors['ContactsView']['favorite_off_color'])), fail_msg
+
+
+@step("[contacts] my Coworker contacts are each shown with a handset icon")
+@fake
+def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
+    # limit inspection to first 8 contacts because #9, if it exists, will be partly obscured
+    contacts_view.scroll_to_top_of_list()
+    names = contacts_view.find_named_elements('ContactName')[:8]
+    stars = contacts_view.find_named_elements('MultiEditFavoritesIndicator')[:8]
+    assert len(names) == len(stars), "Expected contact name count (%d) to equal star icon count (%d)" \
+                                     % (len(names), len(stars))
+    base_view.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+    for i in range(len(names)):
+        color = base_view.get_element_color_and_count('multi_edit', stars[i])
+        fail_msg = "No handset icon found for contact name %s" % names[i].text
+        assert (base_view.color_match(color, cfg.colors['ContactsView']['handset_online_color'])
+                or base_view.color_match(color, cfg.colors['ContactsView']['handset_offline_color'])
+                or base_view.color_match(color, cfg.colors['ContactsView']['handset_unavailable_color'])), fail_msg
 
 
 @step("[contacts] my Coworker contacts are shown on the display")
@@ -210,8 +249,11 @@ def contacts__my_coworker_contacts_are_shown_on_the_display(context):
 
 
 @step("[contacts] my Favorite contacts are shown on the display")
+@fake
 def contacts__my_favorite_contacts_are_shown_on_the_display(context):
-    pass
+    contacts_group = cfg.site['Users']['R2d2User']['FavoriteContacts']
+    numbers = contacts_view.get_all_group_contacts(contacts_group)
+    assert set(numbers) == set(contacts_group), "expected %s, got %s" % (contacts_group, numbers)
 
 
 @step("[contacts] my Google contacts are shown on the display")
@@ -244,6 +286,14 @@ def contacts__my_updated_favorite_contacts_are_shown_on_the_display(context):
     pass
 
 
+@then("[contacts] no Coworker contacts are shown on the favorites display")
+@fake
+def contacts__no_coworker_contacts_are_shown_on_the_favorites_display(context):
+    contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
+    contacts = contacts_view.get_all_group_contacts(contacts_group)
+    assert len(contacts) == 0, "Expected no coworker contacts on the Favorites list, got %s" % contacts
+
+
 @step("[contacts] the color toggles between yellow and white")
 def contacts__the_color_toggles_between_yellow_and_white(context):
     pass
@@ -271,11 +321,6 @@ def contacts__the_contact_is_shown_on_the_display(context):
 
 @step("[contacts] the contact list for the group is displayed")
 def contacts__the_contact_list_for_the_group_is_displayed(context):
-    pass
-
-
-@step("[contacts] the contacts are shown with a Favorites star icon next to each one")
-def contacts__the_contacts_are_shown_with_a_favorites_star_icon_next_to_each_one(context):
     pass
 
 

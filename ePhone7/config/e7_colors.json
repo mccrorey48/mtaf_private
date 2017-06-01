@@ -37,13 +37,13 @@
                 255,
                 255,
                 255,
-                375
+                297
             ],
             "favorite_on_color": [
                 255,
                 203,
                 5,
-                372
+                294
             ],
             "handset_offline_color": [
                 86,
@@ -56,6 +56,12 @@
                 187,
                 110,
                 253
+            ],
+            "handset_unavailable_color": [
+                216,
+                82,
+                81,
+                251
             ],
             "inactive_color": [
                 34,

@@ -20,7 +20,7 @@ Feature: As a user I want to use and manage my contact lists
 
   Scenario: I want to call a contact from my Coworkers list
     Given [contacts] I touch the Coworkers tab
-    Then  [contacts] my Coworker contacts are each listed with a handset icon
+    Then  [contacts] my Coworker contacts are each shown with a handset icon
     When  [contacts] I touch the handset icon
     Then  [contacts] my phone calls the contact
 
@@ -49,14 +49,14 @@ Feature: As a user I want to use and manage my contact lists
     Then  [contacts] my Coworker contacts are shown on the display
     When  [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
-    When  [contacts] I touch "OK"
-    Then  [contacts] the contacts are shown with a Favorites star icon next to each one
+    When  [contacts] I touch "OK" on the "Add Multiple Favorites" confirmation dialog
+    Then  [contacts] my Coworker contacts are each shown with a Favorites star icon
     And   [contacts] Any existing Favorite contacts have a yellow start icon
     And   [contacts] Any other contacts have a white start icon
     When  [contacts] I touch the Favorites star icon on some contacts
     Then  [contacts] the color toggles between yellow and white
     When  [contacts] I long-press a contact list item
-    Then  [contacts] my Coworker contacts are each listed with a handset icon
+    Then  [contacts] my Coworker contacts are each shown with a handset icon
     When  [contacts] I touch the Favorites tab
     Then  [contacts] my updated Favorite contacts are shown on the display
 
@@ -65,8 +65,8 @@ Feature: As a user I want to use and manage my contact lists
     Then  [contacts] my Personal contacts are shown on the display
     When  [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
-    When  [contacts] I touch "OK"
-    Then  [contacts] the contacts are shown with a Favorites star icon next to each one
+    When  [contacts] I touch "OK" on the "Add Multiple Favorites" confirmation dialog
+    Then  [contacts] my Coworker contacts are each shown with a Favorites star icon
     And   [contacts] Any existing Favorite contacts have a yellow start icon
     And   [contacts] Any other contacts have a white start icon
     When  [contacts] I touch the Favorites star icon on some contacts

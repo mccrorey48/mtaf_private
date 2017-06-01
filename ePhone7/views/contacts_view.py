@@ -14,6 +14,8 @@ log = logging.get_logger('esi.contacts_view')
 class ContactsView(UserView):
 
     locators = {
+        "AddMultipleFavorites": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "Add Multiple Favorites"},
+        "ConfirmButton": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
         "ContactCallIcon": {"by": "id", "value": "com.esi_estech.ditto:id/call_button"},
         "ContactClose": {"by": "id", "value": "com.esi_estech.ditto:id/bottom_sheet_title_clear_button"},
         "ContactName": {"by": "id", "value": "com.esi_estech.ditto:id/text1"},
@@ -25,6 +27,7 @@ class ContactsView(UserView):
         "FavoriteIndicator": {"by": "id", "value": "com.esi_estech.ditto:id/favorite_indicator"},
         "FirstContactName": {"by": "zpath", "value": "//rv/fl[1]/rl/ll/tv"},
         "Groups": {"by": "id", "value": "com.esi_estech.ditto:id/contact_groups", "text": "Groups"},
+        "MultiEditFavoritesIndicator": {"by": "id", "value": "com.esi_estech.ditto:id/call_button"},
         "Personal": {"by": "id", "value": "com.esi_estech.ditto:id/all_contacts", "text": "Personal"},
         "ScrollHandle": {"by": "id", "value": "com.esi_estech.ditto:id/scroll_handle"},
         "Tab": {"by": "zpath", "value": "//th/rl/fl/ll/ll"}
@@ -93,7 +96,7 @@ class ContactsView(UserView):
         numbers = []
         while True:
             self.wait_for_no_duplicate_numbers()
-            # if the contact_number is on the display, break the while loop and don't long_press_scroll anymore
+            # if the contact_number is on the display, break the while loop and don't scroll anymore
             if contact_number in self.displayed_numbers:
                 break
             # otherwise add to the list of numbers already seen
@@ -143,7 +146,7 @@ class ContactsView(UserView):
         self.scroll_to_top_of_list()
         prev_numbers_len = 0
         numbers = []
-        # get all contacts shown, then long_press_scroll up and repeat
+        # get all contacts shown, then scroll up and repeat
         # until scrolling fails to show contacts not already in the list
         while True:
             self.wait_for_no_duplicate_numbers()
@@ -157,6 +160,72 @@ class ContactsView(UserView):
             self.swipe_up()
         log.debug("%d elements found" % len(numbers))
         return numbers
+
+    @Trace(log)
+    def clear_all_favorites(self):
+        # when in multi-edit mode, scroll to the top of the list;
+        # clear favorites icon for all contacts shown, then scroll up and repeat
+        # until scrolling fails to show contacts not already in the list
+        self.scroll_to_top_of_list()
+        prev_numbers_len = 0
+        numbers = []
+        while True:
+            self.wait_for_no_duplicate_numbers()
+            for number in self.displayed_numbers:
+                if number not in numbers:
+                    log.debug('adding %s to contact number list' % number)
+                    numbers.append(number)
+            if len(numbers) == prev_numbers_len:
+                break
+            self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+            stars = self.find_named_elements("MultiEditFavoritesIndicator")
+            for elem in stars:
+                color = self.get_element_color_and_count('multi_edit', elem)
+                if self.color_match(color, cfg.colors['ContactsView']['favorite_on_color']):
+                    elem.click()
+                    self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+                    color = self.get_element_color_and_count('multi_edit', elem)
+                    if not self.color_match(color, cfg.colors['ContactsView']['favorite_off_color']):
+                        raise Ux("Expected color %s to equal %s" % (color, cfg.colors['ContactsView']['favorite_off_color']))
+            prev_numbers_len = len(numbers)
+            self.swipe_up()
+        log.debug("%d elements found" % len(numbers))
+
+    @Trace(log)
+    def set_all_favorites(self):
+        # when in multi-edit mode, scroll to the top of the list;
+        # set favorites icon for all contacts shown that are in the user's favorites list,
+        # then while not all favorites have been set, scroll up and repeat until all or set,
+        # or until scrolling fails to show contacts not already in the list (which raises an exception)
+        self.scroll_to_top_of_list()
+        prev_numbers_len = 0
+        numbers = []
+        favorites = cfg.site['Users']['R2d2User']['FavoriteContacts']
+        while len(favorites):
+            self.wait_for_no_duplicate_numbers()
+            for number in self.displayed_numbers:
+                if number not in numbers:
+                    log.debug('adding %s to contact number list' % number)
+                    numbers.append(number)
+            if len(numbers) == prev_numbers_len:
+                raise Ux("Contacts %s from favorites list not found in Coworker Contacts" % favorites)
+            self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+            stars = self.find_named_elements("MultiEditFavoritesIndicator")
+            for i in range(len(stars)):
+                if i == len(self.displayed_numbers):
+                    break
+                if self.displayed_numbers[i] in favorites:
+                    favorites.remove(self.displayed_numbers[i])
+                    color = self.get_element_color_and_count('multi_edit', stars[i])
+                    if self.color_match(color, cfg.colors['ContactsView']['favorite_off_color']):
+                        stars[i].click()
+                        self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+                        color = self.get_element_color_and_count('multi_edit', stars[i])
+                        if not self.color_match(color, cfg.colors['ContactsView']['favorite_on_color']):
+                            raise Ux("Expected color %s to equal %s" % (color, cfg.colors['ContactsView']['favorite_off_color']))
+            prev_numbers_len = len(numbers)
+            self.swipe_up()
+        log.debug("%d elements found" % len(numbers))
 
     @Trace(log)
     def scroll_to_top_of_list(self):
@@ -188,7 +257,7 @@ class ContactsView(UserView):
         self.assertEqual(set(numbers), set(contacts_group), err_msg)
 
     @Trace(log)
-    def clear_favorites(self):
+    def clear_favorites_from_favorites_list(self):
         while True:
             elems = self.find_named_elements('ContactParent')
             if len(elems) == 0:
@@ -226,5 +295,30 @@ class ContactsView(UserView):
                 self.click_element(icon)
             self.click_named_element('ContactClose')
 
+    @Trace(log)
+    def toggle_multi_edit(self):
+        elems = self.find_named_elements("ContactName")
+        if len(elems) == 0:
+            raise Ux("No contact name elements found, cannot toggle multi-edit")
+        self.long_press(elems[0])
+        # if turning on multi-edit, there will be a dialog with Cancel and OK buttons
+        if self.element_is_present("AddMultipleFavorites", timeout=5):
+            self.click_named_element("ConfirmButton")
+
+    @Trace(log)
+    def long_press_first_contact(self):
+        elems = self.find_named_elements("ContactName")
+        if len(elems) == 0:
+            raise Ux("No contact name elements found, cannot toggle multi-edit")
+        self.long_press(elems[0])
+
+    @Trace(log)
+    def see_multi_edit_dialog(self):
+        if not self.element_is_present("AddMultipleFavorites", timeout=5):
+            raise Ux("Add Multiple Favorites dialog not present")
+
+    @Trace(log)
+    def confirm_multi_edit(self):
+        self.click_named_element("ConfirmButton")
 
 contacts_view = ContactsView()

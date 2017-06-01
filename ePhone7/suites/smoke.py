@@ -145,7 +145,7 @@ class SmokeTests(unittest.TestCase):
         # user_view.wait_for_view()
         user_view.goto_tab('Contacts')
         contacts_view.goto_tab('Favorites')
-        contacts_view.clear_favorites()
+        contacts_view.clear_favorites_from_favorites_list()
 
     @unittest.skipIf(debug, 'debug')
     @TestCase(log, except_cb=except_screenshot)

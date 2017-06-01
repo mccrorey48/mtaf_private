@@ -45,6 +45,7 @@ commands.append(Command("Get Production Current Versions", "get_prod_current_ver
 commands.append(Command("Remove APK Upgrades", "remove_apk_upgrades", require_appium=False))
 commands.append(Command("Get All Coworker Contacts", "get_all_coworker_contacts", require_appium=True))
 commands.append(Command("Dial *1987", "dial_star_1987", require_appium=True))
+commands.append(Command("Toggle Multi-Edit", "toggle_multi_edit", require_appium=True))
 
 
 class ScrolledLogwin(Text):
@@ -105,7 +106,9 @@ class TestGui(Frame):
         Frame.__init__(self, parent, bg="tan")
         self.btn_frame = Frame(self, bg="cyan")
         row = None
-        for row, cmd in enumerate(commands):
+        nrows = int(round(float(len(commands))/2))
+        for row in range(nrows):
+            cmd = commands[row * 2]
             btn = Button(self.btn_frame, text=cmd.text, command=lambda name=cmd.name: self.do_cmd(name), state=DISABLED)
             if cmd.require_appium:
                 self.appium_btns.append(btn)
@@ -113,6 +116,15 @@ class TestGui(Frame):
                 self.noappium_btns.append(btn)
             # print "button %s at row %s" % (cmd.text, row)
             btn.grid(row=row, column=0, sticky='w', padx=2, pady=2)
+            if len(commands) > (row * 2) + 1:
+                cmd = commands[(row * 2) + 1]
+                btn = Button(self.btn_frame, text=cmd.text, command=lambda name=cmd.name: self.do_cmd(name), state=DISABLED)
+                if cmd.require_appium:
+                    self.appium_btns.append(btn)
+                else:
+                    self.noappium_btns.append(btn)
+                # print "button %s at row %s" % (cmd.text, row)
+                btn.grid(row=row, column=0, sticky='e', padx=2, pady=2)
         self.find_frame = Frame(self.btn_frame, bg='brown')
         btn = Button(self.find_frame, text="find elements:", command=self.find_elements, state=DISABLED)
         self.appium_btns.append(btn)
@@ -135,10 +147,13 @@ class TestGui(Frame):
         btn = Button(self.attr_frame, text="get element attributes:", command=self.get_elem_attrs, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=0, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="get element color:", command=self.get_elem_color, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=1, padx=2, pady=2)
         self.elem_index = StringVar()
         self.elem_index.set('')
         self.attr_frame.index = Combobox(self.attr_frame, width=6, values=[], textvariable=self.elem_index)
-        self.attr_frame.index.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
+        self.attr_frame.index.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
         row += 1
         self.attr_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
 
@@ -189,7 +204,29 @@ class TestGui(Frame):
             return
         index = int(text_index)
         elem = self.elems[index]
-        print 'text: "%s", location: %s, size: %s' % (elem.text, elem.location, elem.size)
+        text = elem.text
+        loc = elem.location
+        size = elem.size
+        x1 = int(loc['x'])
+        y1 = int(loc['y'])
+        w = int(size['width'])
+        h = int(size['height'])
+        x2 = x1 + w
+        y2 = y1 + h
+        print 'text: "%s", ul: (%d, %d), lr: (%d, %d), width: %d, height: %d' % (text, x1, y1, x2, y2, w, h)
+
+    def get_elem_color(self):
+        text_index = self.elem_index.get()
+        if text_index == '':
+            return
+        index = int(text_index)
+        elem = self.elems[index]
+        base_view.get_screenshot_as_png('appium_gui', cfg.test_screenshot_folder)
+        color = base_view.get_element_color_and_count('appium_gui', elem)
+        print "color and count: %s" % color
+        for color_name in ['favorite_on_color', 'favorite_off_color']:
+            if base_view.color_match(color, cfg.colors['ContactsView'][color_name]):
+                print color_name
 
     def open_appium(self, max_attempts=10, retry_seconds=5):
         attempts = 0
@@ -323,6 +360,9 @@ class TestGui(Frame):
                 print "dialing *1987"
                 dial_view.dial_star_1987()
                 dial_view.touch_call_button()
+            elif name == 'toggle_multi_edit':
+                print "Toggling Multi-Edit"
+                contacts_view.toggle_multi_edit()
             else:
                 raise Ux('command %s not defined' % name)
             if self.appium_is_open:
