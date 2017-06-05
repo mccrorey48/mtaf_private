@@ -6,6 +6,7 @@ from user_steps import *
 from dial_steps import *
 from history_steps import *
 from advanced_steps import *
+from voicemail_steps import *
 
 
 @then('[background] A submenu appears with a "Network" option')
@@ -74,6 +75,12 @@ def background__i_see_the_network_settings_view(context):
     network__i_see_the_network_settings_view(context)
 
 
+@then("[background] I see the Personal, Coworkers, Favorites and Groups tabs")
+@fake
+def background__i_see_the_personal_coworkers_favorites_and_groups_tabs(context):
+    user__i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bottom_of_the_screen(context)
+
+
 @step('[background] I touch "Save and Reboot"')
 @fake
 def background__i_touch_save_and_reboot(context):
@@ -84,6 +91,12 @@ def background__i_touch_save_and_reboot(context):
 @fake
 def background__i_touch_the_call_button(context):
     dial__i_touch_the_call_button(context)
+
+
+@when('[background] I touch the "Contacts" button and the Contacts view appears')
+@fake
+def background__i_touch_the_contacts_button_and_the_contacts_view_appears(context):
+    user__i_touch_the_contacts_button_and_the_contacts_view_appears(context)
 
 
 @when("[background] I touch the Dial button")
@@ -164,3 +177,49 @@ def background__the_reboot_alert_window_appears(context):
     network__the_reboot_alert_window_appears(context)
 
 
+@then("[background] I see the keypad")
+@fake
+def step_impl(context):
+    dial__i_see_the_keypad(context)
+
+
+@step("[background] I have at least one saved voicemail")
+@fake
+def step_impl(context):
+    i_have_at_least_one_saved_voicemail(context)
+
+
+@step("[background] I have at least one new voicemail")
+@fake
+def step_impl(context):
+    i_have_at_least_one_new_voicemail(context)
+
+
+@when("[background] I touch the Voicemail button")
+@fake
+def step_impl(context):
+    user__i_touch_the_voicemail_button(context)
+
+
+@then("[background] I see the New, Saved and Trash tabs at the top of the screen")
+@fake
+def step_impl(context):
+    voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(context)
+
+
+@when("[background] I touch the New tab")
+@fake
+def step_impl(context):
+    voicemail__i_touch_the_new_tab(context)
+
+
+@step("[background] I receive a new voicemail")
+@fake
+def step_impl(context):
+    i_receive_a_new_voicemail(context)
+
+
+@then("[background] the new voicemail is the first item listed")
+@fake
+def step_impl(context):
+    voicemail__the_new_voicemail_is_the_first_item_listed(context)

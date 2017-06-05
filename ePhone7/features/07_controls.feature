@@ -2,8 +2,8 @@
 Feature: As a user, I should be able to change the settings on my ePhone7 using control buttons on the display
 
   Background: I am logged in and at the Home view
-    Given I am logged in to the ePhone7
-    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    Given [background] I am logged in to the ePhone7
+    Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
 
   Scenario: I want to activate Do Not Disturb
     Given [user] the Do Not Disturb icon is blue

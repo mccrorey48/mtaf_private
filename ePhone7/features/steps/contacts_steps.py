@@ -94,6 +94,12 @@ def contacts__i_touch_a_check_a_box_next_to_a_contact(context):
     pass
 
 
+@step("[contacts] I touch a handset icon")
+def contacts__i_touch_a_handset_icon(context):
+    user_id = cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]['UserId']
+    context.call_buttons[user_id].click()
+
+
 @step('[contacts] I touch "OK" on the "Add Multiple Favorites" confirmation dialog')
 @fake
 def contacts__i_touch_ok_on_the_add_multiple_favorites_confirmation_dialog(context):
@@ -140,12 +146,6 @@ def contacts__i_touch_the_favorites_tab(context):
 @step("[contacts] I touch the Groups tab")
 def contacts__i_touch_the_groups_tab(context):
     pass
-
-
-@step("[contacts] I touch a handset icon")
-def contacts__i_touch_a_handset_icon(context):
-    user_id = cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]['UserId']
-    context.call_buttons[user_id].click()
 
 
 @step("[contacts] I touch the name of a contact")

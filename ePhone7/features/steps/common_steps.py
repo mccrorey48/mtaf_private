@@ -1042,6 +1042,7 @@ def the_package_com_android_wallpaper_livepicker_is_not_listed(context):
     """
     pass
 
+
 @step("the popup disappears")
 def the_popup_disappears(context):
     pass
