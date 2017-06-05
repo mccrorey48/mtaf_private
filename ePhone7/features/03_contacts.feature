@@ -18,10 +18,13 @@ Feature: As a user I want to use and manage my contact lists
     Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are shown on the display
 
+  @regression
   Scenario: I want to call a contact from my Coworkers list
     Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are each shown with a handset icon
-    When  [contacts] I touch a handset icon
+#    And   [contacts] the contact I want to call has a green handset icon
+    And   [contacts] the contact I want to call is online
+    When  [contacts] I touch the handset icon next to the contact I want to call
     Then  [contacts] my phone calls the contact
 
   Scenario: I want to see my Favorites list
@@ -31,7 +34,9 @@ Feature: As a user I want to use and manage my contact lists
   Scenario: I want to call a contact from my Favorites list
     Given [contacts] I touch the Favorites tab
     Then  [contacts] my Favorite contacts are shown on the display
-    When  [contacts] I touch a handset icon
+#    And   [contacts] the contact I want to call has a green handset icon
+    And   [contacts] the contact I want to call is online
+    When  [contacts] I touch the handset icon next to the contact I want to call
     Then  [contacts] my phone calls the contact
 
   Scenario: I want to add a contact to my Favorites list

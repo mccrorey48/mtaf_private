@@ -49,19 +49,31 @@
                 86,
                 86,
                 86,
-                253
+                211
             ],
             "handset_online_color": [
                 79,
                 187,
                 110,
-                253
+                212
             ],
             "handset_unavailable_color": [
                 216,
                 82,
                 81,
-                251
+                210
+            ],
+            "handset_dnd_color": [
+                216,
+                82,
+                81,
+                284
+            ],
+            "handset_empty_color": [
+                89,
+                95,
+                106,
+                91
             ],
             "inactive_color": [
                 34,

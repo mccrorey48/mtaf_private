@@ -6,7 +6,6 @@ from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.user_view import UserView
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
-from ePhone7.views.active_call_view import active_call_view
 
 log = logging.get_logger('esi.contacts_view')
 
@@ -45,8 +44,16 @@ class ContactsView(UserView):
         softphone = get_softphone()
         softphone.account_info.incoming_response = 200
         icon = self.find_named_sub_element(list_element, 'ContactCallIcon')
+        self.wait_for_green_handset_icon(icon)
+        self.click_element(icon)
+        softphone.wait_for_call_status('call', 20)
+        sleep(10)
+        self.end_call()
+        softphone.wait_for_call_status('idle', 20)
+
+    def wait_for_green_handset_icon(self, icon):
         # wait for handset picture to turn green
-        timeout = 20
+        timeout = 120
         start_time = time()
         current_time = start_time
         current_color = None
@@ -58,13 +65,8 @@ class ContactsView(UserView):
                 break
             current_time = time()
         else:
-            log.warn('handset icon color is not green (%s) within %s seconds, current color is %s' %
-                         (desired_color, timeout, current_color))
-        self.click_element(icon)
-        softphone.wait_for_call_status('call', 20)
-        sleep(10)
-        self.end_call()
-        softphone.wait_for_call_status('idle', 20)
+            raise Ux('handset icon color is not green (%s) within %s seconds, current color is %s' %
+                     (desired_color, timeout, current_color))
 
     @Trace(log)
     def no_duplicate_numbers(self):
@@ -320,5 +322,9 @@ class ContactsView(UserView):
     @Trace(log)
     def confirm_multi_edit(self):
         self.click_named_element("ConfirmButton")
+
+    @Trace(log)
+    def find_handset_sub_element(self, list_element):
+        return self.find_named_sub_element(list_element, 'ContactCallIcon')
 
 contacts_view = ContactsView()

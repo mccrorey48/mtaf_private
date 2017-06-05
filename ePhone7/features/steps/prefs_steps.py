@@ -185,6 +185,7 @@ def prefs__the_email_notification_popup_disappears(context):
 
 
 @step("[prefs] the installed versions are displayed correctly")
+@fake
 def prefs__the_installed_versions_are_displayed_correctly(context):
     installed_aosp, installed_app = get_installed_versions()
     assert context.aosp_version == installed_aosp, "Expected displayed aosp version %s, got %s" % (installed_aosp, context.aosp_version)
