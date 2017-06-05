@@ -60,6 +60,17 @@ class BaseView(SeleniumActions):
         SeleniumActions.driver.keyevent(keycodes[keycode])
 
     @Trace(log)
+    def send_keycode_back(self):
+        self.send_keycode('KEYCODE_BACK')
+
+    @Trace(log)
+    def send_keycode_number(self, number):
+        if 0 <= number <= 9:
+            self.send_keycode('KEYCODE_%d', number)
+        else:
+            raise Ux("%s is not a valid keycode number" % repr(number))
+
+    @Trace(log)
     def hide_keyboard(self):
         SeleniumActions.driver.hide_keyboard()
 
@@ -231,7 +242,7 @@ class BaseView(SeleniumActions):
                 if current_activity == '.activities.MainViewActivity':
                     if retrying_main:
                         # get rid of the release notes screen if present
-                        self.send_keycode('KEYCODE_BACK')
+                        self.send_keycode_back()
                         break
                     sleep(2)
                     retrying_main = True
@@ -277,7 +288,7 @@ class BaseView(SeleniumActions):
                 elif current_activity == '.OtaAppActivity':
                     if tried_ota:
                         raise Ux("got activity .OtaAppActivity twice")
-                    self.send_keycode('KEYCODE_BACK')
+                    self.send_keycode_back()
                     tried_ota = True
                 elif current_activity == '.util.AppIntroActivity':
                     if tried_intro:

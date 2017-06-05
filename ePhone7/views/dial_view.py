@@ -56,6 +56,23 @@ class DialView(UserView):
         "#": "NumKeyPound"
     }
 
+    digit_corners = {
+        '1': [120, 395, 143, 444],
+        '2': [289, 396, 312, 445],
+        '3': [458, 396, 481, 445],
+        '4': [120, 495, 143, 544],
+        '5': [289, 495, 312, 544],
+        '6': [458, 495, 481, 544],
+        '7': [120, 594, 143, 643],
+        '8': [289, 594, 312, 643],
+        '9': [458, 594, 481, 643],
+        '*': [122, 700, 140, 749],
+        '0': [289, 692, 312, 741],
+        '#': [456, 700, 482, 749]
+    }
+
+    digit_centers = {t[0]: [(t[1][0]+t[1][2])/2, (t[1][1]+t[1][3])/2] for t in [(key, digit_corners[key]) for key in digit_corners.keys()]}
+
     numbers = {
         "Current OTA Server": "*682#",
         "Production OTA Server": "*7763#",
@@ -69,9 +86,25 @@ class DialView(UserView):
         self.png_file_base = 'keypad'
 
     @Trace(log)
-    def goto_advanced_settings(self):
+    def dial_advanced_settings(self):
         self.dial_named_number("Advanced Settings")
+
+    @Trace(log)
+    def dial_show_ota_server(self):
+        self.dial_named_number("Current OTA Server")
         self.touch_dial_button()
+
+    @Trace(log)
+    def dial_set_alpha_ota_server(self):
+        self.dial_named_number("Alpha OTA Server")
+
+    @Trace(log)
+    def dial_set_beta_ota_server(self):
+        self.dial_named_number("Beta OTA Server")
+
+    @Trace(log)
+    def dial_set_production_ota_server(self):
+        self.dial_named_number("Production OTA Server")
 
     @Trace(log)
     def make_call_to_softphone(self):
@@ -91,34 +124,15 @@ class DialView(UserView):
 
     @Trace(log)
     def dial_number(self, number):
-        displayed = self.find_named_element('Digits').text
-        displayed_len = len(displayed)
+        # displayed = self.find_named_element('Digits').text
+        # displayed_len = len(displayed)
         for digit in number:
-            retries = 1
-            self.click_named_element(self.digit_names[digit])
-            displayed = self.find_named_element('Digits').text
-            while len(displayed) < displayed_len + 1:
-                if retries == 0:
-                    raise Ux("New dialed digit %s not displayed" % digit)
-                # try again
-                self.click_named_element(self.digit_names[digit])
-                retries -= 1
-                displayed = self.find_named_element('Digits').text
-            if displayed[-1] != digit:
-                self.click_named_element('Delete')
-                self.click_named_element(self.digit_names[digit])
+            x, y = self.digit_centers[digit]
+            TouchAction(self.driver).press(None, x, y).release().wait(250).perform()
 
     @Trace(log)
     def dial_named_number(self, name):
         self.dial_number(self.numbers[name])
-
-    @Trace(log)
-    def dial_star_1987(self):
-        TouchAction(self.driver).press(None, 131, 724).release().wait(250).perform()
-        TouchAction(self.driver).press(None, 131, 419).release().wait(250).perform()
-        TouchAction(self.driver).press(None, 469, 618).release().wait(250).perform()
-        TouchAction(self.driver).press(None, 300, 618).release().wait(250).perform()
-        TouchAction(self.driver).press(None, 131, 618).release().wait(250).perform()
 
     @Trace(log)
     def touch_call_button(self):

@@ -67,7 +67,7 @@ class AdvancedSettingsView(BaseView):
         else:
             raise Ux('ota_server must be "alpha", "beta" or "prod", got %s' % ota_server)
         self.click_named_element('OtaAddressOk')
-        self.send_keycode('KEYCODE_BACK')
+        self.send_keycode_back()
         sleep(5)
 
 

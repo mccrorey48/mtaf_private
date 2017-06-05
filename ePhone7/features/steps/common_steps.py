@@ -244,7 +244,7 @@ def both_windows_disappear(context):
 @step("I am logged in to the ePhone7")
 @fake
 def i_am_logged_in_to_the_ephone7(context):
-    base_view.send_keycode('KEYCODE_BACK')
+    base_view.send_keycode_back()
     # base_view.close_appium()
     # base_view.open_appium()
     # if prefs_view.element_is_present('Preferences'):
@@ -348,17 +348,17 @@ def i_end_the_call(context):
 @fake
 def i_enter_a_vlan_identifier_between_1_and_4094(context):
     network_view.find_named_element('VlanIdentifier').clear()
-    network_view.send_keycode('KEYCODE_2')
-    network_view.send_keycode('KEYCODE_0')
-    network_view.send_keycode('KEYCODE_BACK')
+    network_view.send_keycode_number(2)
+    network_view.send_keycode_number(0)
+    network_view.send_keycode_back()
 
 
 @step("I enter a VLAN priority greater than 7")
 def i_enter_a_vlan_priority_greater_than_7(context):
     if 'fake' not in str(context._config.tags).split(','):
         network_view.find_named_element('VlanPriority').clear()
-        network_view.send_keycode('KEYCODE_8')
-        network_view.send_keycode('KEYCODE_BACK')
+        network_view.send_keycode_number(8)
+        network_view.send_keycode_back()
 
 
 @step("I enter my email address")
@@ -477,37 +477,17 @@ def i_see_the_call_at_the_top_of_the_missed_history_view(context):
 def i_set_the_ota_server(context):
     user_view.goto_tab("Dial")
     ota_server = context.config.userdata.get('ota_server')
-    dial_view.goto_advanced_settings()
-    advanced_settings_view.set_ota_server(ota_server)
-    # installed_aosp, installed_app = get_installed_versions()
-    # if installed_app == '1.0.10' and ota_server == 'alpha':
-    #     # special case for version 1.0.10, directly enter the upgrade url
-    #     user_view.goto_tab('Dial')
-    #     dial_view.goto_advanced_settings()
-    #     settings_view.set_ota_server(ota_server)
-    # else:
-    #     user_view.goto_tab('Dial')
-    #     if ota_server == 'beta':
-    #         dial_view.dial_named_number('Beta OTA Server')
-    #         dial_view.touch_dial_button()
-    #         text = dial_view.find_named_element('OtaUpdatePopupContent').text
-    #         expected = 'Beta OTA Server Enabled'
-    #     elif ota_server == 'alpha':
-    #         dial_view.dial_named_number('Alpha OTA Server')
-    #         dial_view.touch_dial_button()
-    #         text = dial_view.find_named_element('OtaUpdatePopupContent').text
-    #         expected = 'Alpha OTA Server Enabled'
-    #     elif ota_server == 'production':
-    #         dial_view.dial_named_number('Production OTA Server')
-    #         dial_view.touch_dial_button()
-    #         text = dial_view.find_named_element('OtaUpdatePopupContent').text
-    #         expected = 'Production OTA Server Enabled'
-    #     else:
-    #         raise Ux('unknown expected ota_server defined: %s' % ota_server)
-    #     assert text == expected, "expected %s, got %s" % (expected, text)
-    #     base_view.click_named_element('OtaServerOk')
-    #     base_view.send_keycode('KEYCODE_BACK')
-    #     sleep(5)
+    if ota_server.lower() == 'alpha':
+        dial_view.dial_set_alpha_ota_server()
+    elif ota_server.lower() == 'beta':
+        dial_view.dial_set_beta_ota_server()
+    elif ota_server.lower().startswith('prod'):
+        dial_view.dial_set_production_ota_server()
+    else:
+        raise Ux("%s is not a valid server name" % ota_server)
+    dial_view.touch_call_button()
+    sleep(0.5)
+    dial_view.send_keycode_back()
 
 
 @step("I swipe down twice")
@@ -635,7 +615,7 @@ def i_touch_system(context):
 @step("I touch the Back button")
 @fake
 def i_touch_the_back_button(context):
-    base_view.send_keycode('KEYCODE_BACK')
+    base_view.send_keycode_back()
 
 
 @step("I touch the button for another ringtone")
@@ -724,6 +704,12 @@ def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
             context.run_substep('[prefs] I touch the "Upgrade" button')
         context.run_substep('I wait for the phone to upgrade and reboot')
         context.run_substep('I verify the system and app versions are current')
+
+
+@given("I use the spud serial interface to list the installed packages")
+@fake
+def i_use_the_spud_serial_interface_to_list_the_installed_packages(context):
+    pass
 
 
 @step("I verify the system and app versions are current")
@@ -1048,6 +1034,13 @@ def the_ota_server_update_popup_appears(context):
 def the_ota_server_update_popup_disappears(context):
     assert(dial_view.element_is_not_present('OtaUpdatePopup'))
 
+
+@then("The package com.android.wallpaper.livepicker is not listed")
+def the_package_com_android_wallpaper_livepicker_is_not_listed(context):
+    """
+    :type context: behave.runner.Context
+    """
+    pass
 
 @step("the popup disappears")
 def the_popup_disappears(context):

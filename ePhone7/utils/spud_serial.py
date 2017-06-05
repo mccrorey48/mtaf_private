@@ -117,8 +117,15 @@ class SpudSerial:
             expected = self.get_prompt()
         else:
             expected = action['expect']
-        reply, elapsed, match = self.expect(action['cmd'], expected, timeout)
-        # for line in reply.split('\n'):
-        #     log.debug(line.encode('string_escape'))
-        log.debug('expect matched "%s" in %5.3f seconds' % (match.groups(), elapsed))
-        return reply, elapsed, match.groups()
+        try:
+            reply, elapsed, match = self.expect(action['cmd'], expected, timeout)
+        except Ux as e:
+            flushed = self.flush()[0]
+            for line in flushed.split('\n'):
+                log.debug('flushed: %s' % line.encode('string_escape'))
+            raise e
+        else:
+            # for line in reply.split('\n'):
+            #     log.debug(line.encode('string_escape'))
+            log.debug('expect matched "%s" in %5.3f seconds' % (match.groups(), elapsed))
+            return reply, elapsed, match.groups()

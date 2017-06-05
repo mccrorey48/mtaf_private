@@ -142,9 +142,10 @@ def contacts__i_touch_the_groups_tab(context):
     pass
 
 
-@step("[contacts] I touch the handset icon")
-def contacts__i_touch_the_handset_icon(context):
-    pass
+@step("[contacts] I touch a handset icon")
+def contacts__i_touch_a_handset_icon(context):
+    user_id = cfg.site['Users'][cfg.site['DefaultSoftphoneUser']]['UserId']
+    context.call_buttons[user_id].click()
 
 
 @step("[contacts] I touch the name of a contact")
@@ -228,12 +229,13 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
     # limit inspection to first 8 contacts because #9, if it exists, will be partly obscured
     contacts_view.scroll_to_top_of_list()
     names = contacts_view.find_named_elements('ContactName')[:8]
-    stars = contacts_view.find_named_elements('MultiEditFavoritesIndicator')[:8]
-    assert len(names) == len(stars), "Expected contact name count (%d) to equal star icon count (%d)" \
-                                     % (len(names), len(stars))
+    call_buttons = contacts_view.find_named_elements('MultiEditFavoritesIndicator')[:8]
+    assert len(names) == len(call_buttons), "Expected contact name count (%d) to equal star icon count (%d)" \
+                                     % (len(names), len(call_buttons))
+    context.call_buttons = dict(zip(names, call_buttons))
     base_view.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
     for i in range(len(names)):
-        color = base_view.get_element_color_and_count('multi_edit', stars[i])
+        color = base_view.get_element_color_and_count('multi_edit', call_buttons[i])
         fail_msg = "No handset icon found for contact name %s" % names[i].text
         assert (base_view.color_match(color, cfg.colors['ContactsView']['handset_online_color'])
                 or base_view.color_match(color, cfg.colors['ContactsView']['handset_offline_color'])

@@ -7,19 +7,19 @@ from lib.wrappers import fake
 @fake
 def network__i_enter_a_vlan_identifier_greater_than_4094(context):
     network_view.find_named_element('VlanIdentifier').clear()
-    network_view.send_keycode('KEYCODE_4')
-    network_view.send_keycode('KEYCODE_0')
-    network_view.send_keycode('KEYCODE_9')
-    network_view.send_keycode('KEYCODE_5')
-    network_view.send_keycode('KEYCODE_BACK')
+    network_view.send_keycode_number(4)
+    network_view.send_keycode_number(0)
+    network_view.send_keycode_number(9)
+    network_view.send_keycode_number(5)
+    network_view.send_keycode_back()
 
 
 @step("[network] I enter a VLAN priority between 0 and 7")
 @fake
 def network__i_enter_a_vlan_priority_between_0_and_7(context):
     network_view.find_named_element('VlanPriority').clear()
-    network_view.send_keycode('KEYCODE_3')
-    network_view.send_keycode('KEYCODE_BACK')
+    network_view.send_keycode_number(3)
+    network_view.send_keycode_back()
 
 
 @step('[network] I see an "Invalid VLAN Identifier" alert')

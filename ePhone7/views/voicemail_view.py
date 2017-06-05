@@ -163,7 +163,7 @@ class VoicemailView(UserView):
         self.click_named_element('ForwardButton')
         user_cfg = cfg.site['Users'][cfg.site['DefaultForwardAccount']]
         for n in list(user_cfg['UserId']):
-            self.send_keycode("KEYCODE_%s" % n)
+            self.send_keycode_number(n)
         self.click_named_element('OkForwardButton')
 
     @Trace(log)

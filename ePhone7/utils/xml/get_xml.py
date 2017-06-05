@@ -10,7 +10,6 @@ from ePhone7.views import *
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 from time import sleep
 import lib.logging_esi as logging_esi
-from ePhone7.utils.xml.view_info import view_info
 from lib.wrappers import Trace
 from lib.user_exception import UserException as Ux
 log = logging_esi.get_logger('esi.get_xml')
@@ -59,61 +58,33 @@ def get_call_views(version):
         # softphone.wait_for_call_status('idle', 30)
         softphone.end_call()
 
-@Trace(log)
-def get_nav_views(version):
-    with logging_esi.msg_src_cm('get_page_sources()'):
-        # get the source for the prefs screen
-        user_view.goto_prefs()
-        save_xml_and_screenshot('prefs_%s' % version, version)
-        prefs_view.exit_prefs()
-        # navigate to the various view screens, get each view's xml source and save it
-        for view in sorted(view_info):
-            log.info("view = %s" % view)
-            info = view_info[view]
-            # for views that are selected with a bottom tab, there is a 'view_tab' attribute
-            # designating the tab to be clicked by the 'user' view class to select that view
-            if 'view_tab' in info:
-                log.info("calling UserView.goto_tab(%s)" % info['view_tab'])
-                user_view.goto_tab(info['view_tab'])
-                # arbitrary sleep to give the screen time to switch
-                sleep(5)
-            # for each view grab the xml
-            save_xml_and_screenshot("%s_%s" % (view, version), version)
-            # for each tab in the view, grab a screenshot
-            for tab in info['tabs']:
-                tab_name = info['tabs'][tab]['locator_name']
-                log.info("calling %s.goto_tab(%s)" % (info['view_classname'], tab_name))
-                info['view_instance'].goto_tab(tab_name)
-                sleep(5)
-                save_xml_and_screenshot('%s_%s_%s' % (view, tab, version), version)
 
 buttons = {
-    'Contacts': {'view': contacts_view, 'tabs': ('Personal', 'Coworkers', 'Favorites', 'Groups')},
-    'History': {'view': history_view, 'tabs': ('All', 'Missed')},
-    'Voicemail': {'view': voicemail_view, 'tabs': ('New', 'Saved', 'Trash')},
-    'Dial': {'view': dial_view, 'tabs': ()}
+    'Contacts': {'view': contacts_view, 'tabs': ['Personal', 'Coworkers', 'Favorites', 'Groups']},
+    'History': {'view': history_view, 'tabs': ['All', 'Missed']},
+    'Voicemail': {'view': voicemail_view, 'tabs': ['New', 'Saved', 'Trash']},
+    'Dial': {'view': dial_view, 'tabs': []}
 }
 
 @Trace(log)
-def get_nav_views2(version):
+def get_nav_views(version):
     with logging_esi.msg_src_cm('get_page_sources()'):
         for button in buttons.keys():
             user_view.goto_tab(button)
             log.info("view = %s" % button)
-            if button == 'Keypad':
-                save_xml_and_screenshot('keypad_%s' % version, version)
+            if button == 'Dial':
+                save_xml_and_screenshot('dial_%s' % version, version)
                 dial_view.dial_named_number('Advanced Settings')
                 dial_view.touch_dial_button()
                 save_xml_and_screenshot('settings_%s' % version, version)
-                dial_view.send_keycode('KEYCODE_BACK')
-            else:
-                for tab in buttons[button]['tabs']:
-                    log.info("calling goto_tab(%s)" % tab)
-                    buttons[button]['view'].goto_tab(tab)
-                    # arbitrary sleep to give the screen time to switch
-                    sleep(5)
-                    log.info("tab = %s" % tab)
-                    save_xml_and_screenshot('%s_%s_%s' % (button.lower(), tab.lower(), version), version)
+                dial_view.send_keycode_back()
+            for tab in buttons[button]['tabs']:
+                log.info("calling goto_tab(%s)" % tab)
+                buttons[button]['view'].goto_tab(tab)
+                # arbitrary sleep to give the screen time to switch
+                sleep(5)
+                log.info("tab = %s" % tab)
+                save_xml_and_screenshot('%s_%s_%s' % (button.lower(), tab.lower(), version), version)
 
 
 if __name__ == '__main__':
@@ -131,7 +102,7 @@ if __name__ == '__main__':
         base_view.close_appium()
         base_view.open_appium('nolaunch', force=True, timeout=60)
         base_view.startup()
-        get_nav_views2(_version)
+        get_nav_views(_version)
         base_view.close_appium()
     except Ux as _e:
         save_xml_and_screenshot('user_exception_handler', _version)

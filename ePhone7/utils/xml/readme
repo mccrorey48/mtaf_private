@@ -1,23 +1,16 @@
-These files are used to get updated information about the screen tab
-elements from the r2d2 after a new r2d2 software release
+The getxml.py utililty is used to get updated information about the screen
+elements from the ePhone7 after a new software release.
 
-view_info.py contains information on the tab elements to be inspected; edit as needed
+This utility will navigate by selecting each of the bottom row of buttons (Contacts, History, Voicemail, Dial),
+and then selecting each tab available in for that selection. For each of the resulting views, a screenshot image and
+xml data are saved.
 
-Once view_info.py contains the right information describing the view elements,
-run the utilities in the order listed:
+Data is also collected for other views, including active call, incoming call, preferences and advanced settings.
 
-  get_xml.py -    queries the Appium server to get xml files and screenshots (in .png format)
-                  for each view described in view_info.py
+Once the image and xml files are saved, the xml data is converted to a csv format with a line for each item listed
+in the xml file.  This line includes an abbreviated version of the xpath for that item, id (if any), location, size,
+and text content (if any).
 
-  xml_to_csv.py - converts the xml files to a concise csv format including element id's, xpaths (in
-                  condensed zpath format) and element coordinates
-
-Screenshot files are collected for each view with each of the possible tabs selected in
-that view (for example, there are 4 screenshots for the contacts view, one for each of
-the tabs: Personal, Coworkers, Favorites and Groups).
-
-Screenshots are used during test operations to determine if a tab is in the selected or unselected state.
-Tabs are colored with a gradient backround, so there is a specific, narrow horizontal line that is evaluated
-to make this determination. The crop points that define this line are determined by trial and error to get a
-reliable result; the color values and crop points are saved in config/colors.json for use during the test.
+This information is useful when designing test code that needs to query or interact with visual elements on the
+ePhone7 screen during the test operations.
 

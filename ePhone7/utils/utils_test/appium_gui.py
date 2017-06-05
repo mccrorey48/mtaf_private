@@ -14,6 +14,7 @@ from ePhone7.views import *
 from lib.user_exception import UserException as Ux
 from ePhone7.utils.versions import *
 from lib.android import expand_zpath
+from ePhone7.utils.versions import force_aosp_downgrade, remove_apk_upgrades
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -44,8 +45,13 @@ commands.append(Command("Get Beta Current Versions", "get_beta_current_versions"
 commands.append(Command("Get Production Current Versions", "get_prod_current_versions", require_appium=False))
 commands.append(Command("Remove APK Upgrades", "remove_apk_upgrades", require_appium=False))
 commands.append(Command("Get All Coworker Contacts", "get_all_coworker_contacts", require_appium=True))
-commands.append(Command("Dial *1987", "dial_star_1987", require_appium=True))
+commands.append(Command("Dial Advanced Settings Code", "dial_advanced_settings", require_appium=True))
+commands.append(Command("Dial Alpha OTA Code", "dial_alpha_ota", require_appium=True))
+commands.append(Command("Dial Beta OTA Code", "dial_beta_ota", require_appium=True))
+commands.append(Command("Dial Prod OTA Code", "dial_prod_ota", require_appium=True))
+commands.append(Command("Dial Current OTA Code", "dial_show_ota", require_appium=True))
 commands.append(Command("Toggle Multi-Edit", "toggle_multi_edit", require_appium=True))
+commands.append(Command("Force AOSP Downgrade", "force_aosp_downgrade", require_appium=False))
 
 
 class ScrolledLogwin(Text):
@@ -326,8 +332,9 @@ class TestGui(Frame):
                 print "skipping walkthrough"
                 app_intro_view.skip_intro()
             elif name == 'reboot':
-                print "rebooting"
+                print "rebooting...",
                 self.reboot()
+                print "Done"
             elif name == 'get_installed_versions':
                 print "getting installed versions"
                 aosp, app = get_installed_versions()
@@ -344,25 +351,44 @@ class TestGui(Frame):
                 print "getting current prod versions"
                 aosp, app = get_current_versions('prod')
                 print "aosp: %s, app: %s" % (aosp, app)
-            elif name == 'remove_apk_upgrades':
-                print "removing APK upgrades"
-                aosp, app = get_installed_versions()
-                print "  before: %s/%s" % (aosp, app)
-                remove_apk_upgrades()
-                aosp, app = get_installed_versions()
-                print "  after:  %s/%s" % (aosp, app)
             elif name == 'get_all_coworker_contacts':
                 print "getting coworker contacts"
                 contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
                 nums = contacts_view.get_all_group_contacts(contacts_group)
                 print repr(nums)
-            elif name == 'dial_star_1987':
-                print "dialing *1987"
-                dial_view.dial_star_1987()
+            elif name == 'dial_advanced_settings':
+                print "dialing advanced settings code...",
+                dial_view.dial_advanced_settings()
                 dial_view.touch_call_button()
+                print "Done"
+            elif name == 'dial_alpha_ota':
+                print "dialing alpha OTA code...",
+                dial_view.dial_set_alpha_ota_server()
+                dial_view.touch_call_button()
+                print "Done"
+            elif name == 'dial_beta_ota':
+                print "dialing beta OTA code...",
+                dial_view.dial_set_beta_ota_server()
+                dial_view.touch_call_button()
+                print "Done"
+            elif name == 'dial_prod_ota':
+                print "dialing prod OTA code...",
+                dial_view.dial_set_production_ota_server()
+                dial_view.touch_call_button()
+                print "Done"
+            elif name == 'dial_show_ota':
+                print "dialing show OTA code...",
+                dial_view.dial_show_ota_server()
+                dial_view.touch_call_button()
+                print "Done"
             elif name == 'toggle_multi_edit':
-                print "Toggling Multi-Edit"
+                print "Toggling Multi-Edit...",
                 contacts_view.toggle_multi_edit()
+                print "Done"
+            elif name == 'force_aosp_downgrade':
+                print "Forcing AOSP Downgrade...",
+                force_aosp_downgrade('2.3.10')
+                print "Done"
             else:
                 raise Ux('command %s not defined' % name)
             if self.appium_is_open:
