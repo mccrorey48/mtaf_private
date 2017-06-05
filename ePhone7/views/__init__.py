@@ -10,3 +10,4 @@ from .dial_view import dial_view
 from .prefs_view import prefs_view
 from .network_view import network_view
 from .advanced_settings_view import advanced_settings_view
+from .active_call_view import active_call_view
