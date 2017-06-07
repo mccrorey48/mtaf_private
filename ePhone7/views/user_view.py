@@ -26,6 +26,7 @@ class UserView(BaseView):
         "IncomingCallCallerImage": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_image"},
         "IncomingCallCallerName": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_name"},
         "IncomingCallCallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_number"},
+        "HomeScreenLogo": {"by": "id", "value": "com.esi_estech.ditto:id/home_screen_company_logo"},
         "PrefsButton": {"by": "id", "value": "com.esi_estech.ditto:id/settings_button"},
         "PrefsButtonz": {"by": "zpath", "value": "//rl/bt[4]"},
         "SettingsButton": {"by": "zpath", "value": "//sv/fl/fl[3]"},
@@ -97,6 +98,10 @@ class UserView(BaseView):
         failmsg_fmt = 'expect active tab to be %s, got %s'
         self.wait_for_condition_true(self.verify_active_tab,
                                              lambda: failmsg_fmt % (self.expected_tab, self.active_tab), timeout=120)
+
+    @Trace(log)
+    def get_logo_element(self):
+        return self.find_named_element('HomeScreenLogo')
 
     @Trace(log)
     def goto_prefs(self):

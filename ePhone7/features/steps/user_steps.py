@@ -13,6 +13,12 @@ def user__i_enter_the_call_park_queue_number(context):
     pass
 
 
+@when("[user] I get the logo element from the home screen")
+@fake
+def user__i_get_the_logo_element_from_the_home_screen(context):
+    context.logo_element = user_view.get_logo_element()
+
+
 @step("[user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen")
 @fake
 def user__i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bottom_of_the_screen(context):
@@ -75,4 +81,9 @@ def user__i_use_the_keypad_to_filter_the_list_of_contacts(context):
 def user__only_the_contact_i_touched_is_listed(context):
     pass
 
+
+@then("[user] the logo width is at least {width} pixels")
+@fake
+def user__the_logo_width_is_at_least_440_pixels(context, width):
+    assert int(context.logo_element.size['width']) >= int(width)
 

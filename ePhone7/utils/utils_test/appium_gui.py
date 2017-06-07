@@ -29,7 +29,8 @@ commands = []
 commands.append(Command("Start Appium", "start_appium", require_appium=False))
 commands.append(Command("Stop Appium", "stop_appium", require_appium=True))
 commands.append(Command("Restart Appium", "restart_appium"))
-commands.append(Command("Install APK 10.0.10", "install_apk", require_appium=False))
+commands.append(Command("Install APK 1.0.10", "install_apk_1_0_10", require_appium=False))
+commands.append(Command("Install APK 1.3.6", "install_apk_1_3_6", require_appium=False))
 commands.append(Command("Get Current Activity", "get_current_activity"))
 commands.append(Command("Startup", "startup"))
 commands.append(Command("Log In", "login"))
@@ -324,9 +325,13 @@ class TestGui(Frame):
                 user_view.goto_tab('Dial')
                 user_view.set_ota_server('alpha')
                 print "Done"
-            elif name == 'install_apk':
-                print "Installing APK 10.0.10 using adb...",
-                self.install_apk()
+            elif name == 'install_apk_1_0_10':
+                print "Installing APK 1.0.10 using adb...",
+                self.install_apk('1.0.10')
+                print "Done"
+            elif name == 'install_apk_1_3_6':
+                print "Installing APK 1.3.6 using adb...",
+                self.install_apk('1.3.6')
                 print "Done"
             elif name == 'skip_walkthrough':
                 print "skipping walkthrough"
@@ -387,7 +392,7 @@ class TestGui(Frame):
                 print "Done"
             elif name == 'force_aosp_downgrade':
                 print "Forcing AOSP Downgrade...",
-                force_aosp_downgrade('2.3.10')
+                force_aosp_downgrade('2.3.8')
                 print "Done"
             else:
                 raise Ux('command %s not defined' % name)
@@ -395,9 +400,9 @@ class TestGui(Frame):
                 print "current activity: " + base_view.driver.current_activity
 
     @staticmethod
-    def install_apk():
+    def install_apk(version):
         adb = ADB()
-        apk_path = os.path.join(cfg.site["ApksHome"], "1.0.10.apk")
+        apk_path = os.path.join(cfg.site["ApksHome"], "%s.apk" % version)
         print "Installing " + apk_path
         output = adb.run_cmd("install -r -d %s" % apk_path)
         for line in output.split('\n'):
