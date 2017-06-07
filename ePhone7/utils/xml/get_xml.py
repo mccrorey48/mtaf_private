@@ -69,6 +69,7 @@ buttons = {
 @Trace(log)
 def get_nav_views(version):
     with logging_esi.msg_src_cm('get_page_sources()'):
+        save_xml_and_screenshot('user_%s' % version, version)
         for button in buttons.keys():
             user_view.goto_tab(button)
             log.info("view = %s" % button)
