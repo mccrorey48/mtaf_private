@@ -679,6 +679,7 @@ def i_touch_walkthrough(context):
 
 
 @step("I upgrade the phone if the versions are not correct")
+@fake
 def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
     installed_app = None
     if 'fake' not in str(context._config.tags).split(','):
