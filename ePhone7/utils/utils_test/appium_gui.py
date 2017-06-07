@@ -132,6 +132,7 @@ class TestGui(Frame):
                     self.noappium_btns.append(btn)
                 # print "button %s at row %s" % (cmd.text, row)
                 btn.grid(row=row, column=0, sticky='e', padx=2, pady=2)
+
         self.find_frame = Frame(self.btn_frame, bg='brown')
         btn = Button(self.find_frame, text="find elements:", command=self.find_elements, state=DISABLED)
         self.appium_btns.append(btn)
@@ -149,6 +150,18 @@ class TestGui(Frame):
         self.find_frame.hsb.grid(row=1, column=2, sticky='ew')
         row += 1
         self.find_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
+
+        self.keycode_frame = Frame(self.btn_frame, bg='brown')
+        btn = Button(self.keycode_frame, text="send keycode:", command=self.send_keycode, state=DISABLED)
+        self.appium_btns.append(btn)
+        self.keycode = IntVar()
+        self.keycode.set(3)
+        self.keycode_frame.value = Entry(self.keycode_frame, width=10, textvariable=self.keycode)
+        btn.grid(row=0, column=0, padx=2, pady=2, sticky='w')
+        self.keycode_frame.grid_columnconfigure(1, weight=1)
+        self.keycode_frame.value.grid(row=0, column=1, padx=2, pady=2, sticky='w')
+        row += 1
+        self.keycode_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
 
         self.attr_frame = Frame(self.btn_frame, bg='brown')
         btn = Button(self.attr_frame, text="get element attributes:", command=self.get_elem_attrs, state=DISABLED)
@@ -188,6 +201,9 @@ class TestGui(Frame):
         if self.appium_is_open:
             self.close_appium()
         root.destroy()
+
+    def send_keycode(self):
+        base_view.send_keycode(self.keycode.get())
 
     def find_elements(self):
         by = self.find_by_var.get()
@@ -423,9 +439,9 @@ _app = TestGui(root)
 
 
 def on_closing():
-    # if app.appium_is_open:
-    print "trying to close appium"
-    # app.close_appium()
+    if _app.appium_is_open:
+        print "trying to close appium"
+        _app.close_appium()
     sleep(5)
     root.destroy()
 
