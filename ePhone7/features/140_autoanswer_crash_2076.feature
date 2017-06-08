@@ -1,5 +1,5 @@
 @regression
-Feature: [bugfix] user's other phone autoanswering should not cause crash
+Feature: user's other phone autoanswering should not cause crash (R2D2-2076)
 
   Scenario: softphone on same account autoanswers
 
