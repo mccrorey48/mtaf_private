@@ -110,7 +110,9 @@ class BaseView(SeleniumActions):
     def color_match(c1, c2, tolerance=5):
         for i in range(min(len(c1), len(c2))):
             if c2[i] > c1[i] + tolerance or c2[i] < c1[i] - tolerance:
+                log.debug("color %s does not match %s" % (c1, c2))
                 return False
+        log.debug("color %s matches %s" % (c1, c2))
         return True
 
     @Trace(log)
