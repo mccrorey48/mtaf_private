@@ -203,7 +203,7 @@ class TestGui(Frame):
         root.destroy()
 
     def send_keycode(self):
-        base_view.key_event(self.keycode.get())
+        base_view.driver.keyevent(self.keycode.get())
 
     def find_elements(self):
         by = self.find_by_var.get()
