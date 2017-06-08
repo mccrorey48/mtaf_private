@@ -1,5 +1,5 @@
 @regression
-Feature: the home screen logo width should accomodate the new ePhone7 logo
+Feature: the home screen logo width should accomodate the new ePhone7 logo (R2D2-1956)
 
   Scenario: verify the logo width is at lease 440 pixels
     Given I am logged in to the ePhone7
