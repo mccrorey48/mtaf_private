@@ -18,7 +18,7 @@ from lib.wrappers import Trace
 log = logging_esi.get_logger('esi.base_view')
 
 keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
-keycodes['KEYCODE_HOME'] = 3
+keycodes['KEYCODE_HOME'] = 188
 keycodes['KEYCODE_BACK'] = 4
 
 

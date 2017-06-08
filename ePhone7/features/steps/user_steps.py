@@ -50,6 +50,11 @@ def user__i_touch_the_dial_button(context):
 def user__i_touch_the_history_button(context):
     user_view.click_named_element('History')
 
+@step("[user] I touch the Home button")
+@fake
+def user__i_touch_the_home_button(context):
+    user_view.send_keycode('KEYCODE_HOME')
+
 
 @when("[user] I touch the OK button")
 def user__i_touch_the_ok_button(context):

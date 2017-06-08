@@ -155,7 +155,7 @@ class TestGui(Frame):
         btn = Button(self.keycode_frame, text="send keycode:", command=self.send_keycode, state=DISABLED)
         self.appium_btns.append(btn)
         self.keycode = IntVar()
-        self.keycode.set(3)
+        self.keycode.set(4)
         self.keycode_frame.value = Entry(self.keycode_frame, width=10, textvariable=self.keycode)
         btn.grid(row=0, column=0, padx=2, pady=2, sticky='w')
         self.keycode_frame.grid_columnconfigure(1, weight=1)
