@@ -113,7 +113,7 @@ def force_app_downgrade(version):
 
 
 @Trace(log)
-def get_downgrade_images(downgrade_aosp, downgrade_app):
+def get_downgrade_images(downgrade_aosp, downgrade_app=None):
     build_image_server = cfg.site["BuildImageServer"]
     aosps_home = cfg.site["AospsHome"]
     apks_home = cfg.site["ApksHome"]
@@ -131,7 +131,7 @@ def get_downgrade_images(downgrade_aosp, downgrade_app):
     # make sure the downgrade versions of the aosp and apk are available
     aosp_dirs = listdir(aosps_home)
     apks = listdir(apks_home)
-    if not downgrade_aosp in aosp_dirs:
+    if downgrade_aosp not in aosp_dirs:
         mkdir(path.join(aosps_home, downgrade_aosp))
     shell = spur.SshShell(
         hostname=build_image_server,
