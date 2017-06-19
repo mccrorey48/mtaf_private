@@ -1,6 +1,6 @@
 from behave import *
 from ePhone7.views import *
-from time import sleep
+from time import sleep, time
 from prefs_steps import *
 from advanced_steps import *
 from lib.user_exception import UserException as Ux
@@ -308,18 +308,19 @@ def i_downgrade_my_aosp_to_downgradeaospversion_and_app_to_downgradeappversion(c
     # 6. verify the new versions
     installed_aosp_version, installed_app_version = get_installed_versions()
     need_aosp_downgrade = installed_aosp_version != downgrade_aosp_version
-    need_app_downgrade = installed_app_version != downgrade_app_version
-    if need_aosp_downgrade or need_app_downgrade:
-        get_downgrade_images(downgrade_aosp_version, downgrade_app_version)
+    # need_app_downgrade = installed_app_version != downgrade_app_version
+    # if need_aosp_downgrade or need_app_downgrade:
+    if need_aosp_downgrade:
+        get_downgrade_images(downgrade_aosp_version)
         base_view.close_appium()
         remove_apk_upgrades()
         if need_aosp_downgrade:
             force_aosp_downgrade(downgrade_aosp_version)
         installed_aosp_version, installed_app_version = get_installed_versions()
-        need_app_downgrade = installed_app_version != downgrade_app_version
-        if need_app_downgrade:
-            force_app_downgrade(downgrade_app_version)
-        installed_aosp_version, installed_app_version = get_installed_versions()
+        # need_app_downgrade = installed_app_version != downgrade_app_version
+        # if need_app_downgrade:
+        #     force_app_downgrade(downgrade_app_version)
+        # installed_aosp_version, installed_app_version = get_installed_versions()
         assert installed_aosp_version == downgrade_aosp_version
         assert installed_app_version == downgrade_app_version
         base_view.open_appium('nolaunch', force=True, timeout=60)
@@ -679,7 +680,6 @@ def i_touch_walkthrough(context):
 
 
 @step("I upgrade the phone if the versions are not correct")
-@fake
 def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
     installed_app = None
     if 'fake' not in str(context._config.tags).split(','):
@@ -734,41 +734,19 @@ def i_wait_for_the_phone_to_restart(context):
 @step("I wait for the phone to upgrade and reboot")
 @fake
 def i_wait_for_the_phone_to_upgrade_and_reboot(context):
-    while True:
-        # loop until ??
-        try:
-            sleep(5)
-            current_activity = base_view.driver.current_activity
-            if current_activity != '.OtaAppActivity' or current_activity == '.activities.MainViewActivity':
-                break
-        except:
+    start_time = time()
+    timeout = 20
+    current_activity = None
+    while time() - start_time < timeout:
+        current_activity = base_view.driver.current_activity == '.OTAAppActivity'
+        if current_activity == '.OTAAppActivity':
             break
+    else:
+        raise Ux('current_activity %s after %s seconds, expected .OTAAppActivity' % (current_activity, timeout))
     base_view.close_appium()
-    # turn on USB access for adb and Appium via the spud port
-    import os
     from ePhone7.utils.spud_serial import SpudSerial
-    ip_addr = SpudSerial.get_my_ip_addr()
-    actions = [
-        {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 600},
-        {'cmd': 'cd /data/misc/adb\n', 'new_cwd': 'data/misc/adb'},
-        {'cmd': 'alias tftp="busybox tftp"\n', 'new_cwd': None},
-        {'cmd': 'tftp -g -r adbkey.pub -l adb_keys %s\n' % ip_addr, 'new_cwd': None},
-        {'cmd': 'chown system adb_keys\n', 'new_cwd': None},
-        {'cmd': 'chmod 640 adb_keys\n', 'new_cwd': None},
-        {'cmd': 'cd /data/property\n', 'new_cwd': 'data/property'},
-        {'cmd': 'echo -n mtp,adb > persist.sys.usb.config\n', 'new_cwd': None},
-        {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120}
-    ]
-    # put the adb public key in the /tftpboot directory so the tftp action can upload it to the phone
-    with open(os.path.join(os.getenv('HOME'), '.android', 'adbkey.pub')) as input_file:
-        with open('/tftpboot/adbkey.pub', 'w') as output_file:
-            key = input_file.read()
-            output_file.write(key + '\n')
     ss = SpudSerial('/dev/ttyUSB0', pwd_check=False)
-    for action in actions:
-        ss.do_action(action)
-    # at this point the reboot of Android should be complete with USB debug enabled, so we
-    # call base_view.startup() to get the ePhone7 app into the right state
+    ss.expect('', 'mtp_open', 600)
     base_view.open_appium('nolaunch', force=True, timeout=60)
     base_view.startup()
 
