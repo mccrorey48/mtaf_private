@@ -19,8 +19,9 @@ class DialView(UserView):
         "DialPad": {"by": "id", "value": "com.esi_estech.ditto:id/content_dial_pad"},
         "Delete": {"by": "id", "value": "com.esi_estech.ditto:id/deleteButton"},
         "Digits": {"by": "id", "value": "com.esi_estech.ditto:id/digits"},
-        "NumKeyAll": {"by": "zpath", "value": "//gv/rl"},
         "FuncKeyAll": {"by": "zpath", "value": "//tl/tr/ll"},
+        "NumberButton": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_symbols"},
+        "NumKeyAll": {"by": "zpath", "value": "//gv/rl"},
         "NumKey1": {"by": "zpath", "value": "//gv/ll/tv[@text='1']"},
         "NumKey2": {"by": "zpath", "value": "//gv/ll/tv[@text='2']"},
         "NumKey3": {"by": "zpath", "value": "//gv/ll/tv[@text='3']"},
@@ -133,6 +134,10 @@ class DialView(UserView):
     @Trace(log)
     def dial_named_number(self, name):
         self.dial_number(self.numbers[name])
+
+    @Trace(log)
+    def get_number_buttons(self):
+        return self.find_named_elements('NumberButton')
 
     @Trace(log)
     def touch_call_button(self):
