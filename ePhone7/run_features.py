@@ -64,8 +64,10 @@ def run_features(config):
             current_step = {"name": name, "substeps": []}
         elif type == 'substep' and current_step is not None:
             splitname = name.split(',')
+            name = ' '.join(splitname[:-2])
             substep = {
-                "text": ' '.join(splitname[:-2]),
+                "name": name,
+                "text": rm_view_prefix(name),
                 "keyword": "Substep",
                 "status": splitname[-2],
                 "duration": splitname[-1]
@@ -101,11 +103,19 @@ def run_features(config):
     return data
 
 
+def rm_view_prefix(step_name):
+    step_re = re.compile('\s*(\[\s*([^]]*\S)\s*\]\s*)?\s*(.*\S)\s*')
+    m = step_re.match(step_name)
+    if m:
+        return m.group(3)
+    else:
+        return step_name
+
+
 def write_result_to_db(server, db_name, test_class, environment, configuration, mock_detector, features):
     print 'writing to db_name %s, server %s:' % (db_name, server)
     client = MongoClient(server)
     db = client[db_name]
-    step_re = re.compile('\s*(\[\s*([^]]*\S)\s*\]\s*)?\s*(.*\S)\s*')
     if len(features) and 'start_time' in features[0] and 'start_date' in features[0]:
         start_datetime = datetime.strptime("%s %s" % (features[0]['start_date'], features[0]['start_time']), '%x %X')
     else:
@@ -164,11 +174,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
             scenario['time'] = start_datetime.strftime('%X')
             scenario['date'] = start_datetime.strftime('%x')
             for step in scenario['steps']:
-                m = step_re.match(step['name'])
-                if m:
-                    step['text'] = m.group(3)
-                else:
-                    step['text'] = step['name']
+                step['text'] = rm_view_prefix(step['name'])
                 if 'result' in step:
                     # once a step in a scenario fails, the rest of the steps will be skipped
                     # so step won't have a 'result' attribute and they will be assigned "skipped"
@@ -180,7 +186,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                             if substep["status"] == 'failed':
                                 step['status'] = 'failed'
                             elif substep['status'] == 'passed':
-                                if mock_detector.match(substep["text"]):
+                                if mock_detector.match(substep["name"]):
                                     substep['status'] = 'fake'
                     if step['status'] == 'failed':
                         scenario_has_fails = True
