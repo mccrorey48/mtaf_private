@@ -52,6 +52,8 @@ def get_call_views(version):
         sleep(5)
         # end_active_call = user_view.find_named_element('EndActiveCall')
         save_xml_and_screenshot('active_call_%s' % version, version)
+        user_view.click_named_element('InCallDial')
+        save_xml_and_screenshot('active_call_dial_%s' % version, version)
         # log.trace("clicking end active call icon")
         # end_active_call.click()
         # log.trace("clicked end active call icon")
@@ -70,7 +72,7 @@ buttons = {
 def get_nav_views(version):
     with logging_esi.msg_src_cm('get_page_sources()'):
         save_xml_and_screenshot('user_%s' % version, version)
-        for button in buttons.keys():
+        for button in ['Contacts', 'History', 'Voicemail', 'Dial']:
             user_view.goto_tab(button)
             log.info("view = %s" % button)
             if button == 'Dial':
