@@ -66,3 +66,6 @@ def dial__the_dial_view_appears(context):
     assert dial_view.element_is_present('DialPad')
 
 
+@step("[dial] the buttons are x pixels wide and y pixels high")
+def step_impl(context):
+    pass
