@@ -306,7 +306,10 @@ if __name__ == '__main__':
                 'stop': False
             }
             features = run_features(run_configuration)
-        installed_aosp, installed_app = get_current_versions(args.ota_server)
+        if fake_tag:
+            installed_aosp, installed_app = 'fake', 'fake'
+        else:
+            installed_aosp, installed_app = get_current_versions(args.ota_server)
         report_configuration = "site_tag:%s, run_tags:%s, installed_aosp:%s, installed_app:%s" % \
                                (cfg.site_tag, args.run_tags, installed_aosp, installed_app)
         write_result_to_db(args.server, args.db_name, args.test_class, args.environment, report_configuration, mock_detector, features)
