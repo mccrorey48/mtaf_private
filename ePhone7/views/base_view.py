@@ -151,7 +151,7 @@ class BaseView(SeleniumActions):
     def get_element_color(self, filebase, elem, cropped_suffix=''):
         return self.get_element_color_and_count(filebase, elem, cropped_suffix)[:3]
 
-    def get_element_color_and_count(self, filebase, elem, cropped_suffix=''):
+    def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
         im = Image.open(os.path.join(self.cfg.test_screenshot_folder, filebase + '.png'))
         # calculate image crop points from element location['x'], location['y'], size['height'] and size['width']
         location = elem.location
@@ -171,7 +171,7 @@ class BaseView(SeleniumActions):
         color_band = Image.new('RGBA', (crop_points[2] - crop_points[0], crop_points[3] - crop_points[1]), 'yellow')
         im.paste(color_band, crop_points, 0)
         im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after.png'))
-        current_color_and_count = sorted(colors, reverse=True, key=lambda x: x[0])[1]
+        current_color_and_count = sorted(colors, reverse=True, key=lambda x: x[0])[color_list_index]
         current_color = list(current_color_and_count[1])[:-1]
         current_count = current_color_and_count[0]
         return current_color + [current_count]
