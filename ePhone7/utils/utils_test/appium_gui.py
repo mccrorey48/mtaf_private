@@ -5,7 +5,6 @@ from ttk import Combobox
 from time import sleep
 
 from pyand import ADB
-from selenium.common.exceptions import WebDriverException
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.utils.spud_serial import SpudSerial
@@ -15,6 +14,7 @@ from lib.user_exception import UserException as Ux
 from ePhone7.utils.versions import *
 from lib.android import expand_zpath
 from ePhone7.utils.versions import force_aosp_downgrade, remove_apk_upgrades
+from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -53,6 +53,8 @@ commands.append(Command("Dial Prod OTA Code", "dial_prod_ota", require_appium=Tr
 commands.append(Command("Dial Current OTA Code", "dial_show_ota", require_appium=True))
 commands.append(Command("Toggle Multi-Edit", "toggle_multi_edit", require_appium=True))
 commands.append(Command("Force AOSP Downgrade", "force_aosp_downgrade", require_appium=False))
+commands.append(Command("Get XML/CSV", "get_xml", require_appium=True))
+commands.append(Command("Get Screenshot", "get_screenshot", require_appium=True))
 
 
 class ScrolledLogwin(Text):
@@ -164,16 +166,19 @@ class TestGui(Frame):
         self.keycode_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
 
         self.attr_frame = Frame(self.btn_frame, bg='brown')
-        btn = Button(self.attr_frame, text="get element attributes:", command=self.get_elem_attrs, state=DISABLED)
+        btn = Button(self.attr_frame, text="get element attributes", command=self.get_elem_attrs, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=0, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="get element color:", command=self.get_elem_color, state=DISABLED)
+        btn = Button(self.attr_frame, text="get element color", command=self.get_elem_color, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=1, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="click element", command=self.click_element, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=2, padx=2, pady=2)
         self.elem_index = StringVar()
         self.elem_index.set('')
         self.attr_frame.index = Combobox(self.attr_frame, width=6, values=[], textvariable=self.elem_index)
-        self.attr_frame.index.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
+        self.attr_frame.index.grid(row=0, column=3, padx=2, pady=2, sticky='ew')
         row += 1
         self.attr_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
 
@@ -238,6 +243,24 @@ class TestGui(Frame):
         y2 = y1 + h
         print 'text: "%s", ul: (%d, %d), lr: (%d, %d), width: %d, height: %d' % (text, x1, y1, x2, y2, w, h)
 
+    def get_xml(self):
+        xml = base_view.get_source()
+        xml_dir = os.path.join(cfg.xml_folder, 'xml_appium_gui')
+        try:
+            os.makedirs(xml_dir)
+        except OSError as e:
+            # ignore 'File exists' error but re-raise any others
+            if e.errno != 17:
+                raise e
+        xml_fullpath = os.path.join(xml_dir, 'appium_gui.xml')
+        log.info("saving xml %s" % xml_fullpath)
+        with open(xml_fullpath, 'w') as _f:
+            _f.write(xml.encode('utf8'))
+        xml_folder_to_csv()
+
+    def get_screenshot(self):
+        base_view.get_screenshot_as_png('appium_gui', cfg.test_screenshot_folder)
+
     def get_elem_color(self):
         text_index = self.elem_index.get()
         if text_index == '':
@@ -245,11 +268,20 @@ class TestGui(Frame):
         index = int(text_index)
         elem = self.elems[index]
         base_view.get_screenshot_as_png('appium_gui', cfg.test_screenshot_folder)
-        color = base_view.get_element_color_and_count('appium_gui', elem)
-        print "color and count: %s" % color
+        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=0)
+        print "first color and count: %s" % color
+        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=1)
+        print "second color and count: %s" % color
         for color_name in ['favorite_on_color', 'favorite_off_color']:
             if base_view.color_match(color, cfg.colors['ContactsView'][color_name]):
                 print color_name
+
+    def click_element(self):
+        text_index = self.elem_index.get()
+        if text_index == '':
+            return
+        index = int(text_index)
+        self.elems[index].click()
 
     def open_appium(self, max_attempts=10, retry_seconds=5):
         attempts = 0
@@ -298,17 +330,6 @@ class TestGui(Frame):
         self.log_action(ss, {'cmd': 'cd\n', 'new_cwd': 'data'})
         self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Restarting system', 'timeout': 1})
         self.log_action(ss, {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
-        # while True:
-        #     try:
-        #         activity = base_view.driver.current_activity
-        #         if activity is None:
-        #             pass
-        #         print activity
-        #         sleep(1)
-        #     except WebDriverException as e:
-        #         print "got WebDriverException: %s" % e
-        #         self.close_appium()
-        #         break
 
     def do_cmd(self, name):
         if name == 'get_current_activity':
@@ -410,6 +431,14 @@ class TestGui(Frame):
                 print "Forcing AOSP Downgrade...",
                 force_aosp_downgrade('2.3.8')
                 print "Done"
+            elif name == 'get_xml':
+                print "Getting XML and CSV...",
+                self.get_xml()
+                print "Done"
+            elif name == 'get_screenshot':
+                print "Getting Screenshot...",
+                self.get_screenshot()
+                print "Done"
             else:
                 raise Ux('command %s not defined' % name)
             if self.appium_is_open:
@@ -447,17 +476,4 @@ def on_closing():
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
 _app.mainloop()
-
-# base_view.startup()
-# login()
-# for i in range(3):
-#     # reboot()
-    # base_view.startup()
-# for i in range(10000):
-#     try:
-#         print "%s: current activity: %s" % (i, base_view.driver.current_activity)
-#     except WebDriverException:
-#         print "%s: got WebDriverException" % i
-#     sleep(1)
-# base_view.close_appium()
 
