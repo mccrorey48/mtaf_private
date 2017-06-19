@@ -71,7 +71,7 @@ class SpudSerial:
             if len(c) and c != '\r' and ord(c) < 0xff:
                 reply += c
                 if c == '\n':
-                    # log.debug('>>' + log_str.encode('string_escape'))
+                    log.debug('>>' + log_str.encode('string_escape'))
                     log_str = ''
                 else:
                     log_str += c
