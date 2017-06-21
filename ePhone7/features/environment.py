@@ -3,6 +3,7 @@ from os import path, makedirs
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import base_view
+from ePhone7.utils.get_softphone import softphone_manager
 
 log = logging.get_logger('esi.environment')
 substeps=''
@@ -41,6 +42,7 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
+    softphone_manager.end_all_calls()
     logging.pop_msg_src()
 
 

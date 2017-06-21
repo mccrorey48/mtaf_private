@@ -68,6 +68,12 @@ class SoftphoneManager():
             softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp)
         return softphones[uri]
 
+    def end_all_calls(self):
+        global softphones
+        for uri in softphones.keys():
+            softphones[uri].end_call()
+
+
 
 class Softphone:
 
@@ -117,6 +123,8 @@ class Softphone:
         while time() - start < timeout:
             log.debug("%s: call status is %s" % (self.uri, self.account_info.call_status))
             if self.account_info.call_status == desired_status:
+                if self.account_info.call_status == 'idle':
+                    self.account_info.call = None
                 return time() - start
             sleep(0.1)
             if self.account_info.call_status == 'call' and desired_status == 'early':
@@ -148,17 +156,16 @@ class Softphone:
 
     @Trace(log)
     def end_call(self, timeout=10):
-        if not self.account_info.call:
-            raise Ux("end_call(): %s not in call" % self.uri)
-        log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
-        self.account_info.call.hangup()
-        self.wait_for_call_status('idle', timeout)
+        if self.account_info.call:
+            log.debug("%s ending call to %s" % (self.uri, self.account_info.remote_uri))
+            self.account_info.call.hangup()
+            self.wait_for_call_status('idle', timeout)
 
     @Trace(log)
     def hold(self, timeout=10):
         if not self.account_info.call:
             raise Ux("hold(): %s not in call" % self.uri)
-        log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
+        log.debug("%s putting call to %s on hold" % (self.uri, self.account_info.remote_uri))
         self.account_info.call.hold()
         self.wait_for_call_status('hold', timeout)
 
@@ -166,7 +173,7 @@ class Softphone:
     def unhold(self, timeout=10):
         if not self.account_info.call:
             raise Ux("unhold(): %s not in call" % self.uri)
-        log.debug("%s ending call to %s" % (self.uri, self.dst_uri))
+        log.debug("%s unholding call to %s" % (self.uri, self.account_info.remote_uri))
         self.account_info.call.unhold()
         self.wait_for_call_status('call', timeout)
 
@@ -243,54 +250,32 @@ class MyAccountCallback(pj.AccountCallback):
 
 # look up new_call_states[old_state][(call_state, media_state)]
 # to get a dictionary that will contain 'new_state' and might contain 'media actions'
-new_call_statuses = {
+new_call_settings = {
     'idle': {
-        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': [
-            'create_media', 'connect_media']},
-        (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'error'},
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': [ 'create_media', 'connect_media']},
         (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'early'},
         (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'early'},
-        (pj.CallState.INCOMING, pj.MediaState.ACTIVE): {'status': 'idle'},
-        (pj.CallState.INCOMING, pj.MediaState.NULL): {'status': 'idle'},
-        (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'idle'},
-        (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'idle'},
         (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle'},
         (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle'}
     },
     'early': {
-        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': [
-            'create_media', 'connect_media']},
-        (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'early'},
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['create_media', 'connect_media']},
         (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'early'},
         (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'early'},
-        (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'early'},
-        (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'early'},
-        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': [ 'delete_call']},
-        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': [ 'delete_call']}
+        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': ['delete_call']},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': ['delete_call']}
     },
     'call': {
         (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call'},
         (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'hold'},
-        (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'error'},
-        (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'error'},
-        (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'error'},
-        (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'error'},
-        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': [
-            'destroy_media', 'delete_call']},
-        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': [
-            'destroy_media', 'delete_call']}
+        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': ['destroy_media', 'delete_call']},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': ['destroy_media', 'delete_call']}
     },
     'hold': {
         (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['connect_media']},
         (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'hold'},
-        (pj.CallState.EARLY, pj.MediaState.ACTIVE): {'status': 'error'},
-        (pj.CallState.EARLY, pj.MediaState.NULL): {'status': 'error'},
-        (pj.CallState.CONNECTING, pj.MediaState.ACTIVE): {'status': 'error'},
-        (pj.CallState.CONNECTING, pj.MediaState.NULL): {'status': 'error'},
-        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': [
-            'destroy_media', 'delete_call']},
-        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': [
-            'destroy_media', 'delete_call']}
+        (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': ['destroy_media', 'delete_call']},
+        (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': ['destroy_media', 'delete_call']}
     },
 }
 
@@ -320,13 +305,25 @@ class MyCallCallback(pj.CallCallback):
         self.account_info.media_state = call_info.media_state
         log.debug("_on_state: %s: ci.remote_uri=%s state %s media_state %s" % (
             call_info.uri, remote_uri, call_state_text[call_info.state], media_state_text[call_info.media_state]))
-        new_call_status = new_call_statuses[self.account_info.call_status][(call_info.state, call_info.media_state)]
-        log.debug("_on_state: old call_status = %s, new call_status = %s" % (self.account_info.call_status,
-                                                                             new_call_status['status']))
-        self.account_info.call_status = new_call_status['status']
-        if 'actions' in new_call_status:
-            for action in new_call_status['actions']:
-                media_ops[action]()
+        old_call_status = self.account_info.call_status
+        state_key = (call_info.state, call_info.media_state)
+        if state_key in new_call_settings[old_call_status]:
+            new_call_status = new_call_settings[old_call_status][state_key]['status']
+            if 'actions' in new_call_settings[old_call_status][state_key]:
+                actions = new_call_settings[old_call_status][state_key]['actions']
+            else:
+                actions = {}
+        else:
+            new_call_status = self.account_info.call_status
+            actions = {}
+        log.debug("_on_state: old call_status = %s, new call_status = %s" % (old_call_status, new_call_status))
+        self.account_info.call_status = new_call_status
+        if self.account_info.call_status == 'idle':
+            self.account_info.remote_uri = None
+        else:
+            self.account_info.remote_uri = remote_uri
+        for action in actions:
+            media_ops[action]()
 
     def on_state(self):
         with logging_esi.msg_src_cm('on_state'):
@@ -400,6 +397,7 @@ class MyCallCallback(pj.CallCallback):
     def delete_call(self):
         log.debug("%s: called delete_call" % self.account_info.uri)
         self.account_info.call = None
+        self.account_info.call_status = 'idle'
 
     @Trace(log)
     def connect_media(self):
@@ -483,6 +481,7 @@ class MyAccountInfo:
         self.call = None
         self.hold = False
         self.incoming_response = None
+        self.remote_uri = None
 
 
 class PjsuaLib(pj.Lib):
