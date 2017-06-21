@@ -168,6 +168,8 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
             feature['test_class'] = test_class
             feature['text'] = feature['name']
             del feature['name']
+            feature['time'] = start_datetime.strftime('%X')
+            feature['date'] = start_datetime.strftime('%x')
             feature['order'] = iter_num
             # feature['epoch_ms'] = int((start_datetime - datetime.utcfromtimestamp(0)).total_seconds() * 1000)
             background_steps = []
@@ -189,7 +191,8 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                 if 'tags' not in scenario.keys():
                     scenario['tags'] = []
                 scenario['duration'] = 0.0
-                unskipped_step_count = 0
+                scenario['time'] = start_datetime.strftime('%X')
+                scenario['date'] = start_datetime.strftime('%x')
                 for step in scenario['steps']:
                     step['text'] = rm_view_prefix(step['name'])
                     if 'result' in step:
@@ -209,7 +212,6 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                             step['status'] = 'fake'
                             step['duration'] = 0.1
                             scenario_has_fakes = True
-                            start_datetime += timedelta(seconds=step['duration'])
                         else:
                             # this branch is executed if step is not "skipped" or "fake"
                             if step['status'] == 'failed':
@@ -232,9 +234,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                             if _step_name != step['text']:
                                 raise Ux('expected step name %s, got %s' % (step['text'], _step_name))
                             step['time'] = _time
-                        if unskipped_step_count == 0:
-                            feature['time'] = _time
-                            scenario['time'] = _time
+                        start_datetime += timedelta(seconds=step['duration'])
                     else:
                         # steps without a 'result' attribute will be assigned "skipped" status
                         step['status'] = 'skipped'
