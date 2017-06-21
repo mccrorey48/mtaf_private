@@ -224,8 +224,6 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                             else:
                                 step['error_message'] = ''
                             del step['result']
-                            scenario['duration'] += step['duration']
-                            feature['duration'] += step['duration']
                             _feature_name = None
                             _scenario_name = None
                             _step_name = None
@@ -244,6 +242,8 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                                 raise Ux('expected step name %s, got %s' % (step['text'], _step_name))
                             step['time'] = _time
                         start_datetime += timedelta(seconds=step['duration'])
+                        scenario['duration'] += step['duration']
+                        feature['duration'] += step['duration']
                     else:
                         # steps without a 'result' attribute will be assigned "skipped" status
                         step['status'] = 'skipped'

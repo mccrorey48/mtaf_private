@@ -681,28 +681,21 @@ def i_touch_walkthrough(context):
 
 @step("I upgrade the phone if the versions are not correct")
 def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
-    installed_app = None
     if 'fake' not in str(context._config.tags).split(','):
         current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
         installed_aosp, installed_app = get_installed_versions()
         log.debug("installed versions: app %s, aosp %s" % (installed_app, installed_aosp))
         log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
-        app_upgrade_required = current_app != installed_app
         aosp_upgrade_required = current_aosp != installed_aosp
     else:
-        app_upgrade_required = True
         aosp_upgrade_required = True
-    if aosp_upgrade_required or app_upgrade_required:
+    if aosp_upgrade_required:
         log.debug("checking for updates")
         context.run_substep('I set the OTA server')
         context.run_substep('[user] I touch the Preferences icon')
         context.run_substep('[prefs] the Preferences window appears')
         context.run_substep('[prefs] I touch the "System" menu category')
         context.run_substep('[prefs] I touch the "Updates" menu item')
-        if installed_app == '1.0.10':
-            context.run_substep('[prefs] I touch the "Check for System Update" option')
-            context.run_substep('[prefs] an upgrade is found and an "Upgrade" button appears')
-            context.run_substep('[prefs] I touch the "Upgrade" button')
         context.run_substep('I wait for the phone to upgrade and reboot')
         context.run_substep('I verify the system and app versions are current')
 
