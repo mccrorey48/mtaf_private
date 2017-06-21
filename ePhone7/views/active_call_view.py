@@ -10,7 +10,7 @@ class ActiveCallView(BaseView):
 
     locators = {
         "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
-        "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endButtonImage"},
+        "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endCallButton"},
         "RecordActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/recordImageButton"}
     }
 
