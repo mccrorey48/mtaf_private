@@ -226,7 +226,16 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                             del step['result']
                             scenario['duration'] += step['duration']
                             feature['duration'] += step['duration']
-                            _time, _feature_name, _scenario_name, _step_name = stepinfo(info_file)
+                            _feature_name = None
+                            _scenario_name = None
+                            _step_name = None
+                            try:
+                                result = stepinfo(info_file).next()
+                                _time, _feature_name, _scenario_name, _step_name = result
+                            except ValueError:
+                                pass
+                            print "_time: %s, _step_name: %s, _scenario_name: %s, _feature_name: %s" % (
+                                _time, _feature_name, _scenario_name, _step_name)
                             if _feature_name != feature['text']:
                                 raise Ux('expected feature name %s, got %s' % (feature['text'], _feature_name))
                             if _scenario_name != scenario['text']:
