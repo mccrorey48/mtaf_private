@@ -738,7 +738,8 @@ def i_wait_for_the_phone_to_upgrade_and_reboot(context):
     timeout = 20
     current_activity = None
     while time() - start_time < timeout:
-        current_activity = base_view.driver.current_activity == '.OTAAppActivity'
+        current_activity = base_view.driver.current_activity
+        log.debug('waiting for upgrade and reboot: current activity is %s' % current_activity)
         if current_activity == '.OTAAppActivity':
             break
     else:
@@ -1046,7 +1047,7 @@ def the_position_of_the_slider_control_changes(context):
 @fake
 def the_record_button_is_gray(context):
     user_view.get_screenshot_as_png('record_button')
-    expected_color = [115, 115, 115]
+    expected_color = [119, 120, 122]
     actual_color = user_view.get_element_color('record_button', context.record_button)
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
@@ -1055,7 +1056,7 @@ def the_record_button_is_gray(context):
 @fake
 def the_record_button_is_white(context):
     user_view.get_screenshot_as_png('record_button')
-    expected_color = [216, 216, 216]
+    expected_color = [255, 255, 255]
     actual_color = user_view.get_element_color('record_button', context.record_button)
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
