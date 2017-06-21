@@ -52,7 +52,7 @@ commands.append(Command("Dial Beta OTA Code", "dial_beta_ota", require_appium=Tr
 commands.append(Command("Dial Prod OTA Code", "dial_prod_ota", require_appium=True))
 commands.append(Command("Dial Current OTA Code", "dial_show_ota", require_appium=True))
 commands.append(Command("Toggle Multi-Edit", "toggle_multi_edit", require_appium=True))
-commands.append(Command("Force AOSP Downgrade", "force_aosp_downgrade", require_appium=False))
+commands.append(Command("Force AOSP Downgrade to 2.3.12", "force_aosp_downgrade", require_appium=False))
 commands.append(Command("Get XML/CSV", "get_xml", require_appium=True))
 commands.append(Command("Get Screenshot", "get_screenshot", require_appium=True))
 
@@ -429,7 +429,7 @@ class TestGui(Frame):
                 print "Done"
             elif name == 'force_aosp_downgrade':
                 print "Forcing AOSP Downgrade...",
-                force_aosp_downgrade('2.3.8')
+                force_aosp_downgrade('2.3.12')
                 print "Done"
             elif name == 'get_xml':
                 print "Getting XML and CSV...",
