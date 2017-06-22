@@ -22,7 +22,6 @@ def before_all(context):
     context.run_substep = run_substep(context)
     tags = str(context._config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
-        # base_view.open_appium()
         base_view.open_appium('nolaunch', force=True, timeout=60)
         base_view.startup()
 
@@ -43,6 +42,10 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     softphone_manager.end_all_calls()
+    tags = str(context._config.tags).split(',')
+    if 'fake' not in tags and 'json' not in tags:
+        base_view.close_appium()
+        base_view.open_appium()
     logging.pop_msg_src()
 
 
@@ -77,14 +80,13 @@ def after_step(context, step):
             with open(xml_fullpath, 'w') as _f:
                 _f.write(xml.encode('utf8'))
             base_view.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
-        # elif step.name == 'The reboot alert window appears':
-        #     # handle rebooting the ePhone7 before continuing
-        #     base_view.close_appum()
     logging.pop_msg_src()
 
 
 def after_all(context):
-    base_view.close_appium()
+    tags = str(context._config.tags).split(',')
+    if 'fake' not in tags and 'json' not in tags:
+        base_view.close_appium()
     with open('steps.txt', 'w') as f:
         f.write(substeps)
 

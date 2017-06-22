@@ -13,6 +13,7 @@ from lib.wrappers import Trace
 import argparse
 from os import path, getenv
 from ePhone7.utils.versions import *
+from shutil import copyfile
 
 log = logging.get_logger('esi.run_features')
 
@@ -100,6 +101,7 @@ def run_features(config):
     json_repr = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
     with open('output.json', 'w') as f:
         f.write(json_repr)
+    copyfile('log/esi_info.log', 'log/esi_info_copy.log')
     return data
 
 
@@ -111,11 +113,16 @@ def rm_view_prefix(step_name):
     else:
         return step_name
 
-re_name = re.compile('\S+ (\S+).*(feature|scenario|step)\.name: (.*)')
+
+_feature = None
+_scenario = None
+
+re_name = re.compile('(?P<date>\S+) (?P<time>[^.]+)\.(?P<ms>\d+).*(?P<type>feature|scenario|step)\.name: (?P<name>.*)')
+
 
 def stepinfo(f):
-    _feature = None
-    _scenario = None
+    global _feature
+    global _scenario
     while True:
         line = f.readline()
         if not line:
@@ -123,32 +130,32 @@ def stepinfo(f):
         m = re_name.match(line)
         if not m:
             continue
-        if m.group(2) == 'feature':
-            _feature = m.group(3)
-        elif m.group(2) == 'scenario':
-            _scenario = m.group(3)
+        if m.group('type') == 'feature':
+            _feature = m.group('name')
+        elif m.group('type') == 'scenario':
+            _scenario = m.group('name')
         else:
-            yield m.group(1), _feature, _scenario, m.group(3)
+            yield m.group('date'), m.group('time'), m.group('ms'), _feature, _scenario, rm_view_prefix(m.group('name'))
 
 
-def write_result_to_db(server, db_name, test_class, environment, configuration, mock_detector, features):
-    print 'writing to db_name %s, server %s:' % (db_name, server)
-    client = MongoClient(server)
-    db = client[db_name]
-    if len(features) and 'start_time' in features[0] and 'start_date' in features[0]:
-        start_datetime = datetime.strptime("%s %s" % (features[0]['start_date'], features[0]['start_time']), '%x %X')
+def write_result_to_db(args, configuration, _mock_detector, _features):
+    print 'writing to db_name %s, server %s:' % (args.db_name, args.server)
+    client = MongoClient(args.server)
+    db = client[args.db_name]
+    if len(_features) and 'start_time' in _features[0] and 'start_date' in _features[0]:
+        start_datetime = datetime.strptime("%s %s" % (_features[0]['start_date'], _features[0]['start_time']), '%x %X')
     else:
         start_datetime = datetime.now()
     test_start = {
         'app': 'ePhone7',
         'build': '',
         'configuration': configuration,
-        'environment': environment,
+        'environment': args.environment,
         'fail_count': 0,
         'skip_count': 0,
         'pass_count': 0,
         'status': '',
-        'test_class': test_class,
+        'test_class': args.test_class,
         'time': start_datetime.strftime('%X'),
         'date': start_datetime.strftime('%x'),
         'version': '1.x'
@@ -158,20 +165,21 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
     pass_count = 0
     skip_count = 0
     start_result = 'passed'
-    with open('log/esi_info.log', 'r') as info_file:
-        for iter_num, feature in enumerate(features):
+    if args.json_file:
+        info_filename = 'log/esi_info_copy.log'
+    else:
+        info_filename = 'log/esi_info.log'
+    with open(info_filename, 'r') as info_file:
+        for iter_num, feature in enumerate(_features):
             feature_has_skips = False
             feature_has_fakes = False
             feature_has_fails = False
             feature_has_passes = False
             feature['start_id'] = start_id
-            feature['test_class'] = test_class
+            feature['test_class'] = args.test_class
             feature['text'] = feature['name']
             del feature['name']
-            feature['time'] = start_datetime.strftime('%X')
-            feature['date'] = start_datetime.strftime('%x')
             feature['order'] = iter_num
-            # feature['epoch_ms'] = int((start_datetime - datetime.utcfromtimestamp(0)).total_seconds() * 1000)
             background_steps = []
             feature['scenarios'] = []
             feature['duration'] = 0.0
@@ -180,7 +188,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                     background_steps = [step['name'] for step in element['steps']]
                 else:
                     feature['scenarios'].append(element)
-            for scenario in feature['scenarios']:
+            for scenario_index, scenario in enumerate(feature['scenarios']):
                 scenario_has_skips = False
                 scenario_has_fakes = False
                 scenario_has_fails = False
@@ -191,9 +199,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                 if 'tags' not in scenario.keys():
                     scenario['tags'] = []
                 scenario['duration'] = 0.0
-                scenario['time'] = start_datetime.strftime('%X')
-                scenario['date'] = start_datetime.strftime('%x')
-                for step in scenario['steps']:
+                for step_index, step in enumerate(scenario['steps']):
                     step['text'] = rm_view_prefix(step['name'])
                     if 'result' in step:
                         # if 'result' is not in step, the step was skipped, either because it belongs
@@ -206,12 +212,13 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                                 if substep["status"] == 'failed':
                                     step['status'] = 'failed'
                                 elif substep['status'] == 'passed':
-                                    if mock_detector.match(substep["name"]):
+                                    if _mock_detector.match(substep["name"]):
                                         substep['status'] = 'fake'
-                        if mock_detector.match(step['name']):
+                        if _mock_detector.match(step['name']):
                             step['status'] = 'fake'
                             step['duration'] = 0.1
                             scenario_has_fakes = True
+                            start_datetime += timedelta(seconds=step['duration'])
                         else:
                             # this branch is executed if step is not "skipped" or "fake"
                             if step['status'] == 'failed':
@@ -227,21 +234,20 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                             _feature_name = None
                             _scenario_name = None
                             _step_name = None
+                            _date = None
+                            _time = None
                             try:
                                 result = stepinfo(info_file).next()
-                                _time, _feature_name, _scenario_name, _step_name = result
+                                _date, _time, _ms, _feature_name, _scenario_name, _step_name = result
                             except ValueError:
                                 pass
-                            print "_time: %s, _step_name: %s, _scenario_name: %s, _feature_name: %s" % (
-                                _time, _feature_name, _scenario_name, _step_name)
                             if _feature_name != feature['text']:
                                 raise Ux('expected feature name %s, got %s' % (feature['text'], _feature_name))
                             if _scenario_name != scenario['text']:
                                 raise Ux('expected scenario name %s, got %s' % (scenario['text'], _scenario_name))
                             if _step_name != step['text']:
                                 raise Ux('expected step name %s, got %s' % (step['text'], _step_name))
-                            step['time'] = _time
-                        start_datetime += timedelta(seconds=step['duration'])
+                            start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
                         scenario['duration'] += step['duration']
                         feature['duration'] += step['duration']
                     else:
@@ -249,6 +255,14 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
                         step['status'] = 'skipped'
                         scenario_has_skips = True
                         step['duration'] = 0.0
+                    step['time'] = start_datetime.strftime('%X')
+                    step['date'] = start_datetime.strftime('%x')
+                    if step_index == 0:
+                        scenario['time'] = start_datetime.strftime('%X')
+                        scenario['date'] = start_datetime.strftime('%x')
+                        if scenario_index == 0:
+                            feature['time'] = start_datetime.strftime('%X')
+                            feature['date'] = start_datetime.strftime('%x')
                     del step['name']
 
                 if scenario_has_fails:
@@ -285,7 +299,7 @@ def write_result_to_db(server, db_name, test_class, environment, configuration, 
             db['features'].insert_one(feature)
             # del feature['start_id']
             # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))
-    for feature in features:
+    for feature in _features:
         if feature['status'] == 'passed':
             pass_count += 1
         elif feature['status'] == 'skipped':
@@ -339,12 +353,12 @@ if __name__ == '__main__':
                 'stop': False
             }
             features = run_features(run_configuration)
-        if fake_tag:
+        if fake_tag or args.json_file:
             installed_aosp, installed_app = 'fake', 'fake'
         else:
             installed_aosp, installed_app = get_current_versions(args.ota_server)
         report_configuration = "site_tag:%s, run_tags:%s, installed_aosp:%s, installed_app:%s" % \
                                (cfg.site_tag, args.run_tags, installed_aosp, installed_app)
-        write_result_to_db(args.server, args.db_name, args.test_class, args.environment, report_configuration, mock_detector, features)
+        write_result_to_db(args, report_configuration, mock_detector, features)
     except Ux as e:
         print "User Exception: " + e.get_msg()
