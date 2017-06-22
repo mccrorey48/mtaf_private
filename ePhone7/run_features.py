@@ -170,6 +170,7 @@ def write_result_to_db(args, configuration, _mock_detector, _features):
     else:
         info_filename = 'log/esi_info.log'
     with open(info_filename, 'r') as info_file:
+        last_step_duration = 0
         for iter_num, feature in enumerate(_features):
             feature_has_skips = False
             feature_has_fakes = False
@@ -255,6 +256,7 @@ def write_result_to_db(args, configuration, _mock_detector, _features):
                         step['status'] = 'skipped'
                         scenario_has_skips = True
                         step['duration'] = 0.0
+                        start_datetime += timedelta(seconds=last_step_duration)
                     step['time'] = start_datetime.strftime('%X')
                     step['date'] = start_datetime.strftime('%x')
                     if step_index == 0:
@@ -264,6 +266,7 @@ def write_result_to_db(args, configuration, _mock_detector, _features):
                             feature['time'] = start_datetime.strftime('%X')
                             feature['date'] = start_datetime.strftime('%x')
                     del step['name']
+                    last_step_duration = step['duration']
 
                 if scenario_has_fails:
                     scenario['status'] = 'failed'
