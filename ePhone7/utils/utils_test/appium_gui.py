@@ -127,7 +127,8 @@ class TestGui(Frame):
             btn.grid(row=row, column=0, sticky='w', padx=2, pady=2)
             if len(commands) > (row * 2) + 1:
                 cmd = commands[(row * 2) + 1]
-                btn = Button(self.btn_frame, text=cmd.text, command=lambda name=cmd.name: self.do_cmd(name), state=DISABLED)
+                btn = Button(self.btn_frame, text=cmd.text, command=lambda name=cmd.name: self.do_cmd(name),
+                             state=DISABLED)
                 if cmd.require_appium:
                     self.appium_btns.append(btn)
                 else:
@@ -140,7 +141,8 @@ class TestGui(Frame):
         self.appium_btns.append(btn)
         self.find_by_var = StringVar()
         self.find_by_var.set('zpath')
-        self.find_frame.by = Combobox(self.find_frame, width=6, values=['zpath', 'xpath', 'id'], textvariable=self.find_by_var)
+        self.find_frame.by = Combobox(self.find_frame, width=6, values=['zpath', 'xpath', 'id', '-android uiautomator'],
+                                      textvariable=self.find_by_var)
         self.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
         self.find_frame.value = Entry(self.find_frame, width=60, textvariable=self.find_value_var)
