@@ -92,7 +92,7 @@ class MockDetector:
             if re.match('.*'.join(split), step_name.lower()):
                 return True
         else:
-            print step_name
+            # print step_name
             return False
 
 
