@@ -316,6 +316,7 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                          description='  runs behave test on specified features directory and saves' +
                                                      '  the results on a mongodb running on a specified server\n')
+        parser.add_argument("-x", "--stop", dest='stop', action='store_true')
         parser.add_argument("-d", "--db_name", type=str, default='e7_results', help="name of db")
         parser.add_argument("-c", "--test_class", type=str, default='regression',
                             help="class of test, e.g. regression, smoke etc.")
@@ -350,7 +351,7 @@ if __name__ == '__main__':
                 'features_dir': features_dir,
                 'run_tags': args.run_tags,
                 'ota_server': args.ota_server,
-                'stop': False
+                'stop': args.stop
             }
             features = run_features(run_configuration)
         if fake_tag or args.json_file:
