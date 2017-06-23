@@ -127,7 +127,7 @@ class StepInfo:
         with open(self.fname) as f:
             while True:
                 line = f.readline()
-                # log.debug("StepInfo.parse(): line = '%s'" % line)
+                log.debug("StepInfo.parse(): line = '%s'" % line.strip())
                 if not line:
                     break
                 m = re_name.match(line)
