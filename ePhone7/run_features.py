@@ -114,36 +114,38 @@ def rm_view_prefix(step_name):
         return step_name
 
 
-_feature = None
-_scenario = None
-
 re_name = re.compile('(?P<date>\S+) (?P<time>[^.]+)\.(?P<ms>\d+).*(?P<type>feature|scenario|step)\.name: (?P<name>.*)')
 
 
-def stepinfo(f, feature_text, scenario_text, step_text):
-    global _feature
-    global _scenario
-    while True:
-        line = f.readline()
-        # log.debug("stepinfo: line = '%s'" % line)
-        if not line:
-            break
-        m = re_name.match(line)
-        if not m:
-            continue
-        if m.group('type') == 'feature':
-            _feature = m.group('name')
-        elif m.group('type') == 'scenario':
-            _scenario = m.group('name')
-        else:
-            if _feature != feature_text:
-                raise Ux('expected feature name %s, got %s' % (feature_text, _feature))
-            if _scenario != scenario_text:
-                raise Ux('expected scenario name %s, got %s' % (scenario_text, _scenario))
-            _step = rm_view_prefix(m.group('name'))
-            if _step != step_text:
-                raise Ux('expected step name %s, got %s' % (step_text, _step))
-            yield m.group('date'), m.group('time')
+class StepInfo:
+    def __init__(self, fname):
+        self.fname = fname
+        self._feature = None
+        self._scenario = None
+
+    def parse(self, feature_text, scenario_text, step_text):
+        with open(self.fname) as f:
+            while True:
+                line = f.readline()
+                # log.debug("StepInfo.parse(): line = '%s'" % line)
+                if not line:
+                    break
+                m = re_name.match(line)
+                if not m:
+                    continue
+                if m.group('type') == 'feature':
+                    self._feature = m.group('name')
+                elif m.group('type') == 'scenario':
+                    self._scenario = m.group('name')
+                else:
+                    if self._feature != feature_text:
+                        raise Ux('expected feature name %s, got %s' % (feature_text, self._feature))
+                    if self._scenario != scenario_text:
+                        raise Ux('expected scenario name %s, got %s' % (scenario_text, self._scenario))
+                    _step = rm_view_prefix(m.group('name'))
+                    if _step != step_text:
+                        raise Ux('expected step name %s, got %s' % (step_text, _step))
+                    yield m.group('date'), m.group('time')
 
 
 def write_result_to_db(_args, configuration, _mock_detector, _features):
@@ -177,125 +179,124 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
         info_filename = 'log/esi_info_copy.log'
     else:
         info_filename = 'log/esi_info.log'
-    with open(info_filename, 'r') as info_file:
-        last_step_duration = 0
-        for iter_num, feature in enumerate(_features):
-            feature_has_skips = False
-            feature_has_fakes = False
-            feature_has_fails = False
-            feature_has_passes = False
-            feature['start_id'] = start_id
-            feature['test_class'] = _args.test_class
-            feature['text'] = feature['name']
-            del feature['name']
-            feature['order'] = iter_num
-            background_steps = []
-            feature['scenarios'] = []
-            feature['duration'] = 0.0
-            for element in feature['elements']:
-                if element['keyword'] == 'Background':
-                    background_steps = [step['name'] for step in element['steps']]
-                else:
-                    feature['scenarios'].append(element)
-            for scenario_index, scenario in enumerate(feature['scenarios']):
-                scenario_has_skips = False
-                scenario_has_fakes = False
-                scenario_has_fails = False
-                scenario_has_passes = False
-                scenario['text'] = scenario['name']
-                scenario['status'] = 'passed'
-                del scenario['name']
-                if 'tags' not in scenario.keys():
-                    scenario['tags'] = []
-                scenario['duration'] = 0.0
-                for step_index, step in enumerate(scenario['steps']):
-                    step['text'] = rm_view_prefix(step['name'])
-                    if 'result' in step:
-                        # if 'result' is not in step, the step was skipped, either because it belongs
-                        # to a scenario that was skipped (because it didn't have the right tag)
-                        # or a previous step in the current scenario failed
-                        step['status'] = step['result']['status']
-                        step['duration'] = step['result']['duration']
-                        _date, _time = stepinfo(info_file, feature['text'], scenario['text'], step['text']).next()
-                        if "substeps" in step:
-                            for substep in step["substeps"]:
-                                _date, _time = stepinfo(info_file, feature['text'], scenario['text'],
-                                                        substep['text']).next()
-                                start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
-                                substep['time'] = start_datetime.strftime('%X')
-                                substep['date'] = start_datetime.strftime('%x')
-                                if substep["status"] == 'failed':
-                                    step['status'] = 'failed'
-                                elif substep['status'] == 'passed':
-                                    if _mock_detector.match(substep["name"]):
-                                        substep['status'] = 'fake'
-                        if _mock_detector.match(step['name']):
-                            step['status'] = 'fake'
-                        else:
-                            if step['status'] == 'failed':
-                                scenario_has_fails = True
-                            elif step['status'] == 'passed':
-                                if step['name'] not in background_steps:
-                                    scenario_has_passes = True
-                        if 'error_message' in step['result']:
-                            step['error_message'] = step['result']['error_message']
-                        else:
-                            step['error_message'] = ''
-                        del step['result']
-                        start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
-                        scenario['duration'] += step['duration']
-                        feature['duration'] += step['duration']
-                    else:
-                        # steps without a 'result' attribute will be assigned "skipped" status
-                        step['status'] = 'skipped'
-                        scenario_has_skips = True
-                        step['duration'] = 0.0
-                        start_datetime += timedelta(seconds=last_step_duration)
-                    step['time'] = start_datetime.strftime('%X')
-                    step['date'] = start_datetime.strftime('%x')
-                    if step_index == 0:
-                        scenario['time'] = start_datetime.strftime('%X')
-                        scenario['date'] = start_datetime.strftime('%x')
-                        if scenario_index == 0:
-                            feature['time'] = start_datetime.strftime('%X')
-                            feature['date'] = start_datetime.strftime('%x')
-                    del step['name']
-                    last_step_duration = step['duration']
-
-                if scenario_has_fails:
-                    scenario['status'] = 'failed'
-                    feature_has_fails = True
-                elif scenario_has_skips:
-                    scenario['status'] = 'skipped'
-                    feature_has_skips = True
-                elif scenario_has_fakes:
-                    scenario['status'] = 'fake'
-                    feature_has_fakes = True
-                elif scenario_has_passes:
-                    scenario['status'] = 'passed'
-                    feature_has_passes = True
-                else:
-                    # no steps
-                    scenario['status'] = 'fake'
-                    feature_has_fakes = True
-
-            del feature['elements']
-            if feature_has_fails:
-                feature['status'] = 'failed'
-            elif feature_has_fakes:
-                feature['status'] = 'fake'
-            elif feature_has_skips:
-                if feature_has_passes:
-                    feature['status'] = 'incomplete'
-                else:
-                    feature['status'] = 'skipped'
-            elif feature_has_passes:
-                feature['status'] = 'passed'
+    stepinfo = StepInfo(info_filename)
+    last_step_duration = 0
+    for iter_num, feature in enumerate(_features):
+        feature_has_skips = False
+        feature_has_fakes = False
+        feature_has_fails = False
+        feature_has_passes = False
+        feature['start_id'] = start_id
+        feature['test_class'] = _args.test_class
+        feature['text'] = feature['name']
+        del feature['name']
+        feature['order'] = iter_num
+        background_steps = []
+        feature['scenarios'] = []
+        feature['duration'] = 0.0
+        for element in feature['elements']:
+            if element['keyword'] == 'Background':
+                background_steps = [step['name'] for step in element['steps']]
             else:
-                feature['status'] = 'undefined'
-            db['features'].insert_one(feature)
-            # del feature['start_id']
-            # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))
+                feature['scenarios'].append(element)
+        for scenario_index, scenario in enumerate(feature['scenarios']):
+            scenario_has_skips = False
+            scenario_has_fakes = False
+            scenario_has_fails = False
+            scenario_has_passes = False
+            scenario['text'] = scenario['name']
+            scenario['status'] = 'passed'
+            del scenario['name']
+            if 'tags' not in scenario.keys():
+                scenario['tags'] = []
+            scenario['duration'] = 0.0
+            for step_index, step in enumerate(scenario['steps']):
+                step['text'] = rm_view_prefix(step['name'])
+                if 'result' in step:
+                    # if 'result' is not in step, the step was skipped, either because it belongs
+                    # to a scenario that was skipped (because it didn't have the right tag)
+                    # or a previous step in the current scenario failed
+                    step['status'] = step['result']['status']
+                    step['duration'] = step['result']['duration']
+                    _date, _time = stepinfo.parse(feature['text'], scenario['text'], step['text']).next()
+                    if "substeps" in step:
+                        for substep in step["substeps"]:
+                            _date, _time = stepinfo.parse(feature['text'], scenario['text'], substep['text']).next()
+                            start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
+                            substep['time'] = start_datetime.strftime('%X')
+                            substep['date'] = start_datetime.strftime('%x')
+                            if substep["status"] == 'failed':
+                                step['status'] = 'failed'
+                            elif substep['status'] == 'passed':
+                                if _mock_detector.match(substep["name"]):
+                                    substep['status'] = 'fake'
+                    if _mock_detector.match(step['name']):
+                        step['status'] = 'fake'
+                    else:
+                        if step['status'] == 'failed':
+                            scenario_has_fails = True
+                        elif step['status'] == 'passed':
+                            if step['name'] not in background_steps:
+                                scenario_has_passes = True
+                    if 'error_message' in step['result']:
+                        step['error_message'] = step['result']['error_message']
+                    else:
+                        step['error_message'] = ''
+                    del step['result']
+                    start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
+                    scenario['duration'] += step['duration']
+                    feature['duration'] += step['duration']
+                else:
+                    # steps without a 'result' attribute will be assigned "skipped" status
+                    step['status'] = 'skipped'
+                    scenario_has_skips = True
+                    step['duration'] = 0.0
+                    start_datetime += timedelta(seconds=last_step_duration)
+                step['time'] = start_datetime.strftime('%X')
+                step['date'] = start_datetime.strftime('%x')
+                if step_index == 0:
+                    scenario['time'] = start_datetime.strftime('%X')
+                    scenario['date'] = start_datetime.strftime('%x')
+                    if scenario_index == 0:
+                        feature['time'] = start_datetime.strftime('%X')
+                        feature['date'] = start_datetime.strftime('%x')
+                del step['name']
+                last_step_duration = step['duration']
+
+            if scenario_has_fails:
+                scenario['status'] = 'failed'
+                feature_has_fails = True
+            elif scenario_has_skips:
+                scenario['status'] = 'skipped'
+                feature_has_skips = True
+            elif scenario_has_fakes:
+                scenario['status'] = 'fake'
+                feature_has_fakes = True
+            elif scenario_has_passes:
+                scenario['status'] = 'passed'
+                feature_has_passes = True
+            else:
+                # no steps
+                scenario['status'] = 'fake'
+                feature_has_fakes = True
+
+        del feature['elements']
+        if feature_has_fails:
+            feature['status'] = 'failed'
+        elif feature_has_fakes:
+            feature['status'] = 'fake'
+        elif feature_has_skips:
+            if feature_has_passes:
+                feature['status'] = 'incomplete'
+            else:
+                feature['status'] = 'skipped'
+        elif feature_has_passes:
+            feature['status'] = 'passed'
+        else:
+            feature['status'] = 'undefined'
+        db['features'].insert_one(feature)
+        # del feature['start_id']
+        # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))
     for feature in _features:
         if feature['status'] == 'passed':
             pass_count += 1
