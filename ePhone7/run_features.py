@@ -122,30 +122,30 @@ class StepInfo:
         self.fname = fname
         self._feature = None
         self._scenario = None
+        self.f = open(self.fname)
 
     def parse(self, feature_text, scenario_text, step_text):
-        with open(self.fname) as f:
-            while True:
-                line = f.readline()
-                log.debug("StepInfo.parse(): line = '%s'" % line.strip())
-                if not line:
-                    break
-                m = re_name.match(line)
-                if not m:
-                    continue
-                if m.group('type') == 'feature':
-                    self._feature = m.group('name')
-                elif m.group('type') == 'scenario':
-                    self._scenario = m.group('name')
-                else:
-                    if self._feature != feature_text:
-                        raise Ux('expected feature name %s, got %s' % (feature_text, self._feature))
-                    if self._scenario != scenario_text:
-                        raise Ux('expected scenario name %s, got %s' % (scenario_text, self._scenario))
-                    _step = rm_view_prefix(m.group('name'))
-                    if _step != step_text:
-                        raise Ux('expected step name %s, got %s' % (step_text, _step))
-                    yield m.group('date'), m.group('time')
+        while True:
+            line = self.f.readline()
+            log.debug("StepInfo.parse(): line = '%s'" % line.strip())
+            if not line:
+                break
+            m = re_name.match(line)
+            if not m:
+                continue
+            if m.group('type') == 'feature':
+                self._feature = m.group('name')
+            elif m.group('type') == 'scenario':
+                self._scenario = m.group('name')
+            else:
+                if self._feature != feature_text:
+                    raise Ux('expected feature name %s, got %s' % (feature_text, self._feature))
+                if self._scenario != scenario_text:
+                    raise Ux('expected scenario name %s, got %s' % (scenario_text, self._scenario))
+                _step = rm_view_prefix(m.group('name'))
+                if _step != step_text:
+                    raise Ux('expected step name %s, got %s' % (step_text, _step))
+                yield m.group('date'), m.group('time')
 
 
 def write_result_to_db(_args, configuration, _mock_detector, _features):
