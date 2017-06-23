@@ -46,6 +46,7 @@ def after_scenario(context, scenario):
     if 'fake' not in tags and 'json' not in tags:
         base_view.close_appium()
         base_view.open_appium()
+        base_view.startup()
     logging.pop_msg_src()
 
 
