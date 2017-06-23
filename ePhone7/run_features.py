@@ -58,12 +58,12 @@ def run_features(config):
     for line in not_json_prefix.strip().split('\n'):
         if len(line.split(' = ')) != 2:
             continue
-        (type, name) = line.split(' = ')
-        if type == 'step':
+        (_type, name) = line.split(' = ')
+        if _type == 'step':
             if current_step is not None:
                 printed_steps.append(current_step)
             current_step = {"name": name, "substeps": []}
-        elif type == 'substep' and current_step is not None:
+        elif _type == 'substep' and current_step is not None:
             splitname = name.split(',')
             name = ' '.join(splitname[:-2])
             substep = {
@@ -120,11 +120,12 @@ _scenario = None
 re_name = re.compile('(?P<date>\S+) (?P<time>[^.]+)\.(?P<ms>\d+).*(?P<type>feature|scenario|step)\.name: (?P<name>.*)')
 
 
-def stepinfo(f):
+def stepinfo(f, feature_text, scenario_text, step_text):
     global _feature
     global _scenario
     while True:
         line = f.readline()
+        # log.debug("stepinfo: line = '%s'" % line)
         if not line:
             break
         m = re_name.match(line)
@@ -135,13 +136,20 @@ def stepinfo(f):
         elif m.group('type') == 'scenario':
             _scenario = m.group('name')
         else:
-            yield m.group('date'), m.group('time'), m.group('ms'), _feature, _scenario, rm_view_prefix(m.group('name'))
+            if _feature != feature_text:
+                raise Ux('expected feature name %s, got %s' % (feature_text, _feature))
+            if _scenario != scenario_text:
+                raise Ux('expected scenario name %s, got %s' % (scenario_text, _scenario))
+            _step = rm_view_prefix(m.group('name'))
+            if _step != step_text:
+                raise Ux('expected step name %s, got %s' % (step_text, _step))
+            yield m.group('date'), m.group('time')
 
 
-def write_result_to_db(args, configuration, _mock_detector, _features):
-    print 'writing to db_name %s, server %s:' % (args.db_name, args.server)
-    client = MongoClient(args.server)
-    db = client[args.db_name]
+def write_result_to_db(_args, configuration, _mock_detector, _features):
+    print 'writing to db_name %s, server %s:' % (_args.db_name, _args.server)
+    client = MongoClient(_args.server)
+    db = client[_args.db_name]
     if len(_features) and 'start_time' in _features[0] and 'start_date' in _features[0]:
         start_datetime = datetime.strptime("%s %s" % (_features[0]['start_date'], _features[0]['start_time']), '%x %X')
     else:
@@ -150,12 +158,12 @@ def write_result_to_db(args, configuration, _mock_detector, _features):
         'app': 'ePhone7',
         'build': '',
         'configuration': configuration,
-        'environment': args.environment,
+        'environment': _args.environment,
         'fail_count': 0,
         'skip_count': 0,
         'pass_count': 0,
         'status': '',
-        'test_class': args.test_class,
+        'test_class': _args.test_class,
         'time': start_datetime.strftime('%X'),
         'date': start_datetime.strftime('%x'),
         'version': '1.x'
@@ -165,7 +173,7 @@ def write_result_to_db(args, configuration, _mock_detector, _features):
     pass_count = 0
     skip_count = 0
     start_result = 'passed'
-    if args.json_file:
+    if _args.json_file:
         info_filename = 'log/esi_info_copy.log'
     else:
         info_filename = 'log/esi_info.log'
@@ -177,7 +185,7 @@ def write_result_to_db(args, configuration, _mock_detector, _features):
             feature_has_fails = False
             feature_has_passes = False
             feature['start_id'] = start_id
-            feature['test_class'] = args.test_class
+            feature['test_class'] = _args.test_class
             feature['text'] = feature['name']
             del feature['name']
             feature['order'] = iter_num
@@ -208,8 +216,14 @@ def write_result_to_db(args, configuration, _mock_detector, _features):
                         # or a previous step in the current scenario failed
                         step['status'] = step['result']['status']
                         step['duration'] = step['result']['duration']
+                        _date, _time = stepinfo(info_file, feature['text'], scenario['text'], step['text']).next()
                         if "substeps" in step:
                             for substep in step["substeps"]:
+                                _date, _time = stepinfo(info_file, feature['text'], scenario['text'],
+                                                        substep['text']).next()
+                                start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
+                                substep['time'] = start_datetime.strftime('%X')
+                                substep['date'] = start_datetime.strftime('%x')
                                 if substep["status"] == 'failed':
                                     step['status'] = 'failed'
                                 elif substep['status'] == 'passed':
@@ -217,38 +231,18 @@ def write_result_to_db(args, configuration, _mock_detector, _features):
                                         substep['status'] = 'fake'
                         if _mock_detector.match(step['name']):
                             step['status'] = 'fake'
-                            step['duration'] = 0.1
-                            scenario_has_fakes = True
-                            start_datetime += timedelta(seconds=step['duration'])
                         else:
-                            # this branch is executed if step is not "skipped" or "fake"
                             if step['status'] == 'failed':
                                 scenario_has_fails = True
                             elif step['status'] == 'passed':
                                 if step['name'] not in background_steps:
                                     scenario_has_passes = True
-                            if 'error_message' in step['result']:
-                                step['error_message'] = step['result']['error_message']
-                            else:
-                                step['error_message'] = ''
-                            del step['result']
-                            _feature_name = None
-                            _scenario_name = None
-                            _step_name = None
-                            _date = None
-                            _time = None
-                            try:
-                                result = stepinfo(info_file).next()
-                                _date, _time, _ms, _feature_name, _scenario_name, _step_name = result
-                            except ValueError:
-                                pass
-                            if _feature_name != feature['text']:
-                                raise Ux('expected feature name %s, got %s' % (feature['text'], _feature_name))
-                            if _scenario_name != scenario['text']:
-                                raise Ux('expected scenario name %s, got %s' % (scenario['text'], _scenario_name))
-                            if _step_name != step['text']:
-                                raise Ux('expected step name %s, got %s' % (step['text'], _step_name))
-                            start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
+                        if 'error_message' in step['result']:
+                            step['error_message'] = step['result']['error_message']
+                        else:
+                            step['error_message'] = ''
+                        del step['result']
+                        start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
                         scenario['duration'] += step['duration']
                         feature['duration'] += step['duration']
                     else:
@@ -334,9 +328,12 @@ if __name__ == '__main__':
         parser.add_argument("-s", "--server", type=str, default=mtaf_db_host,
                             help="(optional) specify mongodb server, default vqda1")
         parser.add_argument("-r", "--run_tags", type=str, default='', help="run tags (comma separated list)")
-        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.7', help="aosp downgrade version (default 2.3.7)")
-        parser.add_argument("-O", "--ota_server", type=str, default='alpha', choices=['alpha', 'beta', 'prod'], help="OTA server (default alpha")
-        parser.add_argument("-a", "--downgrade_app", type=str, default='1.3.6', help="apk downgrade version (default 1.3.6)")
+        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.7',
+                            help="aosp downgrade version (default 2.3.7)")
+        parser.add_argument("-O", "--ota_server", type=str, default='alpha',
+                            choices=['alpha', 'beta', 'prod'], help="OTA server (default alpha")
+        parser.add_argument("-a", "--downgrade_app", type=str, default='1.3.6',
+                            help="apk downgrade version (default 1.3.6)")
         args = parser.parse_args()
         fake_tag = 'fake' in args.run_tags.split(',')
         mock_detector = MockDetector(path.join(args.features_directory, "steps"),

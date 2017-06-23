@@ -1,7 +1,7 @@
 import inspect
 import sys
 import traceback
-from time import time
+from time import time, sleep
 import re
 import lib.logging_esi as logging_esi
 from appium import webdriver
@@ -156,7 +156,9 @@ class SkipTrace(Trace):
 
 def fake(func):
     def wrapper(context, *args, **kwargs):
-        if 'fake' not in str(context._config.tags).split(','):
+        if 'fake' in str(context._config.tags).split(','):
+            sleep(0.1)
+        else:
             func(context, *args, **kwargs)
     return wrapper
 

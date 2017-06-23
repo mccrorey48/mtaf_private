@@ -141,7 +141,7 @@ class TestGui(Frame):
         self.appium_btns.append(btn)
         self.find_by_var = StringVar()
         self.find_by_var.set('zpath')
-        self.find_frame.by = Combobox(self.find_frame, width=6, values=['zpath', 'xpath', 'id', '-android uiautomator'],
+        self.find_frame.by = Combobox(self.find_frame, width=16, values=['zpath', 'xpath', 'id', '-android uiautomator'],
                                       textvariable=self.find_by_var)
         self.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
