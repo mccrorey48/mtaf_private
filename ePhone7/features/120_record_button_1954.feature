@@ -17,10 +17,10 @@ Feature: As a user I want to have a Record button available during an active cal
     Then  the Advanced Options view disappears
     When  I receive a call
     And   I answer the call
-    Then  an "Active Call Screen" window appears
-    And   a Record button is visible
-    And   the Record button is white
-    And   I end the call
+    Then  [active_call] an "Active Call" window appears
+    And   [active_call] a Record button is visible
+    And   [active_call] the Record button is white
+    And   [active_call] I end the call
 
   Scenario: I want to enable recording for an outgoing call
     And   [advanced] I check the Call Record Enable checkbox
@@ -28,10 +28,10 @@ Feature: As a user I want to have a Record button available during an active cal
     Then  the Advanced Options view disappears
     When  I make a call to a coworker contact
     And   the coworker contact answers the call
-    Then  an "Active Call Screen" window appears
-    And   a Record button is visible
-    And   the Record button is white
-    And   I end the call
+    Then  [active_call] an "Active Call" window appears
+    And   [active_call] a Record button is visible
+    And   [active_call] the Record button is white
+    And   [active_call] I end the call
 
   Scenario: I want to disable recording for an incoming call
     And   [advanced] I uncheck the Call Record Enable checkbox
@@ -39,10 +39,10 @@ Feature: As a user I want to have a Record button available during an active cal
     Then  the Advanced Options view disappears
     When  I receive a call
     And   I answer the call
-    Then  an "Active Call Screen" window appears
-    And   a Record button is visible
-    And   the Record button is gray
-    And   I end the call
+    Then  [active_call] an "Active Call" window appears
+    And   [active_call] a Record button is visible
+    And   [active_call] the Record button is gray
+    And   [active_call] I end the call
 
   Scenario: I want to disable recording for an outgoing call
     And   [advanced] I uncheck the Call Record Enable checkbox
@@ -50,7 +50,7 @@ Feature: As a user I want to have a Record button available during an active cal
     Then  the Advanced Options view disappears
     When  I make a call to a coworker contact
     And   the coworker contact answers the call
-    Then  an "Active Call Screen" window appears
-    And   a Record button is visible
-    And   the Record button is gray
-    And   I end the call
+    Then  [active_call] an "Active Call" window appears
+    And   [active_call] a Record button is visible
+    And   [active_call] the Record button is gray
+    And   [active_call] I end the call

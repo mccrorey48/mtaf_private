@@ -50,6 +50,7 @@ def user__i_touch_the_dial_button(context):
 def user__i_touch_the_history_button(context):
     user_view.click_named_element('History')
 
+
 @step("[user] I touch the Home button")
 @fake
 def user__i_touch_the_home_button(context):
@@ -89,6 +90,7 @@ def user__only_the_contact_i_touched_is_listed(context):
 
 @then("[user] the logo width is at least {width} pixels")
 @fake
-def user__the_logo_width_is_at_least_440_pixels(context, width):
+def user__the_logo_width_is_at_least_width_pixels(context, width):
     assert int(context.logo_element.size['width']) >= int(width)
+
 

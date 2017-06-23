@@ -6,6 +6,7 @@ from advanced_steps import *
 from lib.user_exception import UserException as Ux
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.utils.versions import *
+from lib.wrappers import fake
 
 
 @step("A call between two other accounts has been parked by the called account")
@@ -76,13 +77,6 @@ def a_message_indicates_that_calls_are_being_forwarded_to_the_contact(context):
 @step("A message indicates that calls are being forwarded to voicemail")
 def a_message_indicates_that_calls_are_being_forwarded_to_voicemail(context):
     pass
-
-
-@step("a Record button is visible")
-@fake
-def a_record_button_is_visible(context):
-    assert user_view.element_is_present('CallRecordButton')
-    context.record_button = user_view.find_named_element('CallRecordButton')
 
 
 @step('A "Select Ringtone" window appears with options for various ringtones')
@@ -293,40 +287,19 @@ def i_close_the_preferences_window(context):
 @step("I downgrade my aosp and app to production version")
 def i_downgrade_my_aosp_and_app_to_production_version(context):
     aosp, app = get_current_versions('prod')
-    i_downgrade_my_aosp_to_downgradeaospversion_and_app_to_downgradeappversion(context, aosp, app)
+    i_downgrade_my_aosp_to_downgradeaospversion(context, aosp, app)
 
 
-@step("I downgrade my aosp to {downgrade_aosp_version} and app to {downgrade_app_version}")
+@step("I downgrade my aosp to {downgrade_aosp_version}")
 @fake
-def i_downgrade_my_aosp_to_downgradeaospversion_and_app_to_downgradeappversion(context, downgrade_aosp_version, downgrade_app_version):
-    # if either aosp or app versions are different from the specified downgrade versions:
-    # 1. remove apk upgrades
-    # 2. check if an aosp downgrade is needed
-    # 3. if so, force an aosp downgrade
-    # 4. check if an app downgrade is still needed
-    # 5. if so, force an app downgrade
-    # 6. verify the new versions
+def i_downgrade_my_aosp_to_downgradeaospversion(context, downgrade_aosp_version):
     installed_aosp_version, installed_app_version = get_installed_versions()
-    need_aosp_downgrade = installed_aosp_version != downgrade_aosp_version
-    # need_app_downgrade = installed_app_version != downgrade_app_version
-    # if need_aosp_downgrade or need_app_downgrade:
-    if need_aosp_downgrade:
+    if installed_aosp_version != downgrade_aosp_version:
         get_downgrade_images(downgrade_aosp_version)
         base_view.close_appium()
-        remove_apk_upgrades()
-        if need_aosp_downgrade:
-            force_aosp_downgrade(downgrade_aosp_version)
+        force_aosp_downgrade(downgrade_aosp_version)
         installed_aosp_version, installed_app_version = get_installed_versions()
-        # need_app_downgrade = installed_app_version != downgrade_app_version
-        # if need_app_downgrade:
-        #     force_app_downgrade(downgrade_app_version)
-        # installed_aosp_version, installed_app_version = get_installed_versions()
         assert installed_aosp_version == downgrade_aosp_version
-        assert installed_app_version == downgrade_app_version
-        base_view.open_appium('nolaunch', force=True, timeout=60)
-        base_view.startup()
-    else:
-        log.debug("did not need app or aosp downgrade")
 
 
 @then("I downgrade my app")
@@ -337,12 +310,6 @@ def i_downgrade_my_app(context):
         force_app_downgrade(context.config.userdata['downgrade_app'])
         base_view.open_appium('nolaunch', force=True, timeout=60)
         base_view.startup()
-
-
-@step("I end the call")
-@fake
-def i_end_the_call(context):
-    user_view.end_call()
 
 
 @step("I enter a VLAN identifier between 1 and 4094")
@@ -427,6 +394,17 @@ def i_make_a_call_to_a_coworker_contact(context):
     dial_view.dial_number(context.softphone.number)
     dial_view.touch_dial_button()
     context.softphone.wait_for_call_status('early', dial_view.call_status_wait)
+
+
+@step("I perform an OTA upgrade")
+def i_perform_an_ota_upgrade(context):
+    context.run_substep('I set the OTA server')
+    context.run_substep('[user] I touch the Preferences icon')
+    context.run_substep('[prefs] the Preferences window appears')
+    context.run_substep('[prefs] I touch the "System" menu category')
+    context.run_substep('[prefs] I touch the "Updates" menu item')
+    context.run_substep('I wait for the phone to upgrade and reboot')
+    context.run_substep('I verify the system and app versions are current')
 
 
 @step("I receive a call")
@@ -691,13 +669,7 @@ def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
         aosp_upgrade_required = True
     if aosp_upgrade_required:
         log.debug("checking for updates")
-        context.run_substep('I set the OTA server')
-        context.run_substep('[user] I touch the Preferences icon')
-        context.run_substep('[prefs] the Preferences window appears')
-        context.run_substep('[prefs] I touch the "System" menu category')
-        context.run_substep('[prefs] I touch the "Updates" menu item')
-        context.run_substep('I wait for the phone to upgrade and reboot')
-        context.run_substep('I verify the system and app versions are current')
+        context.run_substep('I perform an OTA upgrade')
 
 
 @given("I use the spud serial interface to list the installed packages")
@@ -1034,24 +1006,6 @@ def the_popup_shows_the_current_ota_environment_name(context):
 @step("the position of the slider control changes")
 def the_position_of_the_slider_control_changes(context):
     pass
-
-
-@step("the Record button is gray")
-@fake
-def the_record_button_is_gray(context):
-    user_view.get_screenshot_as_png('record_button')
-    expected_color = [119, 120, 122]
-    actual_color = user_view.get_element_color('record_button', context.record_button)
-    assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
-
-
-@step("the Record button is white")
-@fake
-def the_record_button_is_white(context):
-    user_view.get_screenshot_as_png('record_button')
-    expected_color = [255, 255, 255]
-    actual_color = user_view.get_element_color('record_button', context.record_button)
-    assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
 
 @step('the "Ringtones" window disappears')
