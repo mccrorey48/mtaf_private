@@ -11,8 +11,9 @@ def activecall__a_record_button_is_visible(context):
 
 
 @step('[active_call] an "Active Call" window appears')
+@fake
 def activecall__an_active_call_window_appears(context):
-    pass
+    assert active_call_view.is_present()
 
 
 @step("[active_call] I end the call")
@@ -28,7 +29,7 @@ def activecall__i_select_a_coworkers_mailbox(context):
 
 @when('[active_call] I tap "Transfer to VM"')
 def activecall__i_tap_transfer_to_vm(context):
-    pass
+    active_call_view.touch_transfer_to_vm()
 
 
 @then('[active_call] I touch "OK" to complete the voicemail transfer')
@@ -54,8 +55,9 @@ def activecall__the_record_button_is_white(context):
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
 
-@then('[active_call] the transfer dialpad appears')
-def activecall__the_transfer_dialpad_appears(context):
-    pass
+@then('[active_call] the transfer dialog appears')
+@fake
+def activecall__the_transfer_dialog_appears(context):
+    assert active_call_view.transfer_dialog_is_present()
 
 
