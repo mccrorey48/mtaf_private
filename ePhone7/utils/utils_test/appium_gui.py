@@ -70,27 +70,40 @@ class LogFrame(Frame):
     def flush(self, *args, **kwargs):
         pass
 
+
 class AccountFrame(Frame):
     def __init__(self, parent, user_name, *args, **kwargs):
         Frame.__init__(self, parent, bg='tan', *args, **kwargs)
         self.registered_var = IntVar()
         self.registered_var.set(0)
         self.status_var = StringVar()
-        self.status_var.set('')
+        self.status_var.set('None')
+        self.remote_var = StringVar()
+        self.remote_var.set('')
+
         self.label = Label(self, text=user_name)
-        self.label.grid(row=0, column=0, sticky='w', padx=2, pady=2)
+        self.label.grid(row=0, column=0, sticky='w', padx=2, pady=2, ipady=3)
+
         self.cb = Checkbutton(self, text='Registered', variable=self.registered_var)
-        self.cb.grid(row=0, column=1, padx=2)
+        self.cb.grid(row=0, column=1, padx=2, ipady=1)
+
         self.status = Frame(self)
         self.status.label = Label(self.status, text='Status: ')
-        self.status.label.grid(row=0, column=0)
+        self.status.label.grid(row=0, column=0, padx=2, ipady=2)
         self.status.value = Label(self.status, textvariable=self.status_var, width=10)
-        self.status.value.grid(row=0, column=1)
+        self.status.value.grid(row=0, column=1, padx=2, ipady=2)
         self.status.grid(row=0, column=2, padx=5, pady=2)
+
         self.answer = Button(self, text='Answer', command=lambda: self.softphone.send_response_code(200), state=DISABLED)
         self.answer.grid(row=0, column=3, padx=5, pady=2)
+
         self.hangup = Button(self, text='Hang Up', command=lambda: self.softphone.end_call(), state=DISABLED)
         self.hangup.grid(row=0, column=4, padx=5, pady=2)
+
+        self.remote = Label(self, textvariable=self.remote_var, width=10)
+        self.remote.grid(row=0, column=5, padx=5, pady=2, ipady=3, sticky='ew')
+        self.columnconfigure(5, weight=1)
+
         self.softphone = get_softphone(user_name)
         self.softphone.set_incoming_response(180)
         self.after(100, self.check_status)
@@ -99,9 +112,18 @@ class AccountFrame(Frame):
         self.registered_var.set(self.softphone.account_info.account.info().reg_status == 200)
         old_call_status = self.status_var.get()
         new_call_status = self.softphone.account_info.call_status
+        remote_uri = self.softphone.account_info.remote_uri
         if new_call_status != old_call_status:
             self.status_var.set(new_call_status)
-            print "call status = " + new_call_status
+            if remote_uri is None:
+                self.remote_var.set('')
+            else:
+                self.remote_var.set('--> ' + self.softphone.account_info.remote_uri)
+            # if remote_uri is None:
+            #     print "%s: %5s --> %5s" % (self.softphone.uri, old_call_status, new_call_status)
+            # else:
+            #     print "%s: %5s --> %5s  [remote: %s]" % (self.softphone.uri, old_call_status, new_call_status,
+            #                                              remote_uri)
             if new_call_status == 'call':
                 self.hangup.configure(state=NORMAL)
             else:
@@ -113,134 +135,155 @@ class AccountFrame(Frame):
         self.after(100, self.check_status)
 
 
+class MyMenu(Menu):
+
+    def __init__(self, parent, *args, **kwargs):
+        Menu.__init__(self, parent, *args, **kwargs)
+        self.appium_sub_menu = None
+        self.appium_sub_menu_max_index = None
+        self.other_sub_menu = None
+        self.other_sub_menu_max_index = None
+
+
 class TestGui(Frame):
 
     elems = []
     appium_is_open = False
     appium_btns = []
-    noappium_btns = []
+    no_appium_btns = []
     elem_indices = []
     appium_commands = []
     other_commands = []
+    find_by_var = None
+    find_value_var = None
+    key_code = None
+    attr_frame = None
+    elem_index = None
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
         self.create_commands()
-        self.create_menus(parent)
+        self.menu = self.create_menus(parent)
         self.top_frame_row = 0
-        self.btn_frame = None
-        self.create_btn_frame()
-        self.softphone_frame = None
-        self.create_softphone_frame()
-        self.create_logframe()
-        self.create_bottom_frame()
+        self.btn_frame = self.create_btn_frame()
+        self.softphone_frame = self.create_softphone_frame()
+        self.log_frame = self.create_log_frame()
+        self.bottom_frame = self.create_bottom_frame()
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
         self.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
-        for i in range(self.appium_sub_menu_max_index):
-            self.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
-        for btn in self.noappium_btns:
+        for i in range(self.menu.appium_sub_menu_max_index):
+            self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
+        for btn in self.no_appium_btns:
             btn.configure(state=NORMAL)
-        for i in range(self.other_sub_menu_max_index):
-            self.other_sub_menu.entryconfig(i + 1, state=NORMAL)
+        for i in range(self.menu.other_sub_menu_max_index):
+            self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
 
     def create_bottom_frame(self):
-        self.bottom_frame = Frame(self, bg="tan")
-        self.bottom_frame.grid_columnconfigure(0, weight=1)
-        self.bottom_frame.Quit = Button(self.bottom_frame, text="Quit", command=self.close_appium_and_quit)
-        self.bottom_frame.Quit.grid(row=0, column=0, sticky='e', padx=2, pady=2)
-        self.bottom_frame.grid(row=self.top_frame_row, column=0, padx=2, pady=2, sticky='news')
-
-    def create_logframe(self):
-        self.logframe = LogFrame(self)
-        sys.stdout = self.logframe
-        self.logframe.grid_columnconfigure(0, weight=1)
-        self.logframe.grid_rowconfigure(0, weight=1)
-        self.logframe.grid(row=self.top_frame_row, column=0, padx=2, pady=2, sticky='news')
+        bottom_frame = Frame(self, bg="tan")
+        bottom_frame.grid_columnconfigure(0, weight=1)
+        bottom_frame.Quit = Button(bottom_frame, text="Quit", command=self.close_appium_and_quit)
+        bottom_frame.Quit.grid(row=0, column=0, sticky='e', padx=2, pady=2)
+        bottom_frame.grid(row=self.top_frame_row, column=0, padx=2, pady=2, sticky='news')
         self.top_frame_row += 1
+        return bottom_frame
+
+    def create_log_frame(self):
+        log_frame = LogFrame(self)
+        sys.stdout = log_frame
+        log_frame.grid_columnconfigure(0, weight=1)
+        log_frame.grid_rowconfigure(0, weight=1)
+        log_frame.grid(row=self.top_frame_row, column=0, padx=2, pady=2, sticky='news')
+        self.grid_rowconfigure(self.top_frame_row, weight=1)
+        self.top_frame_row += 1
+        return log_frame
 
     def create_softphone_frame(self):
-        self.softphone_frame = Frame(self, bg='brown')
-        self.softphone_frame.grid_columnconfigure(0, weight=1)
-        self.softphone_frame.account1_frame = AccountFrame(self.softphone_frame, cfg.site['DefaultSoftphoneUser'])
-        self.softphone_frame.account1_frame.grid(row=0, column=0, sticky='ew', padx=2, pady=2)
-        self.softphone_frame.account2_frame = AccountFrame(self.softphone_frame, cfg.site['DefaultForwardAccount'])
-        self.softphone_frame.account2_frame.grid(row=1, column=0, sticky='ew', padx=2, pady=2)
-        self.softphone_frame.grid(row=self.top_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        softphone_frame = Frame(self, bg='brown')
+        softphone_frame.grid_columnconfigure(0, weight=1)
+        softphone_frame.account1_frame = AccountFrame(softphone_frame, cfg.site['DefaultSoftphoneUser'])
+        softphone_frame.account1_frame.grid(row=0, column=0, sticky='ew', padx=2, pady=2)
+        softphone_frame.account2_frame = AccountFrame(softphone_frame, cfg.site['DefaultForwardAccount'])
+        softphone_frame.account2_frame.grid(row=1, column=0, sticky='ew', padx=2, pady=2)
+        softphone_frame.grid(row=self.top_frame_row, column=0, sticky='ew', padx=2, pady=2)
         self.top_frame_row += 1
+        return softphone_frame
 
     def create_btn_frame(self):
         btn_frame_row = 0
-        self.btn_frame = Frame(self, bg="brown")
-        self.btn_frame.find_frame = Frame(self.btn_frame, bg='tan')
-        btn = Button(self.btn_frame.find_frame, text="find elements:", command=self.find_elements, state=DISABLED)
+        btn_frame = Frame(self, bg="brown")
+        btn_frame.find_frame = Frame(btn_frame, bg='tan')
+        btn = Button(btn_frame.find_frame, text="find elements:", command=self.find_elements, state=DISABLED)
         self.appium_btns.append(btn)
-        self.find_by_var = StringVar()
-        self.find_by_var.set('zpath')
-        self.btn_frame.find_frame.by = Combobox(self.btn_frame.find_frame, width=16,
-                                                values=['zpath', 'xpath', 'id', '-android uiautomator'],
-                                                textvariable=self.find_by_var)
-        self.btn_frame.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
-        self.find_value_var = StringVar()
-        self.btn_frame.find_frame.value = Entry(self.btn_frame.find_frame, width=60, textvariable=self.find_value_var)
-        self.btn_frame.find_frame.hsb = Scrollbar(self.btn_frame.find_frame, orient=HORIZONTAL,
-                                                  command=self.btn_frame.find_frame.value.xview)
-        self.btn_frame.find_frame.value["xscrollcommand"] = self.btn_frame.find_frame.hsb.set
+        find_by_var = StringVar()
+        find_by_var.set('zpath')
+        btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16,
+                                           values=['zpath', 'xpath', 'id', '-android uiautomator'],
+                                           textvariable=find_by_var)
+        btn_frame.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
+        find_value_var = StringVar()
+        btn_frame.find_frame.value = Entry(btn_frame.find_frame, width=60,
+                                           textvariable=find_value_var)
+        btn_frame.find_frame.hsb = Scrollbar(btn_frame.find_frame, orient=HORIZONTAL,
+                                             command=btn_frame.find_frame.value.xview)
+        btn_frame.find_frame.value["xscrollcommand"] = btn_frame.find_frame.hsb.set
         btn.grid(row=0, column=0, padx=2, pady=2)
-        self.btn_frame.find_frame.grid_columnconfigure(1, weight=1)
-        self.btn_frame.find_frame.value.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
-        self.btn_frame.find_frame.hsb.grid(row=1, column=2, sticky='ew')
-        self.btn_frame.find_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        btn_frame.find_frame.grid_columnconfigure(1, weight=1)
+        btn_frame.find_frame.value.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
+        btn_frame.find_frame.hsb.grid(row=1, column=2, sticky='ew')
+        btn_frame.find_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
-        self.btn_frame.keycode_frame = Frame(self.btn_frame, bg='tan')
-        btn = Button(self.btn_frame.keycode_frame, text="send keycode:", command=self.send_keycode, state=DISABLED)
+        btn_frame.key_code_frame = Frame(btn_frame, bg='tan')
+        btn = Button(btn_frame.key_code_frame, text="send keycode:", command=self.send_keycode, state=DISABLED)
         self.appium_btns.append(btn)
-        self.keycode = IntVar()
-        self.keycode.set(4)
-        self.btn_frame.keycode_frame.value = Entry(self.btn_frame.keycode_frame, width=10, textvariable=self.keycode)
+        key_code = IntVar()
+        key_code.set(4)
+        btn_frame.key_code_frame.value = Entry(btn_frame.key_code_frame, width=5,
+                                               textvariable=key_code)
         btn.grid(row=0, column=0, padx=2, pady=2, sticky='w')
-        self.btn_frame.keycode_frame.grid_columnconfigure(1, weight=1)
-        self.btn_frame.keycode_frame.value.grid(row=0, column=1, padx=2, pady=2, sticky='w')
-        self.btn_frame.keycode_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        btn_frame.key_code_frame.grid_columnconfigure(1, weight=1)
+        btn_frame.key_code_frame.value.grid(row=0, column=1, padx=2, pady=2, sticky='w')
+        btn_frame.key_code_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
-        self.btn_frame.attr_frame = Frame(self.btn_frame, bg='tan')
-        btn = Button(self.btn_frame.attr_frame, text="get element attributes", command=self.get_elem_attrs,
+        attr_frame = Frame(btn_frame, bg='tan')
+        btn = Button(attr_frame, text="get element attributes", command=self.get_elem_attrs,
                      state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=0, padx=2, pady=2)
-        btn = Button(self.btn_frame.attr_frame, text="get element color", command=self.get_elem_color, state=DISABLED)
+        btn = Button(attr_frame, text="get element color", command=self.get_elem_color, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=1, padx=2, pady=2)
-        btn = Button(self.btn_frame.attr_frame, text="click element", command=self.click_element, state=DISABLED)
+        btn = Button(attr_frame, text="click element", command=self.click_element, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=2, padx=2, pady=2)
-        self.elem_index = StringVar()
-        self.elem_index.set('')
-        self.btn_frame.attr_frame.index = Combobox(self.btn_frame.attr_frame, width=6, values=[],
-                                                   textvariable=self.elem_index)
-        self.btn_frame.attr_frame.index.grid(row=0, column=3, padx=2, pady=2, sticky='ew')
-        self.btn_frame.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
-        self.btn_frame.grid_columnconfigure(0, weight=1)
-        self.btn_frame.grid(row=self.top_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        elem_index = StringVar()
+        elem_index.set('')
+        attr_frame.index = Combobox(attr_frame, width=6, values=[],
+                                              textvariable=elem_index)
+        attr_frame.index.grid(row=0, column=3, padx=2, pady=2, sticky='ew')
+        attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        btn_frame.grid_columnconfigure(0, weight=1)
+        btn_frame.grid(row=self.top_frame_row, column=0, sticky='ew', padx=2, pady=2)
         self.top_frame_row += 1
+        return btn_frame
 
     def create_menus(self, parent):
-        menu = Menu(parent)
-        self.appium_sub_menu = Menu(menu)
-        self.appium_sub_menu_max_index = 0
-        menu.add_cascade(label="Appium Actions", menu=self.appium_sub_menu)
-        self.other_sub_menu = Menu(menu)
-        self.other_sub_menu_max_index = 0
-        menu.add_cascade(label="Other Actions", menu=self.other_sub_menu)
+        menu = MyMenu(parent)
+        menu.appium_sub_menu = MyMenu(menu)
+        menu.appium_sub_menu_max_index = 0
+        menu.add_cascade(label="Appium Actions", menu=menu.appium_sub_menu)
+        menu.other_sub_menu = MyMenu(menu)
+        menu.other_sub_menu_max_index = 0
+        menu.add_cascade(label="Other Actions", menu=menu.other_sub_menu)
         for command in self.appium_commands:
-            self.appium_sub_menu.add_command(label=command.label, command=command.action)
-            self.appium_sub_menu_max_index += 1
+            menu.appium_sub_menu.add_command(label=command.label, command=command.action)
+            menu.appium_sub_menu_max_index += 1
         for command in self.other_commands:
-            self.other_sub_menu.add_command(label=command.label, command=command.action)
-            self.other_sub_menu_max_index += 1
+            menu.other_sub_menu.add_command(label=command.label, command=command.action)
+            menu.other_sub_menu_max_index += 1
         parent.config(menu=menu)
+        return menu
 
     def create_commands(self):
         self.appium_commands.append(Command("Accept T&C", lambda: self.do_cmd(self.accept_tnc)))
@@ -281,7 +324,7 @@ class TestGui(Frame):
     def do_cmd(self, cmd):
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
-        for btn in self.noappium_btns:
+        for btn in self.no_appium_btns:
             btn.configure(state=DISABLED)
         self.update_idletasks()
         sleep(5)
@@ -289,22 +332,21 @@ class TestGui(Frame):
         if self.appium_is_open:
             for btn in self.appium_btns:
                 btn.configure(state=NORMAL)
-            for i in range(self.appium_sub_menu_max_index):
-                self.appium_sub_menu.entryconfig(i + 1, state=NORMAL)
-            for btn in self.noappium_btns:
+            for i in range(self.menu.appium_sub_menu_max_index):
+                self.menu.appium_sub_menu.entryconfig(i + 1, state=NORMAL)
+            for btn in self.no_appium_btns:
                 btn.configure(state=DISABLED)
-            for i in range(self.other_sub_menu_max_index):
-                self.other_sub_menu.entryconfig(i + 1, state=DISABLED)
+            for i in range(self.menu.other_sub_menu_max_index):
+                self.menu.other_sub_menu.entryconfig(i + 1, state=DISABLED)
         else:
             for btn in self.appium_btns:
                 btn.configure(state=DISABLED)
-            for i in range(self.appium_sub_menu_max_index):
-                self.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
-            for btn in self.noappium_btns:
+            for i in range(self.menu.appium_sub_menu_max_index):
+                self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
+            for btn in self.no_appium_btns:
                 btn.configure(state=NORMAL)
-            for i in range(self.other_sub_menu_max_index):
-                self.other_sub_menu.entryconfig(i + 1, state=NORMAL)
-
+            for i in range(self.menu.other_sub_menu_max_index):
+                self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
 
     def close_appium_and_quit(self):
         if self.appium_is_open:
@@ -312,7 +354,7 @@ class TestGui(Frame):
         root.destroy()
 
     def send_keycode(self):
-        base_view.driver.keyevent(self.keycode.get())
+        base_view.driver.keyevent(self.key_code.get())
 
     def find_elements(self):
         by = self.find_by_var.get()
