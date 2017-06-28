@@ -2,7 +2,7 @@
 Feature: As a user I should be able to see the OTA server setting (R2D2-1881)
 
   Background: I am at the Dial view
-    Given [background] I am logged in to the ePhone7
+    Given [background] I go to the home screen
     Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  [background] I touch the Dial button
     Then  [background] the Dial view appears

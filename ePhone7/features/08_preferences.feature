@@ -2,7 +2,7 @@
 Feature: As a user I want to view and change detailed settings that control my phone's operation
 
   Background: I am logged in and at the Preferences view
-    Given [background] I am logged in to the ePhone7
+    Given [background] I go to the home screen
     Then  [background] I close all open submenus
     And   [background] I see the Need Help, Personal, Phone and System category elements
 

@@ -67,6 +67,8 @@ def after_step(context, step):
     if context.is_substep:
         substeps += (',%s,%.3f\n' % (step.status, step.duration))
         context.is_substep = False
+    if step.exception:
+        log.info("EXCEPTION in step %s" % step.name)
     if 'fake' not in str(context._config.tags).split(','):
         if step.status == 'failed':
             xml = base_view.get_source()
@@ -88,6 +90,6 @@ def after_all(context):
     tags = str(context._config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
         base_view.close_appium()
-    with open('steps.txt', 'w') as f:
+    with open('tmp/steps.txt', 'w') as f:
         f.write(substeps)
 

@@ -2,7 +2,7 @@
 Feature: As a user I want to use and manage my voicemail lists
 
   Background: a new voicemail is shown in the New Voicemails view
-    Given [background] I am logged in to the ePhone7
+    Given [background] I go to the home screen
     Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     And   [background] I have at least one saved voicemail
     And   [background] I have at least one new voicemail

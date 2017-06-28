@@ -2,7 +2,7 @@
 Feature: As a user I want to have a Record button available during an active call (R2D2-1954)
 
   Background: I am at the Advanced Settings Call Record Enable option
-    Given [background] I am logged in to the ePhone7
+    Given [background] I go to the home screen
     And   [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  [background] I touch the Dial button
     Then  [background] The Dial view appears

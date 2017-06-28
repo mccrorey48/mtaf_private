@@ -1,7 +1,7 @@
 Feature: As a user I want to keep access to my voicemail after I stop using a VLAN (R2D2-1924)
 
   Background: I have new and saved voicemails while on a VLAN
-    Given [background] I am logged in to the ePhone7
+    Given [background] I go to the home screen
     When  [background] I touch the Preferences icon
     Then  [background] the Preferences window appears
     When  [background] I touch the "System" menu category

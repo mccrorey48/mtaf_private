@@ -2,7 +2,7 @@
 Feature: As a user I want to make calls by directly entering all or part of a contact's name or number
 
   Background: I am in the Dial view
-    Given [background] I am logged in to the ePhone7
+    Given [background] I go to the home screen
     Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  [background] I touch the Dial button
     Then  [background] I see the keypad

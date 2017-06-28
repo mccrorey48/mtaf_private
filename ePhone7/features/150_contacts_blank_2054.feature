@@ -2,7 +2,7 @@
 Feature: As a user I want to see my contact lists (R2D2-2054)
 
   Background: I am at the Contacts view
-    Given [background] I am logged in to the ePhone7
+    Given [background] I go to the home screen
     Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  [background] I touch the "Contacts" button and the Contacts view appears
     Then  [background] I see the Personal, Coworkers, Favorites and Groups tabs

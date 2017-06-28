@@ -2,7 +2,7 @@
 Feature: As a user I want to see my call history and make calls from the listed items
 
   Background: I am in the History view
-    Given [background] I am logged in to the ePhone7
+    Given [background] I go to the home screen
     Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  [background] I touch the History button
     Then  [background] I see the All and Missed tabs at the top of the screen
@@ -35,8 +35,8 @@ Feature: As a user I want to see my call history and make calls from the listed 
   Scenario: I want to see an outgoing call indicated on the All History view
     Given [history] I touch the Dial button
     Given I make a call to a coworker contact
-    Then  the in-call window appears
-    When  I end the call
+    Then  [active_call] an "Active Call" window appears
+    When  [active_call] I end the call
     Then  the in-call window disappears
     When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
@@ -45,8 +45,9 @@ Feature: As a user I want to see my call history and make calls from the listed 
   Scenario: I want to call back an answered call indicated on the All History view
     Given I receive a call
     Then  the incoming call window appears
-    And   I answer the call
-    When  I end the call
+    When  I answer the call
+    Then  [active_call] an "Active Call" window appears
+    When  [active_call] I end the call
     Then  the incoming call window disappears
     When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
@@ -83,8 +84,8 @@ Feature: As a user I want to see my call history and make calls from the listed 
     Given [user] I touch the Dial button
     Then  [dial] the Dial view appears
     When  I make a call to a coworker contact
-    Then  the in-call window appears
-    When  I end the call
+    Then  [active_call] an "Active Call" window appears
+    When  [active_call] I end the call
     Then  the in-call window disappears
     When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
