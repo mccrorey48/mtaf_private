@@ -43,7 +43,7 @@ def background__i_enter_a_vlan_priority_between_0_and_7(context):
 @step("[background] I go to the home screen")
 @fake
 def background__i_go_to_the_home_screen(context):
-    i_am_logged_in_to_the_ephone7(context)
+    i_go_to_the_home_screen(context)
 
 
 @step("[background] I have at least one new voicemail")
