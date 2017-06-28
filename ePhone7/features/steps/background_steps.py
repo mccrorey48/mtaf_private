@@ -1,5 +1,6 @@
 from behave import *
 from common_steps import *
+from contacts_steps import *
 from network_steps import *
 from prefs_steps import *
 from user_steps import *
@@ -9,31 +10,25 @@ from advanced_steps import *
 from voicemail_steps import *
 
 
-@then('[background] A submenu appears with a "Network" option')
+@step('[background] A submenu appears with a "Network" option')
 @fake
 def background__a_submenu_appears_with_a_network_option(context):
     prefs__a_submenu_appears_with_a_network_option(context)
 
 
-@given("[background] I am logged in to the ePhone7")
-@fake
-def background__i_am_logged_in_to_the_ephone7(context):
-    i_am_logged_in_to_the_ephone7(context)
-
-
-@then("[background] I close all open submenus")
+@step("[background] I close all open submenus")
 @fake
 def background__i_close_all_open_submenus(context):
     i_close_all_open_submenus(context)
 
 
-@when("[background] I dial the {codename} direct code")
+@step("[background] I dial the {codename} direct code")
 @fake
 def background__i_dial_the_codename_direct_code(context, codename):
     dial__i_dial_the_codename_direct_code(context, codename)
 
 
-@when("[background] I enter a VLAN identifier between 1 and 4094")
+@step("[background] I enter a VLAN identifier between 1 and 4094")
 @fake
 def background__i_enter_a_vlan_identifier_between_1_and_4094(context):
     i_enter_a_vlan_identifier_between_1_and_4094(context)
@@ -43,6 +38,12 @@ def background__i_enter_a_vlan_identifier_between_1_and_4094(context):
 @fake
 def background__i_enter_a_vlan_priority_between_0_and_7(context):
     network__i_enter_a_vlan_priority_between_0_and_7(context)
+
+
+@step("[background] I go to the home screen")
+@fake
+def background__i_go_to_the_home_screen(context):
+    i_am_logged_in_to_the_ephone7(context)
 
 
 @step("[background] I have at least one new voicemail")
@@ -63,13 +64,13 @@ def background__i_receive_a_new_voicemail(context):
     i_receive_a_new_voicemail(context)
 
 
-@when("[background] I scroll down to the Call Record Enable setting")
+@step("[background] I scroll down to the Call Record Enable setting")
 @fake
 def background__i_scroll_down_to_the_call_record_enable_setting(context):
     advanced__i_scroll_down_to_the_call_record_enable_setting(context)
 
 
-@then("[background] I see the All and Missed tabs at the top of the screen")
+@step("[background] I see the All and Missed tabs at the top of the screen")
 @fake
 def background__i_see_the_all_and_missed_tabs_at_the_top_of_the_screen(context):
     history__i_see_the_all_and_missed_tabs_at_the_top_of_the_screen(context)
@@ -81,7 +82,7 @@ def background__i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bot
     user__i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bottom_of_the_screen(context)
 
 
-@then("[background] I see the keypad")
+@step("[background] I see the keypad")
 @fake
 def background__i_see_the_keypad(context):
     dial__i_see_the_keypad(context)
@@ -93,22 +94,22 @@ def background__i_see_the_need_help_personal_phone_and_system_category_elements(
     prefs__i_see_the_need_help_personal_phone_and_system_category_elements(context)
 
 
-@then("[background] I see the Network Settings view")
+@step("[background] I see the Network Settings view")
 @fake
 def background__i_see_the_network_settings_view(context):
     network__i_see_the_network_settings_view(context)
 
 
-@then("[background] I see the New, Saved and Trash tabs at the top of the screen")
+@step("[background] I see the New, Saved and Trash tabs at the top of the screen")
 @fake
 def background__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(context):
     voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(context)
 
 
-@then("[background] I see the Personal, Coworkers, Favorites and Groups tabs")
+@step("[background] I see the Personal, Coworkers, Favorites and Groups tabs")
 @fake
 def background__i_see_the_personal_coworkers_favorites_and_groups_tabs(context):
-    user__i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bottom_of_the_screen(context)
+    contacts__i_see_the_personal_coworkers_favorites_and_groups_tabs(context)
 
 
 @step('[background] I touch "Save and Reboot"')
@@ -123,43 +124,43 @@ def background__i_touch_the_call_button(context):
     dial__i_touch_the_call_button(context)
 
 
-@when('[background] I touch the "Contacts" button and the Contacts view appears')
+@step('[background] I touch the "Contacts" button and the Contacts view appears')
 @fake
 def background__i_touch_the_contacts_button_and_the_contacts_view_appears(context):
     user__i_touch_the_contacts_button_and_the_contacts_view_appears(context)
 
 
-@when("[background] I touch the Dial button")
+@step("[background] I touch the Dial button")
 @fake
 def background__i_touch_the_dial_button(context):
     user__i_touch_the_dial_button(context)
 
 
-@when("[background] I touch the History button")
+@step("[background] I touch the History button")
 @fake
 def background__i_touch_the_history_button(context):
     user__i_touch_the_history_button(context)
 
 
-@when('[background] I touch the "{name}" menu category')
+@step('[background] I touch the "{name}" menu category')
 @fake
 def background__i_touch_the_name_menu_category(context, name):
     prefs__i_touch_the_name_menu_category(context, name)
 
 
-@when('[background] I touch the "Network" option')
+@step('[background] I touch the "Network" option')
 @fake
 def background__i_touch_the_network_option(context):
     prefs__i_touch_the_network_option(context)
 
 
-@when("[background] I touch the New tab")
+@step("[background] I touch the New tab")
 @fake
 def background__i_touch_the_new_tab(context):
     voicemail__i_touch_the_new_tab(context)
 
 
-@when("[background] I touch the Preferences icon")
+@step("[background] I touch the Preferences icon")
 @fake
 def background__i_touch_the_preferences_icon(context):
     user__i_touch_the_preferences_icon(context)
@@ -171,7 +172,7 @@ def background__i_touch_the_vlan_enable_button(context):
     network__i_touch_the_vlan_enable_button(context)
 
 
-@when("[background] I touch the Voicemail button")
+@step("[background] I touch the Voicemail button")
 @fake
 def background__i_touch_the_voicemail_button(context):
     user__i_touch_the_voicemail_button(context)
@@ -183,13 +184,13 @@ def background__i_wait_for_the_phone_to_restart(context):
     i_wait_for_the_phone_to_restart(context)
 
 
-@then("[background] the Advanced Options view appears")
+@step("[background] the Advanced Options view appears")
 @fake
 def background__the_advanced_options_view_appears(context):
     advanced__the_advanced_options_view_appears(context)
 
 
-@then("[background] the Dial view appears")
+@step("[background] the Dial view appears")
 @fake
 def background__the_dial_view_appears(context):
     dial__the_dial_view_appears(context)
@@ -207,19 +208,19 @@ def background__the_enable_button_is_active(context):
     network__the_enable_button_is_active(context)
 
 
-@then("[background] the new voicemail is the first item listed")
+@step("[background] the new voicemail is the first item listed")
 @fake
 def background__the_new_voicemail_is_the_first_item_listed(context):
     voicemail__the_new_voicemail_is_the_first_item_listed(context)
 
 
-@then("[background] the Preferences window appears")
+@step("[background] the Preferences window appears")
 @fake
 def background__the_preferences_window_appears(context):
     prefs__the_preferences_window_appears(context)
 
 
-@then("[background] The reboot alert window appears")
+@step("[background] The reboot alert window appears")
 @fake
 def background__the_reboot_alert_window_appears(context):
     network__the_reboot_alert_window_appears(context)

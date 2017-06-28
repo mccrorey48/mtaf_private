@@ -13,7 +13,7 @@ def user__i_enter_the_call_park_queue_number(context):
     pass
 
 
-@when("[user] I get the logo element from the home screen")
+@step("[user] I get the logo element from the home screen")
 @fake
 def user__i_get_the_logo_element_from_the_home_screen(context):
     context.logo_element = user_view.get_logo_element()
@@ -57,7 +57,7 @@ def user__i_touch_the_home_button(context):
     user_view.send_keycode('KEYCODE_HOME')
 
 
-@when("[user] I touch the OK button")
+@step("[user] I touch the OK button")
 def user__i_touch_the_ok_button(context):
     pass
 
@@ -88,7 +88,7 @@ def user__only_the_contact_i_touched_is_listed(context):
     pass
 
 
-@then("[user] the logo width is at least {width} pixels")
+@step("[user] the logo width is at least {width} pixels")
 @fake
 def user__the_logo_width_is_at_least_width_pixels(context, width):
     assert int(context.logo_element.size['width']) >= int(width)

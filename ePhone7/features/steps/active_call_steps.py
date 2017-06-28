@@ -1,6 +1,16 @@
 from behave import *
 from ePhone7.views import *
 from lib.wrappers import fake
+from ePhone7.config.configure import cfg
+from time import sleep
+import lib.logging_esi as logging
+log = logging.get_logger('esi.active_steps')
+
+
+@step("[active call] the active call screen appears")
+@fake
+def active_call__the_active_call_screen_appears(context):
+    assert active_call_view.is_present(), 'Active call screen not present'
 
 
 @step("[active_call] a Record button is visible")
@@ -16,25 +26,56 @@ def activecall__an_active_call_window_appears(context):
     assert active_call_view.is_present()
 
 
-@step("[active_call] I end the call")
+@step("[active_call] I see a green banner with the coworker's name")
 @fake
-def activecall__i_end_the_call(context):
-    user_view.end_call()
+def activecall__i_see_a_green_banner_with_the_coworkers_name(context):
+    assert active_call_view.vm_xfer_dest_banner_present(), "vm transfer destination banner not present"
+    expect_name = cfg.site['DefaultForwardAccount']
+    actual_name = active_call_view.vm_xfer_dest_name()
+    assert actual_name == expect_name, "expect vm transfer destination name = %s, got %s" % (expect_name, actual_name)
 
 
-@when("[active_call] I select a coworker's mailbox")
+@step("[active_call] I see an orange banner with the caller's name")
+@fake
+def activecall__i_see_an_orange_banner_with_the_callers_name(context):
+    assert active_call_view.vm_xfer_caller_banner_present()
+    expect_name = cfg.site['DefaultSoftphoneUser']
+    actual_name = active_call_view.vm_xfer_caller_name()
+    assert actual_name == expect_name, "expect vm transfer caller name = %s, got %s" % (expect_name, actual_name)
+
+
+@step("[active_call] I select a coworker's mailbox")
+@fake
 def activecall__i_select_a_coworkers_mailbox(context):
-    pass
+    # before forwarding the call to the coworker, count the voicemails in that mailbox
+    # so we can verify later that a new one has been added
+    context.vmid_count = len(voicemail_view.get_vmids(username=cfg.site['DefaultForwardAccount']))
+    active_call_view.touch_default_forward_account_name()
 
 
-@when('[active_call] I tap "Transfer to VM"')
+@step('[active_call] I tap "Transfer to VM"')
+@fake
 def activecall__i_tap_transfer_to_vm(context):
     active_call_view.touch_transfer_to_vm()
 
 
-@then('[active_call] I touch "OK" to complete the voicemail transfer')
-def activecall__i_touch_ok_to_complete_the_voicemail_transfer(context):
-    pass
+@step('[active_call] I touch the "end call" button')
+@fake
+def activecall__i_touch_the_end_call_button(context):
+    sleep(5)
+    active_call_view.touch_end_call_button()
+
+
+@step("[active_call] the caller leaves a message and hangs up")
+@fake
+def activecall__the_caller_leaves_a_message_and_hangs_up(context):
+    user_view.caller_leaves_voicemail()
+    user_view.caller_ends_received_call()
+    sleep(10)
+    new_vmids = voicemail_view.get_vmids(username=cfg.site['DefaultForwardAccount'])
+    new_count = len(new_vmids)
+    expect_count = context.vmid_count + 1
+    assert new_count == expect_count, "expected vmid count %d, got %d" % (expect_count, new_count)
 
 
 @step("[active_call] the Record button is gray")
@@ -55,7 +96,7 @@ def activecall__the_record_button_is_white(context):
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
 
-@then('[active_call] the transfer dialog appears')
+@step('[active_call] the transfer dialog appears')
 @fake
 def activecall__the_transfer_dialog_appears(context):
     assert active_call_view.transfer_dialog_is_present()

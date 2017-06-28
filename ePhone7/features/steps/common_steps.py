@@ -235,21 +235,11 @@ def both_windows_disappear(context):
     pass
 
 
-@step("I am logged in to the ePhone7")
+@step("I am at the home screen")
 @fake
-def i_am_logged_in_to_the_ephone7(context):
-    base_view.send_keycode_back()
-    # base_view.close_appium()
-    # base_view.open_appium()
-    # if prefs_view.element_is_present('Preferences'):
-    #     prefs_view.exit_prefs()
-    if not user_view.element_is_present('UserHeaderName', timeout=120):
-        login_view.login()
-        tnc_view.accept_tnc()
-        app_intro_view.skip_intro()
-        assert user_view.element_is_present('UserHeaderName', 10), 'Unable to log in'
-    else:
-        print("UserHeaderName found")
+def i_am_at_the_home_screen(context):
+    assert user_view.element_is_present('UserHeaderName', 10), 'UserHeaderName element not present'
+    assert user_view.element_is_present('HomeScreenLogo', 10), 'HomeScreenLogo element not present'
 
 
 @step("I am not signed in to my gmail account")
@@ -302,7 +292,7 @@ def i_downgrade_my_aosp_to_downgradeaospversion(context, downgrade_aosp_version)
         assert installed_aosp_version == downgrade_aosp_version
 
 
-@then("I downgrade my app")
+@step("I downgrade my app")
 @fake
 def i_downgrade_my_app(context):
     if context.needs_app_downgrade:
@@ -358,6 +348,17 @@ def i_enter_part_of_a_personal_contact_number_using_the_keypad(context):
 @fake
 def i_go_to_the_contacts_view(context):
     user_view.goto_tab('Contacts')
+
+
+@step("I go to the home screen")
+@fake
+def i_go_to_the_home_screen(context):
+    base_view.send_keycode_home()
+    if not user_view.element_is_present('UserHeaderName', timeout=120):
+        login_view.login()
+        tnc_view.accept_tnc()
+        app_intro_view.skip_intro()
+    context.run_substep("I am at the home screen")
 
 
 @step("I go to the New Voicemail view")
@@ -672,7 +673,7 @@ def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
         context.run_substep('I perform an OTA upgrade')
 
 
-@given("I use the spud serial interface to list the installed packages")
+@step("I use the spud serial interface to list the installed packages")
 @fake
 def i_use_the_spud_serial_interface_to_list_the_installed_packages(context):
     pass
@@ -980,7 +981,7 @@ def the_ota_server_update_popup_disappears(context):
     assert(dial_view.element_is_not_present('OtaUpdatePopup'))
 
 
-@then("The package com.android.wallpaper.livepicker is not listed")
+@step("The package com.android.wallpaper.livepicker is not listed")
 def the_package_com_android_wallpaper_livepicker_is_not_listed(context):
     """
     :type context: behave.runner.Context

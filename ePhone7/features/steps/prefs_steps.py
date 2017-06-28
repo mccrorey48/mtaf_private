@@ -45,7 +45,7 @@ def prefs__an_upgrade_is_found_and_an_upgrade_button_appears(context):
     prefs_view.element_is_present('UpgradeButton')
 
 
-@then("[prefs] I read the displayed versions for the app and AOSP")
+@step("[prefs] I read the displayed versions for the app and AOSP")
 @fake
 def prefs__i_read_the_displayed_versions_for_the_app_and_aosp(context):
     app_version = prefs_view.find_named_element('AppVersion').text

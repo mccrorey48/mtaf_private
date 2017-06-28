@@ -183,7 +183,7 @@ def contacts__i_touch_the_sign_in_with_google_banner(context):
     contacts_view.click_named_element('GoogleSignInBanner')
 
 
-@when("[contacts] I touch the star icons so all are white")
+@step("[contacts] I touch the star icons so all are white")
 @fake
 def contacts__i_touch_the_star_icons_so_all_are_white(context):
     contacts_view.clear_all_favorites()
@@ -297,7 +297,7 @@ def contacts__my_updated_favorite_contacts_are_shown_on_the_display(context):
     pass
 
 
-@then("[contacts] no Coworker contacts are shown on the favorites display")
+@step("[contacts] no Coworker contacts are shown on the favorites display")
 @fake
 def contacts__no_coworker_contacts_are_shown_on_the_favorites_display(context):
     contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
