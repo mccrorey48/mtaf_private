@@ -1,6 +1,6 @@
 Feature: [dev] OS Downgrade
 
   Scenario: Downgrade AOSP
-    Given I am logged in to the ePhone7
+    Given I go to the home screen
     Then  I downgrade my AOSP
 

@@ -30,9 +30,12 @@ class BaseView(SeleniumActions):
 
     def get_locator(self, name):
         locator = SeleniumActions.get_locator(self, name)
-        if locator is not None and locator["by"] == "zpath":
+        if locator["by"] == "zpath":
             locator["by"] = "xpath"
             locator["value"] = expand_zpath(locator["value"])
+        elif locator["by"] == "uiautomator":
+            locator["by"] = "-android uiautomator"
+            locator["value"] = "new UiSelector()." + locator["value"]
         return locator
 
 

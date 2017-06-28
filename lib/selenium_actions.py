@@ -29,7 +29,7 @@ class SeleniumActions(Tc):
         cls = self.__class__
         while True:
             if not hasattr(cls, 'locators'):
-                return None
+                raise Ux("Unknown locator %s" % name)
             if name in cls.locators:
                 return cls.locators[name]
             cls = cls.__base__
@@ -60,8 +60,7 @@ class SeleniumActions(Tc):
         elem.click()
 
     @Trace(log)
-    def click_named_element(self, name, seconds=60):
-        locator = self.get_locator(name)
+    def click_named_element(self, name):
         elem = self.find_named_element(name)
         self.click_element(elem)
 

@@ -60,7 +60,7 @@ class MockDetector:
                         if m:
                             if comment_re.match(line):
                                 continue
-                            if 'def' in line or 'pass' in line:
+                            if 'def ' in line or 'pass' in line:
                                 continue
                             if 'run_substep' in line:
                                 continue

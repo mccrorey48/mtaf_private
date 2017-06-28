@@ -11,7 +11,7 @@ from lib.mock_steps import MockDetector
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 import argparse
-from os import path, getenv
+from os import path, getenv, mkdir
 from ePhone7.utils.versions import *
 from shutil import copyfile
 
@@ -36,6 +36,11 @@ def capture():
 
 @Trace(log)
 def run_features(config):
+    # make sure the tmp directory exists so we can put temporary files there
+    try:
+        mkdir('tmp')
+    except OSError:
+        pass
     sys.argv = [re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])]
     sys.argv.append('-D')
     sys.argv.append('ota_server=%s' % config['ota_server'])
@@ -49,9 +54,9 @@ def run_features(config):
     start_time = datetime.now()
     with capture() as out:
         main()
-    with open('main.json', 'w') as f:
+    with open('tmp/main.json', 'w') as f:
         f.write(out[0])
-    with open('steps.txt', 'r') as f:
+    with open('tmp/steps.txt', 'r') as f:
         not_json_prefix = f.read()
     printed_steps = []
     current_step = None
@@ -77,7 +82,7 @@ def run_features(config):
     if current_step is not None:
         printed_steps.append(current_step)
     json_repr = '\n'.join(out[0][:out[0].rindex(']') + 1].split('\n'))
-    with open('json_repr.json', 'w') as f:
+    with open('tmp/json_repr.json', 'w') as f:
         f.write(json_repr)
     data = json.loads(json_repr)
     if len(data):
@@ -99,7 +104,7 @@ def run_features(config):
                     new_steps.append(step)
                 element["steps"] = new_steps
     json_repr = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-    with open('output.json', 'w') as f:
+    with open('tmp/output.json', 'w') as f:
         f.write(json_repr)
     copyfile('log/esi_info.log', 'log/esi_info_copy.log')
     return data

@@ -18,6 +18,7 @@ class UserView(BaseView):
         "Contacts": {"by": "zpath", "value": "//tw/rl[1]/ll/tv", "text": "Contacts"},
         "Dial": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
         "DndButton": {"by": "accessibility id", "value": "Do not Disturb"},
+        "DefaultForwardAccountName": {"by": "uiautomator", "value": cfg.site['DefaultForwardAccount']},
         "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
         "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
         "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
@@ -90,8 +91,17 @@ class UserView(BaseView):
             sleep(2)
 
     @Trace(log)
-    def end_call(self):
-        self.active_call_view.end_call()
+    def caller_leaves_voicemail(self, caller_name=None):
+        if caller_name is None:
+            caller_name = cfg.site['DefaultSoftphoneUser']
+        sleep(5)
+        self.softphones[caller_name].leave_msg(10)
+
+    @Trace(log)
+    def caller_ends_received_call(self, caller_name=None):
+        if caller_name is None:
+            caller_name = cfg.site['DefaultSoftphoneUser']
+        self.softphones[caller_name].end_call()
 
     @Trace(log)
     def goto_tab(self, tab_name):

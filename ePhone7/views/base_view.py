@@ -49,9 +49,12 @@ class BaseView(SeleniumActions):
 
     def get_locator(self, name):
         locator = SeleniumActions.get_locator(self, name)
-        if locator is not None and locator["by"] == "zpath":
+        if locator["by"] == "zpath":
             locator["by"] = "xpath"
             locator["value"] = expand_zpath(locator["value"])
+        elif locator["by"] == "uiautomator":
+            locator["by"] = "-android uiautomator"
+            locator["value"] = "new UiSelector()." + locator["value"]
         return locator
 
 
@@ -62,6 +65,10 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def send_keycode_back(self):
         self.send_keycode('KEYCODE_BACK')
+
+    @Trace(log)
+    def send_keycode_home(self):
+        self.send_keycode('KEYCODE_HOME')
 
     @Trace(log)
     def send_keycode_number(self, number):

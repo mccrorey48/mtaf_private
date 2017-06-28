@@ -20,13 +20,13 @@ class Cfg(object):
         self.site_tag = os.getenv('MTAF_SITE')
         if not self.site_tag:
             raise Ux('MTAF_SITE must be defined in the run-time environment')
-        server = os.getenv('MTAF_DB_HOST')
-        if not server:
+        self.db_host = os.getenv('MTAF_DB_HOST')
+        if not self.db_host:
             raise Ux('MTAF_DB_HOST must be defined in the run-time environment')
-        self.set_site(server, self.site_tag)
+        self.set_site(self.db_host, self.site_tag)
 
-    def set_site(self, cfg_server, site_tag):
-        client = MongoClient(cfg_server)
+    def set_site(self, db_host, site_tag):
+        client = MongoClient(db_host)
         db = client['e7_site']
         merge_collection(self.site, db[site_tag])
         merge_collection(self.site, db["default"])
@@ -49,5 +49,5 @@ cfg = Cfg()
 if __name__ == '__main__':
     import json
     json_repr = json.dumps(cfg.__dict__, sort_keys=True, indent=4, separators=(',', ': '))
-    with open('cfg_site.json', 'w') as f:
+    with open('tmp/cfg_site_%s_%s.json' % (cfg.site_tag, cfg.db_host), 'w') as f:
         f.write(json_repr)

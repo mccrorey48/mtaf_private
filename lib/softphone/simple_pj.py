@@ -191,8 +191,11 @@ class Softphone:
     def leave_msg(self, length=None):
         if not self.account_info.call:
             raise Ux("leave_msg(): %s not in call" % self.uri)
-        sleep(10)
+        # wait 5 seconds so voice prompt will accept '2' key to accelerate to next prompt
+        sleep(5)
         self.account_info.call.dial_dtmf('2')
+        # wait 5 seconds to get past second prompt "leave a msg after the tone (beep)'
+        sleep(5)
         if length is None:
             random.seed(time())
             length = random.randrange(10, 30, 1)
