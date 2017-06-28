@@ -2,7 +2,7 @@ import re
 from lib.user_exception import UserException as Ux
 import os
 
-step_re = re.compile('''@[^(]+\(['"](\[.+\] )?(.+)['"]\)''')
+step_re = re.compile('''(@[^(]+)\(['"](\[.+\] )?(.+)['"]\)''')
 def_re = re.compile('def\s+([^(]+)(.+)')
 
 
@@ -17,7 +17,7 @@ def sort(filename):
             if m:
                 # make a copy of m.groups() and replace periods with spaces
                 groups = []
-                for group in m.groups():
+                for group in m.groups()[1:]:
                     if group is not None:
                         group = ' '.join(group.split('.'))
                     groups.append(group)
@@ -25,6 +25,9 @@ def sort(filename):
                 if step_key in step_defs:
                     raise Ux("duplicate step name on line %s" % (lnum + 1) )
                 else:
+                    prefix = m.group(1)
+                    if prefix != '@step':
+                        line = re.sub(prefix, '@step', line)
                     step_defs[step_key] = [line]
                 current_key = step_key
             else:
