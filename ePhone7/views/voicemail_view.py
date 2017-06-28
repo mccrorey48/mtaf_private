@@ -6,6 +6,7 @@ import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.views.user_view import UserView
 from lib.wrappers import Trace
+from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.voicemail_view')
 
@@ -62,7 +63,7 @@ class VoicemailView(UserView):
         self.click_named_element('VmCallButton')
         softphone.wait_for_call_status('call', 20)
         sleep(10)
-        self.end_call()
+        softphone.end_call()
         softphone.wait_for_call_status('idle', 20)
         self.click_named_element('VmDetailHeader')
 
@@ -167,34 +168,25 @@ class VoicemailView(UserView):
         self.click_named_element('OkForwardButton')
 
     @Trace(log)
-    def get_id(self):
-        self.wait_for_condition_true(self.swipe_get_vm_parents,lambda: 'timed out with no voicemails displayed', 60)
-        user_cfg = cfg.site['Users']['R2d2User']
+    def get_vmids(self, username='R2d2User', type='new'):
+        user_cfg = cfg.site['Users'][username]
         roauth = requests.post(cfg.site["OauthURL"] + "/login", data=cfg.site["OauthUsername"] % (
             user_cfg['UserId'], user_cfg['DomainName'], user_cfg['AccountPassword']), headers=cfg.site["OauthHeaders"])
         access_token = roauth.json()["accessToken"]
         vvm_headers = {key: cfg.site["VVMHeaders"][key] for key in cfg.site["VVMHeaders"]}
         vvm_headers["Authorization"] = vvm_headers["Authorization"] % access_token
         rvvm = requests.get(cfg.site["VVMURL"] + "/new", headers=vvm_headers)
-        vmid1 = rvvm.json()[0]['vmid']
-        print 'vmid = ', vmid1
-        return vmid1
+        return [vm['vmid'] for vm in rvvm.json()]
 
     @Trace(log)
     def compare_vmid(self, vmid1):
-        user_cfg = cfg.site['Users'][cfg.site['DefaultForwardAccount']]
-        roauth = requests.post(cfg.site["OauthURL"] + "/login", data=cfg.site["OauthUsername"] % (
-            user_cfg['UserId'], user_cfg['DomainName'], user_cfg['AccountPassword']), headers=cfg.site["OauthHeaders"])
-        access_token = roauth.json()["accessToken"]
-        vvm_headers = {key: cfg.site["VVMHeaders"][key] for key in cfg.site["VVMHeaders"]}
-        vvm_headers["Authorization"] = vvm_headers["Authorization"] % access_token
-        rvvm = requests.get(cfg.site["VVMURL"] + "/saved", headers=vvm_headers)
-        for vmrec in rvvm.json():
-            if vmid1 == vmrec['vmid']:
-                print 'vmid2: %s equals %s' % (vmrec['vmid'], vmid1)
-                return True
-            print 'vmid2: %s does not equal %s' % (vmrec['vmid'], vmid1)
-        return False
+        username=cfg.site['DefaultForwardAccount']
+        user_cfg = cfg.site['Users'][username]
+        fwd_vmids = self.get_vmids(username=username)
+        for fwd_vmid in fwd_vmids:
+            if vmid1 == fwd_vmid:
+                return
+        raise Ux("vmid %s not found in user %s's mailbox" % (vmid1, username))
 
     @Trace(log)
     def verify_forward(self):

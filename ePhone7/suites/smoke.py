@@ -273,7 +273,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('New')
         voicemail_view.clear_all_vm()
         voicemail_view.receive_voicemail()
-        vmid = voicemail_view.get_id()
+        vmid = voicemail_view.get_vmids()[0]
         voicemail_view.open_first_vm()
         voicemail_view.forward_open_voicemail()
         voicemail_view.compare_vmid(vmid)
@@ -288,7 +288,7 @@ class SmokeTests(unittest.TestCase):
         voicemail_view.goto_tab('New')
         voicemail_view.clear_all_vm()
         voicemail_view.receive_voicemail()
-        vmid = voicemail_view.get_id()
+        vmid = voicemail_view.get_vmids()[0]
         voicemail_view.open_first_vm()
         voicemail_view.save_open_voicemail()
         voicemail_view.goto_tab('Saved')
