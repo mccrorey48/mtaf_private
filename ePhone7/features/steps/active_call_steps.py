@@ -26,6 +26,11 @@ def activecall__an_active_call_window_appears(context):
     assert active_call_view.is_present()
 
 
+@step("[active_call] I end the call")
+@fake
+def activecall__i_end_the_call(context):
+    active_call_view.touch_end_call_button()
+
 @step("[active_call] I see a green banner with the coworker's name")
 @fake
 def activecall__i_see_a_green_banner_with_the_coworkers_name(context):
@@ -62,6 +67,8 @@ def activecall__i_tap_transfer_to_vm(context):
 @step('[active_call] I touch the "end call" button')
 @fake
 def activecall__i_touch_the_end_call_button(context):
+    # this has a 5 second sleep because it is used after a transfer-to-voicemail
+    # and the button is not immediately responsive
     sleep(5)
     active_call_view.touch_end_call_button()
 
