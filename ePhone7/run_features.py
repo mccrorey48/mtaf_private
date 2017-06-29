@@ -54,13 +54,22 @@ def run_features(config):
     start_time = datetime.now()
     with capture() as out:
         main()
-    with open('tmp/main.json', 'w') as f:
+
+    # save the output of behave (json test results plus plain text summary at the end)
+    # for reference and debugging
+    with open('tmp/main.out', 'w') as f:
         f.write(out[0])
+
+    # - go through the list of executed step and substep names
+    # - substep names are CSV format: name, result, duration
+    # - for each executed step, create a dictionary {"name": <step name>, "substeps": []}
+    # - for each step that has substeps, append the substep names and data to the "substeps" attribute for that step
+    # - append the step to the printed_steps array
     with open('tmp/steps.txt', 'r') as f:
-        not_json_prefix = f.read()
+        executed_steps = f.read()
     printed_steps = []
     current_step = None
-    for line in not_json_prefix.strip().split('\n'):
+    for line in executed_steps.strip().split('\n'):
         if len(line.split(' = ')) != 2:
             continue
         (_type, name) = line.split(' = ')
@@ -81,6 +90,9 @@ def run_features(config):
             current_step["substeps"].append(substep)
     if current_step is not None:
         printed_steps.append(current_step)
+
+    # - save the json part of the behave output in the file json_repr.json
+    # - create "data" (array of features defined, whether executed or not) from the json
     json_repr = '\n'.join(out[0][:out[0].rindex(']') + 1].split('\n'))
     with open('tmp/json_repr.json', 'w') as f:
         f.write(json_repr)
@@ -88,19 +100,27 @@ def run_features(config):
     if len(data):
         data[0]["start_time"] = start_time.strftime("%X")
         data[0]["start_date"] = start_time.strftime("%x")
+
+    # "data" includes both executed and skipped steps, organized by feature and scenario
+    # but does not include substeps
     for feature in data:
+        print feature['name']
         for element in feature["elements"]:
+            print '  ' + element['name']
             if element["keyword"] == "Scenario":
                 new_steps = []
                 for step in element["steps"]:
                     if "result" in step:
+                        print '    ' + step['name']
                         # if it gets to here, the step was executed and should be on the printed_steps list
                         if len(printed_steps) == 0:
                             raise Ux("Error processing new_steps list, printed_steps empty")
                         printed_step = printed_steps.pop(0)
                         if printed_step["name"] != step["name"]:
-                            raise Ux("Error processing new_steps list, step name mismatch")
+                            raise Ux("Error processing new_steps list, %s != %s" % (printed_step["name"], step["name"]))
                         step["substeps"] = printed_step["substeps"]
+                    else:
+                        print '    ' + step['name'] + ' (skipped)'
                     new_steps.append(step)
                 element["steps"] = new_steps
     json_repr = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
