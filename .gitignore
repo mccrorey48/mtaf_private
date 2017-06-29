@@ -4,6 +4,7 @@ wav/
 *.pyc
 *.csv
 *.html
+*.out
 xml_not_retrieved
 exception.xml
 steps.txt
