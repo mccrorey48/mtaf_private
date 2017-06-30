@@ -249,21 +249,23 @@ class BaseView(SeleniumActions):
                 current_activity = self.driver.current_activity
                 log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
-                    if retrying_main:
-                        # get rid of the release notes screen if present
-                        self.send_keycode_back()
-                        break
-                    sleep(2)
-                    retrying_main = True
+                    self.send_keycode_home()
+                    break
+                    # if retrying_main:
+                    #     # get rid of the release notes screen if present
+                    #     self.send_keycode_back()
+                    #     break
+                    # sleep(2)
+                    # retrying_main = True
                 elif current_activity == '.util.crashreporting.EPhoneCrashReportDialog':
                     if tried_crash_ok:
                         raise Ux("got activity .util.crashreporting.EPhoneCrashReportDialog twice")
-                    retrying_main = False
+                    # retrying_main = False
                     self.click_named_element('CrashOkButton')
                     tried_crash_ok = True
                     sleep(5)
                 elif current_activity == '.activities.AutoLoginActivity':
-                    retrying_main = False
+                    # retrying_main = False
                     if self.element_is_present('NetworkErrorText'):
                         if tried_net_retry:
                             raise Ux("got Network Error Retry popup twice")

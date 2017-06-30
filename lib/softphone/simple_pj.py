@@ -73,6 +73,10 @@ class SoftphoneManager():
         for uri in softphones.keys():
             softphones[uri].end_call()
 
+    def set_defaults(self):
+        for uri in softphones.keys():
+            softphones[uri].set_incoming_response(180)
+
 
 
 class Softphone:

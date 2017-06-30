@@ -102,7 +102,10 @@ def run_features(config):
         data[0]["start_date"] = start_time.strftime("%x")
 
     # "data" includes both executed and skipped steps, organized by feature and scenario
-    # but does not include substeps
+    # but does not include substeps; loop through "data" and "printed_steps" simultaneously
+    # and when a step in "printed_steps" has substeps, add them to "data"
+    # (if the two data sets don't produce the same sequence of steps, raise an exception
+    # because something isn't working right)
     for feature in data:
         print feature['name']
         for element in feature["elements"]:
@@ -172,6 +175,72 @@ class StepInfo:
                     raise Ux('expected step name %s, got %s' % (step_text, _step))
                 yield m.group('date'), m.group('time')
 
+def new_status(old_status, has_passes, has_fails, has_fakes, has_skips, has_incompletes):
+    # - calculate the "status" (displayed result) of a step, scenario or feature
+    # - the old_status of a step is "fake" (if mock_detector.match() returns true)
+    # - old_status "fake" means the mock_detector didn't find executable lines in the step implemention
+    #   but it doesn't consider substep calls, so if non-fake substeps were run (resulting in has_passes,
+    #   has_fails or both being True) then the returned status will not be "fake"
+    #   or "passed" or "failed" (if the step has a "result" attribute)
+    # - all steps are submitted to this calculation before their containing scenarios, so the the old_status
+    #   of a scenario is 'None'
+    # - all scenarios are submitted to this calculation before their containing features, so the the old_status
+    #   of a feature is 'None'
+    # - if old_status is not 'None', it's a step, and the value for "has_skips" and "has_incompletes" must be false,
+    #   otherwise raise an exceptioin
+    # - return the new "status" value based on the following truth table:
+    #   | old_status | has_passes | has_fails | has_fakes | has_skips | has_incompletes | status     |
+    #   | not 'None' | x          | x         | x         | True      | x               | exception  |
+    #   | not 'None' | x          | x         | x         | x         | True            | exception  |
+    #   | fake       | x          | True      | x         | False     | False           | failed     |
+    #   | fake       | True       | False     | False     | False     | False           | passed     |
+    #   | fake       | False      | False     | x         | False     | False           | fake       |
+    #   | fake       | True       | False     | True      | False     | False           | incomplete |
+    #   | passed     | x          | False     | True      | False     | False           | incomplete |
+    #   | passed     | x          | False     | False     | False     | False           | passed     |
+    #   | passed     | x          | True      | x         | False     | False           | exception  |
+    #   | failed     | x          | x         | x         | f         | f               | failed     |
+    #   | 'None'     | x          | True      | x         | x         | x               | failed     |
+    #   | 'None'     | True       | False     | False     | False     | False           | passed     |
+    #   | 'None'     | True       | False     | True      | False     | x               | incomplete |
+    #   | 'None'     | x          | False     | x         | False     | True            | incomplete |
+    #   | 'None'     | False      | False     | True      | False     | False           | fake       |
+    #   | 'None'     | False      | False     | x         | True      | False           | skipped    |
+    if old_status != 'None' and (has_skips or has_incompletes):
+            raise Ux("has_skips = %s, has_incompletes = %s while processing step" % (has_skips, has_incompletes))
+    if old_status == 'failed':
+        return 'failed'
+    if old_status == 'fake':
+        if has_fails:
+            return 'failed'
+        if has_passes:
+            if has_fakes:
+                return 'incomplete'
+            else:
+                return 'passed'
+        return 'fake'
+    if old_status == 'passed':
+        if has_fails:
+            raise Ux("has_fails == True while processing passed step")
+        if has_fakes:
+            return 'incomplete'
+        return 'passed'
+    if old_status == 'None':
+        if has_fails:
+            return 'failed'
+        if has_passes:
+            if has_fakes or has_incompletes or has_skips:
+                return 'incomplete'
+            return 'passed'
+        if has_fakes:
+            return 'fake'
+        if has_incompletes:
+            return 'incomplete'
+        if has_skips:
+            return 'skipped'
+        raise Ux("old_status=%s, has_passes=%s, has_fails=%s, has_fakes=%s, has_skips=%s, has_incompletes=%s" % (
+            old_status, has_passes, has_fails, has_fakes, has_skips, has_incompletes))
+
 
 def write_result_to_db(_args, configuration, _mock_detector, _features):
     print 'writing to db_name %s, server %s:' % (_args.db_name, _args.server)
@@ -211,6 +280,7 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
         feature_has_fakes = False
         feature_has_fails = False
         feature_has_passes = False
+        feature_has_incompletes = False
         feature['start_id'] = start_id
         feature['test_class'] = _args.test_class
         feature['text'] = feature['name']
@@ -229,6 +299,7 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
             scenario_has_fakes = False
             scenario_has_fails = False
             scenario_has_passes = False
+            scenario_has_incompletes = False
             scenario['text'] = scenario['name']
             scenario['status'] = 'passed'
             del scenario['name']
@@ -237,10 +308,18 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
             scenario['duration'] = 0.0
             for step_index, step in enumerate(scenario['steps']):
                 step['text'] = rm_view_prefix(step['name'])
-                if 'result' in step:
+                step_has_fails = False
+                step_has_passes = False
+                step_has_fakes = False
+                if 'result' not in step:
                     # if 'result' is not in step, the step was skipped, either because it belongs
                     # to a scenario that was skipped (because it didn't have the right tag)
                     # or a previous step in the current scenario failed
+                    step['status'] = 'skipped'
+                    scenario_has_skips = True
+                    step['duration'] = 0.0
+                    start_datetime += timedelta(seconds=last_step_duration)
+                else:
                     step['status'] = step['result']['status']
                     step['duration'] = step['result']['duration']
                     _date, _time = stepinfo.parse(feature['text'], scenario['text'], step['text']).next()
@@ -250,19 +329,28 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                             start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
                             substep['time'] = start_datetime.strftime('%X')
                             substep['date'] = start_datetime.strftime('%x')
-                            if substep["status"] == 'failed':
-                                step['status'] = 'failed'
+                            if _mock_detector.match(substep["name"]):
+                                substep['status'] = 'fake'
+                                step_has_fakes = True
+                            elif substep['status'] == 'failed':
+                                step_has_fails = True
                             elif substep['status'] == 'passed':
-                                if _mock_detector.match(substep["name"]):
-                                    substep['status'] = 'fake'
+                                step_has_passes = True
+                            else:
+                                raise Ux("non-fake substep status not passed or failed")
+
                     if _mock_detector.match(step['name']):
                         step['status'] = 'fake'
-                    else:
-                        if step['status'] == 'failed':
-                            scenario_has_fails = True
-                        elif step['status'] == 'passed':
-                            if step['name'] not in background_steps:
-                                scenario_has_passes = True
+                    step['status'] = new_status(step['status'], step_has_passes, step_has_fails, step_has_fakes,
+                                                False, False)
+                    if step['status'] == 'incomplete':
+                        scenario_has_incompletes = True
+                    elif step['status'] == 'fake':
+                        scenario_has_fakes = True
+                    elif step['status'] == 'failed':
+                        scenario_has_fails = True
+                    elif step['name'] not in background_steps:
+                        scenario_has_passes = True
                     if 'error_message' in step['result']:
                         step['error_message'] = step['result']['error_message']
                     else:
@@ -271,12 +359,6 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                     start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
                     scenario['duration'] += step['duration']
                     feature['duration'] += step['duration']
-                else:
-                    # steps without a 'result' attribute will be assigned "skipped" status
-                    step['status'] = 'skipped'
-                    scenario_has_skips = True
-                    step['duration'] = 0.0
-                    start_datetime += timedelta(seconds=last_step_duration)
                 step['time'] = start_datetime.strftime('%X')
                 step['date'] = start_datetime.strftime('%x')
                 if step_index == 0:
@@ -288,37 +370,22 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                 del step['name']
                 last_step_duration = step['duration']
 
-            if scenario_has_fails:
-                scenario['status'] = 'failed'
+            scenario['status'] = new_status('None', scenario_has_passes, scenario_has_fails, scenario_has_fakes,
+                                            scenario_has_skips, scenario_has_incompletes)
+            if scenario['status'] == 'failed':
                 feature_has_fails = True
-            elif scenario_has_skips:
-                scenario['status'] = 'skipped'
+            elif scenario['status'] == 'skipped':
                 feature_has_skips = True
-            elif scenario_has_fakes:
-                scenario['status'] = 'fake'
+            elif scenario['status'] == 'fake':
                 feature_has_fakes = True
-            elif scenario_has_passes:
-                scenario['status'] = 'passed'
+            elif scenario['status'] == 'passed':
                 feature_has_passes = True
-            else:
-                # no steps
-                scenario['status'] = 'fake'
-                feature_has_fakes = True
+            elif scenario['status'] == 'incomplete':
+                feature_has_incompletes = True
 
         del feature['elements']
-        if feature_has_fails:
-            feature['status'] = 'failed'
-        elif feature_has_fakes:
-            feature['status'] = 'fake'
-        elif feature_has_skips:
-            if feature_has_passes:
-                feature['status'] = 'incomplete'
-            else:
-                feature['status'] = 'skipped'
-        elif feature_has_passes:
-            feature['status'] = 'passed'
-        else:
-            feature['status'] = 'undefined'
+        feature['status'] = new_status('None', feature_has_passes, feature_has_fails, feature_has_fakes,
+                                       feature_has_skips, feature_has_incompletes)
         db['features'].insert_one(feature)
         # del feature['start_id']
         # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))

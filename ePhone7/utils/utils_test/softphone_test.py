@@ -29,4 +29,5 @@ called.unhold()
 sleep(5)
 log.debug("2202 ending call")
 caller.end_call()
+called.wait_for_call_status('idle', 5)
 
