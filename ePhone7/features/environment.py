@@ -42,6 +42,7 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     softphone_manager.end_all_calls()
+    softphone_manager.set_defaults()
     tags = str(context._config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
         base_view.close_appium()
