@@ -290,6 +290,8 @@ def i_downgrade_my_aosp_to_downgradeaospversion(context, downgrade_aosp_version)
         force_aosp_downgrade(downgrade_aosp_version)
         installed_aosp_version, installed_app_version = get_installed_versions()
         assert installed_aosp_version == downgrade_aosp_version
+        base_view.open_appium()
+        base_view.startup()
 
 
 @step("I downgrade my app")
@@ -398,6 +400,7 @@ def i_make_a_call_to_a_coworker_contact(context):
 
 
 @step("I perform an OTA upgrade")
+@fake
 def i_perform_an_ota_upgrade(context):
     context.run_substep('I set the OTA server')
     context.run_substep('[user] I touch the Preferences icon')
