@@ -4,7 +4,7 @@ Feature: As a user I want to have a Record button available during an active cal
   Background: I am at the Advanced Settings Call Record Enable option
     Given [background] I go to the home screen
     And   [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When  [background] I touch the Dial button
+    When  I touch the "Dial" button
     Then  [background] The Dial view appears
     When  [background] I dial the Advanced Settings direct code
     And   [background] I touch the call button

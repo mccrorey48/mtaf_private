@@ -14,7 +14,7 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     When  the caller leaves a message
     And   [user] I touch the Voicemail button
     Then  [voicemail] I see the New, Saved and Trash tabs at the top of the screen
-    When  [voicemail] I touch the New tab
+    When  I touch the "NEW" tab
     Then  [voicemail] the new voicemail is the first item listed
 
   Scenario: I want to deactivate Do Not Disturb

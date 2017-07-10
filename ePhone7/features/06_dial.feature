@@ -4,7 +4,7 @@ Feature: As a user I want to make calls by directly entering all or part of a co
   Background: I am in the Dial view
     Given [background] I go to the home screen
     Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When  [background] I touch the Dial button
+    When  I touch the "Dial" button
     Then  [background] I see the keypad
 
   Scenario: I want to call a Coworker contact by entering the number

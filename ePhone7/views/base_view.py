@@ -77,6 +77,13 @@ class BaseView(SeleniumActions):
         else:
             raise Ux("%s is not a valid keycode number" % repr(number))
 
+    def touch_element_with_text(self, text):
+        locator = {
+            "by": "uiautomator",
+            "value": "text(\"%s\")" % text
+        }
+        self.find_element_by_locator(locator).click()
+
     @Trace(log)
     def hide_keyboard(self):
         SeleniumActions.driver.hide_keyboard()

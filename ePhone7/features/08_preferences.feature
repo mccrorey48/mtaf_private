@@ -52,9 +52,9 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   The "Sign in with Google" element label changes to "Manage Accounts"
     When  [prefs] I touch the "X" icon
     Then  [prefs] The Preferences window disappears
-    When  [user] I touch the "Contacts" button and the Contacts view appears
+    When  [user] I touch the Contacts view selector button
     Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
-    When  [contacts] I touch the "Personal" tab
+    When  I touch the "Personal" tab
     Then  I can see my personal contacts
 
 
@@ -82,7 +82,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   I touch "OK"
     Then  The Contacts tab window disappears
     When  I close the Preferences window
-    And   [user] I touch the "Contacts" button and the Contacts view appears
+    And   [user] I touch the Contacts view selector button
     Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
     And   The new default tab is selected
 
@@ -297,7 +297,7 @@ Feature: As a user I want to view and change detailed settings that control my p
   Scenario: I want to see my phone's network settings
     When  I touch "System"
     Then  [prefs] A submenu appears with a "Network" option
-    When  [prefs] I touch the "Network" option
+    When  I touch the "Network" option
     Then  A window appears with a "Check Ethernet" option
     When  I touch "Check Ethernet"
     Then  The network settings are displayed

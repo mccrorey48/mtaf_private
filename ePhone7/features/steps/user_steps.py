@@ -33,12 +33,6 @@ def user__i_touch_a_contact_element(context):
     pass
 
 
-@step('[user] I touch the "Contacts" button and the Contacts view appears')
-@fake
-def user__i_touch_the_contacts_button_and_the_contacts_view_appears(context):
-    user_view.goto_tab('Contacts')
-
-
 @step("[user] I touch the Dial button")
 @fake
 def user__i_touch_the_dial_button(context):
@@ -55,6 +49,12 @@ def user__i_touch_the_history_button(context):
 @fake
 def user__i_touch_the_home_button(context):
     user_view.send_keycode('KEYCODE_HOME')
+
+
+@step('[user] I touch the {name} view selector button')
+@fake
+def user__i_touch_the_name_view_selector_button(context, name):
+    user_view.goto_tab(name)
 
 
 @step("[user] I touch the OK button")

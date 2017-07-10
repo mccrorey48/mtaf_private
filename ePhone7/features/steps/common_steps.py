@@ -314,11 +314,11 @@ def i_enter_a_vlan_identifier_between_1_and_4094(context):
 
 
 @step("I enter a VLAN priority greater than 7")
+@fake
 def i_enter_a_vlan_priority_greater_than_7(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        network_view.find_named_element('VlanPriority').clear()
-        network_view.send_keycode_number(8)
-        network_view.send_keycode_back()
+    network_view.find_named_element('VlanPriority').clear()
+    network_view.send_keycode_number(8)
+    network_view.send_keycode_back()
 
 
 @step("I enter my email address")
@@ -538,11 +538,6 @@ def i_touch_default_contacts_tab(context):
     pass
 
 
-@step('I touch "Factory Reset"')
-def i_touch_factory_reset(context):
-    pass
-
-
 @step('I touch "Manage Accounts"')
 def i_touch_manage_accounts(context):
     pass
@@ -550,48 +545,6 @@ def i_touch_manage_accounts(context):
 
 @step('I touch "Next"')
 def i_touch_next(context):
-    pass
-
-
-@step('I touch "OK"')
-def i_touch_ok(context):
-    pass
-
-
-@step('I touch "OK" on the "Invalid VLAN Priority" alert')
-@fake
-def i_touch_ok_on_the_invalid_vlan_priority_alert(context):
-    network_view.click_named_element('InvalidVlanOk')
-
-
-@step('I touch "OK" on the popup')
-@fake
-def i_touch_ok_on_the_popup(context):
-    base_view.click_named_element("OtaServerOk")
-
-
-@step('I touch "Phone"')
-def i_touch_phone(context):
-    pass
-
-
-@step('I touch "Ringtones"')
-def i_touch_ringtones(context):
-    pass
-
-
-@step('I touch "Screen Timeout"')
-def i_touch_screen_timeout(context):
-    pass
-
-
-@step('I touch "Sign in with Google"')
-def i_touch_sign_in_with_google(context):
-    pass
-
-
-@step('I touch "System"')
-def i_touch_system(context):
     pass
 
 
@@ -631,47 +584,19 @@ def i_touch_the_current_time_zone_text(context):
     pass
 
 
-@step("I touch the Missed tab")
-def i_touch_the_missed_tab(context):
-    pass
-
-
-@step('I touch the "OK" button')
-def i_touch_the_ok_button(context):
-    pass
-
-
-@step('I touch the "Utilities" option')
-def i_touch_the_utilities_option(context):
-    pass
-
-
 @step("I touch the voicemail icon")
 def i_touch_the_voicemail_icon(context):
     pass
 
 
-@step('I touch "Volume Control"')
-def i_touch_volume_control(context):
-    pass
-
-
-@step('I touch "Walkthrough"')
-def i_touch_walkthrough(context):
-    pass
-
-
 @step("I upgrade the phone if the versions are not correct")
+@fake
 def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
-        installed_aosp, installed_app = get_installed_versions()
-        log.debug("installed versions: app %s, aosp %s" % (installed_app, installed_aosp))
-        log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
-        aosp_upgrade_required = current_aosp != installed_aosp
-    else:
-        aosp_upgrade_required = True
-    if aosp_upgrade_required:
+    current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
+    installed_aosp, installed_app = get_installed_versions()
+    log.debug("installed versions: app %s, aosp %s" % (installed_app, installed_aosp))
+    log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
+    if current_aosp != installed_aosp:
         log.debug("checking for updates")
         context.run_substep('I perform an OTA upgrade')
 
@@ -779,7 +704,8 @@ def the_account_deleted_popup_disappears(context):
 @step("the Advanced Options view disappears")
 @fake
 def the_advanced_options_view_disappears(context):
-    assert advanced_settings_view.element_is_not_present('AdvancedOptions'), "Expected Advanced Options view to disappear but it did not"
+    assert advanced_settings_view.element_is_not_present('AdvancedOptions'), \
+        "Expected Advanced Options view to disappear but it did not"
 
 
 @step("the call has a red handset icon with a missed arrow")

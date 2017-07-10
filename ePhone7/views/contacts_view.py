@@ -146,22 +146,26 @@ class ContactsView(UserView):
     @Trace(log)
     def get_all_group_contacts(self, contacts_group):
         self.scroll_to_top_of_list()
-        prev_numbers_len = 0
-        numbers = []
-        # get all contacts shown, then scroll up and repeat
-        # until scrolling fails to show contacts not already in the list
+        prev_shown_numbers_len = 0
+        shown_numbers = []
+        match_numbers = []
+        # get all contacts shown, adding the contact numbers to the "numbers" array
+        # if they are in "contacts_group"; then scroll up and repeat
+        # until scrolling fails to show new contacts
         while True:
             self.wait_for_no_duplicate_numbers()
             for number in self.displayed_numbers:
-                if number in contacts_group and number not in numbers:
+                if number not in shown_numbers:
+                    shown_numbers.append(number)
+                if number in contacts_group and number not in match_numbers:
                     log.debug('adding %s to contact number list' % number)
-                    numbers.append(number)
-            if len(numbers) == prev_numbers_len or len(numbers) == len(contacts_group):
+                    match_numbers.append(number)
+            if len(shown_numbers) == prev_shown_numbers_len or len(match_numbers) == len(contacts_group):
                 break
-            prev_numbers_len = len(numbers)
+            prev_shown_numbers_len = len(shown_numbers)
             self.swipe_up()
-        log.debug("%d elements found" % len(numbers))
-        return numbers
+        log.debug("%d elements found" % len(match_numbers))
+        return match_numbers
 
     @Trace(log)
     def clear_all_favorites(self):

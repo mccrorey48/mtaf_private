@@ -7,7 +7,7 @@ from behave.__main__ import main
 from pymongo import MongoClient
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
-from lib.mock_steps import MockDetector
+from lib.mock_detector import MockDetector
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 import argparse

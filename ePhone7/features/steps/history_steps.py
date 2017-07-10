@@ -20,12 +20,6 @@ def history__i_touch_the_all_tab(context):
     pass
 
 
-@step("[history] I touch the Dial button")
-def history__i_touch_the_dial_button(context):
-    if 'fake' not in str(context._config.tags).split(','):
-        context.run_substep("[user] I touch the Dial button")
-
-
 @step("[history] I touch the handset icon")
 def history__i_touch_the_handset_icon(context):
     pass

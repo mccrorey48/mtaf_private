@@ -4,9 +4,9 @@ Feature: As a user I want to set up the VLAN (R2D2-2098)
     Given [background] I go to the home screen
     When  [background] I touch the Preferences icon
     Then  [background] the Preferences window appears
-    When  [background] I touch the "System" menu category
+    When  I touch the "System" menu category
     Then  [background] A submenu appears with a "Network" option
-    When  [background] I touch the "Network" option
+    When  I touch the "Network" option
     Then  [background] I see the Network Settings view
 
   @regression

@@ -3,7 +3,7 @@ from lib.user_exception import UserException as Ux
 import os
 
 step_re = re.compile('''(@[^(]+)\(['"](\[.+\] )?(.+)['"]\)''')
-def_re = re.compile('def\s+([^(]+)(.+)')
+def_re = re.compile('def\s+([^(]+).*(\(context[^:]*\))')
 
 
 def sort(filename):
@@ -21,7 +21,7 @@ def sort(filename):
                     if group is not None:
                         group = ' '.join(group.split('.'))
                     groups.append(group)
-                step_key = '_'.join(' '.join([group.lower().translate(None, '''"'[]{}_-!/,.''') for group in groups if group is not None]).split(' '))
+                step_key = '_'.join(' '.join([group.lower().translate(None, '''"'[]{}_-!\/,.*?^():+<>''') for group in groups if group is not None]).split(' '))
                 if step_key in step_defs:
                     raise Ux("duplicate step name on line %s" % (lnum + 1) )
                 else:
@@ -35,7 +35,7 @@ def sort(filename):
                     prefix_lines.append(line)
                 elif def_re.match(line):
                     arglist = def_re.match(line).group(2)
-                    step_defs[current_key].append('def ' + current_key + arglist + '\n')
+                    step_defs[current_key].append('def ' + current_key + arglist + ':\n')
                 elif len(line.strip()):
                     step_defs[current_key].append(line)
     with open(filename, 'w') as f:

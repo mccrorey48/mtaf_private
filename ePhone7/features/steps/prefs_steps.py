@@ -1,10 +1,9 @@
 from behave import *
-from ePhone7.views import *
-import re
-from lib.user_exception import UserException as Ux
-from lib.wrappers import fake
-import lib.logging_esi as logging
+
 from ePhone7.utils.versions import *
+from ePhone7.views import *
+from lib.wrappers import fake
+
 log = logging.get_logger('esi.prefs')
 
 
@@ -147,18 +146,6 @@ def prefs__i_touch_the_name_menu_item(context, name):
         raise Ux('No menu item text element with text="%s" was found' % name)
 
 
-@step('[prefs] I touch the "Network" option')
-@fake
-def prefs__i_touch_the_network_option(context):
-    prefs_view.click_named_element('MenuItemNetworkText')
-
-
-@step('[prefs] I touch the "Upgrade" button')
-@fake
-def prefs__i_touch_the_upgrade_button(context):
-    prefs_view.click_named_element('UpgradeButton')
-
-
 @step('[prefs] I touch the "X" icon')
 @fake
 def prefs__i_touch_the_x_icon(context):
@@ -188,8 +175,10 @@ def prefs__the_email_notification_popup_disappears(context):
 @fake
 def prefs__the_installed_versions_are_displayed_correctly(context):
     installed_aosp, installed_app = get_installed_versions()
-    assert context.aosp_version == installed_aosp, "Expected displayed aosp version %s, got %s" % (installed_aosp, context.aosp_version)
-    assert context.app_version == installed_app, "Expected displayed app version %s, got %s" % (installed_app, context.app_version)
+    assert context.aosp_version == installed_aosp, "Expected displayed aosp version %s, got %s" % \
+                                                   (installed_aosp, context.aosp_version)
+    assert context.app_version == installed_app, "Expected displayed app version %s, got %s" % \
+                                                 (installed_app, context.app_version)
 
 
 @step("[prefs] the Preferences window appears")

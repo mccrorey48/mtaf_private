@@ -2,6 +2,7 @@ from behave import *
 from ePhone7.views import *
 from lib.wrappers import fake
 
+
 @step("[voicemail] A keypad appears")
 def voicemail__a_keypad_appears(context):
     pass
@@ -35,11 +36,6 @@ def voicemail__i_touch_a_contact_element(context):
     pass
 
 
-@step("[voicemail] I touch OK")
-def voicemail__i_touch_ok(context):
-    pass
-
-
 @step("[voicemail] I touch the Delete icon")
 def voicemail__i_touch_the_delete_icon(context):
     pass
@@ -55,11 +51,6 @@ def voicemail__i_touch_the_handset_icon(context):
     pass
 
 
-@step("[voicemail] I touch the New tab")
-def voicemail__i_touch_the_new_tab(context):
-    pass
-
-
 @step("[voicemail] I touch the new voicemail element")
 def voicemail__i_touch_the_new_voicemail_element(context):
     pass
@@ -67,16 +58,6 @@ def voicemail__i_touch_the_new_voicemail_element(context):
 
 @step("[voicemail] I touch the Save icon")
 def voicemail__i_touch_the_save_icon(context):
-    pass
-
-
-@step("[voicemail] I touch the Saved tab")
-def voicemail__i_touch_the_saved_tab(context):
-    pass
-
-
-@step("[voicemail] I touch the Trash tab")
-def voicemail__i_touch_the_trash_tab(context):
     pass
 
 

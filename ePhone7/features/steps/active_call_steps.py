@@ -31,6 +31,7 @@ def activecall__an_active_call_window_appears(context):
 def activecall__i_end_the_call(context):
     active_call_view.touch_end_call_button()
 
+
 @step("[active_call] I see a green banner with the coworker's name")
 @fake
 def activecall__i_see_a_green_banner_with_the_coworkers_name(context):
