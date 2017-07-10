@@ -1,4 +1,3 @@
-#@regression
 Feature: As a user I want to make calls by directly entering all or part of a contact's name or number
 
   Background: I am in the Dial view

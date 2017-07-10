@@ -75,31 +75,6 @@ def prefs__i_touch_a_contact_element(context):
     pass
 
 
-@step('[prefs] I touch "Call Forwarding Options"')
-def prefs__i_touch_call_forwarding_options(context):
-    pass
-
-
-@step('[prefs] I touch "eHelp"')
-def prefs__i_touch_ehelp(context):
-    pass
-
-
-@step('[prefs] I touch "Need Help"')
-def prefs__i_touch_need_help(context):
-    pass
-
-
-@step('[prefs] I touch "OK" on the email notification popup')
-def prefs__i_touch_ok_on_the_email_notification_popup(context):
-    pass
-
-
-@step('[prefs] I touch "Personal"')
-def prefs__i_touch_personal(context):
-    pass
-
-
 @step('[prefs] I touch the "Call Forward Busy" section')
 def prefs__i_touch_the_call_forward_busy_section(context):
     pass
@@ -111,39 +86,15 @@ def prefs__i_touch_the_check_for_system_update_option(context):
     prefs_view.click_named_element('SystemUpdate')
 
 
-@step("[prefs] I touch the Delete button")
-def prefs__i_touch_the_delete_button(context):
-    pass
-
-
 @step("[prefs] I touch the Delete icon")
 def prefs__i_touch_the_delete_icon(context):
     pass
 
 
-@step('[prefs] I touch the "{name}" menu category')
+@step("[prefs] I close all open submenus")
 @fake
-def prefs__i_touch_the_name_menu_category(context, name):
+def prefs__i_close_all_open_submenus(context):
     prefs_view.hide_list_items()
-    elems = prefs_view.find_named_elements('MenuCategories')
-    for elem in elems:
-        if elem.text == name:
-            elem.click()
-            break
-    else:
-        raise Ux('No menu category element with text="%s" was found' % name)
-
-
-@step('[prefs] I touch the "{name}" menu item')
-@fake
-def prefs__i_touch_the_name_menu_item(context, name):
-    elems = prefs_view.find_named_elements('MenuItemTexts')
-    for elem in elems:
-        if elem.text == name:
-            elem.click()
-            break
-    else:
-        raise Ux('No menu item text element with text="%s" was found' % name)
 
 
 @step('[prefs] I touch the "X" icon')

@@ -15,11 +15,6 @@ def history__i_see_the_call_at_the_top_of_the_all_history_view(context):
     pass
 
 
-@step("[history] I touch the All tab")
-def history__i_touch_the_all_tab(context):
-    pass
-
-
 @step("[history] I touch the handset icon")
 def history__i_touch_the_handset_icon(context):
     pass

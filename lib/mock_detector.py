@@ -52,6 +52,9 @@ class MockDetector:
                         step_is_fake = False
                         current_key = step_key
                     else:
+                        # if this step is assumed to be adequately faked, skip lines until another step match occurs
+                        if step_is_fake:
+                            continue
                         # when "fake" is one of the tags passed to behave,
                         # and the word "fake" is mentioned in the executable code of a step,
                         # assume that the entire step is adequately faked (no real AUT interaction)
@@ -60,9 +63,6 @@ class MockDetector:
                         if m or m2:
                             if fake_tag:
                                 step_is_fake = True
-                            continue
-                        # if this step is assumed to be adequately faked, skip lines until another step match occurs
-                        if step_is_fake:
                             continue
                         # for steps that don't mention "fake", see if there are any lines that should be
                         # counted as implementation, and if so, set is_fake[current_key] to False
@@ -90,7 +90,8 @@ class MockDetector:
         for key in sorted(is_fake.keys()):
             if is_fake[key]:
                 self.fake_steps.append(key)
-        re_split = re.compile('{[^}]*}')
+        re_split_parse_matcher = re.compile('{[^}]*}')
+        re_split_re_matcher = re.compile('\(\?p<[^>]+>[^)]+\)')
         # in cases where the step name includes a parameter (the same step can be called with different values
         # in one or more places embedded in the step name string), the step name in the features file probably
         # won't match the step name that prefixes the python implementation in features/steps/*.py.
@@ -101,10 +102,10 @@ class MockDetector:
         # the "splits" list is used by the "match" function to determine if a parameterized step in a feature file
         # matches a fake python step implementation
         self.splits = []
-        for text in self.fake_steps:
-            items = re_split.split(text)
+        for text in self.fake_steps[:]:
+            items = re_split_parse_matcher.split(text)
             if len(items) > 1:
-                # only add to self.splits if the text contains a match for re_split
+                # only add to self.splits if the text contains a match for re_split_parse_matcher
                 # but first escape '[' and ']' since we use it in a regex later
                 new_split = []
                 for item in items:
@@ -112,6 +113,13 @@ class MockDetector:
                     item = '\['.join(item.split('['))
                     new_split.append(item)
                 self.splits.append(new_split)
+                self.fake_steps.remove(text)
+                continue
+            items = re_split_re_matcher.split(text)
+            if len(items) > 1:
+                self.splits.append(items)
+                self.fake_steps.remove(text)
+                continue
         # go through self.fake_steps and remove any that call non-fake substeps
         # this will need to be reiterated as long as the length of self.fake_steps changes
         # with each iteration
@@ -132,7 +140,7 @@ class MockDetector:
         if step_name.lower() in self.fake_steps:
             return True
         for split in self.splits:
-            if re.match('.*'.join(split), step_name.lower()):
+            if re.match('[^"]*'.join(split), step_name.lower()):
                 return True
         else:
             # print step_name

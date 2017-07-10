@@ -46,7 +46,7 @@ Feature: As a user I want to use and manage my contact lists
     Then  [contacts] a contact detail screen appears with a white star icon
     When  [contacts] I touch the white star icon
     Then  [contacts] the star turns yellow
-    When  [contacts] I touch the Favorites tab
+    When  I touch the "Favorites" tab
     Then  [contacts] the contact is shown on the display
 
   Scenario: I want to set the Favorites status of multiple Coworker contacts

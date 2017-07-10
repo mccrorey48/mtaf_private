@@ -9,13 +9,13 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Scenario: I want to see an answered call indicated on the All History view
     Given I receive and ignore a call
-    When  [history] I touch the All tab
+    When  I touch the "All" tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a blue handset icon with an incoming arrow
 
   Scenario: I want to see a missed call indicated on the All History view
     Given I receive and ignore a call
-    When  [history] I touch the All tab
+    When  I touch the "All" tab
     Then  [history] I see the call at the top of the All History view
     And   the call has a red handset icon with a missed arrow
 
@@ -27,7 +27,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Scenario: I want to see a voicemail call indicated on the All History view
     Given I receive and ignore a call and the caller leaves a voicemail
-    And   [history] I touch the All tab
+    And   I touch the "All" tab
     Then  [history] I see the call at the top of the All History view
     And   the call has a voicemail icon
 
@@ -38,7 +38,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
     Then  [active_call] an "Active Call" window appears
     When  [active_call] I end the call
     Then  the in-call window disappears
-    When  [history] I touch the All tab
+    When  I touch the "All" tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a green handset icon with an outgoing arrow
 
@@ -49,7 +49,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
     Then  [active_call] an "Active Call" window appears
     When  [active_call] I end the call
     Then  the incoming call window disappears
-    When  [history] I touch the All tab
+    When  I touch the "All" tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a blue handset icon with an incoming arrow
     When  [history] I touch the handset icon
@@ -57,7 +57,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Scenario: I want to call back a missed call indicated on the All History view
     Given I receive and ignore a call
-    When  [history] I touch the All tab
+    When  I touch the "All" tab
     Then  [history] I see the call at the top of the All History view
     And   the call has a red handset icon with a missed arrow
     When  [history] I touch the handset icon
@@ -73,7 +73,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Scenario: I want to listen to a voicemail indicated on the All History view
     Given I receive and ignore a call and the caller leaves a voicemail
-    And   [history] I touch the All tab
+    And   I touch the "All" tab
     Then  [history] I see the call at the top of the All History view
     And   the call has a voicemail icon
     When  I touch the voicemail icon
@@ -87,7 +87,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
     Then  [active_call] an "Active Call" window appears
     When  [active_call] I end the call
     Then  the in-call window disappears
-    When  [history] I touch the All tab
+    When  I touch the "All" tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a green handset icon with an outgoing arrow
     When  [history] I touch the handset icon

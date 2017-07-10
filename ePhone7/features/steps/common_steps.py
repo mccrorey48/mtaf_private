@@ -590,13 +590,16 @@ def i_touch_the_voicemail_icon(context):
 
 
 @step("I upgrade the phone if the versions are not correct")
-@fake
 def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
-    current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
-    installed_aosp, installed_app = get_installed_versions()
-    log.debug("installed versions: app %s, aosp %s" % (installed_app, installed_aosp))
-    log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
-    if current_aosp != installed_aosp:
+    if 'fake' not in str(context._config.tags).split(','):
+        current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
+        installed_aosp, installed_app = get_installed_versions()
+        log.debug("installed versions: app %s, aosp %s" % (installed_app, installed_aosp))
+        log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
+        aosp_upgrade_required = current_aosp != installed_aosp
+    else:
+        aosp_upgrade_required = True
+    if aosp_upgrade_required:
         log.debug("checking for updates")
         context.run_substep('I perform an OTA upgrade')
 

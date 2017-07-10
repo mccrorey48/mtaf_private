@@ -8,7 +8,6 @@ from dial_steps import *
 from history_steps import *
 from advanced_steps import *
 from voicemail_steps import *
-from re_steps import *
 
 
 @step('[background] A submenu appears with a "Network" option')

@@ -97,17 +97,6 @@ def contacts__i_touch_the_favorites_star_icon_on_some_contacts(context):
     pass
 
 
-@step("[contacts] I touch the Favorites tab")
-@fake
-def contacts__i_touch_the_favorites_tab(context):
-    contacts_view.goto_tab('Favorites')
-
-
-@step("[contacts] I touch the Groups tab")
-def contacts__i_touch_the_groups_tab(context):
-    pass
-
-
 @step("[contacts] I touch the handset icon next to the contact I want to call")
 @fake
 def contacts__i_touch_the_handset_icon_next_to_the_contact_i_want_to_call(context):

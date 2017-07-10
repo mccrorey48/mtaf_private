@@ -12,7 +12,7 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     When  Someone calls me
     Then  the caller gets a voicemail prompt
     When  the caller leaves a message
-    And   [user] I touch the Voicemail button
+    And   I touch the "Voicemail" button
     Then  [voicemail] I see the New, Saved and Trash tabs at the top of the screen
     When  I touch the "NEW" tab
     Then  [voicemail] the new voicemail is the first item listed
@@ -39,7 +39,7 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     When  [user] I use the keypad to filter the list of contacts
     And   [user] I touch a contact element
     Then  [user] Only the contact I touched is listed
-    When  [user] I touch the OK button
+    When  I touch the "OK" button
     Then  [user] the keypad disappears
     And   [user] the Call Forward icon is red
     When  [user] I go to the Home view
@@ -49,7 +49,7 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     Given [user] the Call Forward icon is blue
     When  [user] I touch the Call Forward icon
     Then  [user] A keypad appears with a list of contacts
-    When  [user] I touch the Voicemail button
+    When  I touch the "Voicemail" button
     Then  [user] the keypad disappears
     And   [user] the Call Forward icon is red
     When  [user] I go to the Home view
