@@ -23,6 +23,7 @@
             "Quiet": true,
             "ScreenshotsFolder": "ePhone7/utils/screenshots",
             "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
+            "SerialDev": "/dev/ttyUSB0",
             "TestScreenshotsFolder": "ePhone7/screenshots",
             "UseTcp": false,
             "VVMHeaders": {
