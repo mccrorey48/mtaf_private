@@ -1,10 +1,9 @@
 from behave import *
-from ePhone7.views import *
-import re
-from lib.user_exception import UserException as Ux
-from lib.wrappers import fake
-import lib.logging_esi as logging
+
 from ePhone7.utils.versions import *
+from ePhone7.views import *
+from lib.wrappers import fake
+
 log = logging.get_logger('esi.prefs')
 
 
@@ -76,44 +75,8 @@ def prefs__i_touch_a_contact_element(context):
     pass
 
 
-@step('[prefs] I touch "Call Forwarding Options"')
-def prefs__i_touch_call_forwarding_options(context):
-    pass
-
-
-@step('[prefs] I touch "eHelp"')
-def prefs__i_touch_ehelp(context):
-    pass
-
-
-@step('[prefs] I touch "Need Help"')
-def prefs__i_touch_need_help(context):
-    pass
-
-
-@step('[prefs] I touch "OK" on the email notification popup')
-def prefs__i_touch_ok_on_the_email_notification_popup(context):
-    pass
-
-
-@step('[prefs] I touch "Personal"')
-def prefs__i_touch_personal(context):
-    pass
-
-
 @step('[prefs] I touch the "Call Forward Busy" section')
 def prefs__i_touch_the_call_forward_busy_section(context):
-    pass
-
-
-@step('[prefs] I touch the "Check for System Update" option')
-@fake
-def prefs__i_touch_the_check_for_system_update_option(context):
-    prefs_view.click_named_element('SystemUpdate')
-
-
-@step("[prefs] I touch the Delete button")
-def prefs__i_touch_the_delete_button(context):
     pass
 
 
@@ -122,41 +85,10 @@ def prefs__i_touch_the_delete_icon(context):
     pass
 
 
-@step('[prefs] I touch the "{name}" menu category')
+@step("[prefs] I close all open submenus")
 @fake
-def prefs__i_touch_the_name_menu_category(context, name):
+def prefs__i_close_all_open_submenus(context):
     prefs_view.hide_list_items()
-    elems = prefs_view.find_named_elements('MenuCategories')
-    for elem in elems:
-        if elem.text == name:
-            elem.click()
-            break
-    else:
-        raise Ux('No menu category element with text="%s" was found' % name)
-
-
-@step('[prefs] I touch the "{name}" menu item')
-@fake
-def prefs__i_touch_the_name_menu_item(context, name):
-    elems = prefs_view.find_named_elements('MenuItemTexts')
-    for elem in elems:
-        if elem.text == name:
-            elem.click()
-            break
-    else:
-        raise Ux('No menu item text element with text="%s" was found' % name)
-
-
-@step('[prefs] I touch the "Network" option')
-@fake
-def prefs__i_touch_the_network_option(context):
-    prefs_view.click_named_element('MenuItemNetworkText')
-
-
-@step('[prefs] I touch the "Upgrade" button')
-@fake
-def prefs__i_touch_the_upgrade_button(context):
-    prefs_view.click_named_element('UpgradeButton')
 
 
 @step('[prefs] I touch the "X" icon')
@@ -188,8 +120,10 @@ def prefs__the_email_notification_popup_disappears(context):
 @fake
 def prefs__the_installed_versions_are_displayed_correctly(context):
     installed_aosp, installed_app = get_installed_versions()
-    assert context.aosp_version == installed_aosp, "Expected displayed aosp version %s, got %s" % (installed_aosp, context.aosp_version)
-    assert context.app_version == installed_app, "Expected displayed app version %s, got %s" % (installed_app, context.app_version)
+    assert context.aosp_version == installed_aosp, "Expected displayed aosp version %s, got %s" % \
+                                                   (installed_aosp, context.aosp_version)
+    assert context.app_version == installed_app, "Expected displayed app version %s, got %s" % \
+                                                 (installed_app, context.app_version)
 
 
 @step("[prefs] the Preferences window appears")

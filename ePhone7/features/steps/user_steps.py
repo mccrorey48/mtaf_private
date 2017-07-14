@@ -33,33 +33,10 @@ def user__i_touch_a_contact_element(context):
     pass
 
 
-@step('[user] I touch the "Contacts" button and the Contacts view appears')
-@fake
-def user__i_touch_the_contacts_button_and_the_contacts_view_appears(context):
-    user_view.goto_tab('Contacts')
-
-
-@step("[user] I touch the Dial button")
-@fake
-def user__i_touch_the_dial_button(context):
-    user_view.click_named_element('Dial')
-
-
-@step("[user] I touch the History button")
-@fake
-def user__i_touch_the_history_button(context):
-    user_view.click_named_element('History')
-
-
 @step("[user] I touch the Home button")
 @fake
 def user__i_touch_the_home_button(context):
     user_view.send_keycode('KEYCODE_HOME')
-
-
-@step("[user] I touch the OK button")
-def user__i_touch_the_ok_button(context):
-    pass
 
 
 @step("[user] I touch the Preferences icon")
@@ -70,12 +47,6 @@ def user__i_touch_the_preferences_icon(context):
         # one retry
         user_view.tap([(559, 74)])
     # user_view.click_named_element('PrefsButton')
-
-
-@step("[user] I touch the Voicemail button")
-@fake
-def user__i_touch_the_voicemail_button(context):
-    user_view.click_named_element('Voicemail')
 
 
 @step("[user] I use the keypad to filter the list of contacts")

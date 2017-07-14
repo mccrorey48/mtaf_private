@@ -6,9 +6,9 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     And   [background] I have at least one saved voicemail
     And   [background] I have at least one new voicemail
-    When  [background] I touch the Voicemail button
+    When  I touch the "Voicemail" button
     Then  [background] I see the New, Saved and Trash tabs at the top of the screen
-    When  [background] I touch the New tab
+    When  I touch the "NEW" tab
     And   [background] I receive a new voicemail
     Then  [background] the new voicemail is the first item listed
 
@@ -37,7 +37,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  [voicemail] I touch the Saved tab
+    When  I touch the "SAVED" tab
     Then  [voicemail] the voicemail is the first item listed
 
   Scenario: I listen to a selected saved voicemail
@@ -46,7 +46,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  [voicemail] I touch the Saved tab
+    When  I touch the "SAVED" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -58,7 +58,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  [voicemail] I touch the Saved tab
+    When  I touch the "SAVED" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -72,7 +72,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  [voicemail] I touch the Saved tab
+    When  I touch the "SAVED" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -86,7 +86,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  [voicemail] I touch the Saved tab
+    When  I touch the "SAVED" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -100,14 +100,14 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Delete icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  [voicemail] I touch the Trash tab
+    When  I touch the "TRASH" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  [voicemail] I touch the Saved tab
+    When  I touch the "SAVED" tab
     Then  [voicemail] the voicemail is the first item listed
 
   Scenario: I forward a voicemail to a coworker
@@ -119,7 +119,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I use the keypad to filter the list of contacts
     And   [voicemail] I touch a contact element
     Then  [voicemail] I can choose Cancel or OK by touching the corresponding button
-    When  [voicemail] I touch OK
+    When  I touch "OK"
     Then  [voicemail] the voicemail is still the first item in the view
     And   [voicemail] the voicemail is also available in the destination contact's new voicemails list
 

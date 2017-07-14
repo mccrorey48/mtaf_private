@@ -5,6 +5,7 @@ import inspect
 class UserException(Exception):
     def __init__(self, msg='user exception', sp=True):
         self.msg = msg
+        self.message = msg
         if sp:
             self.text = stat_prefix(2) + ' - ' + msg
         else:

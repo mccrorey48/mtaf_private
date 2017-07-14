@@ -33,6 +33,7 @@ def advanced__i_scroll_down_to_the_call_record_enable_setting(context):
 @step("[advanced] the Advanced Options view appears")
 @fake
 def advanced__the_advanced_options_view_appears(context):
-    assert advanced_settings_view.element_is_present('AdvancedOptions'), "Expected Advanced Options view to appear but it did not"
+    assert advanced_settings_view.element_is_present('AdvancedOptions'), \
+        "Expected Advanced Options view to appear but it did not"
 
 

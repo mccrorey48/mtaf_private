@@ -10,8 +10,9 @@ Feature: The version of the software should be correct
     Given I go to the home screen
     When  [user] I touch the Preferences icon
     Then  [prefs] the Preferences window appears
-    When  [prefs] I touch the "System" menu category
-    And   [prefs] I touch the "About ePhone7" menu item
+    And   [prefs] I close all open submenus
+    When  I touch "System"
+    And   I touch "About ePhone7"
     Then  [prefs] I read the displayed versions for the app and AOSP
     And   [prefs] the installed versions are displayed correctly
     And   [prefs] the current versions are installed

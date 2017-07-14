@@ -41,18 +41,6 @@ def network__i_see_the_vlan_controls(context):
     assert network_view.element_is_present('VlanDisable')
 
 
-@step('[network] I touch "OK" on the "Invalid VLAN Identifier" alert')
-@fake
-def network__i_touch_ok_on_the_invalid_vlan_identifier_alert(context):
-    network_view.click_named_element('InvalidVlanOk')
-
-
-@step('[network] I touch "Save and Reboot"')
-@fake
-def network__i_touch_save_and_reboot(context):
-    network_view.click_named_element('NetworkSaveAndReboot')
-
-
 @step("[network] I touch the back arrow at the top of the Network Settings view")
 @fake
 def network__i_touch_the_back_arrow_at_the_top_of_the_network_settings_view(context):

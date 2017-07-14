@@ -112,52 +112,10 @@ def background__i_see_the_personal_coworkers_favorites_and_groups_tabs(context):
     contacts__i_see_the_personal_coworkers_favorites_and_groups_tabs(context)
 
 
-@step('[background] I touch "Save and Reboot"')
-@fake
-def background__i_touch_save_and_reboot(context):
-    network__i_touch_save_and_reboot(context)
-
-
 @step("[background] I touch the call button")
 @fake
 def background__i_touch_the_call_button(context):
     dial__i_touch_the_call_button(context)
-
-
-@step('[background] I touch the "Contacts" button and the Contacts view appears')
-@fake
-def background__i_touch_the_contacts_button_and_the_contacts_view_appears(context):
-    user__i_touch_the_contacts_button_and_the_contacts_view_appears(context)
-
-
-@step("[background] I touch the Dial button")
-@fake
-def background__i_touch_the_dial_button(context):
-    user__i_touch_the_dial_button(context)
-
-
-@step("[background] I touch the History button")
-@fake
-def background__i_touch_the_history_button(context):
-    user__i_touch_the_history_button(context)
-
-
-@step('[background] I touch the "{name}" menu category')
-@fake
-def background__i_touch_the_name_menu_category(context, name):
-    prefs__i_touch_the_name_menu_category(context, name)
-
-
-@step('[background] I touch the "Network" option')
-@fake
-def background__i_touch_the_network_option(context):
-    prefs__i_touch_the_network_option(context)
-
-
-@step("[background] I touch the New tab")
-@fake
-def background__i_touch_the_new_tab(context):
-    voicemail__i_touch_the_new_tab(context)
 
 
 @step("[background] I touch the Preferences icon")
@@ -170,12 +128,6 @@ def background__i_touch_the_preferences_icon(context):
 @fake
 def background__i_touch_the_vlan_enable_button(context):
     network__i_touch_the_vlan_enable_button(context)
-
-
-@step("[background] I touch the Voicemail button")
-@fake
-def background__i_touch_the_voicemail_button(context):
-    user__i_touch_the_voicemail_button(context)
 
 
 @step("[background] I wait for the phone to restart")

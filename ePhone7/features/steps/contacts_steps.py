@@ -72,12 +72,6 @@ def contacts__i_enter_my_google_user_id_and_password(context):
     pass
 
 
-@step("[contacts] I go to the Personal tab")
-@fake
-def contacts__i_go_to_the_personal_tab(context):
-    contacts_view.goto_tab('Personal')
-
-
 @step("[contacts] I long-press a contact list item")
 @fake
 def contacts__i_longpress_a_contact_list_item(context):
@@ -98,51 +92,8 @@ def contacts__i_touch_a_check_a_box_next_to_a_contact(context):
     pass
 
 
-@step('[contacts] I touch "OK" on the "Add Multiple Favorites" confirmation dialog')
-@fake
-def contacts__i_touch_ok_on_the_add_multiple_favorites_confirmation_dialog(context):
-    contacts_view.confirm_multi_edit()
-
-
-@step("[contacts] I touch the Add button")
-def contacts__i_touch_the_add_button(context):
-    pass
-
-
-@step("[contacts] I touch the Coworkers tab")
-@fake
-def contacts__i_touch_the_coworkers_tab(context):
-    contacts_view.goto_tab('Coworkers')
-
-
-@step("[contacts] I touch the Create button")
-def contacts__i_touch_the_create_button(context):
-    pass
-
-
-@step("[contacts] I touch the Delete button")
-def contacts__i_touch_the_delete_button(context):
-    pass
-
-
-@step("[contacts] I touch the Done button")
-def contacts__i_touch_the_done_button(context):
-    pass
-
-
 @step("[contacts] I touch the Favorites star icon on some contacts")
 def contacts__i_touch_the_favorites_star_icon_on_some_contacts(context):
-    pass
-
-
-@step("[contacts] I touch the Favorites tab")
-@fake
-def contacts__i_touch_the_favorites_tab(context):
-    contacts_view.goto_tab('Favorites')
-
-
-@step("[contacts] I touch the Groups tab")
-def contacts__i_touch_the_groups_tab(context):
     pass
 
 
@@ -170,17 +121,6 @@ def contacts__i_touch_the_name_of_a_personal_group_list(context):
 @step("[contacts] I touch the name of a system Group list")
 def contacts__i_touch_the_name_of_a_system_group_list(context):
     pass
-
-
-@step('[contacts] I touch the "Personal" tab')
-def contacts__i_touch_the_personal_tab(context):
-    pass
-
-
-@step('[contacts] I touch the "Sign in with Google" banner')
-@fake
-def contacts__i_touch_the_sign_in_with_google_banner(context):
-    contacts_view.click_named_element('GoogleSignInBanner')
 
 
 @step("[contacts] I touch the star icons so all are white")
@@ -235,7 +175,7 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
     names = contacts_view.find_named_elements('ContactName')[:8]
     call_buttons = contacts_view.find_named_elements('MultiEditFavoritesIndicator')[:8]
     assert len(names) == len(call_buttons), "Expected contact name count (%d) to equal star icon count (%d)" \
-                                     % (len(names), len(call_buttons))
+                                            % (len(names), len(call_buttons))
     context.call_buttons = dict(zip(names, call_buttons))
     base_view.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
     for i in range(len(names)):

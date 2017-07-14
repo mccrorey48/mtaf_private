@@ -4,16 +4,16 @@ Feature: As a user I want to keep access to my voicemail after I stop using a VL
     Given [background] I go to the home screen
     When  [background] I touch the Preferences icon
     Then  [background] the Preferences window appears
-    When  [background] I touch the "System" menu category
+    When  I touch the "System" menu category
     Then  [background] A submenu appears with a "Network" option
-    When  [background] I touch the "Network" option
+    When  I touch the "Network" option
     Then  [background] I see the Network Settings view
     And   [background] I touch the VLAN Enable button
     And   [background] the Enable button is active
     And   [background] the Disable button is inactive
     When  [background] I enter a VLAN identifier between 1 and 4094
     And   [background] I enter a VLAN priority between 0 and 7
-    And   [background] I touch "Save and Reboot"
+    And   I touch "Save and Reboot"
     Then  [background] The reboot alert window appears
     And   [background] I wait for the phone to restart
 

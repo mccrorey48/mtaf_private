@@ -19,7 +19,7 @@ class SpudSerial:
             self.connection = serial.Serial(serial_device, 115200, timeout=1.0)
         except serial.serialutil.SerialException:
             raise Ux('serial port %s not available' % serial_device)
-        self.cwd = None
+        self.cwd = ''
         if pwd_check:
             self.do_action({'cmd': 'cd\n', 'new_cwd': 'data'})
 
@@ -44,7 +44,7 @@ class SpudSerial:
         return ip_addr
 
     @Trace(log)
-    def expect(self, cmd, expect_text, timeout=5):
+    def expect(self, cmd, expect_text, timeout=5, dead_air_timeout=1):
         """
             write 'cmd' to the serial port;
             read the serial port one character at a time and add to 'reply' string, skipping '\r' characters, 
@@ -53,14 +53,15 @@ class SpudSerial:
             if expect_text is received, return 'reply'.
         """
         log.debug('cmd "%s", expect_text "%s"' % (repr(cmd), repr(expect_text)))
-        expect_text = '\('.join(expect_text.split('('))
-        expect_text = '\)'.join(expect_text.split(')'))
+        # expect_text = '\('.join(expect_text.split('('))
+        # expect_text = '\)'.join(expect_text.split(')'))
         expect_re = re.compile('(?ms).*(' + expect_text + ')')
         reply = ''
         log_str = ''
         if len(cmd):
             self.connection.write(cmd)
         start_time = time()
+        last_char_time = time()
         while True:
             try:
                 c = self.connection.read()
@@ -68,19 +69,25 @@ class SpudSerial:
                 log.debug("ignoring SerialException: %s" % e)
                 c = ''
                 sleep(1)
-            if len(c) and c != '\r' and ord(c) < 0xff:
-                reply += c
-                if c == '\n':
-                    log.debug('>>' + log_str.encode('string_escape'))
-                    log_str = ''
-                else:
-                    log_str += c
+            if len(c):
+                last_char_time = time()
+                if c != '\r' and ord(c) < 0xff:
+                    reply += c
+                    if c == '\n':
+                        log.debug('>>' + log_str.encode('string_escape'))
+                        log_str = ''
+                    else:
+                        log_str += c
             elapsed = time() - start_time
             match = expect_re.match(reply)
             if match:
                 return reply, elapsed, match
             if time() - start_time > timeout:
-                raise Ux("expect: %s second timeout exceeded waiting for %s; reply = '%s'" % (timeout, expect_text, reply.encode('string_escape')))
+                raise Ux("expect: %s second timeout exceeded waiting for %s; reply = '%s'"
+                         % (timeout, expect_text, reply.encode('string_escape')))
+            if time() - last_char_time > dead_air_timeout:
+                raise Ux("expect: %s second dead_air_timeout exceeded waiting for %s; reply = '%s'"
+                         % (dead_air_timeout, expect_text, reply.encode('string_escape')))
 
     @Trace(log)
     def flush(self, timeout=5):
@@ -113,12 +120,16 @@ class SpudSerial:
             timeout = action['timeout']
         else:
             timeout = 1
+        if 'dead_air_timeout' in action:
+            dead_air_timeout = action['dead_air_timeout']
+        else:
+            dead_air_timeout = 1
         if 'expect' not in action or action['expect'] is None or len(action['expect']) == 0:
             expected = self.get_prompt()
         else:
             expected = action['expect']
         try:
-            reply, elapsed, match = self.expect(action['cmd'], expected, timeout)
+            reply, elapsed, match = self.expect(action['cmd'], expected, timeout, dead_air_timeout)
         except Ux as e:
             flushed = self.flush()[0]
             for line in flushed.split('\n'):

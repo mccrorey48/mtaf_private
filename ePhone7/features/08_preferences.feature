@@ -7,15 +7,15 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   [background] I see the Need Help, Personal, Phone and System category elements
 
   Scenario: I want to get instructions for using my phone
-    When  [prefs] I touch "Need Help"
+    When  I touch "Need Help"
     Then  [prefs] A submenu opens with an eHelp option
-    When  [prefs] I touch "eHelp"
+    When  I touch "eHelp"
     Then  [prefs] A popup informs me that help email has been sent to my email address
-    When  [prefs] I touch "OK" on the email notification popup
+    When  I touch "OK" on the email notification popup
     Then  [prefs] The email notification popup disappears
 
   Scenario: I want to see a walkthrough of my phone's features
-    When  [prefs] I touch "Need Help"
+    When  I touch "Need Help"
     Then  A submenu opens with a "Walkthrough" option
     When  I touch "Walkthrough"
     Then  A "Welcome to ePhone7!" window appears
@@ -39,7 +39,7 @@ Feature: As a user I want to view and change detailed settings that control my p
   Scenario: I want to sign in to gmail and download my Personal contacts
     Given I am not signed in to my gmail account
     And   My account does not have two-step verification enabled
-    When  [prefs] I touch "Personal"
+    When  I touch "Personal"
     Then  A submenu appears with a "Sign in with Google" option
     When  I touch "Sign in with Google"
     Then  A Google dialog appears with a place to enter my email address
@@ -52,15 +52,15 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   The "Sign in with Google" element label changes to "Manage Accounts"
     When  [prefs] I touch the "X" icon
     Then  [prefs] The Preferences window disappears
-    When  [user] I touch the "Contacts" button and the Contacts view appears
+    When  I touch the "Contacts" view selector button
     Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
-    When  [contacts] I touch the "Personal" tab
+    When  I touch the "Personal" tab
     Then  I can see my personal contacts
 
 
   Scenario: I want to sign out of gmail and remove my Personal contacts
     Given I am signed in to my gmail account
-    When  [prefs] I touch "Personal"
+    When  I touch "Personal"
     Then  A submenu appears with a "Manage Accounts" option
     When  I touch "Manage Accounts"
     Then  A "Sign Out of Google Account" dialog appears
@@ -73,7 +73,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   The "Manage Accounts" element label changes to "Sign in with Google"
 
   Scenario: I want to change my default Contacts tab
-    When  [prefs] I touch "Personal"
+    When  I touch "Personal"
     Then  A submenu appears with a "Default Contacts Tab" option
     When  I touch "Default Contacts Tab"
     Then  A window appears with a button for each Contacts tab
@@ -82,14 +82,14 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   I touch "OK"
     Then  The Contacts tab window disappears
     When  I close the Preferences window
-    And   [user] I touch the "Contacts" button and the Contacts view appears
+    And   I touch the "Contacts" view selector button
     Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
     And   The new default tab is selected
 
   Scenario: I want to forward incoming calls when I do not answer
-    When  [prefs] I touch "Personal"
+    When  I touch "Personal"
     Then  [prefs] A submenu appears with a "Call Forwarding Options" option
-    When  [prefs] I touch "Call Forwarding Options"
+    When  I touch "Call Forwarding Options"
     Then  A window appears with a section labeled "Call Forward No Answer"
     And   The section labeled "Call Forward No Answer" is not highlighted
     When  I touch the "Call Forward No Answer" section
@@ -103,9 +103,9 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   The section labeled "Call Forward No Answer" is highlighted
 
   Scenario: I want to stop forwarding incoming calls when I do not answer
-    When  [prefs] I touch "Personal"
+    When  I touch "Personal"
     Then  [prefs] A submenu appears with a "Call Forwarding Options" option
-    When  [prefs] I touch "Call Forwarding Options"
+    When  I touch "Call Forwarding Options"
     Then  A window appears with a section labeled "Call Forward No Answer"
     And   The section labeled "Call Forward No Answer" is highlighted
     When  I touch the "Call Forward No Answer" section
@@ -114,9 +114,9 @@ Feature: As a user I want to view and change detailed settings that control my p
     Then  The window disappears
 
   Scenario: I want to forward incoming calls when my phone is busy
-    When  [prefs] I touch "Personal"
+    When  I touch "Personal"
     Then  [prefs] A submenu appears with a "Call Forwarding Options" option
-    When  [prefs] I touch "Call Forwarding Options"
+    When  I touch "Call Forwarding Options"
     Then  [prefs] A window appears with a section labeled "Call Forward Busy"
     When  [prefs] I touch the "Call Forward Busy" section
     Then  [prefs] A window appears with a list of contacts
@@ -129,9 +129,9 @@ Feature: As a user I want to view and change detailed settings that control my p
     And   The section labeled "Call Forward No Answer" is highlighted
 
   Scenario: I want to stop forwarding incoming calls when my phone is busy
-    When  [prefs] I touch "Personal"
+    When  I touch "Personal"
     Then  [prefs] A submenu appears with a "Call Forwarding Options" option
-    When  [prefs] I touch "Call Forwarding Options"
+    When  I touch "Call Forwarding Options"
     Then  [prefs] A window appears with a section labeled "Call Forward Busy"
     And   The section labeled "Call Forward Busy" is highlighted
     When  [prefs] I touch the "Call Forward Busy" section
@@ -297,7 +297,7 @@ Feature: As a user I want to view and change detailed settings that control my p
   Scenario: I want to see my phone's network settings
     When  I touch "System"
     Then  [prefs] A submenu appears with a "Network" option
-    When  [prefs] I touch the "Network" option
+    When  I touch the "Network" option
     Then  A window appears with a "Check Ethernet" option
     When  I touch "Check Ethernet"
     Then  The network settings are displayed

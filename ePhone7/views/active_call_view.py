@@ -12,7 +12,7 @@ class ActiveCallView(BaseView):
         "ActiveCallLabel": {"by": "id", "value": "com.esi_estech.ditto:id/call_state", "text": "Active Call"},
         "CallCardName": {"by": "accessibility id", "value": "Call Park Pickup"},
         "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
-        "DefaultForwardAccountName": {"by": "uiautomator", "value": "text(\"%s\")" % cfg.site['DefaultForwardAccount']},
+        "DefaultForwardAccountName": {"by": "uia_text", "value": cfg.site['DefaultForwardAccount']},
         "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endCallButton"},
         "PrimaryCallBanner": {"by": "id", "value": "com.esi_estech.ditto:id/primary_call_button_container"},
         "PrimaryCallName": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_name"},

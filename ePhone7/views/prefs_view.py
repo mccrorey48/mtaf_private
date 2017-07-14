@@ -41,12 +41,14 @@ class PrefsView(BaseView):
         "Personal": {"by": "zpath", "value": "//el/rl[2]/tv[1]", "text": "Personal"},
         "Phone": {"by": "zpath", "value": "//el/rl[3]/tv[1]", "text": "Phone"},
         "Preferences": {"by": "id", "value": "com.esi_estech.ditto:id/settings_list"},
+        "RebootEPhone7": {"by": "uia_text", "value": "Reboot ePhone7"},
         "Ringtones": {"by": "zpath", "value": "//lv/ll[7]/tv", "text": "Ringtones"},
         "SignInWithGoogle": {"by": "zpath", "value": "//lv/ll[2]/tv", "text": "Sign in with Google"},
-        "System": {"by": "zpath", "value": "//el/rl[4]/tv[1]", "text": "System"},
+        "System": {"by": "uia_text", "value": "System"},
         "SystemUpdate": {"by": "id", "value": "com.esi_estech.ditto:id/aosp_update_row"},
         "SystemVersion": {"by": "id", "value": "com.esi_estech.ditto:id/system_version"},
         "UpgradeButton": {"by": "id", "value": "com.fsl.android.ota:id/upgrade_button"},
+        "Utilities": {"by": "uia_text", "value": "Utilities"},
         "VolumeSettings": {"by": "zpath", "value": "//lv/ll[6]/tv", "text": "Volume Settings"}
     }
 

@@ -12,10 +12,12 @@ from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.utils.usb_enable import usb_enable
 from ePhone7.views import *
 from lib.user_exception import UserException as Ux
+from ePhone7.utils.get_focused_app import get_focused_app
 from ePhone7.utils.versions import *
 from lib.android import expand_zpath
 from ePhone7.utils.versions import force_aosp_downgrade, remove_apk_upgrades
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
+import threading
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -24,6 +26,7 @@ class Command(object):
     def __init__(self, label, action):
         self.label = label
         self.action = action
+
 
 class ScrolledLogwin(Text):
     def __init__(self, parent, **kwargs):
@@ -51,10 +54,10 @@ class ScrolledLogwin(Text):
             self.insert('end', lines[-1])
         if eol:
             self.insert('end', '\n')
-        self.delete('0.0', 'end - %d lines' % self.scrollback)
+        # self.delete('0.0', 'end - %d lines' % self.scrollback)
         self.see('end')
-        self.configure(state=DISABLED)
         self.update_idletasks()
+        self.configure(state=DISABLED)
 
 
 class LogFrame(Frame):
@@ -94,7 +97,8 @@ class AccountFrame(Frame):
         self.status.value.grid(row=0, column=1, padx=2, ipady=2)
         self.status.grid(row=0, column=2, padx=5, pady=2)
 
-        self.answer = Button(self, text='Answer', command=lambda: self.softphone.send_response_code(200), state=DISABLED)
+        self.answer = Button(self, text='Answer', command=lambda: self.softphone.send_response_code(200),
+                             state=DISABLED)
         self.answer.grid(row=0, column=3, padx=5, pady=2)
 
         self.hangup = Button(self, text='Hang Up', command=lambda: self.softphone.end_call(), state=DISABLED)
@@ -159,6 +163,7 @@ class TestGui(Frame):
     key_code = None
     attr_frame = None
     elem_index = None
+    worker_thread = None
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
@@ -179,6 +184,45 @@ class TestGui(Frame):
             btn.configure(state=NORMAL)
         for i in range(self.menu.other_sub_menu_max_index):
             self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
+
+    def check_thread(self):
+        if self.worker_thread is None:
+            return
+        # there is a worker thread;
+        # if it has died, set to None and enable buttons
+        # if it is still alive, call "after" to check again in 100 ms
+        if self.worker_thread.is_alive():
+            self.after(100, self.check_thread)
+            return
+        else:
+            log.debug("worker thread died")
+            self.worker_thread = None
+            self.menu.entryconfig(3, state=NORMAL)
+            self.menu.entryconfig(4, state=NORMAL)
+            if self.appium_is_open:
+                self.menu.entryconfig(1, state=NORMAL)
+                self.menu.entryconfig(2, state=DISABLED)
+                self.menu.entryconfig(3, label='Stop Appium', command=lambda: self.do_cmd(self.close_appium))
+                for btn in self.appium_btns:
+                    btn.configure(state=NORMAL)
+                for i in range(self.menu.appium_sub_menu_max_index):
+                    self.menu.appium_sub_menu.entryconfig(i + 1, state=NORMAL)
+                for btn in self.no_appium_btns:
+                    btn.configure(state=DISABLED)
+                for i in range(self.menu.other_sub_menu_max_index):
+                    self.menu.other_sub_menu.entryconfig(i + 1, state=DISABLED)
+            else:
+                self.menu.entryconfig(1, state=DISABLED)
+                self.menu.entryconfig(2, state=NORMAL)
+                self.menu.entryconfig(3, label='Start Appium', command=lambda: self.do_cmd(self.open_appium))
+                for btn in self.appium_btns:
+                    btn.configure(state=DISABLED)
+                for i in range(self.menu.appium_sub_menu_max_index):
+                    self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
+                for btn in self.no_appium_btns:
+                    btn.configure(state=NORMAL)
+                for i in range(self.menu.other_sub_menu_max_index):
+                    self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
 
     def create_bottom_frame(self):
         bottom_frame = Frame(self, bg="tan")
@@ -201,25 +245,28 @@ class TestGui(Frame):
 
     def create_softphone_frame(self):
         softphone_frame = Frame(self, bg='brown')
-        softphone_frame.grid_columnconfigure(0, weight=1)
-        softphone_frame.account1_frame = AccountFrame(softphone_frame, cfg.site['DefaultSoftphoneUser'])
-        softphone_frame.account1_frame.grid(row=0, column=0, sticky='ew', padx=2, pady=2)
-        softphone_frame.account2_frame = AccountFrame(softphone_frame, cfg.site['DefaultForwardAccount'])
-        softphone_frame.account2_frame.grid(row=1, column=0, sticky='ew', padx=2, pady=2)
-        softphone_frame.grid(row=self.top_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        softphone_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
+        softphone_frame.row = self.top_frame_row
         self.top_frame_row += 1
         return softphone_frame
+
+    def populate_softphone_frame(self):
+        self.softphone_frame.account1_frame = AccountFrame(self.softphone_frame, cfg.site['DefaultSoftphoneUser'])
+        self.softphone_frame.account1_frame.grid(row=0, column=0, sticky='ew', padx=2, pady=2)
+        self.softphone_frame.account2_frame = AccountFrame(self.softphone_frame, cfg.site['DefaultForwardAccount'])
+        self.softphone_frame.account2_frame.grid(row=1, column=0, sticky='ew', padx=2, pady=2)
+        self.menu.delete(5)
 
     def create_btn_frame(self):
         btn_frame_row = 0
         btn_frame = Frame(self, bg="brown")
         btn_frame.find_frame = Frame(btn_frame, bg='tan')
-        btn = Button(btn_frame.find_frame, text="find elements:", command=self.find_elements, state=DISABLED)
+        btn = Button(btn_frame.find_frame, text="find elements:", command=lambda: self.do_cmd(self.find_elements), state=DISABLED)
         self.appium_btns.append(btn)
         self.find_by_var = StringVar()
-        self.find_by_var.set('zpath')
+        self.find_by_var.set('uia_text')
         btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16,
-                                           values=['zpath', 'xpath', 'id', '-android uiautomator'],
+                                           values=['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator'],
                                            textvariable=self.find_by_var)
         btn_frame.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
@@ -262,7 +309,8 @@ class TestGui(Frame):
         self.attr_frame.index.grid(row=0, column=3, padx=2, pady=2, sticky='ew')
         self.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.grid_columnconfigure(0, weight=1)
-        btn_frame.grid(row=self.top_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
+        btn_frame.row = self.top_frame_row
         self.top_frame_row += 1
         return btn_frame
 
@@ -280,6 +328,9 @@ class TestGui(Frame):
         for command in self.other_commands:
             menu.other_sub_menu.add_command(label=command.label, command=command.action)
             menu.other_sub_menu_max_index += 1
+        menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
+        menu.add_command(label="Get Focused App", command=lambda: self.do_cmd(self.get_focused_app))
+        menu.add_command(label="Create Softphones", command=self.populate_softphone_frame)
         parent.config(menu=menu)
         return menu
 
@@ -296,16 +347,14 @@ class TestGui(Frame):
         self.appium_commands.append(Command("Get Current Activity", lambda: self.do_cmd(self.get_current_activity)))
         self.appium_commands.append(Command("Get Screenshot", lambda: self.do_cmd(self.get_screenshot)))
         self.appium_commands.append(Command("Get XML/CSV", lambda: self.do_cmd(self.get_xml)))
-        self.appium_commands.append(Command("Log In", lambda: self.do_cmd(self.login)))
         self.appium_commands.append(Command("Restart Appium", lambda: self.do_cmd(self.restart_appium)))
         self.appium_commands.append(Command("Set Alpha OTA Server", lambda: self.do_cmd(self.set_alpha_ota_server)))
         self.appium_commands.append(Command("Skip Walkthrough", lambda: self.do_cmd(self.skip_walkthrough)))
         self.appium_commands.append(Command("Startup", lambda: self.do_cmd(self.startup)))
-        self.appium_commands.append(Command("Stop Appium", lambda: self.do_cmd(self.close_appium)))
         self.appium_commands.append(Command("Toggle Multi-Edit", lambda: self.do_cmd(self.toggle_multi_edit)))
-        self.other_commands.append(Command("Enable USB", lambda: self.do_cmd(self.usb_enable)))
-        self.other_commands.append(
+        self.appium_commands.append(
             Command("Force AOSP Downgrade to 2.3.12", lambda: self.do_cmd(self.force_aosp_downgrade)))
+        self.other_commands.append(Command("Enable USB", lambda: self.do_cmd(self.usb_enable)))
         self.other_commands.append(
             Command("Get Alpha Current Versions", lambda: self.do_cmd(self.get_alpha_current_versions)))
         self.other_commands.append(
@@ -313,38 +362,26 @@ class TestGui(Frame):
         self.other_commands.append(Command("Get Installed Versions", lambda: self.do_cmd(self.get_installed_versions)))
         self.other_commands.append(
             Command("Get Production Current Versions", lambda: self.do_cmd(self.get_prod_current_versions)))
-        self.other_commands.append(Command("Install APK 1.0.10", lambda: self.do_cmd(lambda: self.install_apk('1.0.10'))))
-        self.other_commands.append(Command("Install APK 1.3.6", lambda: self.do_cmd(lambda: self.install_apk('1.3.6'))))
         self.other_commands.append(Command("Reboot", lambda: self.do_cmd(self.reboot)))
         self.other_commands.append(Command("Remove APK Upgrades", lambda: self.do_cmd(remove_apk_upgrades)))
-        self.other_commands.append(Command("Start Appium", lambda: self.do_cmd(self.open_appium)))
 
     def do_cmd(self, cmd):
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
         for btn in self.no_appium_btns:
             btn.configure(state=DISABLED)
+        for i in range(self.menu.appium_sub_menu_max_index):
+            self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
+        for i in range(self.menu.other_sub_menu_max_index):
+            self.menu.other_sub_menu.entryconfig(i + 1, state=DISABLED)
+        for i in [3, 4]:
+            self.menu.entryconfig(i, state=DISABLED)
         self.update_idletasks()
-        sleep(5)
-        cmd()
-        if self.appium_is_open:
-            for btn in self.appium_btns:
-                btn.configure(state=NORMAL)
-            for i in range(self.menu.appium_sub_menu_max_index):
-                self.menu.appium_sub_menu.entryconfig(i + 1, state=NORMAL)
-            for btn in self.no_appium_btns:
-                btn.configure(state=DISABLED)
-            for i in range(self.menu.other_sub_menu_max_index):
-                self.menu.other_sub_menu.entryconfig(i + 1, state=DISABLED)
-        else:
-            for btn in self.appium_btns:
-                btn.configure(state=DISABLED)
-            for i in range(self.menu.appium_sub_menu_max_index):
-                self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
-            for btn in self.no_appium_btns:
-                btn.configure(state=NORMAL)
-            for i in range(self.menu.other_sub_menu_max_index):
-                self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
+        # sleep(5)
+        self.worker_thread = threading.Thread(target=cmd, name=cmd)
+        self.worker_thread.start()
+        log.debug("worker thread started")
+        self.after(100, self.check_thread)
 
     def close_appium_and_quit(self):
         if self.appium_is_open:
@@ -355,14 +392,18 @@ class TestGui(Frame):
         base_view.driver.keyevent(self.key_code.get())
 
     def find_elements(self):
+        print "finding elements...",
         by = self.find_by_var.get()
         value = self.find_value_var.get()
         if by == 'zpath':
             value = expand_zpath(value)
             by = 'xpath'
             print "xpath = %s" % value
+        elif by == 'uia_text':
+            by = '-android uiautomator'
+            value = 'new UiSelector().text("%s")' % value
         self.elems = base_view.driver.find_elements(by, value)
-        print "%s elements found" % len(self.elems)
+        print "%s element%s found" % (len(self.elems), '' if len(self.elems) == 1 else 's')
         elem_indices = [str(i) for i in range(len(self.elems))]
         self.attr_frame.index.configure(values=elem_indices)
         if len(elem_indices):
@@ -443,27 +484,23 @@ class TestGui(Frame):
     def log_action(spud_serial, action):
         (reply, elapsed, groups) = spud_serial.do_action(action)
         lines = reply.split('\n')
-        log.debug('cmd: %s\nelapsed: [%5.3f s]  \necho: "%s"\n' % (action['cmd'], elapsed, lines[0].encode('string_escape')))
+        log.debug('cmd: %s\nelapsed: [%5.3f s]  \necho: "%s"\n' %
+                  (action['cmd'], elapsed, lines[0].encode('string_escape')))
         for line in lines[1:]:
             log.debug(' '*7 + line.encode('string_escape'))
-
-    def reboot(self):
-        ss = SpudSerial('/dev/ttyUSB0')
-        self.log_action(ss, {'cmd': 'cd\n', 'new_cwd': 'data'})
-        self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Restarting system', 'timeout': 1})
-        self.log_action(ss, {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
-
-    @staticmethod
-    def login():
-        print "Logging in...",
-        login_view.login()
-        print "Done"
 
     def restart_appium(self):
         print "Restarting Appium...",
         self.close_appium()
         self.open_appium()
         print "Done"
+
+    @staticmethod
+    def get_focused_app():
+        print "Getting Focused App...",
+        app = get_focused_app()
+        print "Done"
+        print "Focused App: " + app
 
     @staticmethod
     def usb_enable():
@@ -507,12 +544,17 @@ class TestGui(Frame):
 
     def reboot(self):
         print "rebooting...",
-        self.reboot()
+        ss = SpudSerial(cfg.site['SerialDev'])
+        self.log_action(ss, {'cmd': 'cd\n', 'new_cwd': 'data'})
+        self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Restarting system', 'timeout': 1})
+        self.log_action(ss, {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
+
         print "Done"
 
     @staticmethod
-    def get_installed_versions(self):
+    def get_installed_versions():
         print "getting installed versions"
+        # self.update_idletasks()
         aosp, app = get_installed_versions()
         print "aosp: %s, app: %s" % (aosp, app)
 
@@ -544,13 +586,16 @@ class TestGui(Frame):
     @staticmethod
     def dial_advanced_settings():
         print "dialing advanced settings code...",
+        user_view.goto_tab('Dial')
         dial_view.dial_advanced_settings()
         dial_view.touch_call_button()
         print "Done"
 
     @staticmethod
-    def dial_alpha_ota(self):
+    def dial_alpha_ota():
         print "dialing alpha OTA code...",
+        # user_view.goto_tab('Dial')
+        user_view.touch_element_with_text('Dial')
         dial_view.dial_set_alpha_ota_server()
         dial_view.touch_call_button()
         print "Done"
@@ -558,6 +603,7 @@ class TestGui(Frame):
     @staticmethod
     def dial_beta_ota():
         print "dialing beta OTA code...",
+        user_view.goto_tab('Dial')
         dial_view.dial_set_beta_ota_server()
         dial_view.touch_call_button()
         print "Done"
@@ -565,6 +611,7 @@ class TestGui(Frame):
     @staticmethod
     def dial_prod_ota():
         print "dialing prod OTA code...",
+        user_view.goto_tab('Dial')
         dial_view.dial_set_production_ota_server()
         dial_view.touch_call_button()
         print "Done"
@@ -572,6 +619,7 @@ class TestGui(Frame):
     @staticmethod
     def dial_show_ota():
         print "dialing show OTA code...",
+        user_view.goto_tab('Dial')
         dial_view.dial_show_ota_server()
         dial_view.touch_call_button()
         print "Done"
@@ -582,14 +630,25 @@ class TestGui(Frame):
         contacts_view.toggle_multi_edit()
         print "Done"
 
-    @staticmethod
-    def force_aosp_downgrade():
+    def force_aosp_downgrade(self):
+        self.close_appium()
         print "Forcing AOSP Downgrade...",
         force_aosp_downgrade('2.3.12')
         print "Done"
+        self.open_appium()
+        self.get_focused_app()
+        print "Calling base_view.startup..."
+        try:
+            base_view.startup()
+        except Ux:
+            self.get_xml()
+            print "Ux raised, getting xml"
+            print "current activity = " + base_view.driver.current_activity
+        else:
+            print "Done"
 
     @staticmethod
-    def get_xml(self):
+    def get_xml():
         print "Getting XML and CSV...",
         xml = base_view.get_source()
         xml_dir = os.path.join(cfg.xml_folder, 'xml_appium_gui')
@@ -627,6 +686,7 @@ class TestGui(Frame):
         self.update_idletasks()
         self.after(500, base_view.close_appium)
         sleep(1)
+        print "Done"
 
 
 root = Tk()
