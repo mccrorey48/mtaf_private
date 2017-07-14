@@ -1,12 +1,12 @@
 from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.config.configure import cfg
 import re
 from pyand import ADB
 
 re_aosp = re.compile('\[ro\.build\.id\]:\s+\[(.*)\]')
 action = {'cmd': 'getprop\n', 'timeout': 10}
-serial_dev = '/dev/ttyUSB0'
 
-ss = SpudSerial(serial_dev)
+ss = SpudSerial(cfg.site['SerialDev'])
 (reply, elapsed, groups) = ss.do_action(action)
 for line in reply.split('\n'):
     if re_aosp.match(line):

@@ -12,8 +12,9 @@ from ePhone7.config.configure import cfg
 from lib.android import MockDriver
 from lib.android import expand_zpath
 from lib.selenium_actions import SeleniumActions
-from lib.user_exception import UserException as Ux
+from lib.user_exception import UserException as Ux, UserTimeoutException as Tx
 from lib.wrappers import Trace
+from ePhone7.utils.spud_serial import SpudSerial
 
 log = logging_esi.get_logger('esi.base_view')
 
@@ -35,8 +36,6 @@ class BaseView(SeleniumActions):
         "CrashOkButton2": {"by": "id", "value": "android:id/button1", "text": "OK"},
         "E7HasStoppedOk": {"by": "id", "value": "android:id/button1"},
         "E7HasStoppedText": {"by": "id", "value": "android:id/message", "text": "Unfortunately, ePhone7 has stopped."},
-        "NetworkErrorRetry": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
-        "NetworkErrorText": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertDialogTitle", "text": "Network Error"},
         "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
         "ReleaseNotes": {"by": "id", "value": "com.esi_estech.ditto:id/release_notes"},
         "ReleaseNotesOK": {"by": "id", "value": "android:id/button1"}
@@ -52,9 +51,9 @@ class BaseView(SeleniumActions):
         if locator["by"] == "zpath":
             locator["by"] = "xpath"
             locator["value"] = expand_zpath(locator["value"])
-        elif locator["by"] == "uiautomator":
+        elif locator["by"] == "uia_text":
             locator["by"] = "-android uiautomator"
-            locator["value"] = "new UiSelector()." + locator["value"]
+            locator["value"] = 'new UiSelector().text("%s")' % locator["value"]
         return locator
 
 
@@ -77,12 +76,16 @@ class BaseView(SeleniumActions):
         else:
             raise Ux("%s is not a valid keycode number" % repr(number))
 
-    def touch_element_with_text(self, text):
+    def touch_element_with_text(self, text, timeout=5):
         locator = {
-            "by": "uiautomator",
-            "value": "text(\"%s\")" % text
+            "by": "-android uiautomator",
+            "value": "new UiSelector().text(\"%s\")" % text
         }
-        self.find_element_by_locator(locator).click()
+        elem = self.find_element_by_locator(locator, timeout)
+        if elem is None:
+            raise Ux("no unique matching element found with text = %s" % text)
+        else:
+            elem.click()
 
     @Trace(log)
     def hide_keyboard(self):
@@ -223,6 +226,16 @@ class BaseView(SeleniumActions):
                 raise Ux(str(e))
 
     @Trace(log)
+    def close_appium_until_reboot(self, timeout=600):
+        self.close_appium()
+        ss = SpudSerial(cfg.site['SerialDev'], pwd_check=False)
+        try:
+            ss.expect('', 'mtp_open', timeout=timeout, dead_air_timeout=60)
+        finally:
+            self.open_appium('nolaunch', force=True, timeout=60)
+
+
+    @Trace(log)
     def close_appium(self):
         if SeleniumActions.driver is None:
             log.debug('appium is already closed')
@@ -242,15 +255,6 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def startup(self, timeout=600):
         start_time = time()
-        retrying_main = False
-        tried_crash_ok = False
-        tried_net_retry = False
-        tried_reg_retry = False
-        tried_e7_stopped = False
-        tried_login = False
-        tried_tnc = False
-        tried_intro = False
-        tried_ota = False
         while time() - start_time < timeout:
             try:
                 current_activity = self.driver.current_activity
@@ -258,69 +262,35 @@ class BaseView(SeleniumActions):
                 if current_activity == '.activities.MainViewActivity':
                     self.send_keycode_home()
                     break
-                    # if retrying_main:
-                    #     # get rid of the release notes screen if present
-                    #     self.send_keycode_back()
-                    #     break
-                    # sleep(2)
-                    # retrying_main = True
                 elif current_activity == '.util.crashreporting.EPhoneCrashReportDialog':
-                    if tried_crash_ok:
-                        raise Ux("got activity .util.crashreporting.EPhoneCrashReportDialog twice")
-                    # retrying_main = False
                     self.click_named_element('CrashOkButton')
-                    tried_crash_ok = True
-                    sleep(5)
                 elif current_activity == '.activities.AutoLoginActivity':
-                    # retrying_main = False
-                    if self.element_is_present('NetworkErrorText'):
-                        if tried_net_retry:
-                            raise Ux("got Network Error Retry popup twice")
-                        log.debug("startup: NetworkErrorText present")
-                        self.click_named_element('NetworkErrorRetry')
-                        tried_net_retry = True
-                    elif self.element_is_present('E7HasStoppedText'):
-                        if tried_e7_stopped:
-                            raise Ux("got ePhone7 Stopped popup twice")
+                    if self.element_with_text_is_present('Network Error', timeout=1):
+                        log.debug('startup: element with text "Network Error" is present')
+                        self.touch_element_with_text('Retry', timeout=1)
+                        try:
+                            self.close_appium_until_reboot(timeout=300)
+                        except Tx:
+                            pass
+                    elif self.element_is_present('E7HasStoppedText', timeout=1):
                         log.debug("startup: E7HasStoppedText present")
                         self.click_named_element('E7HasStoppedOk')
-                        tried_e7_stopped = True
                     elif self.element_is_present('RegRetryButton'):
-                        if tried_reg_retry:
-                            raise Ux("got Registration Retry popup twice")
                         log.debug("startup: RegRetryButton present")
                         self.click_named_element('RegRetryButton')
-                        tried_reg_retry = True
                 elif current_activity == '.settings.ui.LoginActivity':
-                    if tried_login:
-                        raise Ux("got activity .settings.ui.LoginActivity twice")
-                    from ePhone7.views import login_view
-                    login_view.login()
-                    tried_login = True
-                elif current_activity == '.settings.ui.TermsAndConditionsScreen':
-                    if tried_tnc:
-                        raise Ux("got activity .settings.ui.TermsAndConditionsScreen twice")
-                    from ePhone7.views import tnc_view
-                    tnc_view.accept_tnc()
-                    tried_tnc = True
-                elif current_activity == '.OtaAppActivity':
-                    if tried_ota:
-                        raise Ux("got activity .OtaAppActivity twice")
-                    self.send_keycode_back()
-                    tried_ota = True
-                elif current_activity == '.util.AppIntroActivity':
-                    if tried_intro:
-                        raise Ux("got activity .util.AppIntroActivity twice")
-                    from ePhone7.views import app_intro_view
-                    app_intro_view.skip_intro()
-                    tried_intro = True
+                    # performing auto login and sync, just wait it out
+                    continue
                 else:
                     raise Ux('unexpected current_activity value: %s' % current_activity)
-                sleep(5)
+                sleep(1)
             except Ux as e:
                 log.debug(e.msg)
                 self.close_appium()
                 self.open_appium()
+            except WebDriverException as e:
+                log.debug('WebDriverException: %s, closing appium until reboot detected' % e.message)
+                self.close_appium_until_reboot()
         else:
             raise Ux('failed to restart ePhone7 within %d seconds' % timeout)
 

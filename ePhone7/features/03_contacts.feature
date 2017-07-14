@@ -7,8 +7,8 @@ Feature: As a user I want to use and manage my contact lists
     Then  [background] I see the Personal, Coworkers, Favorites and Groups tabs
 
 #  Scenario: I want to import my Google contacts
-#    Given [contacts] I touch the Personal tab
-#    When  [contacts] I touch the "Sign in with Google" banner
+#    Given I touch the "Personal" tab
+#    When  I touch the "Sign in with Google" banner
 #    Then  [contacts] a Google login screen appears
 #    And   [contacts] I enter my Google user id and password
 #    Then  [contacts] my Google contacts are shown on the display

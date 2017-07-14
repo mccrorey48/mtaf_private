@@ -11,9 +11,6 @@ import shutil
 
 log = logging.get_logger('esi.versions')
 
-serial_dev = '/dev/ttyUSB0'
-
-
 @Trace(log)
 def get_installed_versions():
     re_aosp = re.compile('\[ro\.build\.id\]:\s+\[(.*)\]')
@@ -21,8 +18,11 @@ def get_installed_versions():
     action = {'cmd': 'getprop\n', 'timeout': 10}
     aosp_version = None
     apk_version = None
-    ss = SpudSerial(serial_dev)
+    log.debug("Creating SpudSerial device")
+    ss = SpudSerial(cfg.site['SerialDev'])
+    log.debug("Flushing SpudSerial device")
     ss.flush(1)
+    log.debug("SpudSerial device created")
     (reply, elapsed, groups) = ss.do_action(action)
     for line in reply.split('\n'):
         if re_aosp.match(line):
@@ -36,7 +36,7 @@ def get_installed_versions():
 
 @Trace(log)
 def remove_apk_upgrades():
-    ss = SpudSerial(serial_dev)
+    ss = SpudSerial(cfg.site['SerialDev'])
     action = {'cmd': 'pm uninstall com.esi_estech.ditto\n', 'expect': 'Success|Failure', 'timeout': 20}
     while True:
         (reply, elapsed, groups) = ss.do_action(action)
@@ -79,16 +79,18 @@ def get_current_versions(ota_server):
 @Trace(log)
 def force_aosp_downgrade(version):
     actions = [
-        {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Hit any key to stop autoboot:', 'timeout': 30},
+        {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Hit any key to stop autoboot:', 'timeout': 30,
+         'dead_air_timeout': 30},
         {'cmd': '\n', 'expect': '=> ', 'timeout': 5},
-        {'cmd': 'mmc dev 2\n', 'expect': 'mmc2(part 0) is current device\n=> '},
+        {'cmd': 'mmc dev 2\n', 'expect': 'mmc2\(part 0\) is current device\n=> '},
         {'cmd': 'mmc setdsr 2\n', 'expect': 'set dsr OK, force rescan\n=> '},
         {'cmd': 'fastboot\n', 'expect': '0x4\nUSB_RESET\nUSB_PORT_CHANGE 0x4\n'}
     ]
-    ss = SpudSerial(serial_dev)
+    ss = SpudSerial(cfg.site['SerialDev'])
     for action in actions:
         (reply, elapsed, groups) = ss.do_action(action)
-        log.debug('[%5.3fs] cmd %s, expect %s, received %d chars' % (elapsed, repr(action['cmd']), repr(action['expect']), len(reply)))
+        log.debug('[%5.3fs] cmd %s, expect %s, received %d chars'
+                  % (elapsed, repr(action['cmd']), repr(action['expect']), len(reply)))
         ss.connection.reset_input_buffer()
     fb = Fastboot()
     fb_cmds = [
@@ -100,12 +102,12 @@ def force_aosp_downgrade(version):
     for cmd in fb_cmds:
         log.debug(">>> fastboot " + cmd)
         log.debug(fb.run_cmd(cmd))
-    ss.do_action({'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 600})
+    ss.do_action({'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 600, 'dead_air_timeout': 60})
 
 
 @Trace(log)
 def force_app_downgrade(version):
-    ss = SpudSerial(serial_dev)
+    ss = SpudSerial(cfg.site['SerialDev'])
     adb = ADB()
     log.debug(adb.run_cmd("install -r -d %s.apk" % path.join(cfg.site["ApksHome"], version)).encode('string_escape'))
     action = {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120}

@@ -4,6 +4,7 @@ import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import base_view
 from ePhone7.utils.get_softphone import softphone_manager
+from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.environment')
 substeps = ''
@@ -12,7 +13,8 @@ substeps = ''
 def run_substep(context):
     def wrapped(step_name):
         context.is_substep = True
-        context.execute_steps(unicode('Then ' + step_name))
+        if not context.execute_steps(unicode('Then ' + step_name)):
+            raise Ux("run_substep: step '%s' not parseable" % step_name)
     return wrapped
 
 

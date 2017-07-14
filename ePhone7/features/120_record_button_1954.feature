@@ -1,4 +1,4 @@
-@regression
+@regression @wip
 Feature: As a user I want to have a Record button available during an active call (R2D2-1954)
 
   Background: I am at the Advanced Settings Call Record Enable option

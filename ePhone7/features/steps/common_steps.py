@@ -274,12 +274,6 @@ def i_close_the_preferences_window(context):
     pass
 
 
-@step("I downgrade my aosp and app to production version")
-def i_downgrade_my_aosp_and_app_to_production_version(context):
-    aosp, app = get_current_versions('prod')
-    i_downgrade_my_aosp_to_downgradeaospversion(context, aosp, app)
-
-
 @step("I downgrade my aosp to {downgrade_aosp_version}")
 @fake
 def i_downgrade_my_aosp_to_downgradeaospversion(context, downgrade_aosp_version):
@@ -405,8 +399,8 @@ def i_perform_an_ota_upgrade(context):
     context.run_substep('I set the OTA server')
     context.run_substep('[user] I touch the Preferences icon')
     context.run_substep('[prefs] the Preferences window appears')
-    context.run_substep('[prefs] I touch the "System" menu category')
-    context.run_substep('[prefs] I touch the "Updates" menu item')
+    context.run_substep('I touch the "System" menu category')
+    context.run_substep('I touch the "Updates" menu item')
     context.run_substep('I wait for the phone to upgrade and reboot')
     context.run_substep('I verify the system and app versions are current')
 
@@ -641,11 +635,7 @@ def i_wait_for_the_phone_to_upgrade_and_reboot(context):
             break
     else:
         raise Ux('current_activity %s after %s seconds, expected .OTAAppActivity' % (current_activity, timeout))
-    base_view.close_appium()
-    from ePhone7.utils.spud_serial import SpudSerial
-    ss = SpudSerial('/dev/ttyUSB0', pwd_check=False)
-    ss.expect('', 'mtp_open', 600)
-    base_view.open_appium('nolaunch', force=True, timeout=60)
+    base_view.close_appium_until_reboot()
     base_view.startup()
 
 

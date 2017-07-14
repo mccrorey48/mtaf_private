@@ -80,12 +80,6 @@ def prefs__i_touch_the_call_forward_busy_section(context):
     pass
 
 
-@step('[prefs] I touch the "Check for System Update" option')
-@fake
-def prefs__i_touch_the_check_for_system_update_option(context):
-    prefs_view.click_named_element('SystemUpdate')
-
-
 @step("[prefs] I touch the Delete icon")
 def prefs__i_touch_the_delete_icon(context):
     pass

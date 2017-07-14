@@ -66,7 +66,10 @@ class BaseView(SeleniumActions):
         input_elem = self.find_named_element(input_key)
         input_elem.send_keys(filter_text)
         link_elem = self.find_element_by_locator({"by": "partial link text", "value": link_text, "parent": input_elem.parent})
-        link_elem.click()
+        if link_elem is None:
+            raise Ux("no unique matching element found with partial link text = %s" % link_text)
+        else:
+            link_elem.click()
 
     @staticmethod
     def send_key_to_element(elem, key):

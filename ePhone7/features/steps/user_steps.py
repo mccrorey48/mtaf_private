@@ -33,18 +33,6 @@ def user__i_touch_a_contact_element(context):
     pass
 
 
-@step("[user] I touch the Dial button")
-@fake
-def user__i_touch_the_dial_button(context):
-    user_view.click_named_element('Dial')
-
-
-@step("[user] I touch the History button")
-@fake
-def user__i_touch_the_history_button(context):
-    user_view.click_named_element('History')
-
-
 @step("[user] I touch the Home button")
 @fake
 def user__i_touch_the_home_button(context):
