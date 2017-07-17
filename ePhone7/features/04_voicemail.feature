@@ -2,15 +2,15 @@
 Feature: As a user I want to use and manage my voicemail lists
 
   Background: a new voicemail is shown in the New Voicemails view
-    Given [background] I go to the home screen
-    Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    And   [background] I have at least one saved voicemail
-    And   [background] I have at least one new voicemail
+    Given I go to the home screen
+    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    And   I have at least one saved voicemail
+    And   I have at least one new voicemail
     When  I touch the "Voicemail" button
-    Then  [background] I see the New, Saved and Trash tabs at the top of the screen
+    Then  [voicemail] I see the New, Saved and Trash tabs at the top of the screen
     When  I touch the "NEW" tab
-    And   [background] I receive a new voicemail
-    Then  [background] the new voicemail is the first item listed
+    And   I receive a new voicemail
+    Then  [voicemail] the new voicemail is the first item listed
 
   Scenario: I listen to a selected new voicemail
     When  [voicemail] I touch the new voicemail element

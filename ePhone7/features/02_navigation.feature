@@ -2,8 +2,8 @@
 Feature: As a user I want to navigate to different views using the touch screen
 
   Background: I am at the Home view
-    Given [background] I go to the home screen
-    Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    Given I go to the home screen
+    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
 
   Scenario: I go to the Contacts view
     Given I touch the "Contacts" view selector button

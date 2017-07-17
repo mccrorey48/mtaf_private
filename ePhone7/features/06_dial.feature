@@ -1,10 +1,10 @@
 Feature: As a user I want to make calls by directly entering all or part of a contact's name or number
 
   Background: I am in the Dial view
-    Given [background] I go to the home screen
-    Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    Given I go to the home screen
+    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  I touch the "Dial" button
-    Then  [background] I see the keypad
+    Then  [dial] I see the keypad
 
   Scenario: I want to call a Coworker contact by entering the number
     Given [dial] I enter a Coworker contact number using the keypad

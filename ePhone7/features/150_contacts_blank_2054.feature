@@ -2,10 +2,10 @@
 Feature: As a user I want to see my contact lists (R2D2-2054)
 
   Background: I am at the Contacts view
-    Given [background] I go to the home screen
-    Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    Given I go to the home screen
+    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  I touch "Contacts"
-    Then  [background] I see the Personal, Coworkers, Favorites and Groups tabs
+    Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
 
   Scenario: I want to see my Coworkers list
     Given I touch the "Coworkers" tab

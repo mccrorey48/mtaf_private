@@ -286,13 +286,10 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
         feature['text'] = feature['name']
         del feature['name']
         feature['order'] = iter_num
-        background_steps = []
         feature['scenarios'] = []
         feature['duration'] = 0.0
         for element in feature['elements']:
-            if element['keyword'] == 'Background':
-                background_steps = [step['name'] for step in element['steps']]
-            else:
+            if element['keyword'] != 'Background':
                 feature['scenarios'].append(element)
         for scenario_index, scenario in enumerate(feature['scenarios']):
             scenario_has_skips = False
@@ -349,7 +346,7 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                         scenario_has_fakes = True
                     elif step['status'] == 'failed':
                         scenario_has_fails = True
-                    elif step['name'] not in background_steps:
+                    else:
                         scenario_has_passes = True
                     if 'error_message' in step['result']:
                         step['error_message'] = step['result']['error_message']

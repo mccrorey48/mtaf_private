@@ -2,10 +2,10 @@
 Feature: As a user I want to see my call history and make calls from the listed items
 
   Background: I am in the History view
-    Given [background] I go to the home screen
-    Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    Given I go to the home screen
+    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  I touch the "History" button
-    Then  [background] I see the All and Missed tabs at the top of the screen
+    Then  [history] I see the All and Missed tabs at the top of the screen
 
   Scenario: I want to see an answered call indicated on the All History view
     Given I receive and ignore a call

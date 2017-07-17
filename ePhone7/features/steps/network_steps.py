@@ -3,6 +3,15 @@ from ePhone7.views import *
 from lib.wrappers import fake
 
 
+@step("[network] I enter a VLAN identifier between 1 and 4094")
+@fake
+def network__i_enter_a_vlan_identifier_between_1_and_4094(context):
+    network_view.find_named_element('VlanIdentifier').clear()
+    network_view.send_keycode_number(2)
+    network_view.send_keycode_number(0)
+    network_view.send_keycode_back()
+
+
 @step("[network] I enter a VLAN identifier greater than 4094")
 @fake
 def network__i_enter_a_vlan_identifier_greater_than_4094(context):
@@ -19,6 +28,14 @@ def network__i_enter_a_vlan_identifier_greater_than_4094(context):
 def network__i_enter_a_vlan_priority_between_0_and_7(context):
     network_view.find_named_element('VlanPriority').clear()
     network_view.send_keycode_number(3)
+    network_view.send_keycode_back()
+
+
+@step("[network] I enter a VLAN priority greater than 7")
+@fake
+def network__i_enter_a_vlan_priority_greater_than_7(context):
+    network_view.find_named_element('VlanPriority').clear()
+    network_view.send_keycode_number(8)
     network_view.send_keycode_back()
 
 

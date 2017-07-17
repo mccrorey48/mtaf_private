@@ -8,6 +8,11 @@ def user__a_keypad_appears(context):
     pass
 
 
+@step("[user] A keypad appears with a list of contacts")
+def user__a_keypad_appears_with_a_list_of_contacts(context):
+    pass
+
+
 @step("[user] I enter the call park queue number")
 def user__i_enter_the_call_park_queue_number(context):
     pass
@@ -30,6 +35,21 @@ def user__i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bottom_of
 
 @step("[user] I touch a contact element")
 def user__i_touch_a_contact_element(context):
+    pass
+
+
+@step("[user] I touch the Call Forward icon")
+def user__i_touch_the_call_forward_icon(context):
+    pass
+
+
+@step("[user] I touch the Call Park icon")
+def user__i_touch_the_call_park_icon(context):
+    pass
+
+
+@step("[user] I touch the Do Not Disturb icon")
+def user__i_touch_the_do_not_disturb_icon(context):
     pass
 
 
@@ -56,6 +76,41 @@ def user__i_use_the_keypad_to_filter_the_list_of_contacts(context):
 
 @step("[user] Only the contact I touched is listed")
 def user__only_the_contact_i_touched_is_listed(context):
+    pass
+
+
+@step("[user] the Call Forward icon is blue")
+def user__the_call_forward_icon_is_blue(context):
+    pass
+
+
+@step("[user] the Call Forward icon is red")
+def user__the_call_forward_icon_is_red(context):
+    pass
+
+
+@step("[user] the Do Not Disturb icon is blue")
+def user__the_do_not_disturb_icon_is_blue(context):
+    pass
+
+
+@step("[user] the Do Not Disturb icon is red")
+def user__the_do_not_disturb_icon_is_red(context):
+    pass
+
+
+@step("[user] the Do Not Disturb icon turns blue")
+def user__the_do_not_disturb_icon_turns_blue(context):
+    pass
+
+
+@step("[user] the Do Not Disturb icon turns red")
+def user__the_do_not_disturb_icon_turns_red(context):
+    pass
+
+
+@step("[user] the keypad disappears")
+def user__the_keypad_disappears(context):
     pass
 
 

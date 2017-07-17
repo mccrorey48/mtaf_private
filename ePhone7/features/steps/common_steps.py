@@ -264,11 +264,6 @@ def i_can_see_my_personal_contacts(context):
     pass
 
 
-@step("I close all open submenus")
-def i_close_all_open_submenus(context):
-    pass
-
-
 @step("I close the Preferences window")
 def i_close_the_preferences_window(context):
     pass
@@ -296,23 +291,6 @@ def i_downgrade_my_app(context):
         force_app_downgrade(context.config.userdata['downgrade_app'])
         base_view.open_appium('nolaunch', force=True, timeout=60)
         base_view.startup()
-
-
-@step("I enter a VLAN identifier between 1 and 4094")
-@fake
-def i_enter_a_vlan_identifier_between_1_and_4094(context):
-    network_view.find_named_element('VlanIdentifier').clear()
-    network_view.send_keycode_number(2)
-    network_view.send_keycode_number(0)
-    network_view.send_keycode_back()
-
-
-@step("I enter a VLAN priority greater than 7")
-@fake
-def i_enter_a_vlan_priority_greater_than_7(context):
-    network_view.find_named_element('VlanPriority').clear()
-    network_view.send_keycode_number(8)
-    network_view.send_keycode_back()
 
 
 @step("I enter my email address")
@@ -350,10 +328,6 @@ def i_go_to_the_contacts_view(context):
 @fake
 def i_go_to_the_home_screen(context):
     base_view.send_keycode_home()
-    if not user_view.element_is_present('UserHeaderName', timeout=120):
-        login_view.login()
-        tnc_view.accept_tnc()
-        app_intro_view.skip_intro()
     context.run_substep("I am at the home screen")
 
 
@@ -905,9 +879,6 @@ def the_ota_server_update_popup_disappears(context):
 
 @step("The package com.android.wallpaper.livepicker is not listed")
 def the_package_com_android_wallpaper_livepicker_is_not_listed(context):
-    """
-    :type context: behave.runner.Context
-    """
     pass
 
 
@@ -1017,67 +988,6 @@ def the_window_disappears(context):
 @fake
 def there_is_a_softphone_registered_on_my_ephone7s_user_account(context):
     context.softphone_alt = get_softphone('R2d2AltUser')
-
-
-@step("[user] A keypad appears with a list of contacts")
-def user__a_keypad_appears_with_a_list_of_contacts(context):
-    pass
-
-
-@step("[user] I go to the Home view")
-@fake
-def user__i_go_to_the_home_view(context):
-    user_view.goto_tab('Contacts')
-
-
-@step("[user] I touch the Call Forward icon")
-def user__i_touch_the_call_forward_icon(context):
-    pass
-
-
-@step("[user] I touch the Call Park icon")
-def user__i_touch_the_call_park_icon(context):
-    pass
-
-
-@step("[user] I touch the Do Not Disturb icon")
-def user__i_touch_the_do_not_disturb_icon(context):
-    pass
-
-
-@step("[user] the Call Forward icon is blue")
-def user__the_call_forward_icon_is_blue(context):
-    pass
-
-
-@step("[user] the Call Forward icon is red")
-def user__the_call_forward_icon_is_red(context):
-    pass
-
-
-@step("[user] the Do Not Disturb icon is blue")
-def user__the_do_not_disturb_icon_is_blue(context):
-    pass
-
-
-@step("[user] the Do Not Disturb icon is red")
-def user__the_do_not_disturb_icon_is_red(context):
-    pass
-
-
-@step("[user] the Do Not Disturb icon turns blue")
-def user__the_do_not_disturb_icon_turns_blue(context):
-    pass
-
-
-@step("[user] the Do Not Disturb icon turns red")
-def user__the_do_not_disturb_icon_turns_red(context):
-    pass
-
-
-@step("[user] the keypad disappears")
-def user__the_keypad_disappears(context):
-    pass
 
 
 @step("VLAN is enabled")

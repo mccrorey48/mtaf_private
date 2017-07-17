@@ -11,12 +11,6 @@ def a__with__ptext__appears(context, text):
     assert base_view.element_with_text_is_present(text)
 
 
-# @step('\[background\] I touch (?:[^"]*)?"(?P<text>[^"]+)"[^"]*')
-# @fake
-# def background_i_touch_ptext(context, text):
-#     i_touch_ptext(context, text)
-
-
 @step('I touch (?:[^"]*)?"(?P<text>[^"]+)"[^"]*')
 @fake
 def i_touch_ptext(context, text):

@@ -2,8 +2,8 @@
 Feature: As a user, I should be able to change the settings on my ePhone7 using control buttons on the display
 
   Background: I am logged in and at the Home view
-    Given [background] I go to the home screen
-    Then  [background] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    Given I go to the home screen
+    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
 
   Scenario: I want to activate Do Not Disturb
     Given [user] the Do Not Disturb icon is blue
@@ -42,7 +42,7 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     When  I touch the "OK" button
     Then  [user] the keypad disappears
     And   [user] the Call Forward icon is red
-    When  [user] I go to the Home view
+    When  I go to the Home screen
     Then  A message indicates that calls are being forwarded to the contact
 
   Scenario: I want to forward all incoming calls to voicemail
@@ -52,7 +52,7 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     When  I touch the "Voicemail" button
     Then  [user] the keypad disappears
     And   [user] the Call Forward icon is red
-    When  [user] I go to the Home view
+    When  I go to the Home screen
     Then  A message indicates that calls are being forwarded to voicemail
 
   Scenario: I want to stop forwarding all calls

@@ -44,6 +44,12 @@ def prefs__an_upgrade_is_found_and_an_upgrade_button_appears(context):
     prefs_view.element_is_present('UpgradeButton')
 
 
+@step("[prefs] I close all open submenus")
+@fake
+def prefs__i_close_all_open_submenus(context):
+    prefs_view.hide_list_items()
+
+
 @step("[prefs] I read the displayed versions for the app and AOSP")
 @fake
 def prefs__i_read_the_displayed_versions_for_the_app_and_aosp(context):
@@ -83,12 +89,6 @@ def prefs__i_touch_the_call_forward_busy_section(context):
 @step("[prefs] I touch the Delete icon")
 def prefs__i_touch_the_delete_icon(context):
     pass
-
-
-@step("[prefs] I close all open submenus")
-@fake
-def prefs__i_close_all_open_submenus(context):
-    prefs_view.hide_list_items()
 
 
 @step('[prefs] I touch the "X" icon')

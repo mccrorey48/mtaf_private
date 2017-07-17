@@ -2,9 +2,11 @@
 Feature: As a user I want to view and change detailed settings that control my phone's operation
 
   Background: I am logged in and at the Preferences view
-    Given [background] I go to the home screen
-    Then  [background] I close all open submenus
-    And   [background] I see the Need Help, Personal, Phone and System category elements
+    Given I go to the home screen
+    When  [user] I touch the Preferences icon
+    Then  [prefs] the Preferences window appears
+    Then  [prefs] I close all open submenus
+    And   [prefs] I see the Need Help, Personal, Phone and System category elements
 
   Scenario: I want to get instructions for using my phone
     When  I touch "Need Help"

@@ -1,8 +1,10 @@
 @required @regression
 Feature: The version of the software should be correct
 
-  Scenario: I upgrade the phone if the versions are not correct
+  Background: I am at the Home screen
     Given I go to the home screen
+
+  Scenario: I upgrade the phone if the versions are not correct
     Then  I upgrade the phone if the versions are not correct
 
 
