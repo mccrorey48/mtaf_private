@@ -230,7 +230,7 @@ class BaseView(SeleniumActions):
         self.close_appium()
         ss = SpudSerial(cfg.site['SerialDev'], pwd_check=False)
         try:
-            ss.expect('', 'mtp_open', timeout=timeout, dead_air_timeout=60)
+            ss.expect('', 'mtp_open', timeout=timeout, dead_air_timeout=240)
         finally:
             self.open_appium('nolaunch', force=True, timeout=60)
 
