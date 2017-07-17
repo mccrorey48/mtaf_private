@@ -7,6 +7,7 @@ from ePhone7.config.configure import cfg
 from ePhone7.views.user_view import UserView
 from lib.wrappers import Trace
 from lib.user_exception import UserException as Ux
+from ePhone7.utils.get_vmids import get_vmids
 
 log = logging.get_logger('esi.voicemail_view')
 
@@ -168,21 +169,9 @@ class VoicemailView(UserView):
         self.click_named_element('OkForwardButton')
 
     @Trace(log)
-    def get_vmids(self, username='R2d2User', type='new'):
-        user_cfg = cfg.site['Users'][username]
-        roauth = requests.post(cfg.site["OauthURL"] + "/login", data=cfg.site["OauthUsername"] % (
-            user_cfg['UserId'], user_cfg['DomainName'], user_cfg['AccountPassword']), headers=cfg.site["OauthHeaders"])
-        access_token = roauth.json()["accessToken"]
-        vvm_headers = {key: cfg.site["VVMHeaders"][key] for key in cfg.site["VVMHeaders"]}
-        vvm_headers["Authorization"] = vvm_headers["Authorization"] % access_token
-        rvvm = requests.get(cfg.site["VVMURL"] + "/new", headers=vvm_headers)
-        return [vm['vmid'] for vm in rvvm.json()]
-
-    @Trace(log)
     def compare_vmid(self, vmid1):
         username=cfg.site['DefaultForwardAccount']
-        user_cfg = cfg.site['Users'][username]
-        fwd_vmids = self.get_vmids(username=username)
+        fwd_vmids = get_vmids(username, 'new')
         for fwd_vmid in fwd_vmids:
             if vmid1 == fwd_vmid:
                 return

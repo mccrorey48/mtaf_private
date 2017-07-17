@@ -1,6 +1,7 @@
 from behave import *
 from ePhone7.views import *
 from lib.wrappers import fake
+from ePhone7.utils.get_vmids import get_vmids, vmid_count_incremented
 from ePhone7.config.configure import cfg
 from time import sleep
 import lib.logging_esi as logging
@@ -55,7 +56,7 @@ def activecall__i_see_an_orange_banner_with_the_callers_name(context):
 def activecall__i_select_a_coworkers_mailbox(context):
     # before forwarding the call to the coworker, count the voicemails in that mailbox
     # so we can verify later that a new one has been added
-    context.vmid_count = len(voicemail_view.get_vmids(username=cfg.site['DefaultForwardAccount']))
+    context.vmid_count = len(get_vmids(cfg.site['DefaultForwardAccount'], 'new'))
     active_call_view.touch_default_forward_account_name()
 
 
@@ -80,10 +81,7 @@ def activecall__the_caller_leaves_a_message_and_hangs_up(context):
     user_view.caller_leaves_voicemail()
     user_view.caller_ends_received_call()
     sleep(10)
-    new_vmids = voicemail_view.get_vmids(username=cfg.site['DefaultForwardAccount'])
-    new_count = len(new_vmids)
-    expect_count = context.vmid_count + 1
-    assert new_count == expect_count, "expected vmid count %d, got %d" % (expect_count, new_count)
+    assert vmid_count_incremented(cfg.site['DefaultForwardAccount'], 'new', context.vmid_count)
 
 
 @step("[active_call] the Record button is gray")
