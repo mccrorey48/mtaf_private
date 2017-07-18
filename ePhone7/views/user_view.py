@@ -14,7 +14,6 @@ log = logging_esi.get_logger('esi.user_view')
 class UserView(BaseView):
 
     locators = {
-        "InCallDial": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_tab"},
         "Contacts": {"by": "zpath", "value": "//tw/rl[1]/ll/tv", "text": "Contacts"},
         "Dial": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
         "DndButton": {"by": "accessibility id", "value": "Do not Disturb"},

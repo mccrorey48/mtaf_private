@@ -324,10 +324,16 @@ def i_go_to_the_contacts_view(context):
     user_view.goto_tab('Contacts')
 
 
-@step("I go to the home screen")
+@step("I touch the Home icon")
 @fake
 def i_go_to_the_home_screen(context):
     base_view.send_keycode_home()
+
+
+@step("I go to the home screen")
+@fake
+def i_go_to_the_home_screen(context):
+    context.run_substep("I touch the Home icon")
     context.run_substep("I am at the home screen")
 
 

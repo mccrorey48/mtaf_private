@@ -108,3 +108,22 @@ def activecall__the_transfer_dialog_appears(context):
     assert active_call_view.transfer_dialog_is_present()
 
 
+@when('[active call] I touch "Dial"')
+def step_impl(context):
+    active_call_view.click_named_element('InCallDial')
+
+
+@then("[active_call] I see the keypad")
+def step_impl(context):
+    assert active_call_view.element_is_present('InCallDialpad')
+
+
+@step("[active_call] the buttons are {w} pixels wide and {h} pixels high")
+def step_impl(context, w, h):
+    elems = active_call_view.find_named_elements('InCallDialKeys')
+    # location = elems[0].location
+    # assert location['x'] == 54 and location['y'] == 403, "Expected key 1 location (54, 403), got (%d, %d)" \
+    #                                                      % (location['x'], location['y'])
+    size = elems[0].size
+    assert size['width'] == int(w) and size['height'] == int(h), "Expected key 1 size %dw, %dh), got %dh, %dw" \
+                                                         % (int(w), int(h), size['width'], size['height'])
