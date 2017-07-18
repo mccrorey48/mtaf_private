@@ -3,40 +3,58 @@ from ePhone7.views import *
 from lib.wrappers import fake
 
 
+@step("[network] I enter a valid VLAN identifier")
+@fake
+def network__i_enter_a_valid_vlan_identifier(context):
+    context.run_substep("[network] I enter 20 as a VLAN identifier")
+
+
+@step("[network] I enter a valid VLAN priority")
+@fake
+def network__i_enter_a_valid_vlan_priority(context):
+    context.run_substep("[network] I enter 0 as a VLAN priority")
+
+
 @step("[network] I enter a VLAN identifier between 1 and 4094")
 @fake
 def network__i_enter_a_vlan_identifier_between_1_and_4094(context):
-    network_view.find_named_element('VlanIdentifier').clear()
-    network_view.send_keycode_number(2)
-    network_view.send_keycode_number(0)
-    network_view.send_keycode_back()
+    context.run_substep("[network] I enter 20 as a VLAN identifier")
 
 
 @step("[network] I enter a VLAN identifier greater than 4094")
 @fake
 def network__i_enter_a_vlan_identifier_greater_than_4094(context):
-    network_view.find_named_element('VlanIdentifier').clear()
-    network_view.send_keycode_number(4)
-    network_view.send_keycode_number(0)
-    network_view.send_keycode_number(9)
-    network_view.send_keycode_number(5)
-    network_view.send_keycode_back()
+    context.run_substep("[network] I enter 4095 as a VLAN identifier")
 
 
 @step("[network] I enter a VLAN priority between 0 and 7")
 @fake
 def network__i_enter_a_vlan_priority_between_0_and_7(context):
-    network_view.find_named_element('VlanPriority').clear()
-    network_view.send_keycode_number(3)
-    network_view.send_keycode_back()
+    context.run_substep("[network] I enter 0 as a VLAN priority")
 
 
 @step("[network] I enter a VLAN priority greater than 7")
 @fake
 def network__i_enter_a_vlan_priority_greater_than_7(context):
-    network_view.find_named_element('VlanPriority').clear()
-    network_view.send_keycode_number(8)
+    context.run_substep("[network] I enter 8 as a VLAN priority")
+
+
+@step("[network] I enter {id} as a VLAN identifier")
+@fake
+def network__i_enter_id_as_a_vlan_identifier(context, id):
+    network_view.find_named_element('VlanIdentifier').clear()
     network_view.send_keycode_back()
+    for digit in [int(c) for c in id]:
+        network_view.send_keycode_number(digit)
+
+
+@step("[network] I enter {id} as a VLAN priority")
+@fake
+def network__i_enter_id_as_a_vlan_priority(context, priority):
+    network_view.find_named_element('VlanPriority').clear()
+    network_view.send_keycode_back()
+    for digit in [int(c) for c in priority]:
+        network_view.send_keycode_number(digit)
 
 
 @step('[network] I see an "Invalid VLAN Identifier" alert')

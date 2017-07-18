@@ -3,7 +3,7 @@ from ePhone7.views import *
 from time import sleep, time
 from prefs_steps import *
 from advanced_steps import *
-from lib.user_exception import UserException as Ux
+from lib.user_exception import UserException as Ux, UserFailException as Fx
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.utils.versions import *
 from lib.wrappers import fake
@@ -324,12 +324,6 @@ def i_go_to_the_contacts_view(context):
     user_view.goto_tab('Contacts')
 
 
-@step("I touch the Home icon")
-@fake
-def i_go_to_the_home_screen(context):
-    base_view.send_keycode_home()
-
-
 @step("I go to the home screen")
 @fake
 def i_go_to_the_home_screen(context):
@@ -558,6 +552,12 @@ def i_touch_the_current_time_zone_text(context):
     pass
 
 
+@step("I touch the Home icon")
+@fake
+def i_touch_the_home_icon(context):
+    base_view.send_keycode_home()
+
+
 @step("I touch the voicemail icon")
 def i_touch_the_voicemail_icon(context):
     pass
@@ -596,9 +596,7 @@ def i_verify_the_system_and_app_versions_are_current(context):
 @step("I wait for the phone to restart")
 @fake
 def i_wait_for_the_phone_to_restart(context):
-    base_view.close_appium()
-    sleep(30)
-    base_view.open_appium('nolaunch', force=True, timeout=60)
+    base_view.close_appium_until_reboot()
     base_view.startup()
 
 
@@ -886,6 +884,18 @@ def the_ota_server_update_popup_disappears(context):
 @step("The package com.android.wallpaper.livepicker is not listed")
 def the_package_com_android_wallpaper_livepicker_is_not_listed(context):
     pass
+
+
+@step("the phone restarts without a register retry message")
+@fake
+def the_phone_restarts_without_a_register_retry_message(context):
+    base_view.close_appium()
+    sleep(30)
+    base_view.open_appium('nolaunch', force=True, timeout=60)
+    try:
+        base_view.startup(allow_reg_retry=False)
+    except Fx as e:
+        assert False, e.msg
 
 
 @step("the popup disappears")

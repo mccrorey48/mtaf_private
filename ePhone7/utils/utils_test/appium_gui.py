@@ -11,6 +11,7 @@ from ePhone7.utils.spud_serial import SpudSerial
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.utils.usb_enable import usb_enable
 from ePhone7.views import *
+from ePhone7.views.base_view import keycodes
 from lib.user_exception import UserException as Ux
 from ePhone7.utils.get_focused_app import get_focused_app
 from ePhone7.utils.versions import *
@@ -160,7 +161,7 @@ class TestGui(Frame):
     other_commands = []
     find_by_var = None
     find_value_var = None
-    key_code = None
+    keycode_name = None
     attr_frame = None
     elem_index = None
     worker_thread = None
@@ -257,6 +258,10 @@ class TestGui(Frame):
         self.softphone_frame.account2_frame.grid(row=1, column=0, sticky='ew', padx=2, pady=2)
         self.menu.delete(5)
 
+    @staticmethod
+    def defocus(event):
+        event.widget.selection_clear()
+
     def create_btn_frame(self):
         btn_frame_row = 0
         btn_frame = Frame(self, bg="brown")
@@ -284,10 +289,12 @@ class TestGui(Frame):
         btn_frame.key_code_frame = Frame(btn_frame, bg='tan')
         btn = Button(btn_frame.key_code_frame, text="send keycode:", command=self.send_keycode, state=DISABLED)
         self.appium_btns.append(btn)
-        self.key_code = IntVar()
-        self.key_code.set(4)
-        btn_frame.key_code_frame.value = Entry(btn_frame.key_code_frame, width=5,
-                                               textvariable=self.key_code)
+        self.keycode_name = StringVar()
+        combobox = Combobox(btn_frame.key_code_frame, width=16, values=keycodes.keys(),
+                            textvariable=self.keycode_name, state='readonly', takefocus=False)
+        combobox.set(keycodes.keys()[-1])
+        combobox.bind("<FocusIn>", self.defocus)
+        btn_frame.key_code_frame.value = combobox
         btn.grid(row=0, column=0, padx=2, pady=2, sticky='w')
         btn_frame.key_code_frame.grid_columnconfigure(1, weight=1)
         btn_frame.key_code_frame.value.grid(row=0, column=1, padx=2, pady=2, sticky='w')
@@ -303,10 +310,13 @@ class TestGui(Frame):
         btn = Button(self.attr_frame, text="click element", command=self.click_element, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=2, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="clear element", command=self.clear_element, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=3, padx=2, pady=2)
         self.elem_index = StringVar()
         self.elem_index.set('')
         self.attr_frame.index = Combobox(self.attr_frame, width=6, values=[], textvariable=self.elem_index)
-        self.attr_frame.index.grid(row=0, column=3, padx=2, pady=2, sticky='ew')
+        self.attr_frame.index.grid(row=0, column=4, padx=2, pady=2, sticky='ew')
         self.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.grid_columnconfigure(0, weight=1)
         btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
@@ -389,7 +399,10 @@ class TestGui(Frame):
         root.destroy()
 
     def send_keycode(self):
-        base_view.driver.keyevent(self.key_code.get())
+        keycode_name = self.keycode_name.get()
+        keycode = keycodes[keycode_name]
+        print "sending keycode %s (value %d)" % (keycode_name, keycode)
+        base_view.driver.keyevent(keycode)
 
     def find_elements(self):
         print "finding elements...",
@@ -449,6 +462,13 @@ class TestGui(Frame):
             return
         index = int(text_index)
         self.elems[index].click()
+
+    def clear_element(self):
+        text_index = self.elem_index.get()
+        if text_index == '':
+            return
+        index = int(text_index)
+        self.elems[index].clear()
 
     def open_appium(self, max_attempts=10, retry_seconds=5):
         attempts = 0

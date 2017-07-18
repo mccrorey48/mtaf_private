@@ -12,7 +12,7 @@ from ePhone7.config.configure import cfg
 from lib.android import MockDriver
 from lib.android import expand_zpath
 from lib.selenium_actions import SeleniumActions
-from lib.user_exception import UserException as Ux, UserTimeoutException as Tx
+from lib.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
 from lib.wrappers import Trace
 from ePhone7.utils.spud_serial import SpudSerial
 
@@ -72,7 +72,7 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def send_keycode_number(self, number):
         if 0 <= number <= 9:
-            self.send_keycode('KEYCODE_%d', number)
+            self.send_keycode('KEYCODE_%d' % number)
         else:
             raise Ux("%s is not a valid keycode number" % repr(number))
 
@@ -253,8 +253,9 @@ class BaseView(SeleniumActions):
             self.caps_tag = None
 
     @Trace(log)
-    def startup(self, timeout=600):
+    def startup(self, timeout=600, allow_reg_retry=True):
         start_time = time()
+        reg_retry_handled = False
         while time() - start_time < timeout:
             try:
                 current_activity = self.driver.current_activity
@@ -276,6 +277,8 @@ class BaseView(SeleniumActions):
                         log.debug("startup: E7HasStoppedText present")
                         self.click_named_element('E7HasStoppedOk')
                     elif self.element_is_present('RegRetryButton'):
+                        if not allow_reg_retry:
+                            reg_retry_handled = True
                         log.debug("startup: RegRetryButton present")
                         self.click_named_element('RegRetryButton')
                 elif current_activity == '.settings.ui.LoginActivity':
@@ -293,6 +296,8 @@ class BaseView(SeleniumActions):
                 self.close_appium_until_reboot()
         else:
             raise Ux('failed to restart ePhone7 within %d seconds' % timeout)
+        if reg_retry_handled and not allow_reg_retry:
+            raise Fx("register retry message was handled, allow_reg_retry is False")
 
     @Trace(log)
     def wait_for_activity(self, activity, timeout=30):
