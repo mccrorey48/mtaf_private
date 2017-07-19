@@ -39,6 +39,15 @@ def dial__i_enter_part_of_a_coworker_contact_number_using_the_keypad(context):
     pass
 
 
+@step("[dial] I make a call to a coworker contact")
+@fake
+def dial__i_make_a_call_to_a_coworker_contact(context):
+    context.softphone = user_view.configure_called_answer_ring()
+    dial_view.dial_number(context.softphone.number)
+    dial_view.touch_dial_button()
+    context.softphone.wait_for_call_status('early', dial_view.call_status_wait)
+
+
 @step("[dial] I see the keypad")
 def dial__i_see_the_keypad(context):
     pass

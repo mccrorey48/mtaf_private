@@ -26,7 +26,7 @@ Feature: As a user I want to have a Record button available during an active cal
     And   [advanced] I check the Call Record Enable checkbox
     And   I touch the Back button
     Then  the Advanced Options view disappears
-    When  I make a call to a coworker contact
+    When  [dial] I make a call to a coworker contact
     And   the coworker contact answers the call
     Then  [active_call] an "Active Call" window appears
     And   [active_call] a Record button is visible
@@ -48,7 +48,7 @@ Feature: As a user I want to have a Record button available during an active cal
     And   [advanced] I uncheck the Call Record Enable checkbox
     And   I touch the Back button
     Then  the Advanced Options view disappears
-    When  I make a call to a coworker contact
+    When  [dial] I make a call to a coworker contact
     And   the coworker contact answers the call
     Then  [active_call] an "Active Call" window appears
     And   [active_call] a Record button is visible

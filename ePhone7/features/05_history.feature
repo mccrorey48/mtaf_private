@@ -34,7 +34,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Scenario: I want to see an outgoing call indicated on the All History view
     Given I touch the "Dial" button
-    Given I make a call to a coworker contact
+    When  [dial] I make a call to a coworker contact
     Then  [active_call] an "Active Call" window appears
     When  [active_call] I end the call
     Then  the in-call window disappears
@@ -83,7 +83,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
   Scenario: I want to call back an outgoing call indicated on the All History view
     Given I touch "Dial"
     Then  [dial] the Dial view appears
-    When  I make a call to a coworker contact
+    When  [dial] I make a call to a coworker contact
     Then  [active_call] an "Active Call" window appears
     When  [active_call] I end the call
     Then  the in-call window disappears

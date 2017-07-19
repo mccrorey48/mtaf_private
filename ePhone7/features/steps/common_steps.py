@@ -358,15 +358,6 @@ def i_ignore_the_call(context):
     pass
 
 
-@step("I make a call to a coworker contact")
-@fake
-def i_make_a_call_to_a_coworker_contact(context):
-    context.softphone = user_view.configure_called_answer_ring()
-    dial_view.dial_number(context.softphone.number)
-    dial_view.touch_dial_button()
-    context.softphone.wait_for_call_status('early', dial_view.call_status_wait)
-
-
 @step("I perform an OTA upgrade")
 @fake
 def i_perform_an_ota_upgrade(context):
