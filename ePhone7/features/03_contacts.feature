@@ -49,37 +49,52 @@ Feature: As a user I want to use and manage my contact lists
     When  I touch the "Favorites" tab
     Then  [contacts] the contact is shown on the display
 
+
   Scenario: I want to set the Favorites status of multiple Coworker contacts
     Given I touch the "Coworkers" tab
     Then  [contacts] my Coworker contacts are shown on the display
     When  [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
-    When  I touch "OK" on the Add Multiple Favorites confirmation dialog
+    When  I touch "OK"
     Then  [contacts] my Coworker contacts are each shown with a Favorites star icon
-    And   [contacts] Any existing Favorite contacts have a yellow start icon
-    And   [contacts] Any other contacts have a white start icon
-    When  [contacts] I touch the Favorites star icon on some contacts
-    Then  [contacts] the color toggles between yellow and white
+    And   [contacts] I touch the star icons so Favorites are yellow and others are white
     When  [contacts] I long-press a contact list item
     Then  [contacts] my Coworker contacts are each shown with a handset icon
     When  I touch the "Favorites" tab
-    Then  [contacts] my updated Favorite contacts are shown on the display
-
-  Scenario: I want to set the Favorites status of multiple Personal contacts
-    Given I touch the "Personal" tab
-    Then  [contacts] my Personal contacts are shown on the display
-    When  [contacts] I long-press a contact list item
+    Then  [contacts] my Favorites contacts are shown on the display
+    When  I touch the "Coworkers" tab
+    And   [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
-    When  I touch "OK" on the Add Multiple Favorites confirmation dialog
+    When  I touch "OK"
     Then  [contacts] my Coworker contacts are each shown with a Favorites star icon
-    And   [contacts] Any existing Favorite contacts have a yellow start icon
-    And   [contacts] Any other contacts have a white start icon
-    When  [contacts] I touch the Favorites star icon on some contacts
-    Then  [contacts] the color toggles between yellow and white
-    When  [contacts] I long-press a contact list item
-    Then  [contacts] my Personal contacts are each listed with a handset icon
+    When  [contacts] I touch the star icons so all are white
+    And   [contacts] I long-press a contact list item
+    Then  [contacts] my Coworker contacts are each shown with a handset icon
     When  I touch the "Favorites" tab
-    Then  [contacts] my updated Favorite contacts are shown on the display
+    Then  [contacts] no Coworker contacts are shown on the favorites display
+
+#  Scenario: I want to set the Favorites status of multiple Personal contacts
+#    Given I touch the "Personal" tab
+#    Then  [contacts] my Personal contacts are shown on the display
+#    When  [contacts] I long-press a contact list item
+#    Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
+#    When  I touch "OK"
+#    Then  [contacts] my Personal contacts are each shown with a Favorites star icon
+#    And   [contacts] I touch the star icons so Favorites are yellow and others are white
+#    When  [contacts] I long-press a contact list item
+#    Then  [contacts] my Personal contacts are each shown with a handset icon
+#    When  I touch the "Favorites" tab
+#    Then  [contacts] my Favorites contacts are shown on the display
+#    When  I touch the "Personal" tab
+#    And   [contacts] I long-press a contact list item
+#    Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
+#    When  I touch "OK"
+#    Then  [contacts] my Personal contacts are each shown with a Favorites star icon
+#    When  [contacts] I touch the star icons so all are white
+#    And   [contacts] I long-press a contact list item
+#    Then  [contacts] my Personal contacts are each shown with a handset icon
+#    When  I touch the "Favorites" tab
+#    Then  [contacts] no Personal contacts are shown on the favorites display
 
   Scenario: I want to remove a contact from my Favorites list
     Given I touch the "Favorites" tab

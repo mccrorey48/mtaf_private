@@ -2,6 +2,7 @@ from behave import *
 from ePhone7.views import *
 from ePhone7.config.configure import cfg
 from lib.wrappers import fake
+from lib.user_exception import UserException as Ux
 from ePhone7.utils.get_softphone import get_softphone
 from time import sleep
 
@@ -47,12 +48,12 @@ def contacts__an_add_multiple_favorites_confirmation_dialog_appears(context):
     contacts_view.see_multi_edit_dialog()
 
 
-@step("[contacts] Any existing Favorite contacts have a yellow start icon")
+@step("[contacts] Any existing Favorite contacts have a yellow star icon")
 def contacts__any_existing_favorite_contacts_have_a_yellow_start_icon(context):
     pass
 
 
-@step("[contacts] Any other contacts have a white start icon")
+@step("[contacts] Any other contacts have a white star icon")
 def contacts__any_other_contacts_have_a_white_start_icon(context):
     pass
 
@@ -188,25 +189,15 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
                 or base_view.color_match(color, cfg.colors['ContactsView']['handset_unavailable_color'])), fail_msg
 
 
-@step("[contacts] my Coworker contacts are shown on the display")
+@step("[contacts] my {group_name} contacts are shown on the display")
 @fake
-def contacts__my_coworker_contacts_are_shown_on_the_display(context):
-    contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
+def contacts__my_coworker_contacts_are_shown_on_the_display(context, group_name):
+    valid_groups = ['Coworker', 'Favorites']
+    if group_name not in valid_groups:
+        raise Ux("expected group name in %s, got %s" % (valid_groups, group_name))
+    contacts_group = cfg.site['Users']['R2d2User']['%sContacts' % group_name]
     numbers = contacts_view.get_all_group_contacts(contacts_group)
     assert set(numbers) == set(contacts_group), "expected %s, got %s" % (contacts_group, numbers)
-
-
-@step("[contacts] my Favorite contacts are shown on the display")
-@fake
-def contacts__my_favorite_contacts_are_shown_on_the_display(context):
-    contacts_group = cfg.site['Users']['R2d2User']['FavoriteContacts']
-    numbers = contacts_view.get_all_group_contacts(contacts_group)
-    assert set(numbers) == set(contacts_group), "expected %s, got %s" % (contacts_group, numbers)
-
-
-@step("[contacts] my Google contacts are shown on the display")
-def contacts__my_google_contacts_are_shown_on_the_display(context):
-    pass
 
 
 @step("[contacts] my Group Lists are shown on the display")
@@ -219,22 +210,12 @@ def contacts__my_personal_contacts_are_each_listed_with_a_handset_icon(context):
     pass
 
 
-@step("[contacts] my Personal contacts are shown on the display")
-def contacts__my_personal_contacts_are_shown_on_the_display(context):
-    pass
-
-
 @step("[contacts] my phone calls the contact")
 @fake
 def contacts__my_phone_calls_the_contact(context):
     context.softphone.wait_for_call_status('call', 20)
     sleep(10)
     context.softphone.end_call()
-
-
-@step("[contacts] my updated Favorite contacts are shown on the display")
-def contacts__my_updated_favorite_contacts_are_shown_on_the_display(context):
-    pass
 
 
 @step("[contacts] no Coworker contacts are shown on the favorites display")

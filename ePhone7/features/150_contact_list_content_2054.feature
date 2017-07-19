@@ -22,7 +22,7 @@ Feature: As a user I want to see my contact lists (R2D2-2054)
     When  [contacts] I long-press a contact list item
     Then  [contacts] my Coworker contacts are each shown with a handset icon
     When  I touch the "Favorites" tab
-    Then  [contacts] my Favorite contacts are shown on the display
+    Then  [contacts] my Favorites contacts are shown on the display
     When  I touch the "Coworkers" tab
     And   [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears

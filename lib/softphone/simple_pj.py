@@ -160,10 +160,17 @@ class Softphone:
 
     @Trace(log)
     def end_call(self, timeout=10):
-        if self.account_info.call:
-            log.debug("%s ending call to %s" % (self.uri, self.account_info.remote_uri))
-            self.account_info.call.hangup()
-            self.wait_for_call_status('idle', timeout)
+        if self.account_info.call is None:
+            return
+        log.debug("%s ending call to %s" % (self.uri, self.account_info.remote_uri))
+        sleep(5)
+        if self.account_info.call is not None:
+            try:
+                # ignore any errors
+                self.account_info.call.hangup()
+                self.wait_for_call_status('idle', timeout)
+            except:
+                pass
 
     @Trace(log)
     def hold(self, timeout=10):
