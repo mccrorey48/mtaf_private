@@ -18,6 +18,7 @@ class UserView(BaseView):
         "Dial": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_text", "text": "Dial"},
         "DndButton": {"by": "accessibility id", "value": "Do not Disturb"},
         "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
+        "HeadsetButton": {"by": "id", "value": "com.esi_estech.ditto:id/headset_button"},
         "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
         "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
         "IncomingCallIgnore": {"by": "id", "value": "com.esi_estech.ditto:id/ignore_button"},

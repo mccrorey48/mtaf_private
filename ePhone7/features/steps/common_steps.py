@@ -139,11 +139,6 @@ def a_submenu_appears_with_a_volume_control_option(context):
     pass
 
 
-@step('A submenu appears with an "Auto-Answer Calls" toggle')
-def a_submenu_appears_with_an_autoanswer_calls_toggle(context):
-    pass
-
-
 @step('A submenu opens with a "Walkthrough" option')
 def a_submenu_opens_with_a_walkthrough_option(context):
     pass
@@ -261,11 +256,6 @@ def i_answer_the_call(context):
 
 @step("I can see my personal contacts")
 def i_can_see_my_personal_contacts(context):
-    pass
-
-
-@step("I close the Preferences window")
-def i_close_the_preferences_window(context):
     pass
 
 
@@ -449,16 +439,6 @@ def i_touch_a_new_time_zone_choice(context):
 
 @step("I touch and drag the slider control handle")
 def i_touch_and_drag_the_slider_control_handle(context):
-    pass
-
-
-@step('I touch and drag the toggle handle to the "Off" position')
-def i_touch_and_drag_the_toggle_handle_to_the_off_position(context):
-    pass
-
-
-@step('I touch and drag the toggle handle to the "On" position')
-def i_touch_and_drag_the_toggle_handle_to_the_on_position(context):
     pass
 
 

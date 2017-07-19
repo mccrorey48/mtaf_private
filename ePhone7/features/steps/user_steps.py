@@ -1,6 +1,9 @@
 from behave import *
 from ePhone7.views import *
 from lib.wrappers import fake
+from lib.user_exception import UserException as Ux
+
+headset_icon_rgbs = {'blue': [99, 139, 237, 369], 'green': [79, 187, 110, 367]}
 
 
 @step("[user] A keypad appears")
@@ -51,6 +54,16 @@ def user__i_touch_the_call_park_icon(context):
 @step("[user] I touch the Do Not Disturb icon")
 def user__i_touch_the_do_not_disturb_icon(context):
     pass
+
+
+@step("[user] I touch the Headset icon if it is {color}")
+def user__i_touch_the_headset_icon_if_it_is_color(context, color):
+    if color not in headset_icon_rgbs:
+        raise Ux("Unknown color specified: %s" % color)
+    icon = user_view.find_named_element("HeadsetButton")
+    user_view.get_screenshot_as_png('headset_button')
+    if user_view.get_element_color_and_count('headset_button', icon, color_list_index=1) == headset_icon_rgbs[color]:
+        icon.click()
 
 
 @step("[user] I touch the Home button")
@@ -107,6 +120,21 @@ def user__the_do_not_disturb_icon_turns_blue(context):
 @step("[user] the Do Not Disturb icon turns red")
 def user__the_do_not_disturb_icon_turns_red(context):
     pass
+
+
+@step("[user] the Headset icon is {expect_color}")
+def user__the_headset_icon_is_expectcolor(context, expect_color):
+    if expect_color not in headset_icon_rgbs:
+        raise Ux("Unknown color specified: %s" % expect_color)
+    icon = user_view.find_named_element("HeadsetButton")
+    user_view.get_screenshot_as_png('headset_button')
+    actual_rgb = user_view.get_element_color_and_count('headset_button', icon, color_list_index=1)
+    for color in headset_icon_rgbs:
+        if actual_rgb == headset_icon_rgbs[color]:
+            assert expect_color == color, "expected headset icon color %s, got %s" % (expect_color, color)
+            break
+    else:
+        assert False, "expected color %s, got unknown (rgb counts = %s)" % (expect_color, actual_rgb)
 
 
 @step("[user] the keypad disappears")
