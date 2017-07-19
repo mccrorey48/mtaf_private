@@ -10,6 +10,7 @@ class ActiveCallView(BaseView):
 
     locators = {
         "ActiveCallLabel": {"by": "id", "value": "com.esi_estech.ditto:id/call_state", "text": "Active Call"},
+        "AudioPathIcon": {"by": "id", "value": "com.esi_estech.ditto:id/currentAudioImage"},
         "CallCardName": {"by": "accessibility id", "value": "Call Park Pickup"},
         "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
         "DefaultForwardAccountName": {"by": "uia_text", "value": cfg.site['DefaultForwardAccount']},

@@ -3,6 +3,7 @@ from ePhone7.views import *
 from lib.wrappers import fake
 from ePhone7.utils.get_vmids import get_vmids, vmid_count_incremented
 from ePhone7.config.configure import cfg
+from lib.user_exception import UserException as Ux
 from time import sleep
 import lib.logging_esi as logging
 log = logging.get_logger('esi.active_steps')
@@ -103,6 +104,23 @@ def activecall__the_caller_leaves_a_message_and_hangs_up(context):
     user_view.caller_ends_received_call()
     sleep(10)
     assert vmid_count_incremented(cfg.site['DefaultForwardAccount'], 'new', context.vmid_count)
+
+
+@step("[active_call] the {icon_type} icon is displayed")
+def activecall__the_icontype_icon_is_displayed(context, icon_type):
+    white_counts = {'speaker': 714, 'handset': 580, 'headset': 618}
+    if icon_type not in white_counts:
+        raise Ux("Unexpected icon_type value: %s" % icon_type)
+    call_icon = active_call_view.find_named_element('AudioPathIcon')
+    user_view.get_screenshot_as_png('call_icon')
+    expected_count = white_counts[icon_type]
+    actual_count = active_call_view.get_element_color_and_count('call_icon', call_icon)[-1]
+    for key in white_counts.keys():
+        if white_counts[key] == actual_count:
+            assert actual_count == expected_count, "Expected %s icon, got %s" % (icon_type, key)
+    else:
+        assert actual_count == expected_count, "Expected %s icon, got unknown (white pixel count = %d" \
+                                               % (icon_type, actual_count)
 
 
 @step("[active_call] the Record button is gray")

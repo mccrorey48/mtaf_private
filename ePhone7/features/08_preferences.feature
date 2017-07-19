@@ -83,7 +83,7 @@ Feature: As a user I want to view and change detailed settings that control my p
     When  I touch the button for another tab
     And   I touch "OK"
     Then  The Contacts tab window disappears
-    When  I close the Preferences window
+    When  [prefs] I touch the "X" icon
     And   I touch the "Contacts" view selector button
     Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
     And   The new default tab is selected
@@ -228,14 +228,14 @@ Feature: As a user I want to view and change detailed settings that control my p
 
   Scenario: I want my phone to immediately answer incoming calls
     When  I touch "Phone"
-    Then  A submenu appears with an "Auto-Answer Calls" toggle
+    Then  [prefs] A submenu appears with an "Auto-Answer Calls" toggle
     And   The toggle handle is in the "Off" position
     When  I touch and drag the toggle handle to the "On" position
     Then  The toggle handle stays in the "On" position
 
   Scenario: I want my phone to stop immediately answering incoming calls
     When  I touch "Phone"
-    Then  A submenu appears with an "Auto-Answer Calls" toggle
+    Then  [prefs] A submenu appears with an "Auto-Answer Calls" toggle
     And   The toggle handle is in the "On" position
     When  I touch and drag the toggle handle to the "Off" position
     Then  The toggle handle stays in the "Off" position

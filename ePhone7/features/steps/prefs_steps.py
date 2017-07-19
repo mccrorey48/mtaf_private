@@ -23,6 +23,11 @@ def prefs__a_submenu_appears_with_a_network_option(context):
     prefs_view.element_is_present('MenuItemNetworkText')
 
 
+@step('[prefs] A submenu appears with an "Auto-Answer Calls" toggle')
+def prefs__a_submenu_appears_with_an_autoanswer_calls_toggle(context):
+    pass
+
+
 @step("[prefs] A submenu opens with an eHelp option")
 def prefs__a_submenu_opens_with_an_ehelp_option(context):
     pass
@@ -76,8 +81,23 @@ def prefs__i_see_the_need_help_personal_phone_and_system_category_elements(conte
     pass
 
 
+@step("[prefs] I swipe the Wired Headset switch to the {direction}")
+def prefs__i_swipe_the_wired_headset_switch_to_the_left(context, direction):
+    prefs_view.swipe_named_element("WiredHeadsetSwitch", direction)
+
+
 @step("[prefs] I touch a contact element")
 def prefs__i_touch_a_contact_element(context):
+    pass
+
+
+@step('[prefs] I touch and drag the toggle handle to the "Off" position')
+def prefs__i_touch_and_drag_the_toggle_handle_to_the_off_position(context):
+    pass
+
+
+@step('[prefs] I touch and drag the toggle handle to the "On" position')
+def prefs__i_touch_and_drag_the_toggle_handle_to_the_on_position(context):
     pass
 
 

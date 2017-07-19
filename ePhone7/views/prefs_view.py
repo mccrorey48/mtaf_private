@@ -49,7 +49,8 @@ class PrefsView(BaseView):
         "SystemVersion": {"by": "id", "value": "com.esi_estech.ditto:id/system_version"},
         "UpgradeButton": {"by": "id", "value": "com.fsl.android.ota:id/upgrade_button"},
         "Utilities": {"by": "uia_text", "value": "Utilities"},
-        "VolumeSettings": {"by": "zpath", "value": "//lv/ll[6]/tv", "text": "Volume Settings"}
+        "VolumeSettings": {"by": "zpath", "value": "//lv/ll[6]/tv", "text": "Volume Settings"},
+        "WiredHeadsetSwitch": {"by": "id", "value": "com.esi_estech.ditto:id/headset_enabled_switch"}
     }
 
     def __init__(self):

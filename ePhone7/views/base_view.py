@@ -104,8 +104,29 @@ class BaseView(SeleniumActions):
         TouchAction(self.driver).press(origin_el).move_to(destination_el).release().perform()
 
     @Trace(log)
-    def swipe(self, origin_x, origin_y, destination_x, destination_y, duration):
-        SeleniumActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration)
+    def swipe(self, origin_x, origin_y, destination_x, destination_y, duration_ms):
+        SeleniumActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration_ms)
+
+    @Trace(log)
+    def swipe_named_element(self, name, direction):
+        if direction not in ['left', 'right']:
+            raise Ux('unknown direction %s' % direction)
+        el = self.find_named_element(name)
+        left_x = el.location["x"]
+        right_x = left_x + el.size["width"]
+        y = el.location["y"] + (el.size["height"]/2)
+        if direction == 'left':
+            self.swipe(right_x, y, left_x, y, 1000)
+        else:
+            self.swipe(left_x, y, right_x, y, 1000)
+
+    @Trace(log)
+    def swipe_named_element_right(self, name):
+        el = self.find_named_element(name)
+        end_x = el.location["x"]
+        start_x = end_x + el.size["width"]
+        y = el.location["y"] + (el.size["height"]/2)
+        self.swipe(start_x, y, end_x, y, 1000)
 
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder=None):
