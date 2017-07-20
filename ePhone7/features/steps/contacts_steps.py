@@ -14,7 +14,12 @@ def contacts__a_check_mark_appears_in_the_box(context):
 
 @step("[contacts] a contact detail screen appears with a white star icon")
 def contacts__a_contact_detail_screen_appears_with_a_white_star_icon(context):
-    pass
+    assert contacts_view.contact_detail_view_visible(), "contact detail view is not visible"
+    el = contacts_view.find_named_element("FavoriteIndicator")
+    base_view.get_screenshot_as_png('contact_detail', cfg.test_screenshot_folder)
+    color = contacts_view.get_element_color_and_count('contact_detail', el)
+    expect_color = cfg.colors["ContactsView"]["favorite_off_color"]
+    assert color == expect_color, "expected color %s, got %s" % (expect_color, color)
 
 
 @step("[contacts] a contact detail screen appears with a yellow star icon")
@@ -109,9 +114,15 @@ def contacts__i_touch_the_name_of_a_contact(context):
     pass
 
 
-@step("[contacts] I touch the name of a contact that is not a Favorite")
+@step("[contacts] I touch the name of a Coworker contact that is not a Favorite")
+@fake
 def contacts__i_touch_the_name_of_a_contact_that_is_not_a_favorite(context):
-    pass
+    coworker_contacts = cfg.site["Users"]["R2d2User"]["CoworkerContacts"]
+    favorite_contacts = cfg.site["Users"]["R2d2User"]["FavoriteContacts"]
+    other_contacts = [contact for contact in coworker_contacts if contact not in favorite_contacts]
+    context.new_favorite = other_contacts[0]
+    contacts_view.touch_element_with_text(context.new_favorite)
+
 
 
 @step("[contacts] I touch the name of a personal Group list")
@@ -136,9 +147,9 @@ def contacts__i_touch_the_star_icons_so_favorites_are_yellow_and_others_are_whit
     contacts_view.set_all_favorites()
 
 
-@step("[contacts] I touch the white star icon")
-def contacts__i_touch_the_white_star_icon(context):
-    pass
+@step("[contacts] I touch the star icon")
+def contacts__i_touch_the_star_icon(context):
+    contacts_view.click_named_element('FavoriteIndicator')
 
 
 @step("[contacts] I touch the yellow star icon")
@@ -164,8 +175,8 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_favorites_star_icon(con
     for i in range(len(names)):
         color = base_view.get_element_color_and_count('multi_edit', stars[i])
         fail_msg = "No favorites icon found for contact name %s" % names[i].text
-        assert (base_view.color_match(color, cfg.colors['ContactsView']['favorite_on_color'])
-                or base_view.color_match(color, cfg.colors['ContactsView']['favorite_off_color'])), fail_msg
+        assert (base_view.color_match(color, cfg.colors['ContactsView']['multi_favorite_on_color'])
+                or base_view.color_match(color, cfg.colors['ContactsView']['multi_favorite_off_color'])), fail_msg
 
 
 @step("[contacts] my Coworker contacts are each shown with a handset icon")
@@ -192,7 +203,7 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
 @step("[contacts] my {group_name} contacts are shown on the display")
 @fake
 def contacts__my_coworker_contacts_are_shown_on_the_display(context, group_name):
-    valid_groups = ['Coworker', 'Favorites']
+    valid_groups = ['Coworker', 'Favorite']
     if group_name not in valid_groups:
         raise Ux("expected group name in %s, got %s" % (valid_groups, group_name))
     contacts_group = cfg.site['Users']['R2d2User']['%sContacts' % group_name]
@@ -267,9 +278,9 @@ def contacts__the_contact_is_shown_on_the_contact_list_for_the_group(context):
     pass
 
 
-@step("[contacts] the contact is shown on the display")
+@step("[contacts] the new favorite contact is shown on the display")
 def contacts__the_contact_is_shown_on_the_display(context):
-    pass
+    contacts_view.element_with_text_is_present(context.new_favorite)
 
 
 @step("[contacts] the contact list for the group is displayed")
@@ -298,13 +309,15 @@ def contacts__the_previously_added_contact_is_not_on_the_list_with_checkboxes(co
     pass
 
 
-@step("[contacts] the star turns white")
-def contacts__the_star_turns_white(context):
-    pass
-
-
-@step("[contacts] the star turns yellow")
-def contacts__the_star_turns_yellow(context):
-    pass
+@step("[contacts] the star turns {color_name}")
+def contacts__the_star_turns_yellow(context, color_name):
+    cfg_color_names = {'white': 'favorite_off_color', 'yellow': 'favorite_on_color'}
+    if color_name not in cfg_color_names:
+        raise Ux('bad color name %s' % color_name)
+    el = contacts_view.find_named_element("FavoriteIndicator")
+    expect_color = cfg.colors["ContactsView"][cfg_color_names[color_name]]
+    base_view.get_screenshot_as_png('contact_detail', cfg.test_screenshot_folder)
+    actual_color = contacts_view.get_element_color_and_count('contact_detail', el)
+    assert actual_color == expect_color, "expected color %s, got %s" % (expect_color, actual_color)
 
 

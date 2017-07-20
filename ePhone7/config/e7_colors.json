@@ -37,13 +37,13 @@
                 255,
                 255,
                 255,
-                235
+                375
             ],
             "favorite_on_color": [
                 255,
                 203,
                 5,
-                233
+                372
             ],
             "handset_dnd_color": [
                 216,
@@ -80,6 +80,18 @@
                 42,
                 68,
                 106
+            ],
+            "multi_favorite_off_color": [
+                255,
+                255,
+                255,
+                235
+            ],
+            "multi_favorite_on_color": [
+                255,
+                203,
+                5,
+                233
             ],
             "type": "constants"
         }

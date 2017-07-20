@@ -22,6 +22,7 @@ class ContactsView(UserView):
         "ContactParent": {"by": "id", "value": "com.esi_estech.ditto:id/contact_list_item_layout"},
         "ContactsList": {"by": "id", "value": "com.esi_estech.ditto:id/contactsList"},
         "Coworkers": {"by": "id", "value": "com.esi_estech.ditto:id/ephone_contacts", "text": "Coworkers"},
+        "DetailsTitleView": {"by": "id", "value": "com.esi_estech.ditto:id/contact_details_title_view"},
         "Favorites": {"by": "id", "value": "com.esi_estech.ditto:id/favorites", "text": "Favorites"},
         "FavoriteIndicator": {"by": "id", "value": "com.esi_estech.ditto:id/favorite_indicator"},
         "FirstContactName": {"by": "zpath", "value": "//rv/fl[1]/rl/ll/tv"},
@@ -48,7 +49,7 @@ class ContactsView(UserView):
         self.click_element(icon)
         softphone.wait_for_call_status('call', 20)
         sleep(10)
-        self.end_call()
+        softphone.end_call()
         softphone.wait_for_call_status('idle', 20)
 
     def wait_for_green_handset_icon(self, icon):
@@ -187,12 +188,12 @@ class ContactsView(UserView):
             stars = self.find_named_elements("MultiEditFavoritesIndicator")
             for elem in stars:
                 color = self.get_element_color_and_count('multi_edit', elem)
-                if self.color_match(color, cfg.colors['ContactsView']['favorite_on_color']):
+                if self.color_match(color, cfg.colors['ContactsView']['multi_favorite_on_color']):
                     elem.click()
                     self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
                     color = self.get_element_color_and_count('multi_edit', elem)
-                    if not self.color_match(color, cfg.colors['ContactsView']['favorite_off_color']):
-                        raise Ux("Expected color %s to equal %s" % (color, cfg.colors['ContactsView']['favorite_off_color']))
+                    if not self.color_match(color, cfg.colors['ContactsView']['multi_favorite_off_color']):
+                        raise Ux("Expected color %s to equal %s" % (color, cfg.colors['ContactsView']['multi_favorite_off_color']))
             prev_numbers_len = len(numbers)
             self.swipe_up()
         log.debug("%d elements found" % len(numbers))
@@ -223,12 +224,12 @@ class ContactsView(UserView):
                 if self.displayed_numbers[i] in favorites:
                     favorites.remove(self.displayed_numbers[i])
                     color = self.get_element_color_and_count('multi_edit', stars[i])
-                    if self.color_match(color, cfg.colors['ContactsView']['favorite_off_color']):
+                    if self.color_match(color, cfg.colors['ContactsView']['multi_favorite_off_color']):
                         stars[i].click()
                         self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
                         color = self.get_element_color_and_count('multi_edit', stars[i])
-                        if not self.color_match(color, cfg.colors['ContactsView']['favorite_on_color']):
-                            raise Ux("Expected color %s to equal %s" % (color, cfg.colors['ContactsView']['favorite_off_color']))
+                        if not self.color_match(color, cfg.colors['ContactsView']['multi_favorite_on_color']):
+                            raise Ux("Expected color %s to equal %s" % (color, cfg.colors['ContactsView']['multi_favorite_off_color']))
             prev_numbers_len = len(numbers)
             self.swipe_up()
         log.debug("%d elements found" % len(numbers))
@@ -274,7 +275,7 @@ class ContactsView(UserView):
 
     def contact_detail_view_visible(self):
         try:
-            self.find_named_element('FavoriteIndicator', timeout=5)
+            self.find_named_element('DetailsTitleView', timeout=5)
         except Ux:
             return False
         return True
@@ -296,7 +297,7 @@ class ContactsView(UserView):
             self.get_screenshot_as_png(filebase, cfg.test_screenshot_folder)
             icon = self.find_named_element('FavoriteIndicator')
             current_color = self.get_element_color(filebase, icon)
-            desired_color = cfg.colors['ContactsView']['favorite_on_color'][:-1]
+            desired_color = cfg.colors['ContactsView']['multi_favorite_on_color'][:-1]
             if current_color != desired_color:
                 self.click_element(icon)
             self.click_named_element('ContactClose')
