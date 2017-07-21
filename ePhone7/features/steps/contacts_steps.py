@@ -168,7 +168,7 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_favorites_star_icon(con
     # limit inspection to first 8 contacts because #9, if it exists, will be partly obscured
     contacts_view.scroll_to_top_of_list()
     names = contacts_view.find_named_elements('ContactName')[:8]
-    stars = contacts_view.find_named_elements('MultiEditFavoritesIndicator')[:8]
+    stars = contacts_view.find_named_elements('CallButton')[:8]
     assert len(names) == len(stars), "Expected contact name count (%d) to equal star icon count (%d)" \
                                      % (len(names), len(stars))
     base_view.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
@@ -185,7 +185,7 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
     # limit inspection to first 8 contacts because #9, if it exists, will be partly obscured
     contacts_view.scroll_to_top_of_list()
     names = contacts_view.find_named_elements('ContactName')[:8]
-    call_buttons = contacts_view.find_named_elements('MultiEditFavoritesIndicator')[:8]
+    call_buttons = contacts_view.find_named_elements('CallButton')[:8]
     assert len(names) == len(call_buttons), "Expected contact name count (%d) to equal star icon count (%d)" \
                                             % (len(names), len(call_buttons))
     context.call_buttons = dict(zip(names, call_buttons))
