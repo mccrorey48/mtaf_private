@@ -18,6 +18,7 @@ from ePhone7.utils.versions import *
 from lib.android import expand_zpath
 from ePhone7.utils.versions import force_aosp_downgrade, remove_apk_upgrades
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
+from selenium.common.exceptions import NoSuchElementException
 import threading
 
 log = logging.get_logger('esi.appium_gui')
@@ -43,7 +44,8 @@ class ScrolledLogwin(Text):
         self.print_buf = ''
 
     def write(self, _txt):
-        if _txt[-1] == '\n':
+        log.debug("write: _txt = [%s], len=%d" % (repr(_txt), len(_txt)))
+        if len(_txt) > 0 and _txt[-1] == '\n':
             eol = True
         else:
             eol = False
@@ -165,6 +167,8 @@ class TestGui(Frame):
     attr_frame = None
     elem_index = None
     worker_thread = None
+    parent_element = None
+    use_parent = None
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
@@ -272,8 +276,15 @@ class TestGui(Frame):
         self.find_by_var.set('uia_text')
         btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16,
                                            values=['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator'],
-                                           textvariable=self.find_by_var)
+                                           textvariable=self.find_by_var, state='readonly', takefocus=False)
+        btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_from_parent)
+        btn_frame.find_frame.by.bind("<FocusIn>", self.defocus)
         btn_frame.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
+        self.use_parent = IntVar()
+        self.use_parent.set(0)
+        btn_frame.find_frame.use_parent = Checkbutton(btn_frame.find_frame, text='from Parent',
+                                                      variable=self.use_parent, state=DISABLED)
+        btn_frame.find_frame.use_parent.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
         btn_frame.find_frame.value = Entry(btn_frame.find_frame, width=60,
                                            textvariable=self.find_value_var)
@@ -281,9 +292,9 @@ class TestGui(Frame):
                                              command=btn_frame.find_frame.value.xview)
         btn_frame.find_frame.value["xscrollcommand"] = btn_frame.find_frame.hsb.set
         btn.grid(row=0, column=0, padx=2, pady=2)
-        btn_frame.find_frame.grid_columnconfigure(1, weight=1)
-        btn_frame.find_frame.value.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
-        btn_frame.find_frame.hsb.grid(row=1, column=2, sticky='ew')
+        btn_frame.find_frame.grid_columnconfigure(3, weight=1)
+        btn_frame.find_frame.value.grid(row=0, column=3, padx=2, pady=2, sticky='ew')
+        btn_frame.find_frame.hsb.grid(row=1, column=3, sticky='ew')
         btn_frame.find_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
         btn_frame.key_code_frame = Frame(btn_frame, bg='tan')
@@ -313,10 +324,13 @@ class TestGui(Frame):
         btn = Button(self.attr_frame, text="clear element", command=self.clear_element, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=3, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="set parent", command=self.set_parent, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=4, padx=2, pady=2)
         self.elem_index = StringVar()
         self.elem_index.set('')
         self.attr_frame.index = Combobox(self.attr_frame, width=6, values=[], textvariable=self.elem_index)
-        self.attr_frame.index.grid(row=0, column=4, padx=2, pady=2, sticky='ew')
+        self.attr_frame.index.grid(row=0, column=5, padx=2, pady=2, sticky='ew')
         self.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.grid_columnconfigure(0, weight=1)
         btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
@@ -345,6 +359,8 @@ class TestGui(Frame):
         return menu
 
     def create_commands(self):
+        self.appium_commands.append(Command("set coworker favorites", lambda: self.do_cmd(self.set_favs)))
+        self.appium_commands.append(Command("clear coworker favorites", lambda: self.do_cmd(self.clear_favs)))
         self.appium_commands.append(Command("Accept T&C", lambda: self.do_cmd(self.accept_tnc)))
         self.appium_commands.append(
             Command("Dial Advanced Settings Code", lambda: self.do_cmd(self.dial_advanced_settings)))
@@ -404,6 +420,15 @@ class TestGui(Frame):
         print "sending keycode %s (value %d)" % (keycode_name, keycode)
         base_view.driver.keyevent(keycode)
 
+    def update_from_parent(self, event):
+        find_by = self.find_by_var.get()
+        print "find by %s" % find_by
+        if (find_by == 'id') and self.parent_element is not None:
+            self.btn_frame.find_frame.use_parent.configure(state=NORMAL)
+        else:
+            self.btn_frame.find_frame.use_parent.configure(state=DISABLED)
+            self.use_parent.set(0)
+
     def find_elements(self):
         print "finding elements...",
         by = self.find_by_var.get()
@@ -415,7 +440,10 @@ class TestGui(Frame):
         elif by == 'uia_text':
             by = '-android uiautomator'
             value = 'new UiSelector().text("%s")' % value
-        self.elems = base_view.driver.find_elements(by, value)
+        if self.use_parent.get():
+            self.elems = self.parent_element.find_elements(by, value)
+        else:
+            self.elems = base_view.driver.find_elements(by, value)
         print "%s element%s found" % (len(self.elems), '' if len(self.elems) == 1 else 's')
         elem_indices = [str(i) for i in range(len(self.elems))]
         self.attr_frame.index.configure(values=elem_indices)
@@ -423,6 +451,9 @@ class TestGui(Frame):
             self.elem_index.set('0')
         else:
             self.elem_index.set('')
+        self.parent_element = None
+        self.btn_frame.find_frame.use_parent.configure(state=DISABLED)
+        self.use_parent.set(0)
 
     def get_elem_attrs(self):
         text_index = self.elem_index.get()
@@ -430,16 +461,18 @@ class TestGui(Frame):
             return
         index = int(text_index)
         elem = self.elems[index]
-        text = elem.text
-        loc = elem.location
-        size = elem.size
-        x1 = int(loc['x'])
-        y1 = int(loc['y'])
-        w = int(size['width'])
-        h = int(size['height'])
-        x2 = x1 + w
-        y2 = y1 + h
-        print 'text: "%s", ul: (%d, %d), lr: (%d, %d), width: %d, height: %d' % (text, x1, y1, x2, y2, w, h)
+        print "\nattributes for element %d" % index
+        print "  %10s: %s" % ("location_in_view", elem.location_in_view)
+        print "  %10s: %s" % ("location", elem.location)
+        print "  %10s: %s" % ("size", elem.size)
+        for attr in ['name', 'contentDescription', 'text', 'className', 'resourceId', 'enabled', 'checkable', 'checked', 'clickable',
+                     'focusable', 'focused', 'longClickable', 'scrollable', 'selected', 'displayed']:
+            print "  %10s:" % attr,
+            try:
+                print elem.get_attribute(attr)
+            except NoSuchElementException:
+                log.debug("NoSuchElementException running elem.get_attribute(%s)" % attr)
+                print
 
     def get_elem_color(self):
         text_index = self.elem_index.get()
@@ -469,6 +502,14 @@ class TestGui(Frame):
             return
         index = int(text_index)
         self.elems[index].clear()
+
+    def set_parent(self):
+        text_index = self.elem_index.get()
+        if text_index == '':
+            return
+        index = int(text_index)
+        self.parent_element = self.elems[index]
+        self.update_from_parent(None)
 
     def open_appium(self, max_attempts=10, retry_seconds=5):
         attempts = 0
@@ -532,6 +573,18 @@ class TestGui(Frame):
     def accept_tnc():
         print "accepting terms and conditions...",
         tnc_view.accept_tnc()
+        print "Done"
+
+    @staticmethod
+    def clear_favs():
+        print "clearing all favorite coworkers...",
+        contacts_view.clear_all_favorites()
+        print "Done"
+
+    @staticmethod
+    def set_favs():
+        print "setting all favorite coworkers...",
+        contacts_view.set_all_favorites()
         print "Done"
 
     @staticmethod
