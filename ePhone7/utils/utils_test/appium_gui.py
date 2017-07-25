@@ -546,7 +546,7 @@ class TestGui(Frame):
         (reply, elapsed, groups) = spud_serial.do_action(action)
         lines = reply.split('\n')
         log.debug('cmd: %s\nelapsed: [%5.3f s]  \necho: "%s"\n' %
-                  (action['cmd'], elapsed, lines[0].encode('string_escape')))
+                  (action['cmd'], elapsed, repr(lines[0].encode('string_escape'))))
         for line in lines[1:]:
             log.debug(' '*7 + line.encode('string_escape'))
 
@@ -619,9 +619,7 @@ class TestGui(Frame):
         print "rebooting...",
         ss = SpudSerial(cfg.site['SerialDev'])
         self.log_action(ss, {'cmd': 'cd\n', 'new_cwd': 'data'})
-        self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'Restarting system', 'timeout': 1})
-        self.log_action(ss, {'cmd': '', 'new_cwd': '', 'expect': 'mtp_open', 'timeout': 120})
-
+        self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'dead_air_timeout': 20, 'timeout': 120})
         print "Done"
 
     @staticmethod

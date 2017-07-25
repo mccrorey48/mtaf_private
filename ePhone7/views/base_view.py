@@ -287,9 +287,16 @@ class BaseView(SeleniumActions):
                 elif current_activity == '.util.crashreporting.EPhoneCrashReportDialog':
                     self.click_named_element('CrashOkButton')
                 elif current_activity == '.activities.AutoLoginActivity':
+                    if self.element_with_text_is_present('Authentication in progress', timeout=1):
+                        sleep(5)
+                        continue
                     if self.element_with_text_is_present('Network Error', timeout=1):
                         log.debug('startup: element with text "Network Error" is present')
                         self.touch_element_with_text('Retry', timeout=1)
+                        sleep(2)
+                        if self.element_with_text_is_present('Network Error', timeout=1):
+                            log.debug('Retrying touching the Retry button')
+                            self.touch_element_with_text('Retry', timeout=1)
                         try:
                             self.close_appium_until_reboot(timeout=300)
                         except Tx:
