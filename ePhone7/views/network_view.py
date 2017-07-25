@@ -7,12 +7,15 @@ log = logging.get_logger('esi.network_view')
 
 class NetworkView(BaseView):
     locators = {
-        "InvalidVlanId": {"by": "id", "value": "com.esi_estech.ditto:id/nw_warnings", "text": "Invalid VLAN identifier (1 ~ 4094)"},
+        "InvalidVlanId": {"by": "-android uiautomator",
+                          "value": "new UiSelector().textStartsWith(\"Invalid VLAN Identifier\")"},
         "InvalidVlanOk": {"by": "id", "value": "android:id/button1"},
-        "InvalidVlanPriority": {"by": "id", "value": "com.esi_estech.ditto:id/nw_warnings", "text": "Invalid VLAN priority (0 ~ 7)"},
+        "InvalidVlanPriority": {"by": "-android uiautomator",
+                                "value": "new UiSelector().textStartsWith(\"Invalid VLAN priority\")"},
         "NetworkSaveAndReboot": {"by": "id", "value": "com.esi_estech.ditto:id/save_nw_config"},
         "NetworkSettingsBackButton": {"by": "id", "value": "com.esi_estech.ditto:id/back_button"},
-        "NetworkSettingsLabel": {"by": "id", "value": "com.esi_estech.ditto:id/preferences_label", "text": "Network Settings"},
+        "NetworkSettingsLabel": {"by": "id", "value": "com.esi_estech.ditto:id/preferences_label",
+                                 "text": "Network Settings"},
         "VlanDisable": {"by": "id", "value": "com.esi_estech.ditto:id/vlan_disable"},
         "VlanEnable": {"by": "id", "value": "com.esi_estech.ditto:id/vlan_enable"},
         "VlanRebootAlert": {"by": "id", "value": "com.esi_estech.ditto:id/count_down_label"},
