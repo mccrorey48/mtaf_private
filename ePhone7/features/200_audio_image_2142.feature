@@ -1,12 +1,12 @@
 @regression
-Feature: As a user I want the current audio path indicated on the in-call screen (R2D2-2143)
+Feature: As a user I want the current audio path indicated on the in-call screen (R2D2-2142)
 
   Background: the wired headset is enabled in Preferences
     Given I go to the home screen
     When  [user] I touch the Preferences icon
     Then  [prefs] the Preferences window appears
     When  I touch the "Phone" category
-    Then  [prefs] I swipe the Wired Headset switch to the left
+    Then  [prefs] I swipe the Wired Headset switch to the right
     When  [prefs] I touch the "X" icon
     Then  [prefs] the Preferences window disappears
 
