@@ -86,8 +86,8 @@ class Trace(object):
             logging_esi.trace_indent += 1
             retval = None
             self.elapsed_time = 0.0
+            start_time = time()
             try:
-                start_time = time()
                 retval = f(*args, **kwargs)
                 self.elapsed_time = time() - start_time
             except Fx as e:

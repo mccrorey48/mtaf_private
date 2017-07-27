@@ -26,7 +26,7 @@ class ContactsView(UserView):
         "DetailsTitleView": {"by": "id", "value": "com.esi_estech.ditto:id/contact_details_title_view"},
         "Favorites": {"by": "id", "value": "com.esi_estech.ditto:id/favorites", "text": "Favorites"},
         "FavoriteIndicator": {"by": "id", "value": "com.esi_estech.ditto:id/favorite_indicator"},
-        "FirstContactName": {"by": "zpath", "value": "//rv/fl[1]/rl/ll/tv"},
+        "FirstContactName": {"by": "zpath", "value": "//rv/fl[1]/v/tv[1]"},
         "Groups": {"by": "id", "value": "com.esi_estech.ditto:id/contact_groups", "text": "Groups"},
         "CallButton": {"by": "id", "value": "com.esi_estech.ditto:id/call_button"},
         "Personal": {"by": "id", "value": "com.esi_estech.ditto:id/all_contacts", "text": "Personal"},
