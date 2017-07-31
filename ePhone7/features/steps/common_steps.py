@@ -230,6 +230,21 @@ def both_windows_disappear(context):
     pass
 
 
+@step("I add a my favorite Coworker contacts to my Favorites list")
+@fake
+def i_add_a_my_favorite_coworker_contacts_to_my_favorites_list(context):
+    context.run_substep("I touch the \"Contacts\" button")
+    context.run_substep("I touch the \"Coworkers\" tab")
+    context.run_substep("[contacts] my Coworker contacts are shown on the display")
+    context.run_substep("[contacts] I long-press a contact list item")
+    context.run_substep("[contacts] An \"Add Multiple Favorites\" confirmation dialog appears")
+    context.run_substep("I touch \"OK\"")
+    context.run_substep("[contacts] my Coworker contacts are each shown with a Favorites star icon")
+    context.run_substep("[contacts] I touch the star icons so Favorites are yellow and others are white")
+    context.run_substep("[contacts] I long-press a contact list item")
+    context.run_substep("[contacts] my Coworker contacts are each shown with a handset icon")
+
+
 @step("I am at the home screen")
 @fake
 def i_am_at_the_home_screen(context):
