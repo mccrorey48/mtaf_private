@@ -71,6 +71,11 @@ def activecall__i_select_a_coworkers_mailbox(context):
     active_call_view.touch_default_forward_account_name()
 
 
+@step("[active_call] I select the Favorites tab")
+def activecall__i_select_the_favorites_tab(context):
+    pass
+
+
 @step('[active_call] I tap "Transfer to VM"')
 @fake
 def activecall__i_tap_transfer_to_vm(context):
@@ -85,6 +90,15 @@ def activecall__i_touch_the_end_call_button(context):
     sleep(5)
     active_call_view.touch_end_call_button()
 
+
+@step("[active_call] my Coworker contacts are listed on the contacts screen")
+def activecall__my_coworker_contacts_are_listed_on_the_contacts_screen(context):
+    pass
+
+
+@step("[active_call] my favorite Coworker contacts are listed")
+def activecall__my_favorite_coworker_contacts_are_listed(context):
+    pass
 
 @step("[active_call] the buttons are {w} pixels wide and {h} pixels high")
 def activecall__the_buttons_are_w_pixels_wide_and_h_pixels_high(context, w, h):
@@ -106,6 +120,11 @@ def activecall__the_caller_leaves_a_message_and_hangs_up(context):
     assert vmid_count_incremented(cfg.site['DefaultForwardAccount'], 'new', context.vmid_count)
 
 
+@step("[active_call] the Coworkers tab is selected")
+def activecall__the_coworkers_tab_is_selected(context):
+    pass
+
+
 @step("[active_call] the {expect_icon} icon is displayed")
 def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
     white_counts = {'speaker': 714, 'handset': 580, 'headset': 618}
@@ -121,6 +140,11 @@ def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
             break
     else:
         assert False, "Expected %s icon, got unknown (white pixel count = %d" % (expect_icon, actual_count)
+
+
+@step("[active_call] the in-call contacts screen appears")
+def activecall__the_incall_contacts_screen_appears(context):
+    pass
 
 
 @step("[active_call] the Record button is gray")

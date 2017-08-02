@@ -50,7 +50,7 @@ def network__i_enter_id_as_a_vlan_identifier(context, id):
 
 @step("[network] I enter {priority} as a VLAN priority")
 @fake
-def network__i_enter_id_as_a_vlan_priority(context, priority):
+def network__i_enter_priority_as_a_vlan_priority(context, priority):
     network_view.find_named_element('VlanPriority').clear()
     network_view.send_keycode_back()
     for digit in [int(c) for c in priority]:
