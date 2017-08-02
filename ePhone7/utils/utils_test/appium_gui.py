@@ -20,6 +20,7 @@ from ePhone7.utils.versions import force_aosp_downgrade, remove_apk_upgrades
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 from selenium.common.exceptions import NoSuchElementException
 import threading
+import json
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -169,6 +170,12 @@ class TestGui(Frame):
     worker_thread = None
     parent_element = None
     use_parent = None
+    locators = {"Coworkers": {"by": "uia_text", "use_parent": 0}}
+    try:
+        with open('tmp/appium_gui_locators.json', 'r') as f:
+            locators = json.loads(f.read())
+    except:
+        pass
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
@@ -250,6 +257,7 @@ class TestGui(Frame):
 
     def create_softphone_frame(self):
         softphone_frame = Frame(self, bg='brown')
+        softphone_frame.columnconfigure(0, weight=1)
         softphone_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
         softphone_frame.row = self.top_frame_row
         self.top_frame_row += 1
@@ -286,8 +294,10 @@ class TestGui(Frame):
                                                       variable=self.use_parent, state=DISABLED)
         btn_frame.find_frame.use_parent.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
-        btn_frame.find_frame.value = Entry(btn_frame.find_frame, width=60,
-                                           textvariable=self.find_value_var)
+        btn_frame.find_frame.value = Combobox(btn_frame.find_frame, width=60,
+                                              values=self.locators.keys(), textvariable=self.find_value_var)
+        btn_frame.find_frame.value.bind('<<ComboboxSelected>>', self.update_find_frame)
+        btn_frame.find_frame.value.bind("<FocusIn>", self.defocus)
         btn_frame.find_frame.hsb = Scrollbar(btn_frame.find_frame, orient=HORIZONTAL,
                                              command=btn_frame.find_frame.value.xview)
         btn_frame.find_frame.value["xscrollcommand"] = btn_frame.find_frame.hsb.set
@@ -309,6 +319,17 @@ class TestGui(Frame):
         btn.grid(row=0, column=0, padx=2, pady=2, sticky='w')
         btn_frame.key_code_frame.grid_columnconfigure(1, weight=1)
         btn_frame.key_code_frame.value.grid(row=0, column=1, padx=2, pady=2, sticky='w')
+        self.tap_y_var = StringVar()
+        y_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.tap_y_var)
+        self.appium_btns.append(y_entry)
+        self.tap_x_var = StringVar()
+        x_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.tap_x_var)
+        self.appium_btns.append(x_entry)
+        btn = Button(btn_frame.key_code_frame, text="tap:", command=self.tap_xy, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=2, padx=2, pady=2, sticky='w')
+        x_entry.grid(row=0, column=3, padx=2, pady=2, sticky='w')
+        y_entry.grid(row=0, column=4, padx=2, pady=2, sticky='w')
         btn_frame.key_code_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
         self.attr_frame = Frame(btn_frame, bg='tan')
@@ -337,6 +358,11 @@ class TestGui(Frame):
         btn_frame.row = self.top_frame_row
         self.top_frame_row += 1
         return btn_frame
+
+    def update_find_frame(self, event):
+        if self.find_value_var.get() in self.locators:
+            self.find_by_var.set(self.locators[self.find_value_var.get()]["by"])
+            self.use_parent.set(self.locators[self.find_value_var.get()]["use_parent"])
 
     def create_menus(self, parent):
         menu = MyMenu(parent)
@@ -412,6 +438,11 @@ class TestGui(Frame):
     def close_appium_and_quit(self):
         if self.appium_is_open:
             self.close_appium()
+        try:
+            with open('tmp/appium_gui_locators.json', 'w') as f:
+                f.write(json.dumps(self.locators, sort_keys=True, indent=4, separators=(',', ': ')))
+        except:
+            pass
         root.destroy()
 
     def send_keycode(self):
@@ -419,6 +450,17 @@ class TestGui(Frame):
         keycode = keycodes[keycode_name]
         print "sending keycode %s (value %d)" % (keycode_name, keycode)
         base_view.driver.keyevent(keycode)
+
+    def tap_xy(self):
+        try:
+            x = int(self.tap_x_var.get())
+            y = int(self.tap_y_var.get())
+        except (ValueError, TypeError) as e:
+            print "Can't execute tap with x='%s', y='%s'" % (self.tap_x_var.get(), self.tap_y_var.get())
+        else:
+            print "Executing tap([(%d, %d)])..." % (x, y),
+            base_view.tap([(x, y)])
+            print "Done"
 
     def update_from_parent(self, event):
         find_by = self.find_by_var.get()
@@ -433,6 +475,10 @@ class TestGui(Frame):
         print "finding elements...",
         by = self.find_by_var.get()
         value = self.find_value_var.get()
+        use_parent = self.use_parent.get()
+        if value not in self.locators.keys():
+            self.locators[value] = {"by": by, "use_parent": use_parent}
+            self.btn_frame.find_frame.value.configure(value=self.locators.keys())
         if by == 'zpath':
             value = expand_zpath(value)
             by = 'xpath'
