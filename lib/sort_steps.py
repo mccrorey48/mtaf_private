@@ -31,11 +31,13 @@ def sort(filename):
                     step_defs[step_key] = [line]
                 current_key = step_key
             else:
+                if line.strip() == '@fake':
+                    continue
                 if current_key is None:
                     prefix_lines.append(line)
                 elif def_re.match(line):
                     arglist = def_re.match(line).group(2)
-                    step_defs[current_key].append('def ' + current_key + arglist + ':\n')
+                    step_defs[current_key].append('@fake\ndef ' + current_key + arglist + ':\n')
                 elif len(line.strip()):
                     step_defs[current_key].append(line)
     with open(filename, 'w') as f:
