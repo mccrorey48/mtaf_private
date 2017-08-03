@@ -282,6 +282,7 @@ class BaseView(SeleniumActions):
                 current_activity = self.driver.current_activity
                 log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
+                    self.send_keycode_back()
                     self.send_keycode_home()
                     break
                 elif current_activity == '.util.crashreporting.EPhoneCrashReportDialog':
