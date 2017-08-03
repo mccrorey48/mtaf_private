@@ -83,6 +83,7 @@ class AccountFrame(Frame):
         Frame.__init__(self, parent, bg='tan', *args, **kwargs)
         self.registered_var = IntVar()
         self.registered_var.set(0)
+        self.old_reg_status = None
         self.status_var = StringVar()
         self.status_var.set('None')
         self.remote_var = StringVar()
@@ -112,12 +113,16 @@ class AccountFrame(Frame):
         self.remote.grid(row=0, column=5, padx=5, pady=2, ipady=3, sticky='ew')
         self.columnconfigure(5, weight=1)
 
-        self.softphone = get_softphone(user_name)
+        self.softphone = get_softphone(user_name, reg_wait_tmo=0)
         self.softphone.set_incoming_response(180)
         self.after(100, self.check_status)
 
     def check_status(self):
-        self.registered_var.set(self.softphone.account_info.account.info().reg_status == 200)
+        info = self.softphone.account_info.account.info()
+        if self.old_reg_status != info.reg_status:
+            self.registered_var.set(info.reg_status == 200)
+            print "%s reg status changed from %s to %s" % (info.uri, self.old_reg_status, info.reg_status)
+            self.old_reg_status = info.reg_status
         old_call_status = self.status_var.get()
         new_call_status = self.softphone.account_info.call_status
         remote_uri = self.softphone.account_info.remote_uri
@@ -404,8 +409,6 @@ class TestGui(Frame):
         self.appium_commands.append(Command("Skip Walkthrough", lambda: self.do_cmd(self.skip_walkthrough)))
         self.appium_commands.append(Command("Startup", lambda: self.do_cmd(self.startup)))
         self.appium_commands.append(Command("Toggle Multi-Edit", lambda: self.do_cmd(self.toggle_multi_edit)))
-        self.appium_commands.append(
-            Command("Force AOSP Downgrade to 2.3.12", lambda: self.do_cmd(self.force_aosp_downgrade)))
         self.other_commands.append(Command("Enable USB", lambda: self.do_cmd(self.usb_enable)))
         self.other_commands.append(
             Command("Get Alpha Current Versions", lambda: self.do_cmd(self.get_alpha_current_versions)))
@@ -416,6 +419,8 @@ class TestGui(Frame):
             Command("Get Production Current Versions", lambda: self.do_cmd(self.get_prod_current_versions)))
         self.other_commands.append(Command("Reboot", lambda: self.do_cmd(self.reboot)))
         self.other_commands.append(Command("Remove APK Upgrades", lambda: self.do_cmd(remove_apk_upgrades)))
+        self.other_commands.append(
+            Command("Force AOSP Downgrade to 2.3.12", lambda: self.do_cmd(self.force_aosp_downgrade)))
 
     def do_cmd(self, cmd):
         for btn in self.appium_btns:
@@ -748,21 +753,9 @@ class TestGui(Frame):
         print "Done"
 
     def force_aosp_downgrade(self):
-        self.close_appium()
         print "Forcing AOSP Downgrade...",
         force_aosp_downgrade('2.3.12')
         print "Done"
-        self.open_appium()
-        self.get_focused_app()
-        print "Calling base_view.startup..."
-        try:
-            base_view.startup()
-        except Ux:
-            self.get_xml()
-            print "Ux raised, getting xml"
-            print "current activity = " + base_view.driver.current_activity
-        else:
-            print "Done"
 
     @staticmethod
     def get_xml():
