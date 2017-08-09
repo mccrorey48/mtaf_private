@@ -1,0 +1,5 @@
+server,name,domain,password,role
+vm,2202,test2.test-eng.com,2202,premier
+vm,2203,test2.test-eng.com,2203,premier
+vm,2204,test2.test-eng.com,2204,premier
+vm,2205,test2.test-eng.com,2205,premier
