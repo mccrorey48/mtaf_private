@@ -11,7 +11,8 @@ var accessToken = "notARealKey";
 var lastUpdate = 0;
 
 function startWebsocket(accessToken) {
-  socket = io.connect('https://aws.esiapi.io', {
+  //socket = io.connect('http://aws.esiapi.io', {
+  socket = io.connect('http://10.3.1.5', {
     query: { auth: accessToken },
     path: '/drs/v2/socket.io/',
     reconnect: true,
@@ -40,20 +41,20 @@ function startWebsocket(accessToken) {
     socket.emit('join_room', options);
   });
 
-  socket.on('callhistory-test2.test-eng.com-2202', function(data) {
-    console.log('callhistory-test2.test-eng.com-2202', data);
+  socket.on('callhistory-SVAutoCustomer-1000', function(data) {
+    console.log('callhistory-SVAutoCustomer-1000', data);
   });
 
-  socket.on('presence-test2.test-eng.com', function(data) {
-    console.log('presence-test2.test-eng.com', data);
+  socket.on('presence-SVAutoCustomer', function(data) {
+    console.log('presence-SVAutoCustomer', data);
   });
 
-  socket.on('corpCon-test2.test-eng.com', function(data) {
-    console.log('corpCon-test2.test-eng.com', data);
+  socket.on('corpCon-SVAutoCustomer', function(data) {
+    console.log('corpCon-SVAutoCustomer', data);
   });
 
-  socket.on('google-test2.test-eng.com-2202', function(data) {
-    console.log('google-test2.test-eng.com-2202', data);
+  socket.on('google-SVAutoCustomer-1000', function(data) {
+    console.log('google-SVAutoCustomer-1000', data);
   });
 
   socket.on('disconnect', function() {
@@ -69,7 +70,7 @@ function startWebsocket(accessToken) {
 
 function go() {
   var options = {
-    hostname: 'pro.esiapi.io',
+    hostname: '10.3.1.5',
     port: 80,
     path: '/aaa/v2/login',
     headers: {
@@ -96,7 +97,7 @@ function go() {
   req.on('error', function(e){
     console.log(e)
   });
-  req.write(JSON.stringify({username: "2202@test2.test-eng.com", password: "2202"}));
+  req.write(JSON.stringify({username: "1000@SVAutoCustomer", password: "1000"}));
   req.end();
   //   .expect('Content-Type', /json/)
   //   .expect(function(res) {
