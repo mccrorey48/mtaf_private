@@ -5,30 +5,32 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 var io = require('socket.io-client');
 var http = require('http');
 
-var socket;
 
 var api_url = 'aws.esiapi.io';
 var drs_path = '/drs/v2/socket.io';
 var aaa_path = '/aaa/v2/login';
 var lastUpdate = 0;
 var users = [
-  { name: "2202", domain:"test2.test-eng.com", password: "2202"},
-  { name: "2203", domain:"test2.test-eng.com", password: "2202"},
-  { name: "2204", domain:"test2.test-eng.com", password: "2202"},
-  { name: "2205", domain:"test2.test-eng.com", password: "2202"}
+  // { name: "2202", domain:"test2.test-eng.com", password: "2202"},
+  // { name: "2203", domain:"test2.test-eng.com", password: "2203"},
+  { name: "2204", domain:"test2.test-eng.com", password: "2204"},
+  { name: "2205", domain:"test2.test-eng.com", password: "2205"}
   ];
 
 function startWebsocket(accessToken, user) {
+  var socket;
+  console.log("starting websocket for user " + user.name + '@' + user.domain);
   socket = io.connect('http://' + api_url, {
     query: { auth: accessToken },
     path: drs_path,
     reconnect: true,
     'reconnection limit': 3000,
+    // 'timeout': 2000,
+    transports: ['websocket'],
     'max reconnection attempts': Infinity
   });
 
   var startup = true;
-  var user_id_text = user.domain + '-' + user.name;
   socket.on('connect', function() {
     if (startup) {
       startup = false;
@@ -49,8 +51,8 @@ function startWebsocket(accessToken, user) {
     socket.emit('join_room', options);
   });
 
-  socket.on('callhistory-' + user_id_text, function(data) {
-    console.log('callhistory-'+ user_id_text, data);
+  socket.on('callhistory-' + user.domain + '-' + user.name, function(data) {
+    console.log('callhistory-'+ user.domain + '-' + user.name, data);
   });
 
   socket.on('presence-' + user.domain, function(data) {
@@ -58,11 +60,11 @@ function startWebsocket(accessToken, user) {
   });
 
   socket.on('corpCon-' + user.domain, function(data) {
-    console.log('corpCon-' + user.domain, data);
+    console.log('corpCon-' + user.domain + '-' + user.name, data);
   });
 
-  socket.on('google-' + user_id_text, function(data) {
-    console.log('google-' + user_id_text, data);
+  socket.on('google-' + user.domain + '-' + user.name, function(data) {
+    console.log('google-' + user.domain + '-' + user.name, data);
   });
 
   socket.on('disconnect', function() {
@@ -74,6 +76,10 @@ function startWebsocket(accessToken, user) {
   socket.on('error', function(err) {
     console.log('error', err);
   });
+
+  // socket.on('connect_timeout', function(err) {
+  //   console.log('connect timeout', err);
+  // });
 }
 
 function go() {
