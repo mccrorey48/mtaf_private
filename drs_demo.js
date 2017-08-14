@@ -5,18 +5,28 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 var io = require('socket.io-client');
 var http = require('http');
 
-var socket;
 
-var accessToken = "notARealKey";
+var api_url = 'aws.esiapi.io';
+var drs_path = '/drs/v2/socket.io';
+var aaa_path = '/aaa/v2/login';
 var lastUpdate = 0;
+var users = [
+  // { name: "2202", domain:"test2.test-eng.com", password: "2202"},
+  // { name: "2203", domain:"test2.test-eng.com", password: "2203"},
+  { name: "2204", domain:"test2.test-eng.com", password: "2204"},
+  { name: "2205", domain:"test2.test-eng.com", password: "2205"}
+  ];
 
-function startWebsocket(accessToken) {
-  socket = io.connect('http://aws.esiapi.io', {
-  // socket = io.connect('http://10.3.1.5', {
+function startWebsocket(accessToken, user) {
+  var socket;
+  console.log("starting websocket for user " + user.name + '@' + user.domain);
+  socket = io.connect('http://' + api_url, {
     query: { auth: accessToken },
-    path: '/drs/v2/socket.io/',
+    path: drs_path,
     reconnect: true,
     'reconnection limit': 3000,
+    // 'timeout': 2000,
+    transports: ['websocket'],
     'max reconnection attempts': Infinity
   });
 
@@ -41,20 +51,20 @@ function startWebsocket(accessToken) {
     socket.emit('join_room', options);
   });
 
-  socket.on('callhistory-test2.test-eng.com-2202', function(data) {
-    console.log('callhistory-test2.test-eng.com-2202', data);
+  socket.on('callhistory-' + user.domain + '-' + user.name, function(data) {
+    console.log('callhistory-'+ user.domain + '-' + user.name, data);
   });
 
-  socket.on('presence-test2.test-eng.com', function(data) {
-    console.log('presence-test2.test-eng.com', data);
+  socket.on('presence-' + user.domain, function(data) {
+    console.log('presence-' + user.domain, data);
   });
 
-  socket.on('corpCon-test2.test-eng.com', function(data) {
-    console.log('corpCon-test2.test-eng.com', data);
+  socket.on('corpCon-' + user.domain, function(data) {
+    console.log('corpCon-' + user.domain + '-' + user.name, data);
   });
 
-  socket.on('google-test2.test-eng.com-2202', function(data) {
-    console.log('google-test2.test-eng.com-2202', data);
+  socket.on('google-' + user.domain + '-' + user.name, function(data) {
+    console.log('google-' + user.domain + '-' + user.name, data);
   });
 
   socket.on('disconnect', function() {
@@ -66,45 +76,54 @@ function startWebsocket(accessToken) {
   socket.on('error', function(err) {
     console.log('error', err);
   });
+
+  // socket.on('connect_timeout', function(err) {
+  //   console.log('connect timeout', err);
+  // });
 }
 
 function go() {
   var options = {
-    hostname: 'aws.esiapi.io',
+    hostname: api_url,
     port: 80,
     path: '/aaa/v2/login',
+    // path: aaa_path,
     headers: {
       'Content-type': 'application/json'
     },
     method: 'POST',
   };
 
-  function callback(res) {
-    console.log('Status: ' + res.statusCode);
-    console.log('Headers: ' + JSON.stringify(res.headers));
-    res.setEncoding('utf8');
-    res.on('data', function(body){
-      console.log("body = " + body);
-      var bodyObject = JSON.parse(body);
-      var accessToken = bodyObject.accessToken;
-      console.log("accessToken = " + accessToken);
-      startWebsocket(accessToken);
-    })
-
+  function get_callback(user) {
+    return function(res){
+      console.log('Status: ' + res.statusCode);
+      console.log('Headers: ' + JSON.stringify(res.headers));
+      res.setEncoding('utf8');
+      res.on('data', function(body){
+        console.log("body = " + body);
+        var bodyObject = JSON.parse(body);
+        var accessToken = bodyObject.accessToken;
+        console.log("accessToken = " + accessToken);
+        startWebsocket(accessToken, user);
+      })
+    }
   }
 
-  var req = http.request(options, callback);
-  req.on('error', function(e){
-    console.log(e)
+  // var req = http.request(options, get_callback(user));
+  // req.on('error', function(e){
+  //   console.log(e)
+  // });
+  // req.write(JSON.stringify({username: "2202@test2.test-eng.com", password: "2202"}));
+  // req.end();
+  users.forEach(function(user){
+    var req = http.request(options, get_callback(user));
+    req.on('error', function(e){
+      console.log(e)
+    });
+    req.write(JSON.stringify({username: user.name + '@' + user.domain, password: user.password}));
+    req.end(0);
   });
-  req.write(JSON.stringify({username: "2202@test2.test-eng.com", password: "2202"}));
-  req.end();
-  //   .expect('Content-Type', /json/)
-  //   .expect(function(res) {
-  //     console.log(res)
-  //   })
-  // .expect(200, function);
-  return "hello, y'all";
 }
 
-console.log(go());
+go();
+
