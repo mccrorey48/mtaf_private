@@ -7,7 +7,7 @@ var http = require('http');
 
 var socket;
 
-var api_url = 'http://aws.esiapi.io';
+var api_url = 'aws.esiapi.io';
 var drs_path = '/drs/v2/socket.io';
 var aaa_path = '/aaa/v2/login';
 var lastUpdate = 0;
@@ -19,7 +19,7 @@ var users = [
   ];
 
 function startWebsocket(accessToken, user) {
-  socket = io.connect(api_url, {
+  socket = io.connect('http://' + api_url, {
     query: { auth: accessToken },
     path: drs_path,
     reconnect: true,
@@ -80,7 +80,8 @@ function go() {
   var options = {
     hostname: api_url,
     port: 80,
-    path: aaa_path,
+    path: '/aaa/v2/login',
+    // path: aaa_path,
     headers: {
       'Content-type': 'application/json'
     },
@@ -102,6 +103,12 @@ function go() {
     }
   }
 
+  // var req = http.request(options, get_callback(user));
+  // req.on('error', function(e){
+  //   console.log(e)
+  // });
+  // req.write(JSON.stringify({username: "2202@test2.test-eng.com", password: "2202"}));
+  // req.end();
   users.forEach(function(user){
     var req = http.request(options, get_callback(user));
     req.on('error', function(e){
@@ -113,4 +120,4 @@ function go() {
 }
 
 go();
-console.log("started a websocket");
+
