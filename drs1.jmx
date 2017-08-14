@@ -361,7 +361,7 @@ for (s:users.keySet()) {
           <boolProp name="ForeachController.useSeparator">true</boolProp>
         </ForeachController>
         <hashTree>
-          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="false">
             <stringProp name="cacheKey"></stringProp>
             <stringProp name="filename">/home/mmccrorey/drs/yeast.js</stringProp>
             <stringProp name="parameters">vars</stringProp>
@@ -378,7 +378,7 @@ for (s:users.keySet()) {
             <stringProp name="scriptLanguage">javascript</stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="false"/>
           <hashTree>
             <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
               <collectionProp name="HeaderManager.headers">
@@ -462,7 +462,9 @@ for (s:users.keySet()) {
             </RegexExtractor>
             <hashTree/>
           </hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="false"/>
+          <hashTree/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="false"/>
           <hashTree>
             <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
               <collectionProp name="HeaderManager.headers">
@@ -527,11 +529,18 @@ for (s:users.keySet()) {
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               <stringProp name="HTTPSampler.connect_timeout">2000</stringProp>
-              <stringProp name="HTTPSampler.response_timeout">5000</stringProp>
+              <stringProp name="HTTPSampler.response_timeout">1</stringProp>
             </HTTPSamplerProxy>
             <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings"/>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">true</boolProp>
+              <intProp name="Assertion.test_type">8</intProp>
+            </ResponseAssertion>
+            <hashTree/>
           </hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="false"/>
           <hashTree>
             <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
               <collectionProp name="HeaderManager.headers">
@@ -605,23 +614,32 @@ for (s:users.keySet()) {
               <stringProp name="HTTPSampler.response_timeout">5000</stringProp>
             </HTTPSamplerProxy>
             <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="48626">101</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">8</intProp>
+            </ResponseAssertion>
+            <hashTree/>
           </hashTree>
           <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
           <hashTree>
-            <JMeter.plugins.functional.samplers.websocket.WebSocketSampler guiclass="JMeter.plugins.functional.samplers.websocket.WebSocketSamplerGui" testclass="JMeter.plugins.functional.samplers.websocket.WebSocketSampler" testname="WebSocket Sampler" enabled="false">
+            <JMeter.plugins.functional.samplers.websocket.WebSocketSampler guiclass="JMeter.plugins.functional.samplers.websocket.WebSocketSamplerGui" testclass="JMeter.plugins.functional.samplers.websocket.WebSocketSampler" testname="WebSocket Sampler" enabled="true">
               <stringProp name="serverAddress">aws.esiapi.io</stringProp>
               <stringProp name="serverPort">80</stringProp>
               <stringProp name="implementation">RFC6455 (v13)</stringProp>
               <stringProp name="protocol">ws</stringProp>
               <stringProp name="contextPath">/drs/v2/socket.io/</stringProp>
               <stringProp name="contentEncoding">UTF-8</stringProp>
-              <stringProp name="requestPayload">&apos;join_room&apos;,{type:&apos;corpCon&apos;,lastUpdate:0,accessToken:${selectAccessToken}}</stringProp>
+              <stringProp name="requestPayload">42[&quot;join_room&quot;,{&quot;type&quot;:&quot;corpCon&quot;,&quot;lastUpdate&quot;:0,&quot;accessToken&quot;:&quot;${selectAccessToken}&quot;}]</stringProp>
               <stringProp name="connectionTimeout">5000</stringProp>
               <stringProp name="responseTimeout">20000</stringProp>
               <boolProp name="ignoreSslErrors">false</boolProp>
-              <boolProp name="streamingConnection">false</boolProp>
+              <boolProp name="streamingConnection">true</boolProp>
               <stringProp name="connectionId"></stringProp>
-              <stringProp name="responsePattern">\r\n</stringProp>
+              <stringProp name="responsePattern"></stringProp>
               <stringProp name="closeConncectionPattern"></stringProp>
               <stringProp name="proxyAddress"></stringProp>
               <stringProp name="proxyPassword"></stringProp>
@@ -646,35 +664,21 @@ for (s:users.keySet()) {
                   </elementProp>
                   <elementProp name="transport" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">polling</stringProp>
+                    <stringProp name="Argument.value">websocket</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">transport</stringProp>
-                  </elementProp>
-                  <elementProp name="t" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${timestamp}</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">t</stringProp>
-                  </elementProp>
-                  <elementProp name="b64" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">1</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">b64</stringProp>
                   </elementProp>
                 </collectionProp>
               </elementProp>
             </JMeter.plugins.functional.samplers.websocket.WebSocketSampler>
             <hashTree/>
-            <eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler" testname="WebSocket request-response Sampler" enabled="true">
+            <eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler" testname="WebSocket request-response Sampler" enabled="false">
               <boolProp name="createNewConnection">true</boolProp>
               <boolProp name="TLS">false</boolProp>
               <stringProp name="server">aws.esiapi.io</stringProp>
               <stringProp name="port">80</stringProp>
-              <stringProp name="path">/drs/v2/socket.io/</stringProp>
+              <stringProp name="path">/drs/v2/socket.io/?auth=${selectAccessToken}&amp;EIO=3&amp;transport=websocket</stringProp>
               <boolProp name="binaryPayload">false</boolProp>
               <stringProp name="requestData">98:42[&quot;join_room&quot;,{&quot;type:&apos;corpCon&apos;,lastUpdate:0,accessToken:${selectAccessToken}}]</stringProp>
             </eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler>
