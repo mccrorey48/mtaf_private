@@ -7,20 +7,28 @@ var http = require('http');
 
 var socket;
 
-var accessToken = "notARealKey";
+var api_url = 'http://aws.esiapi.io';
+var drs_path = '/drs/v2/socket.io';
+var aaa_path = '/aaa/v2/login';
 var lastUpdate = 0;
+var users = [
+  { name: "2202", domain:"test2.test-eng.com", password: "2202"},
+  { name: "2203", domain:"test2.test-eng.com", password: "2202"},
+  { name: "2204", domain:"test2.test-eng.com", password: "2202"},
+  { name: "2205", domain:"test2.test-eng.com", password: "2202"}
+  ];
 
-function startWebsocket(accessToken) {
-  //socket = io.connect('http://aws.esiapi.io', {
-  socket = io.connect('http://10.3.1.5', {
+function startWebsocket(accessToken, user) {
+  socket = io.connect(api_url, {
     query: { auth: accessToken },
-    path: '/drs/v2/socket.io/',
+    path: drs_path,
     reconnect: true,
     'reconnection limit': 3000,
     'max reconnection attempts': Infinity
   });
 
   var startup = true;
+  var user_id_text = user.domain + '-' + user.name;
   socket.on('connect', function() {
     if (startup) {
       startup = false;
@@ -41,20 +49,20 @@ function startWebsocket(accessToken) {
     socket.emit('join_room', options);
   });
 
-  socket.on('callhistory-SVAutoCustomer-1000', function(data) {
-    console.log('callhistory-SVAutoCustomer-1000', data);
+  socket.on('callhistory-' + user_id_text, function(data) {
+    console.log('callhistory-'+ user_id_text, data);
   });
 
-  socket.on('presence-SVAutoCustomer', function(data) {
-    console.log('presence-SVAutoCustomer', data);
+  socket.on('presence-' + user.domain, function(data) {
+    console.log('presence-' + user.domain, data);
   });
 
-  socket.on('corpCon-SVAutoCustomer', function(data) {
-    console.log('corpCon-SVAutoCustomer', data);
+  socket.on('corpCon-' + user.domain, function(data) {
+    console.log('corpCon-' + user.domain, data);
   });
 
-  socket.on('google-SVAutoCustomer-1000', function(data) {
-    console.log('google-SVAutoCustomer-1000', data);
+  socket.on('google-' + user_id_text, function(data) {
+    console.log('google-' + user_id_text, data);
   });
 
   socket.on('disconnect', function() {
@@ -70,41 +78,39 @@ function startWebsocket(accessToken) {
 
 function go() {
   var options = {
-    hostname: '10.3.1.5',
+    hostname: api_url,
     port: 80,
-    path: '/aaa/v2/login',
+    path: aaa_path,
     headers: {
       'Content-type': 'application/json'
     },
     method: 'POST',
   };
 
-  function callback(res) {
-    console.log('Status: ' + res.statusCode);
-    console.log('Headers: ' + JSON.stringify(res.headers));
-    res.setEncoding('utf8');
-    res.on('data', function(body){
-      console.log("body = " + body);
-      var bodyObject = JSON.parse(body);
-      var accessToken = bodyObject.accessToken;
-      console.log("accessToken = " + accessToken);
-      startWebsocket(accessToken);
-    })
-
+  function get_callback(user) {
+    return function(res){
+      console.log('Status: ' + res.statusCode);
+      console.log('Headers: ' + JSON.stringify(res.headers));
+      res.setEncoding('utf8');
+      res.on('data', function(body){
+        console.log("body = " + body);
+        var bodyObject = JSON.parse(body);
+        var accessToken = bodyObject.accessToken;
+        console.log("accessToken = " + accessToken);
+        startWebsocket(accessToken, user);
+      })
+    }
   }
 
-  var req = http.request(options, callback);
-  req.on('error', function(e){
-    console.log(e)
+  users.forEach(function(user){
+    var req = http.request(options, get_callback(user));
+    req.on('error', function(e){
+      console.log(e)
+    });
+    req.write(JSON.stringify({username: user.name + '@' + user.domain, password: user.password}));
+    req.end(0);
   });
-  req.write(JSON.stringify({username: "1000@SVAutoCustomer", password: "1000"}));
-  req.end();
-  //   .expect('Content-Type', /json/)
-  //   .expect(function(res) {
-  //     console.log(res)
-  //   })
-  // .expect(200, function);
-  return "hello, y'all";
 }
 
-console.log(go());
+go();
+console.log("started a websocket");
