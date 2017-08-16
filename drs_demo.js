@@ -6,16 +6,34 @@ var io = require('socket.io-client');
 var http = require('http');
 
 
-var api_url = 'aws.esiapi.io';
 var drs_path = '/drs/v2/socket.io';
 var aaa_path = '/aaa/v2/login';
 var lastUpdate = 0;
-var users = [
-  // { name: "2202", domain:"test2.test-eng.com", password: "2202"},
-  // { name: "2203", domain:"test2.test-eng.com", password: "2203"},
-  { name: "2204", domain:"test2.test-eng.com", password: "2204"},
-  { name: "2205", domain:"test2.test-eng.com", password: "2205"}
+var users;
+var api_url;
+var lab = false;
+var option_type = 'corpCon';
+// var option_type = 'presence';
+// var option_type = 'callhistory';
+// var option_type = 'google';
+
+if (lab) {
+  api_url = '10.3.1.5';
+  users = [
+    { name: "1000", domain:"SVAutoCustomer", password: "1000"},
+    { name: "1001", domain:"SVAutoCustomer", password: "1001"},
+    { name: "1002", domain:"SVAutoCustomer", password: "1002"},
+    { name: "1003", domain:"SVAutoCustomer", password: "1003"}
   ];
+} else {
+  api_url = 'pro.esiapi.io';
+  users = [
+    { name: "2202", domain:"test2.test-eng.com", password: "2202"},
+    { name: "2203", domain:"test2.test-eng.com", password: "2203"},
+    { name: "2204", domain:"test2.test-eng.com", password: "2204"},
+    { name: "2205", domain:"test2.test-eng.com", password: "2205"}
+  ];
+}
 
 function startWebsocket(accessToken, user) {
   var socket;
@@ -40,10 +58,7 @@ function startWebsocket(accessToken, user) {
     }
 
     var options = {
-      type: 'corpCon',
-      //type: 'presence',
-      // type: 'callhistory',
-      //type: 'google',
+      type: option_type,
       lastUpdate: lastUpdate,
       accessToken: accessToken
     };

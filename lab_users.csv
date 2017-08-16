@@ -1,2 +1,5 @@
 server,name,domain,password,role
 ,1000,SVAutoCustomer,1000,premier
+,1001,SVAutoCustomer,1001,premier
+,1002,SVAutoCustomer,1002,premier
+,1003,SVAutoCustomer,1003,premier

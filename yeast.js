@@ -1,9 +1,4 @@
-var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
-  , length = 64
-  , map = {}
-  , seed = 0
-  , i = 0
-  , prev;
+var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('') , length = 64 , map = {} , seed = 0 , i = 0 , prev;
 
 /**
  * Return a string representing the specified number.
@@ -35,4 +30,7 @@ function yeast() {
 //
 for (; i < length; i++) map[alphabet[i]] = i;
 
-vars.put("timestamp", yeast());
+// console.log("timestamp = " + yeast());
+timestamp = yeast();
+log.warn("timestamp = ", timestamp);
+vars.put("timestamp", timestamp);
