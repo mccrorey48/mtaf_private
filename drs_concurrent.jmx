@@ -283,7 +283,7 @@ vars.put(&quot;loopcount&quot;, loopcount);</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;username&quot;:&quot;${name}@${domain}&quot;,&quot;password&quot;:&quot;${password}&quot;}</stringProp>
+                <stringProp name="Argument.value">{&quot;username&quot;:&quot;${username}&quot;,&quot;password&quot;:&quot;${password}&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
               </elementProp>
@@ -343,13 +343,12 @@ props.put(&quot;refreshTokens&quot;, refreshTokens);</stringProp>
         <hashTree/>
         <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Create Token Properties" enabled="true">
           <stringProp name="filename"></stringProp>
-          <stringProp name="parameters"></stringProp>
+          <stringProp name="parameters">__threadNum</stringProp>
           <boolProp name="resetInterpreter">false</boolProp>
-          <stringProp name="script">threadNum = vars.get(&quot;__threadNum&quot;);
-accessToken = vars.get(&quot;accessToken&quot;);
-props.put(&quot;accessToken&quot;, accessToken + threadNum());
+          <stringProp name="script">accessToken = vars.get(&quot;accessToken&quot;);
+props.put(&quot;accessToken&quot;, accessToken + __threadNum);
 refreshToken = vars.get(&quot;refreshToken&quot;);
-props.put(&quot;refreshToken&quot;, refreshToken + threadNum());</stringProp>
+props.put(&quot;refreshToken&quot;, refreshToken + __threadNum);</stringProp>
         </BeanShellPostProcessor>
         <hashTree/>
         <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Oauth Debug Sampler" enabled="true">
