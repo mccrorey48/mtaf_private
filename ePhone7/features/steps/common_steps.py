@@ -10,211 +10,253 @@ from lib.wrappers import fake
 
 
 @step("A call between two other accounts has been parked by the called account")
+@fake
 def a_call_between_two_other_accounts_has_been_parked_by_the_called_account(context):
     pass
 
 
 @step('A "Call History" window appears')
+@fake
 def a_call_history_window_appears(context):
     pass
 
 
 @step('A "Clear All User Data" confirmation dialog appears')
+@fake
 def a_clear_all_user_data_confirmation_dialog_appears(context):
     pass
 
 
 @step("A confirmation dialog appears")
+@fake
 def a_confirmation_dialog_appears(context):
     pass
 
 
 @step('A "Contact Management" window appears')
+@fake
 def a_contact_management_window_appears(context):
     pass
 
 
 @step('A "Dialpad Screen" window appears')
+@fake
 def a_dialpad_screen_window_appears(context):
     pass
 
 
 @step('A "Factory Reset" confirmation dialog appears')
+@fake
 def a_factory_reset_confirmation_dialog_appears(context):
     pass
 
 
 @step("A Google dialog appears with a place to enter my email address")
+@fake
 def a_google_dialog_appears_with_a_place_to_enter_my_email_address(context):
     pass
 
 
 @step("A Google dialog appears with a place to enter my password")
+@fake
 def a_google_dialog_appears_with_a_place_to_enter_my_password(context):
     pass
 
 
 @step("A menu appears with time zone choices")
+@fake
 def a_menu_appears_with_time_zone_choices(context):
     pass
 
 
 @step('A menu with a "Clear App Data/Cache" option appears')
+@fake
 def a_menu_with_a_clear_app_datacache_option_appears(context):
     pass
 
 
 @step('A menu with a "Factory Reset" option appears')
+@fake
 def a_menu_with_a_factory_reset_option_appears(context):
     pass
 
 
 @step("A message indicates that calls are being forwarded to the contact")
+@fake
 def a_message_indicates_that_calls_are_being_forwarded_to_the_contact(context):
     pass
 
 
 @step("A message indicates that calls are being forwarded to voicemail")
+@fake
 def a_message_indicates_that_calls_are_being_forwarded_to_voicemail(context):
     pass
 
 
 @step('A "Select Ringtone" window appears with options for various ringtones')
+@fake
 def a_select_ringtone_window_appears_with_options_for_various_ringtones(context):
     pass
 
 
 @step('A "Sign Out of Google Account" dialog appears')
+@fake
 def a_sign_out_of_google_account_dialog_appears(context):
     pass
 
 
 @step('A "Sleep Timer Setting" window appears with buttons for various timer settings')
+@fake
 def a_sleep_timer_setting_window_appears_with_buttons_for_various_timer_settings(context):
     pass
 
 
 @step('A submenu appears with a "Brightness" option')
+@fake
 def a_submenu_appears_with_a_brightness_option(context):
     pass
 
 
 @step('A submenu appears with a "Date/Time Options" option')
+@fake
 def a_submenu_appears_with_a_datetime_options_option(context):
     pass
 
 
 @step('A submenu appears with a "Default Contacts Tab" option')
+@fake
 def a_submenu_appears_with_a_default_contacts_tab_option(context):
     pass
 
 
 @step('A submenu appears with a "Manage Accounts" option')
+@fake
 def a_submenu_appears_with_a_manage_accounts_option(context):
     pass
 
 
 @step('A submenu appears with a "Ringtones" option')
+@fake
 def a_submenu_appears_with_a_ringtones_option(context):
     pass
 
 
 @step('A submenu appears with a "Screen Timeout" option')
+@fake
 def a_submenu_appears_with_a_screen_timeout_option(context):
     pass
 
 
 @step('A submenu appears with a "Sign in with Google" option')
+@fake
 def a_submenu_appears_with_a_sign_in_with_google_option(context):
     pass
 
 
 @step('A submenu appears with a "Utilities" option')
+@fake
 def a_submenu_appears_with_a_utilities_option(context):
     pass
 
 
 @step('A submenu appears with a "Volume Control" option')
+@fake
 def a_submenu_appears_with_a_volume_control_option(context):
     pass
 
 
 @step('A submenu opens with a "Walkthrough" option')
+@fake
 def a_submenu_opens_with_a_walkthrough_option(context):
     pass
 
 
 @step('A "Visual Voicemail" window appears')
+@fake
 def a_visual_voicemail_window_appears(context):
     pass
 
 
 @step('A "Voicemail Playback" window appears')
+@fake
 def a_voicemail_playback_window_appears(context):
     pass
 
 
 @step('A "Welcome to ePhone7!" window appears')
+@fake
 def a_welcome_to_ephone7_window_appears(context):
     pass
 
 
 @step("A window appears with a button for each Contacts tab")
+@fake
 def a_window_appears_with_a_button_for_each_contacts_tab(context):
     pass
 
 
 @step('A window appears with a "Check Ethernet" option')
+@fake
 def a_window_appears_with_a_check_ethernet_option(context):
     pass
 
 
 @step('A window appears with a section labeled "Call Forward No Answer"')
+@fake
 def a_window_appears_with_a_section_labeled_call_forward_no_answer(context):
     pass
 
 
 @step('A window appears with the label "Screen Brightness" appears')
+@fake
 def a_window_appears_with_the_label_screen_brightness_appears(context):
     pass
 
 
 @step('A window with a "24-hour Format" toggle appears')
+@fake
 def a_window_with_a_24hour_format_toggle_appears(context):
     pass
 
 
 @step('A window with a "Change Timezone" option appears')
+@fake
 def a_window_with_a_change_timezone_option_appears(context):
     pass
 
 
 @step('A window with a "Media Volume" slider appears')
+@fake
 def a_window_with_a_media_volume_slider_appears(context):
     pass
 
 
 @step('A window with a "Ringer Volume" slider appears')
+@fake
 def a_window_with_a_ringer_volume_slider_appears(context):
     pass
 
 
 @step('A window with a "Touch Sounds" toggle appears')
+@fake
 def a_window_with_a_touch_sounds_toggle_appears(context):
     pass
 
 
 @step('A window with a "Voice Call" slider appears')
+@fake
 def a_window_with_a_voice_call_slider_appears(context):
     pass
 
 
 @step('An "Account Deleted" popup appears')
+@fake
 def an_account_deleted_popup_appears(context):
     pass
 
 
 @step('an "Active Call Dialpad" window appears')
+@fake
 def an_active_call_dialpad_window_appears(context):
     pass
 
@@ -226,6 +268,7 @@ def an_active_call_screen_window_appears(context):
 
 
 @step("Both windows disappear")
+@fake
 def both_windows_disappear(context):
     pass
 
@@ -253,11 +296,13 @@ def i_am_at_the_home_screen(context):
 
 
 @step("I am not signed in to my gmail account")
+@fake
 def i_am_not_signed_in_to_my_gmail_account(context):
     pass
 
 
 @step("I am signed in to my gmail account")
+@fake
 def i_am_signed_in_to_my_gmail_account(context):
     pass
 
@@ -270,6 +315,7 @@ def i_answer_the_call(context):
 
 
 @step("I can see my personal contacts")
+@fake
 def i_can_see_my_personal_contacts(context):
     pass
 
@@ -299,26 +345,31 @@ def i_downgrade_my_app(context):
 
 
 @step("I enter my email address")
+@fake
 def i_enter_my_email_address(context):
     pass
 
 
 @step("I enter my password")
+@fake
 def i_enter_my_password(context):
     pass
 
 
 @step("I enter part of a Coworker contact name using the keypad")
+@fake
 def i_enter_part_of_a_coworker_contact_name_using_the_keypad(context):
     pass
 
 
 @step("I enter part of a Personal contact name using the keypad")
+@fake
 def i_enter_part_of_a_personal_contact_name_using_the_keypad(context):
     pass
 
 
 @step("I enter part of a Personal contact number using the keypad")
+@fake
 def i_enter_part_of_a_personal_contact_number_using_the_keypad(context):
     pass
 
@@ -349,16 +400,19 @@ def i_go_to_the_saved_voicemail_view(context):
 
 
 @step("I have at least one new voicemail")
+@fake
 def i_have_at_least_one_new_voicemail(context):
     pass
 
 
 @step("I have at least one saved voicemail")
+@fake
 def i_have_at_least_one_saved_voicemail(context):
     pass
 
 
 @step("I ignore the call")
+@fake
 def i_ignore_the_call(context):
     pass
 
@@ -383,6 +437,7 @@ def i_receive_a_call(context):
 
 
 @step("I receive a new voicemail")
+@fake
 def i_receive_a_new_voicemail(context):
     pass
 
@@ -415,6 +470,7 @@ def i_see_an_invalid_vlan_priority_alert(context):
 
 
 @step("I see the call at the top of the Missed History view")
+@fake
 def i_see_the_call_at_the_top_of_the_missed_history_view(context):
     pass
 
@@ -438,66 +494,79 @@ def i_set_the_ota_server(context):
 
 
 @step("I swipe down twice")
+@fake
 def i_swipe_down_twice(context):
     pass
 
 
 @step("I swipe the screen from right to left")
+@fake
 def i_swipe_the_screen_from_right_to_left(context):
     pass
 
 
 @step("I touch a new time zone choice")
+@fake
 def i_touch_a_new_time_zone_choice(context):
     pass
 
 
 @step("I touch and drag the slider control handle")
+@fake
 def i_touch_and_drag_the_slider_control_handle(context):
     pass
 
 
 @step('I touch "Brightness"')
+@fake
 def i_touch_brightness(context):
     pass
 
 
 @step('I touch "Call Forwarding"')
+@fake
 def i_touch_call_forwarding(context):
     pass
 
 
 @step('I touch "Check Ethernet"')
+@fake
 def i_touch_check_ethernet(context):
     pass
 
 
 @step('I touch "Clear App Data/Cache"')
+@fake
 def i_touch_clear_app_datacache(context):
     pass
 
 
 @step('I touch "Confirm"')
+@fake
 def i_touch_confirm(context):
     pass
 
 
 @step('I touch "Date/Time Options"')
+@fake
 def i_touch_datetime_options(context):
     pass
 
 
 @step('I touch "Default Contacts Tab"')
+@fake
 def i_touch_default_contacts_tab(context):
     pass
 
 
 @step('I touch "Manage Accounts"')
+@fake
 def i_touch_manage_accounts(context):
     pass
 
 
 @step('I touch "Next"')
+@fake
 def i_touch_next(context):
     pass
 
@@ -508,32 +577,44 @@ def i_touch_the_back_button(context):
     base_view.send_keycode_back()
 
 
+@step("I touch the Back icon")
+@fake
+def i_touch_the_back_icon(context):
+    base_view.send_keycode_back()
+
+
 @step("I touch the button for another ringtone")
+@fake
 def i_touch_the_button_for_another_ringtone(context):
     pass
 
 
 @step("I touch the button for another tab")
+@fake
 def i_touch_the_button_for_another_tab(context):
     pass
 
 
 @step("I touch the button for another timer setting")
+@fake
 def i_touch_the_button_for_another_timer_setting(context):
     pass
 
 
 @step('I touch the "Call Forward No Answer" section')
+@fake
 def i_touch_the_call_forward_no_answer_section(context):
     pass
 
 
 @step('I touch the "Cancel" button')
+@fake
 def i_touch_the_cancel_button(context):
     pass
 
 
 @step("I touch the current time zone text")
+@fake
 def i_touch_the_current_time_zone_text(context):
     pass
 
@@ -545,11 +626,13 @@ def i_touch_the_home_icon(context):
 
 
 @step("I touch the voicemail icon")
+@fake
 def i_touch_the_voicemail_icon(context):
     pass
 
 
 @step("I upgrade the phone if the versions are not correct")
+@fake
 def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
     if 'fake' not in str(context._config.tags).split(','):
         current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
@@ -604,56 +687,67 @@ def i_wait_for_the_phone_to_upgrade_and_reboot(context):
 
 
 @step("my account does not have two-step verification enabled")
+@fake
 def my_account_does_not_have_twostep_verification_enabled(context):
     pass
 
 
 @step("my Favorite contacts appear on the Coworkers contacts list")
+@fake
 def my_favorite_contacts_appear_on_the_coworkers_contacts_list(context):
     pass
 
 
 @step("my new voicemails are listed")
+@fake
 def my_new_voicemails_are_listed(context):
     pass
 
 
 @step("my phone calls back the caller")
+@fake
 def my_phone_calls_back_the_caller(context):
     pass
 
 
 @step("my phone calls the number")
+@fake
 def my_phone_calls_the_number(context):
     pass
 
 
 @step("my phone calls the voicemail sender")
+@fake
 def my_phone_calls_the_voicemail_sender(context):
     pass
 
 
 @step("my saved voicemails are listed")
+@fake
 def my_saved_voicemails_are_listed(context):
     pass
 
 
 @step("Only the current ringtone has a dot next to it")
+@fake
 def only_the_current_ringtone_has_a_dot_next_to_it(context):
     pass
 
 
 @step("Only the new ringtone has a dot next to it")
+@fake
 def only_the_new_ringtone_has_a_dot_next_to_it(context):
     pass
 
 
 @step("Someone calls me")
+@fake
 def someone_calls_me(context):
     pass
 
 
 @step('the "Account Deleted" popup disappears')
+@fake
 def the_account_deleted_popup_disappears(context):
     pass
 
@@ -666,11 +760,13 @@ def the_advanced_options_view_disappears(context):
 
 
 @step("the call has a red handset icon with a missed arrow")
+@fake
 def the_call_has_a_red_handset_icon_with_a_missed_arrow(context):
     pass
 
 
 @step("the call has a voicemail icon")
+@fake
 def the_call_has_a_voicemail_icon(context):
     pass
 
@@ -682,26 +778,31 @@ def the_caller_ends_the_call(context):
 
 
 @step("the caller gets a voicemail prompt")
+@fake
 def the_caller_gets_a_voicemail_prompt(context):
     pass
 
 
 @step("the caller is connected to my phone")
+@fake
 def the_caller_is_connected_to_my_phone(context):
     pass
 
 
 @step("the caller leaves a message")
+@fake
 def the_caller_leaves_a_message(context):
     pass
 
 
 @step("the caller leaves a voicemail")
+@fake
 def the_caller_leaves_a_voicemail(context):
     pass
 
 
 @step("the Contacts tab window disappears")
+@fake
 def the_contacts_tab_window_disappears(context):
     pass
 
@@ -714,6 +815,7 @@ def the_coworker_contact_answers_the_call(context):
 
 
 @step("the current default tab is selected")
+@fake
 def the_current_default_tab_is_selected(context):
     pass
 
@@ -731,11 +833,13 @@ def the_current_ota_server_popup_disappears(context):
 
 
 @step("the current time zone text is shown")
+@fake
 def the_current_time_zone_text_is_shown(context):
     pass
 
 
 @step("the current timer setting is selected")
+@fake
 def the_current_timer_setting_is_selected(context):
     pass
 
@@ -768,26 +872,31 @@ def the_ephone7_app_should_not_crash(context):
 
 
 @step("the Google dialog disappears")
+@fake
 def the_google_dialog_disappears(context):
     pass
 
 
 @step("the in-call window appears")
+@fake
 def the_incall_window_appears(context):
     pass
 
 
 @step("the in-call window disappears")
+@fake
 def the_incall_window_disappears(context):
     pass
 
 
 @step("the incoming call window appears")
+@fake
 def the_incoming_call_window_appears(context):
     pass
 
 
 @step("the incoming call window disappears")
+@fake
 def the_incoming_call_window_disappears(context):
     pass
 
@@ -809,16 +918,19 @@ def the_installed_app_is_not_the_downgrade_version(context):
 
 
 @step("the login screen appears")
+@fake
 def the_login_screen_appears(context):
     pass
 
 
 @step('the "Manage Accounts" element label changes to "Sign in with Google"')
+@fake
 def the_manage_accounts_element_label_changes_to_sign_in_with_google(context):
     pass
 
 
 @step("the menu disappears")
+@fake
 def the_menu_disappears(context):
     pass
 
@@ -831,26 +943,31 @@ def the_message_message_is_shown(context, message):
 
 
 @step("the network settings are displayed")
+@fake
 def the_network_settings_are_displayed(context):
     pass
 
 
 @step("the new default tab is selected")
+@fake
 def the_new_default_tab_is_selected(context):
     pass
 
 
 @step("the new time zone text is shown")
+@fake
 def the_new_time_zone_text_is_shown(context):
     pass
 
 
 @step("the new timer setting is selected")
+@fake
 def the_new_timer_setting_is_selected(context):
     pass
 
 
 @step("the New Voicemail view appears")
+@fake
 def the_new_voicemail_view_appears(context):
     pass
 
@@ -868,6 +985,7 @@ def the_ota_server_update_popup_disappears(context):
 
 
 @step("The package com.android.wallpaper.livepicker is not listed")
+@fake
 def the_package_com_android_wallpaper_livepicker_is_not_listed(context):
     pass
 
@@ -885,56 +1003,67 @@ def the_phone_restarts_without_a_register_retry_message(context):
 
 
 @step("the popup disappears")
+@fake
 def the_popup_disappears(context):
     pass
 
 
 @step("the popup does not show the current OTA URL")
+@fake
 def the_popup_does_not_show_the_current_ota_url(context):
     pass
 
 
 @step("the popup shows the current OTA environment name")
+@fake
 def the_popup_shows_the_current_ota_environment_name(context):
     pass
 
 
 @step("the position of the slider control changes")
+@fake
 def the_position_of_the_slider_control_changes(context):
     pass
 
 
 @step('the "Ringtones" window disappears')
+@fake
 def the_ringtones_window_disappears(context):
     pass
 
 
 @step('the section labeled "Call Forward Busy" is highlighted')
+@fake
 def the_section_labeled_call_forward_busy_is_highlighted(context):
     pass
 
 
 @step('the section labeled "Call Forward Busy" is not highlighted')
+@fake
 def the_section_labeled_call_forward_busy_is_not_highlighted(context):
     pass
 
 
 @step('the section labeled "Call Forward No Answer" is highlighted')
+@fake
 def the_section_labeled_call_forward_no_answer_is_highlighted(context):
     pass
 
 
 @step('the section labeled "Call Forward No Answer" is not highlighted')
+@fake
 def the_section_labeled_call_forward_no_answer_is_not_highlighted(context):
     pass
 
 
 @step('the "Sign in with Google" element label changes to "Manage Accounts"')
+@fake
 def the_sign_in_with_google_element_label_changes_to_manage_accounts(context):
     pass
 
 
 @step('the "Sleep Timer Setting" window disappears')
+@fake
 def the_sleep_timer_setting_window_disappears(context):
     pass
 
@@ -952,36 +1081,43 @@ def the_softphone_is_set_to_autoanswer(context):
 
 
 @step('the toggle handle is in the "Off" position')
+@fake
 def the_toggle_handle_is_in_the_off_position(context):
     pass
 
 
 @step('the toggle handle is in the "On" position')
+@fake
 def the_toggle_handle_is_in_the_on_position(context):
     pass
 
 
 @step('the toggle handle stays in the "Off" position')
+@fake
 def the_toggle_handle_stays_in_the_off_position(context):
     pass
 
 
 @step('the toggle handle stays in the "On" position')
+@fake
 def the_toggle_handle_stays_in_the_on_position(context):
     pass
 
 
 @step("the VLAN Enable button is active")
+@fake
 def the_vlan_enable_button_is_active(context):
     pass
 
 
 @step("the window contains a slider control")
+@fake
 def the_window_contains_a_slider_control(context):
     pass
 
 
 @step("the window disappears")
+@fake
 def the_window_disappears(context):
     pass
 
@@ -993,6 +1129,7 @@ def there_is_a_softphone_registered_on_my_ephone7s_user_account(context):
 
 
 @step("VLAN is enabled")
+@fake
 def vlan_is_enabled(context):
     pass
 

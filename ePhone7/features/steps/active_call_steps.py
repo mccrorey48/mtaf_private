@@ -10,6 +10,7 @@ log = logging.get_logger('esi.active_steps')
 
 
 @step('[active call] I touch "Dial"')
+@fake
 def active_call__i_touch_dial(context):
     active_call_view.click_named_element('InCallDial')
 
@@ -58,6 +59,7 @@ def activecall__i_see_an_orange_banner_with_the_callers_name(context):
 
 
 @step("[active_call] I see the keypad")
+@fake
 def activecall__i_see_the_keypad(context):
     assert active_call_view.element_is_present('InCallDialpad')
 
@@ -72,6 +74,7 @@ def activecall__i_select_a_coworkers_mailbox(context):
 
 
 @step("[active_call] I select the Favorites tab")
+@fake
 def activecall__i_select_the_favorites_tab(context):
     pass
 
@@ -92,15 +95,19 @@ def activecall__i_touch_the_end_call_button(context):
 
 
 @step("[active_call] my Coworker contacts are listed on the contacts screen")
+@fake
 def activecall__my_coworker_contacts_are_listed_on_the_contacts_screen(context):
     pass
 
 
 @step("[active_call] my favorite Coworker contacts are listed")
+@fake
 def activecall__my_favorite_coworker_contacts_are_listed(context):
     pass
 
+
 @step("[active_call] the buttons are {w} pixels wide and {h} pixels high")
+@fake
 def activecall__the_buttons_are_w_pixels_wide_and_h_pixels_high(context, w, h):
     elems = active_call_view.find_named_elements('InCallDialKeys')
     # location = elems[0].location
@@ -121,11 +128,13 @@ def activecall__the_caller_leaves_a_message_and_hangs_up(context):
 
 
 @step("[active_call] the Coworkers tab is selected")
+@fake
 def activecall__the_coworkers_tab_is_selected(context):
     pass
 
 
 @step("[active_call] the {expect_icon} icon is displayed")
+@fake
 def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
     white_counts = {'speaker': 714, 'handset': 580, 'headset': 618}
     if expect_icon not in white_counts:
@@ -143,6 +152,7 @@ def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
 
 
 @step("[active_call] the in-call contacts screen appears")
+@fake
 def activecall__the_incall_contacts_screen_appears(context):
     pass
 

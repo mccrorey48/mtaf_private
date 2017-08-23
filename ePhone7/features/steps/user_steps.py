@@ -7,16 +7,19 @@ headset_icon_rgbs = {'blue': [99, 139, 237, 369], 'green': [79, 187, 110, 367]}
 
 
 @step("[user] A keypad appears")
+@fake
 def user__a_keypad_appears(context):
     pass
 
 
 @step("[user] A keypad appears with a list of contacts")
+@fake
 def user__a_keypad_appears_with_a_list_of_contacts(context):
     pass
 
 
 @step("[user] I enter the call park queue number")
+@fake
 def user__i_enter_the_call_park_queue_number(context):
     pass
 
@@ -37,26 +40,31 @@ def user__i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bottom_of
 
 
 @step("[user] I touch a contact element")
+@fake
 def user__i_touch_a_contact_element(context):
     pass
 
 
 @step("[user] I touch the Call Forward icon")
+@fake
 def user__i_touch_the_call_forward_icon(context):
     pass
 
 
 @step("[user] I touch the Call Park icon")
+@fake
 def user__i_touch_the_call_park_icon(context):
     pass
 
 
 @step("[user] I touch the Do Not Disturb icon")
+@fake
 def user__i_touch_the_do_not_disturb_icon(context):
     pass
 
 
 @step("[user] I touch the Headset icon if it is {color}")
+@fake
 def user__i_touch_the_headset_icon_if_it_is_color(context, color):
     if color not in headset_icon_rgbs:
         raise Ux("Unknown color specified: %s" % color)
@@ -83,46 +91,55 @@ def user__i_touch_the_preferences_icon(context):
 
 
 @step("[user] I use the keypad to filter the list of contacts")
+@fake
 def user__i_use_the_keypad_to_filter_the_list_of_contacts(context):
     pass
 
 
 @step("[user] Only the contact I touched is listed")
+@fake
 def user__only_the_contact_i_touched_is_listed(context):
     pass
 
 
 @step("[user] the Call Forward icon is blue")
+@fake
 def user__the_call_forward_icon_is_blue(context):
     pass
 
 
 @step("[user] the Call Forward icon is red")
+@fake
 def user__the_call_forward_icon_is_red(context):
     pass
 
 
 @step("[user] the Do Not Disturb icon is blue")
+@fake
 def user__the_do_not_disturb_icon_is_blue(context):
     pass
 
 
 @step("[user] the Do Not Disturb icon is red")
+@fake
 def user__the_do_not_disturb_icon_is_red(context):
     pass
 
 
 @step("[user] the Do Not Disturb icon turns blue")
+@fake
 def user__the_do_not_disturb_icon_turns_blue(context):
     pass
 
 
 @step("[user] the Do Not Disturb icon turns red")
+@fake
 def user__the_do_not_disturb_icon_turns_red(context):
     pass
 
 
 @step("[user] the Headset icon is {expect_color}")
+@fake
 def user__the_headset_icon_is_expectcolor(context, expect_color):
     if expect_color not in headset_icon_rgbs:
         raise Ux("Unknown color specified: %s" % expect_color)
@@ -138,6 +155,7 @@ def user__the_headset_icon_is_expectcolor(context, expect_color):
 
 
 @step("[user] the keypad disappears")
+@fake
 def user__the_keypad_disappears(context):
     pass
 

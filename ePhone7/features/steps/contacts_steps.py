@@ -8,11 +8,13 @@ from time import sleep
 
 
 @step("[contacts] a check mark appears in the box")
+@fake
 def contacts__a_check_mark_appears_in_the_box(context):
     pass
 
 
 @step("[contacts] a contact detail screen appears with a white star icon")
+@fake
 def contacts__a_contact_detail_screen_appears_with_a_white_star_icon(context):
     assert contacts_view.contact_detail_view_visible(), "contact detail view is not visible"
     el = contacts_view.find_named_element("FavoriteIndicator")
@@ -23,26 +25,31 @@ def contacts__a_contact_detail_screen_appears_with_a_white_star_icon(context):
 
 
 @step("[contacts] a contact detail screen appears with a yellow star icon")
+@fake
 def contacts__a_contact_detail_screen_appears_with_a_yellow_star_icon(context):
     pass
 
 
 @step("[contacts] a Create New Group popup appears")
+@fake
 def contacts__a_create_new_group_popup_appears(context):
     pass
 
 
 @step("[contacts] a Google login screen appears")
+@fake
 def contacts__a_google_login_screen_appears(context):
     pass
 
 
 @step("[contacts] Add and Delete buttons are not visible")
+@fake
 def contacts__add_and_delete_buttons_are_not_visible(context):
     pass
 
 
 @step("[contacts] Add and Delete buttons are visible")
+@fake
 def contacts__add_and_delete_buttons_are_visible(context):
     pass
 
@@ -54,26 +61,31 @@ def contacts__an_add_multiple_favorites_confirmation_dialog_appears(context):
 
 
 @step("[contacts] Any existing Favorite contacts have a yellow star icon")
+@fake
 def contacts__any_existing_favorite_contacts_have_a_yellow_star_icon(context):
     pass
 
 
 @step("[contacts] Any other contacts have a white star icon")
+@fake
 def contacts__any_other_contacts_have_a_white_star_icon(context):
     pass
 
 
 @step("[contacts] I close the contact detail screen")
+@fake
 def contacts__i_close_the_contact_detail_screen(context):
     pass
 
 
 @step("[contacts] I enter a group name")
+@fake
 def contacts__i_enter_a_group_name(context):
     pass
 
 
 @step("[contacts] I enter my Google user id and password")
+@fake
 def contacts__i_enter_my_google_user_id_and_password(context):
     pass
 
@@ -94,11 +106,13 @@ def contacts__i_see_the_personal_coworkers_favorites_and_groups_tabs(context):
 
 
 @step("[contacts] I touch a check a box next to a contact")
+@fake
 def contacts__i_touch_a_check_a_box_next_to_a_contact(context):
     pass
 
 
 @step("[contacts] I touch the Favorites star icon on some contacts")
+@fake
 def contacts__i_touch_the_favorites_star_icon_on_some_contacts(context):
     pass
 
@@ -110,6 +124,7 @@ def contacts__i_touch_the_handset_icon_next_to_the_contact_i_want_to_call(contex
 
 
 @step("[contacts] I touch the name of a contact")
+@fake
 def contacts__i_touch_the_name_of_a_contact(context):
     pass
 
@@ -125,16 +140,19 @@ def contacts__i_touch_the_name_of_a_coworker_contact_that_is_not_a_favorite(cont
 
 
 @step("[contacts] I touch the name of a personal Group list")
+@fake
 def contacts__i_touch_the_name_of_a_personal_group_list(context):
     pass
 
 
 @step("[contacts] I touch the name of a system Group list")
+@fake
 def contacts__i_touch_the_name_of_a_system_group_list(context):
     pass
 
 
 @step("[contacts] I touch the star icon")
+@fake
 def contacts__i_touch_the_star_icon(context):
     contacts_view.click_named_element('FavoriteIndicator')
 
@@ -152,11 +170,13 @@ def contacts__i_touch_the_star_icons_so_favorites_are_yellow_and_others_are_whit
 
 
 @step("[contacts] I touch the yellow star icon")
+@fake
 def contacts__i_touch_the_yellow_star_icon(context):
     pass
 
 
 @step("[contacts] my Coworker contacts are displayed in a list with checkboxes")
+@fake
 def contacts__my_coworker_contacts_are_displayed_in_a_list_with_checkboxes(context):
     pass
 
@@ -200,6 +220,7 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
 
 
 @step("[contacts] my Group Lists are shown on the display")
+@fake
 def contacts__my_group_lists_are_shown_on_the_display(context):
     pass
 
@@ -216,6 +237,7 @@ def contacts__my_groupname_contacts_are_shown_on_the_display(context, group_name
 
 
 @step("[contacts] my Personal contacts are each listed with a handset icon")
+@fake
 def contacts__my_personal_contacts_are_each_listed_with_a_handset_icon(context):
     pass
 
@@ -237,6 +259,7 @@ def contacts__no_coworker_contacts_are_shown_on_the_favorites_display(context):
 
 
 @step("[contacts] the color toggles between yellow and white")
+@fake
 def contacts__the_color_toggles_between_yellow_and_white(context):
     pass
 
@@ -263,21 +286,25 @@ def contacts__the_contact_i_want_to_call_is_online(context):
 
 
 @step("[contacts] the contact is not shown on the contact list for the group")
+@fake
 def contacts__the_contact_is_not_shown_on_the_contact_list_for_the_group(context):
     pass
 
 
 @step("[contacts] the contact is not shown on the display")
+@fake
 def contacts__the_contact_is_not_shown_on_the_display(context):
     pass
 
 
 @step("[contacts] the contact is shown on the contact list for the group")
+@fake
 def contacts__the_contact_is_shown_on_the_contact_list_for_the_group(context):
     pass
 
 
 @step("[contacts] the contact list for the group is displayed")
+@fake
 def contacts__the_contact_list_for_the_group_is_displayed(context):
     pass
 
@@ -289,26 +316,31 @@ def contacts__the_contacts_view_appears(context):
 
 
 @step("[contacts] the Group list contacts are displayed in a list with checkboxes")
+@fake
 def contacts__the_group_list_contacts_are_displayed_in_a_list_with_checkboxes(context):
     pass
 
 
 @step("[contacts] the new favorite contact is shown on the display")
+@fake
 def contacts__the_new_favorite_contact_is_shown_on_the_display(context):
     contacts_view.element_with_text_is_present(context.new_favorite)
 
 
 @step("[contacts] the personal group list is shown on the display")
+@fake
 def contacts__the_personal_group_list_is_shown_on_the_display(context):
     pass
 
 
 @step("[contacts] the previously added contact is not on the list with checkboxes")
+@fake
 def contacts__the_previously_added_contact_is_not_on_the_list_with_checkboxes(context):
     pass
 
 
 @step("[contacts] the star turns {color_name}")
+@fake
 def contacts__the_star_turns_colorname(context, color_name):
     cfg_color_names = {'white': 'favorite_off_color', 'yellow': 'favorite_on_color'}
     if color_name not in cfg_color_names:
