@@ -8,7 +8,7 @@ Feature: As a user I want to use and manage my voicemail lists
     And   I have at least one new voicemail
     When  I touch the "Voicemail" button
     Then  [voicemail] I see the New, Saved and Trash tabs at the top of the screen
-    When  I touch the "NEW" tab
+    When  I touch the "New" tab
     And   I receive a new voicemail
     Then  [voicemail] the new voicemail is the first item listed
 
@@ -37,7 +37,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  I touch the "SAVED" tab
+    When  I touch the "Saved" tab
     Then  [voicemail] the voicemail is the first item listed
 
   Scenario: I listen to a selected saved voicemail
@@ -46,7 +46,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  I touch the "SAVED" tab
+    When  I touch the "Saved" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -58,7 +58,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  I touch the "SAVED" tab
+    When  I touch the "Saved" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -72,7 +72,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  I touch the "SAVED" tab
+    When  I touch the "Saved" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -86,7 +86,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  I touch the "SAVED" tab
+    When  I touch the "Saved" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -100,14 +100,14 @@ Feature: As a user I want to use and manage my voicemail lists
     When  [voicemail] I touch the Delete icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  I touch the "TRASH" tab
+    When  I touch the "Trash" tab
     Then  [voicemail] the voicemail is the first item listed
     When  [voicemail] I touch the voicemail element
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the voicemail is no longer listed
-    When  I touch the "SAVED" tab
+    When  I touch the "Saved" tab
     Then  [voicemail] the voicemail is the first item listed
 
   Scenario: I forward a voicemail to a coworker
