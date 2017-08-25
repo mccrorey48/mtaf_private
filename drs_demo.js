@@ -14,11 +14,15 @@ var aaa_path = '/aaa/v2/login';
 var lastUpdate = 0;
 var api_url;
 var lab = false;
-var option_type = 'corpCon';
 var start = Date.now();
+
+// test configuration values
+var option_type = 'corpCon';
 // var option_type = 'presence';
 // var option_type = 'callhistory';
 // var option_type = 'google';
+var user_count = 0;
+var max_user_count = 100;
 
 var users;
 var csv_file;
@@ -31,9 +35,12 @@ if (lab) {
 }
 
 csv
-.fromPath("pro_users_concurrent.csv", {headers: ["user", "domain", "username", "password"]})
+.fromPath(csv_file, {headers: ["name", "domain", "username", "password"]})
 .on("data", function(user){
-  go(user);
+  if (user.name !== "name" && user_count < max_user_count) {
+    user_count += 1;
+    go(user);
+  }
 });
 
 var log_file = fs.createWriteStream(__dirname + '/drs_test.log', {flags : 'w'});
