@@ -10,7 +10,7 @@ option_type = None
 # configuration values
 bin_size_ms = 500
 
-with open('../log/drs_test.log') as f:
+with open('log/drs_test.log') as f:
     lines = f.readlines()
 for line in lines:
     if corp_con_re.match(line):

@@ -28,10 +28,10 @@ var users;
 var csv_file;
 if (lab) {
   api_url = '10.3.1.5';
-  csv_file = '../csv/lab_users_concurrent.csv';
+  csv_file = 'drs/csv/lab_users_concurrent.csv';
 } else {
   api_url = 'pro.esiapi.io';
-  csv_file = '../csv/pro_users_concurrent.csv';
+  csv_file = 'drs/csv/pro_users_concurrent.csv';
 }
 
 csv
@@ -43,7 +43,7 @@ csv
   }
 });
 
-var log_file = fs.createWriteStream(__dirname + '/../log/drs_test.log', {flags : 'w'});
+var log_file = fs.createWriteStream('log/drs_test.log', {flags : 'w'});
 var log_stdout = process.stdout;
 
 function log(s) {
