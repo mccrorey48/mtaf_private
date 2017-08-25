@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "socket.io": "^2.0.3"
+    "fs": "0.0.1-security",
+    "socket.io": "^2.0.3",
+    "util": "^0.10.3"
   }
 }

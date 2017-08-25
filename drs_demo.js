@@ -6,36 +6,52 @@ var io = require('socket.io-client');
 var http = require('http');
 var fs = require('fs');
 var util = require('util');
+var csv = require('fast-csv');
 
 
 var drs_path = '/drs/v2/socket.io';
 var aaa_path = '/aaa/v2/login';
 var lastUpdate = 0;
-var users;
 var api_url;
 var lab = false;
+var start = Date.now();
+
+// test configuration values
 var option_type = 'corpCon';
 var start = Date.now();
 // var option_type = 'presence';
 // var option_type = 'callhistory';
 // var option_type = 'google';
+var user_count = 0;
+var max_user_count = 100;
 
+var users;
+var csv_file;
 if (lab) {
   api_url = '10.3.1.5';
-  users = [
-    { name: "1000", domain:"SVAutoCustomer", password: "1000"},
-    { name: "1001", domain:"SVAutoCustomer", password: "1001"},
-    { name: "1002", domain:"SVAutoCustomer", password: "1002"},
-    { name: "1003", domain:"SVAutoCustomer", password: "1003"}
-  ];
+  csv_file = 'lab_users_concurrent.csv';
 } else {
   api_url = 'pro.esiapi.io';
-  users = [
-    { name: "2202", domain:"test2.test-eng.com", password: "2202"},
-    { name: "2203", domain:"test2.test-eng.com", password: "2203"},
-    { name: "2204", domain:"test2.test-eng.com", password: "2204"},
-    { name: "2205", domain:"test2.test-eng.com", password: "2205"}
-  ];
+  csv_file = 'pro_users_concurrent.csv';
+}
+
+csv
+.fromPath(csv_file, {headers: ["name", "domain", "username", "password"]})
+.on("data", function(user){
+  if (user.name !== "name" && user_count < max_user_count) {
+    user_count += 1;
+    go(user);
+  }
+});
+
+var log_file = fs.createWriteStream(__dirname + '/drs_test.log', {flags : 'w'});
+var log_stdout = process.stdout;
+
+function log(s) {
+  var elapsed = Date.now() - start;
+  var msg = util.format('%sms: %s\n', elapsed, s) ;
+  log_file.write(msg);
+  log_stdout.write(msg);
 }
 
 var log_file = fs.createWriteStream(__dirname + '/drs_test.log', {flags : 'w'});
@@ -110,7 +126,7 @@ function startWebsocket(accessToken, user) {
   // });
 }
 
-function go() {
+function go(user) {
   var options = {
     hostname: api_url,
     port: 80,
@@ -143,15 +159,14 @@ function go() {
   // });
   // req.write(JSON.stringify({username: "2202@test2.test-eng.com", password: "2202"}));
   // req.end();
-  users.forEach(function(user){
-    var req = http.request(options, get_callback(user));
-    req.on('error', function(e){
-      console.log(e)
-    });
-    req.write(JSON.stringify({username: user.name + '@' + user.domain, password: user.password}));
-    req.end(0);
+  // users.forEach(function(user){
+  var req = http.request(options, get_callback(user));
+  req.on('error', function(e){
+    log(e)
   });
+  req.write(JSON.stringify({username: user.name + '@' + user.domain, password: user.password}));
+  req.end(0);
+  // });
 }
 
-go();
 
