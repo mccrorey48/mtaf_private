@@ -12,12 +12,12 @@ log = logging.get_logger('esi.history_view')
 
 class HistoryView(UserView):
     locators = {
-        "All": {"by": "id", "value": "com.esi_estech.ditto:id/button1", "text": "All"},
+        "All": {"by": "id", "value": "com.esi_estech.ditto:id/all_history_btn"},
         "CallerName": {"by": "id", "value": "com.esi_estech.ditto:id/callerName"},
         "CallIcon": {"by": "id", "value": "com.esi_estech.ditto:id/call_type_button"},
-        "Missed": {"by": "id", "value": "com.esi_estech.ditto:id/button2", "text": "Missed"},
+        "Missed": {"by": "id", "value": "com.esi_estech.ditto:id/missed_call_history_btn"},
         "HistoryEntry": {"by": "zpath", "value": "//rv/rl"},
-        "HistoryList": {"by": "id", "value": "com.esi_estech.ditto:id/call_history_sliding_layout"}
+        "HistoryList": {"by": "id", "value": "com.esi_estech.ditto:id/call_history_list"}
     }
 
     def __init__(self):

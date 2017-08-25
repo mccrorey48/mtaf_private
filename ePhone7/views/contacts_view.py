@@ -23,7 +23,7 @@ class ContactsView(UserView):
         "ContactParent": {"by": "id", "value": "com.esi_estech.ditto:id/contact_list_item_layout"},
         "ContactsList": {"by": "id", "value": "com.esi_estech.ditto:id/contactsList"},
         "Coworkers": {"by": "id", "value": "com.esi_estech.ditto:id/ephone_contacts", "text": "Coworkers"},
-        "DetailsTitleView": {"by": "id", "value": "com.esi_estech.ditto:id/contact_details_title_view"},
+        "CorporateContactDetail": {"by": "id", "value": "com.esi_estech.ditto:id/corporate_details_sliding_layout"},
         "Favorites": {"by": "id", "value": "com.esi_estech.ditto:id/favorites", "text": "Favorites"},
         "FavoriteIndicator": {"by": "id", "value": "com.esi_estech.ditto:id/favorite_indicator"},
         "FirstContactName": {"by": "zpath", "value": "//rv/fl[1]/v/tv[1]"},
@@ -293,7 +293,7 @@ class ContactsView(UserView):
 
     def contact_detail_view_visible(self):
         try:
-            self.find_named_element('DetailsTitleView', timeout=5)
+            self.find_named_element('CorporateContactDetail', timeout=5)
         except Ux:
             return False
         return True

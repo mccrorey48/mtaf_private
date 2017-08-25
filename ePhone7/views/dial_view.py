@@ -16,27 +16,27 @@ class DialView(UserView):
     locators = {
         "CurrentOtaPopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server" },
         "CurrentOtaPopupContent": {"by": "id", "value": "com.esi_estech.ditto:id/content_text"},
-        "DialPad": {"by": "id", "value": "com.esi_estech.ditto:id/content_dial_pad"},
+        "DialButton": {"by": "id", "value": "com.esi_estech.ditto:id/dial_call_button_view"},
+        "DialPad": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_sliding_panel"},
         "Delete": {"by": "id", "value": "com.esi_estech.ditto:id/deleteButton"},
         "Digits": {"by": "id", "value": "com.esi_estech.ditto:id/digits"},
         "FuncKeyAll": {"by": "zpath", "value": "//tl/tr/ll"},
+        "FuncKeyBksp": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_delete_button_container" },
+        "FuncKeySearch": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_search_button_container" },
         "NumberButton": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_symbols"},
         "NumKeyAll": {"by": "zpath", "value": "//gv/rl"},
-        "NumKey1": {"by": "zpath", "value": "//gv/ll/tv[@text='1']"},
-        "NumKey2": {"by": "zpath", "value": "//gv/ll/tv[@text='2']"},
-        "NumKey3": {"by": "zpath", "value": "//gv/ll/tv[@text='3']"},
-        "NumKey4": {"by": "zpath", "value": "//gv/ll/tv[@text='4']"},
-        "NumKey5": {"by": "zpath", "value": "//gv/ll/tv[@text='5']"},
-        "NumKey6": {"by": "zpath", "value": "//gv/ll/tv[@text='6']"},
-        "NumKey7": {"by": "zpath", "value": "//gv/ll/tv[@text='7']"},
-        "NumKey8": {"by": "zpath", "value": "//gv/ll/tv[@text='8']"},
-        "NumKey9": {"by": "zpath", "value": "//gv/ll/tv[@text='9']"},
-        "NumKeyStar": {"by": "zpath", "value": "//gv/ll/tv[@text='*']"},
-        "NumKey0": {"by": "zpath", "value": "//gv/ll/tv[@text='0']"},
-        "NumKeyPound": {"by": "zpath", "value": "//gv/ll/tv[@text='#']"},
-        "DialButton": {"by": "id", "value": "com.esi_estech.ditto:id/dialButton" },
-        "FuncKeySearch": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_search_button_container" },
-        "FuncKeyBksp": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_delete_button_container" },
+        "NumKey1": {"by": "id", "value": "dial_one"},
+        "NumKey2": {"by": "id", "value": "dial_two"},
+        "NumKey3": {"by": "id", "value": "dial_three"},
+        "NumKey4": {"by": "id", "value": "dial_four"},
+        "NumKey5": {"by": "id", "value": "dial_five"},
+        "NumKey6": {"by": "id", "value": "dial_six"},
+        "NumKey7": {"by": "id", "value": "dial_seven"},
+        "NumKey8": {"by": "id", "value": "dial_eight"},
+        "NumKey9": {"by": "id", "value": "dial_nine"},
+        "NumKeyStar": {"by": "id", "value": "dial_star"},
+        "NumKey0": {"by": "id", "value": "dial_zero"},
+        "NumKeyPound": {"by": "id", "value": "dial_pound"},
         "OtaUpdatePopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server Update" },
         "OtaUpdatePopupContent": {"by": "id", "value": "com.esi_estech.ditto:id/content_text"}
 
@@ -57,22 +57,20 @@ class DialView(UserView):
         "#": "NumKeyPound"
     }
 
-    digit_corners = {
-        '1': [120, 395, 143, 444],
-        '2': [289, 396, 312, 445],
-        '3': [458, 396, 481, 445],
-        '4': [120, 495, 143, 544],
-        '5': [289, 495, 312, 544],
-        '6': [458, 495, 481, 544],
-        '7': [120, 594, 143, 643],
-        '8': [289, 594, 312, 643],
-        '9': [458, 594, 481, 643],
-        '*': [122, 700, 140, 749],
-        '0': [289, 692, 312, 741],
-        '#': [456, 700, 482, 749]
+    digit_centers = {
+        '1': [143, 491],
+        '2': [301, 491],
+        '3': [459, 491],
+        '4': [143, 574],
+        '5': [301, 574],
+        '6': [459, 574],
+        '7': [143, 657],
+        '8': [301, 657],
+        '9': [459, 657],
+        '*': [143, 740],
+        '0': [301, 740],
+        '#': [459, 740]
     }
-
-    digit_centers = {t[0]: [(t[1][0]+t[1][2])/2, (t[1][1]+t[1][3])/2] for t in [(key, digit_corners[key]) for key in digit_corners.keys()]}
 
     numbers = {
         "Current OTA Server": "*682#",
