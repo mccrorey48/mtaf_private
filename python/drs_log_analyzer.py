@@ -10,7 +10,7 @@ option_type = None
 # configuration values
 bin_size_ms = 500
 
-with open('/home/mmccrorey/drs/drs_test.log') as f:
+with open('../log/drs_test.log') as f:
     lines = f.readlines()
 for line in lines:
     if corp_con_re.match(line):
@@ -53,7 +53,7 @@ for user_uri in payloads.keys():
             ms_data = payloads[user_uri][option_type][ms]
             _bin = ms / bin_size_ms
             bytes_per_bin[_bin] += ms_data["payload_size"]
-            print "%s %s %s ms: payload_size = %s" % (user_uri, option_type, ms, ms_data["payload_size"])
+            # print "%s %s %s ms: payload_size = %s" % (user_uri, option_type, ms, ms_data["payload_size"])
 bps = [bytes_per_bin[_bin] * 1000 / bin_size_ms for _bin in range(bin_count)]
 
 for ms in range(max_ms):

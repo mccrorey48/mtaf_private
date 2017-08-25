@@ -1,6 +1,9 @@
 .idea/
 node_modules/
 html/
+.idea/
+log/
+result.*
 *.html
 *.jtl
 *.swp
