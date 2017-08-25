@@ -1,0 +1,29 @@
+<project name="Jmeter Ant" basedir=".">
+    <target name="init">
+
+        <taskdef 
+            name="jmeter"     
+            classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask"/>
+
+        <jmeter 
+            jmeterhome="/home/mmccrorey/apache-jmeter-3.2"
+            testplan ="${basedir}/drs1.jmx"
+            resultlog="${basedir}/result.jtl">
+            <property name="jmeter.save.saveservice.output_format" value="xml"/>
+            <testplans dir="${basedir}" includes="drs1.jmx" />
+
+        </jmeter>
+    </target>
+    <target name="report">
+        <xslt
+            in="${basedir}/result.jtl"
+            out="${basedir}/result.html"
+            style="/home/mmccrorey/apache-jmeter-3.2/extras/jmeter-results-detail-report_21.xsl"/>
+        <copy todir="${basedir}/html">
+            <fileset dir="/home/mmccrorey/apache-jmeter-3.2/extras">
+                <include name="collapse.png" />
+                <include name="expand.png" />
+            </fileset>
+        </copy>
+    </target>
+</project>
