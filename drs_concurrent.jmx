@@ -196,9 +196,9 @@ props.put(&quot;refreshTokens&quot;, refreshTokens);
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
+          <stringProp name="LoopController.loops">10</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">4</stringProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
         <stringProp name="ThreadGroup.ramp_time"></stringProp>
         <longProp name="ThreadGroup.start_time">1428960010000</longProp>
         <longProp name="ThreadGroup.end_time">1428960010000</longProp>
@@ -346,8 +346,10 @@ props.put(&quot;refreshTokens&quot;, refreshTokens);</stringProp>
           <stringProp name="parameters"></stringProp>
           <boolProp name="resetInterpreter">false</boolProp>
           <stringProp name="script">threadNum = ctx.getThreadNum();
+loopNum = vars.getIteration();
 accessToken = vars.get(&quot;accessToken&quot;);
 log.warn(&quot;threadNum = &quot; + threadNum);
+log.warn(&quot;loopNum = &quot; + loopNum);
 props.put(&quot;accessToken_&quot; + threadNum, accessToken);
 refreshToken = vars.get(&quot;refreshToken&quot;);
 props.put(&quot;refreshToken_&quot; + threadNum, refreshToken);</stringProp>
@@ -366,7 +368,7 @@ props.put(&quot;refreshToken_&quot; + threadNum, refreshToken);</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">4</stringProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
         <stringProp name="ThreadGroup.ramp_time"></stringProp>
         <longProp name="ThreadGroup.start_time">1428960010000</longProp>
         <longProp name="ThreadGroup.end_time">1428960010000</longProp>
@@ -611,7 +613,7 @@ vars.put(&quot;timestamp&quot;, timestamp);</stringProp>
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">websocket_data.xml</stringProp>
+        <stringProp name="filename">websocket_data.csv</stringProp>
       </ResultCollector>
       <hashTree/>
       <kg.apc.jmeter.reporters.FlexibleFileWriter guiclass="kg.apc.jmeter.reporters.FlexibleFileWriterGui" testclass="kg.apc.jmeter.reporters.FlexibleFileWriter" testname="jp@gc - Flexible File Writer" enabled="false">
@@ -719,7 +721,7 @@ vars.put(&quot;timestamp&quot;, timestamp);</stringProp>
             <subresults>true</subresults>
             <responseData>false</responseData>
             <samplerData>false</samplerData>
-            <xml>false</xml>
+            <xml>true</xml>
             <fieldNames>true</fieldNames>
             <responseHeaders>false</responseHeaders>
             <requestHeaders>false</requestHeaders>
@@ -738,6 +740,9 @@ vars.put(&quot;timestamp&quot;, timestamp);</stringProp>
         <intProp name="RespTimeGraph.linestrockwidth">0</intProp>
         <stringProp name="RespTimeGraph.graphsizewidth">1000</stringProp>
         <stringProp name="RespTimeGraph.graphsizeheight">1000</stringProp>
+        <stringProp name="RespTimeGraph.yaxisscalemaxvalue">1200</stringProp>
+        <intProp name="RespTimeGraph.lineshapepoint">4</intProp>
+        <boolProp name="RespTimeGraph.graphsizedynamic">false</boolProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
@@ -847,6 +852,33 @@ vars.put(&quot;timestamp&quot;, timestamp);</stringProp>
         </objProp>
         <stringProp name="filename">/home/mmccrorey/apache-jmeter-3.2/bin/results.csv</stringProp>
       </ResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.listener.GraphsGeneratorListener guiclass="TestBeanGUI" testclass="kg.apc.jmeter.listener.GraphsGeneratorListener" testname="jp@gc - Graphs Generator" enabled="true">
+        <boolProp name="aggregateRows">false</boolProp>
+        <boolProp name="autoScaleRows">false</boolProp>
+        <stringProp name="endOffset"></stringProp>
+        <stringProp name="excludeLabels"></stringProp>
+        <boolProp name="excludeSamplesWithRegex">false</boolProp>
+        <intProp name="exportMode">0</intProp>
+        <stringProp name="filePrefix">websocket_test_</stringProp>
+        <stringProp name="forceY"></stringProp>
+        <stringProp name="granulation">60000</stringProp>
+        <intProp name="graphHeight">600</intProp>
+        <intProp name="graphWidth">800</intProp>
+        <stringProp name="includeLabels"></stringProp>
+        <boolProp name="includeSamplesWithRegex">false</boolProp>
+        <stringProp name="limitRows">150</stringProp>
+        <stringProp name="lineWeight"></stringProp>
+        <stringProp name="lowCountLimit"></stringProp>
+        <stringProp name="outputBaseFolder">/home/mmccrorey/drs</stringProp>
+        <boolProp name="paintGradient">true</boolProp>
+        <boolProp name="paintZeroing">true</boolProp>
+        <boolProp name="preventOutliers">false</boolProp>
+        <boolProp name="relativeTimes">false</boolProp>
+        <stringProp name="resultsFileName">websocket_data.csv</stringProp>
+        <stringProp name="startOffset"></stringProp>
+        <stringProp name="successFilter"></stringProp>
+      </kg.apc.jmeter.listener.GraphsGeneratorListener>
       <hashTree/>
     </hashTree>
     <WorkBench guiclass="WorkBenchGui" testclass="WorkBench" testname="WorkBench" enabled="true">

@@ -1,0 +1,5 @@
+Label,# Samples,Average,Min,Max,90% Line,Std. Dev.,Error %,Throughput,Received KB/sec,Avg. Bytes
+HTTP POST login,100,772,668,897,829,44.29,0.00%,12.6,2.21,179.0
+Select Access Token,10,2,0,15,5,4.28,0.00%,69.0,0.00,.0
+WebSocket Sampler,20,3949,2145,5796,5781,1794.22,0.00%,2.5,0.10,41.0
+TOTAL,130,1201,0,5796,2158,1382.28,0.00%,8.0,1.12,144.0

@@ -1,0 +1,5 @@
+sampler_label,aggregate_report_count,average,aggregate_report_median,aggregate_report_90%_line,aggregate_report_95%_line,aggregate_report_99%_line,aggregate_report_min,aggregate_report_max,aggregate_report_error%,aggregate_report_rate,aggregate_report_bandwidth,aggregate_report_stddev
+HTTP POST login,100,772,765,829,845,873,668,897,0.00%,12.6,2.2,44.29
+Select Access Token,10,2,1,5,5,15,0,15,0.00%,69.0,.0,4.28
+WebSocket Sampler,20,3949,2168,5781,5783,5796,2145,5796,0.00%,2.5,.1,1794.22
+TOTAL,130,1201,772,2158,5710,5783,0,5796,0.00%,8.0,1.1,1382.28
