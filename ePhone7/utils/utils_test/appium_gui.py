@@ -409,6 +409,7 @@ class TestGui(Frame):
         self.appium_commands.append(Command("Skip Walkthrough", lambda: self.do_cmd(self.skip_walkthrough)))
         self.appium_commands.append(Command("Startup", lambda: self.do_cmd(self.startup)))
         self.appium_commands.append(Command("Toggle Multi-Edit", lambda: self.do_cmd(self.toggle_multi_edit)))
+        self.appium_commands.append(Command("Get Digit Centers", lambda: self.do_cmd(self.get_digit_centers())))
         self.other_commands.append(Command("Enable USB", lambda: self.do_cmd(self.usb_enable)))
         self.other_commands.append(
             Command("Get Alpha Current Versions", lambda: self.do_cmd(self.get_alpha_current_versions)))
@@ -744,6 +745,17 @@ class TestGui(Frame):
         user_view.goto_tab('Dial')
         dial_view.dial_show_ota_server()
         dial_view.touch_call_button()
+        print "Done"
+
+    @staticmethod
+    def get_digit_centers():
+        print "Getting digit centers...",
+        user_view.goto_tab('Dial')
+        for btn in ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Star', '0', 'Pound']:
+            el = dial_view.find_named_element("NumKey" + btn)
+            x = int(el.location['x']) + (int(el.size['width']) / 2)
+            y = int(el.location['y']) + (int(el.size['height']) / 2)
+            print "%s: (%d, %d)" % (btn, x, y)
         print "Done"
 
     @staticmethod
