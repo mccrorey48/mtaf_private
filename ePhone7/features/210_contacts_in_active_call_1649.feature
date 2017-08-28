@@ -1,4 +1,3 @@
-@wip
 Feature: As a user I want to be able to see my favorite contacts from the active call screen (R2D2-1649)
 
   Scenario: the in-call screen Coworkers button shows Coworker contacts

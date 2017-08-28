@@ -47,6 +47,7 @@ Feature: As a user I want to use and manage my contact lists
     Then  [contacts] the new favorite contact is shown on the display
 
 
+  @wip
   Scenario: I want to set the Favorites status of multiple Coworker contacts
     Given I touch the "Coworkers" tab
     Then  [contacts] my Coworker contacts are shown on the display
