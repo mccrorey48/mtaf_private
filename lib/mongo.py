@@ -80,6 +80,12 @@ def merge_collection(site, collection):
             del doc["name"]
             del doc["type"]
             merge_attrs(attr_name, dict_name, doc, site)
+        elif doc["type"] == "drs_test_user":
+            attr_name = doc["name"]
+            dict_name = "DrsTestUsers"
+            del doc["name"]
+            del doc["type"]
+            merge_attrs(attr_name, dict_name, doc, site)
 
 
 def merge_attrs(attr_name, dict_name, doc, site):

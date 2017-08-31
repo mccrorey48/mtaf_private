@@ -75,6 +75,7 @@ def restore_dbs(_db_names, server, cfg_dir, _output_fd):
         if _db_name.endswith("_site"):
             constants = []
             user = []
+            drs_test_user = []
             try:
                 with open(os.path.join(cfg_dir, 'passwords.json')) as infile:
                     all_passwords = json.loads(infile.read())
@@ -93,12 +94,15 @@ def restore_dbs(_db_names, server, cfg_dir, _output_fd):
                     try:
                         if doc['type'] == 'user':
                             user.append(dict(doc, **{'site_tag': collection_name}))
+                        if doc['type'] == 'drs_test_user':
+                            drs_test_user.append(dict(doc, **{'site_tag': collection_name}))
                         elif doc['type'] == 'constants':
                             constants.append(dict(doc, **{'site_tag': collection_name}))
                     except KeyError:
                         pass
             db_collections['constants'] = constants
             db_collections['user'] = user
+            db_collections['drs_test_user'] = drs_test_user
         print "restoring db: " + _db_name
         all_collections[_db_name] = db_collections
     if not _output_fd:
