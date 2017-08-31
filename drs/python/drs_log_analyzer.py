@@ -10,7 +10,7 @@ option_type = None
 # configuration values
 bin_size_ms = 500
 
-with open('log/drs_test.log') as f:
+with open('/home/mmccrorey/drs/log/drs_test.log') as f:
     lines = f.readlines()
 for line in lines:
     if corp_con_re.match(line):
@@ -44,6 +44,7 @@ for line in lines:
 
 bin_count = max_ms/bin_size_ms + 2
 x = range(0, bin_count * bin_size_ms, bin_size_ms)
+xs = [v/1000.0 for v in x]
 bytes_per_bin = [0 for _bin in range(bin_count)]
 ws_starts_per_bin = [0 for __bin in range(bin_count)]
 
@@ -62,12 +63,12 @@ for ms in range(max_ms):
 
 
 fix, ax1 = pl.subplots()
-ax1.plot(x, bps, 'b-')
+ax1.plot(xs, bps, 'b-')
 ax1.set_xlabel('time(s)')
 ax1.set_ylabel('bps', color='b')
 ax1.tick_params('y', colors='b')
 ax2 = ax1.twinx()
-ax2.plot(x, ws_starts_per_bin, 'r-')
+ax2.plot(xs, ws_starts_per_bin, 'r-')
 ax2.set_ylabel('websocket starts', color='r')
 ax2.tick_params('y', colors='r')
 pl.suptitle('DRS Throughput vs Time (%s)' % option_type)
