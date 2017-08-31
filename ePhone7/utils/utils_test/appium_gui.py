@@ -113,7 +113,7 @@ class AccountFrame(Frame):
         self.remote.grid(row=0, column=5, padx=5, pady=2, ipady=3, sticky='ew')
         self.columnconfigure(5, weight=1)
 
-        self.softphone = get_softphone(user_name, reg_wait_tmo=0)
+        self.softphone = get_softphone(user_name)
         self.softphone.set_incoming_response(180)
         self.after(100, self.check_status)
 
