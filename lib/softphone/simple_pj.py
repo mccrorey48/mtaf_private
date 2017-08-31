@@ -57,25 +57,35 @@ def pjl_log_cb(level, _str, _len):
 
 # make this global to see if end-of-execution shutdown works better
 # (previously it was a SoftphoneManager class attribute)
-softphones = {}
 
 
 class SoftphoneManager():
 
+    def __init__(self):
+        self.softphones = {}
+
     def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp):
-        global softphones
-        if uri not in softphones:
-            softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp)
-        return softphones[uri]
+        if uri in self.softphones:
+            log.debug("SoftphoneManager.get_softphone returning existing softphone %s" % uri)
+        else:
+            log.debug("SoftphoneManager.get_softphone creating softphone %s" % uri)
+            self.softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp)
+        return self.softphones[uri]
+
+    def delete_softphone(self, softphone):
+        if softphone.uri in self.softphones:
+            log.debug('SoftphoneManager.delete_softphone deleting %s' % softphone.uri)
+            del self.softphones[softphone.uri]
+        else:
+            raise Ux("SoftphoneManager: attempting to delete softphone not in softphones list")
 
     def end_all_calls(self):
-        global softphones
-        for uri in softphones.keys():
-            softphones[uri].end_call()
+        for uri in self.softphones.keys():
+            self.softphones[uri].end_call()
 
     def set_defaults(self):
-        for uri in softphones.keys():
-            softphones[uri].set_incoming_response(180)
+        for uri in self.softphones.keys():
+            self.softphones[uri].set_incoming_response(180)
 
 
 
