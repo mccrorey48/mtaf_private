@@ -15,7 +15,3 @@ def get_softphone(user_name='default', user_group='Users'):
     dns_list = cfg.site['DnsList']
     tcp = cfg.site['UseTcp']
     return softphone_manager.get_softphone(uri, proxy, password, null_snd, dns_list, tcp)
-
-
-def delete_softphone(softphone):
-    softphone_manager.delete_softphone(softphone)
