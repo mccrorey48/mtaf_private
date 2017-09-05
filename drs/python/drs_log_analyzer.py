@@ -8,9 +8,9 @@ max_ms = 0
 option_type = None
 
 # configuration values
-bin_size_ms = 500
+bin_size_ms = 1000
 
-with open('/home/mmccrorey/drs/log/drs_test.log') as f:
+with open('log/drs_test.log') as f:
     lines = f.readlines()
 for line in lines:
     if corp_con_re.match(line):
@@ -46,6 +46,8 @@ bin_count = max_ms/bin_size_ms + 2
 x = range(0, bin_count * bin_size_ms, bin_size_ms)
 xs = [v/1000.0 for v in x]
 bytes_per_bin = [0 for _bin in range(bin_count)]
+cumulative = 0
+cumulative_per_bin = [0 for _bin in range(bin_count)]
 ws_starts_per_bin = [0 for __bin in range(bin_count)]
 
 for user_uri in payloads.keys():
@@ -55,22 +57,31 @@ for user_uri in payloads.keys():
             _bin = ms / bin_size_ms
             bytes_per_bin[_bin] += ms_data["payload_size"]
             # print "%s %s %s ms: payload_size = %s" % (user_uri, option_type, ms, ms_data["payload_size"])
-bps = [bytes_per_bin[_bin] * 1000 / bin_size_ms for _bin in range(bin_count)]
+for _bin in range(bin_count):
+    cumulative += bytes_per_bin[_bin]
+    cumulative_per_bin[_bin] = cumulative
+
 
 for ms in range(max_ms):
     if ms in ws_starts.keys():
         ws_starts_per_bin[ms / bin_size_ms] += len(ws_starts[ms])
 
 
-fix, ax1 = pl.subplots()
-ax1.plot(xs, bps, 'b-')
-ax1.set_xlabel('time(s)')
-ax1.set_ylabel('bps', color='b')
-ax1.tick_params('y', colors='b')
-ax2 = ax1.twinx()
-ax2.plot(xs, ws_starts_per_bin, 'r-')
-ax2.set_ylabel('websocket starts', color='r')
-ax2.tick_params('y', colors='r')
+pl.subplot(311)
+pl.plot(xs, bytes_per_bin, 'b-')
+pl.gca().set_xlabel('time(s)')
+pl.gca().set_ylabel('bytes per %sms' % bin_size_ms, color='b')
+pl.tick_params('y', colors='b')
+pl.subplot(312)
+pl.plot(xs, ws_starts_per_bin, 'r-')
+pl.gca().set_ylabel('websocket starts', color='r')
+pl.subplot(313)
+pl.plot(xs, cumulative_per_bin, 'b-')
+pl.gca().set_xlabel('time(s)')
+pl.gca().set_ylabel('total bytes', color='b')
+pl.tick_params('y', colors='b')
+pl.tick_params('y', colors='r')
 pl.suptitle('DRS Throughput vs Time (%s)' % option_type)
+pl.subplots_adjust(top=0.92, bottom=0.08, left=0.2, right=0.95, hspace=0.5, wspace=0.35)
 # pl.xticks(range(0, bin_count * bin_size_ms, bin_size_ms))
 pl.show()
