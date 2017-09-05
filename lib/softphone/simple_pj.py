@@ -66,18 +66,12 @@ class SoftphoneManager():
 
     def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp):
         if uri in self.softphones:
+            self.softphones[uri].account_info.account.set_registration(True)
             log.debug("SoftphoneManager.get_softphone returning existing softphone %s" % uri)
         else:
             log.debug("SoftphoneManager.get_softphone creating softphone %s" % uri)
             self.softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp)
         return self.softphones[uri]
-
-    def delete_softphone(self, softphone):
-        if softphone.uri in self.softphones:
-            log.debug('SoftphoneManager.delete_softphone deleting %s' % softphone.uri)
-            del self.softphones[softphone.uri]
-        else:
-            raise Ux("SoftphoneManager: attempting to delete softphone not in softphones list")
 
     def end_all_calls(self):
         for uri in self.softphones.keys():
@@ -86,7 +80,6 @@ class SoftphoneManager():
     def set_defaults(self):
         for uri in self.softphones.keys():
             self.softphones[uri].set_incoming_response(180)
-
 
 
 class Softphone:
@@ -173,7 +166,7 @@ class Softphone:
         if self.account_info.call is None:
             return
         log.debug("%s ending call to %s" % (self.uri, self.account_info.remote_uri))
-        sleep(5)
+        # sleep(5)
         if self.account_info.call is not None:
             try:
                 # ignore any errors
@@ -237,6 +230,10 @@ class Softphone:
     @Trace(log)
     def set_monitor_off(self):
         pass
+
+    @Trace(log)
+    def unregister(self):
+        self.account_info.account.set_registration(False)
 
 
 class MyAccountCallback(pj.AccountCallback):
