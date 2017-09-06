@@ -1419,6 +1419,88 @@
             "type": "user"
         }
     ],
+    "js": [
+        {
+            "AospsHome": "/home/jsabugo/aosps",
+            "ApksHome": "/home/jsabugo/apks",
+            "DefaultForwardAccount": "Auto TesterF",
+            "DefaultSoftphoneUser": "Auto TesterE",
+            "aospshome": "/home/jsabugo/aosps",
+            "apkshome": "/home/jsabugo/apks",
+            "type": "constants"
+        },
+        {
+            "AccountPassword": "2001",
+            "AllContacts": [
+                "2200",
+                "2201",
+                "2202",
+                "2203",
+                "2204"
+            ],
+            "CoworkerContacts": [
+                "2200",
+                "2201",
+                "2202",
+                "2203",
+                "2204",
+                "2205"
+            ],
+            "DomainName": "test2.test-eng.com",
+            "FavoriteContacts": [
+                "2200",
+                "2201",
+                "2202"
+            ],
+            "PhonePassword": "2001",
+            "UserId": "2001",
+            "UserName": "Jessica Sabugo",
+            "name": "R2d2User",
+            "type": "user"
+        },
+        {
+            "AccountPassword": "2001",
+            "DomainName": "test2.test-eng.com",
+            "PhonePassword": "G273ci42",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2001b",
+            "UserNameIncoming": "Jessica Sabugo",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "R2d2AltUser",
+            "pbfile": "wav/2016.wav",
+            "type": "user"
+        },
+        {
+            "AccountPassword": "2204",
+            "DomainName": "test2.test-eng.com",
+            "PhonePassword": "kVAsy1oc",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2204",
+            "UserNameIncoming": "Auto Testere",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "Auto TesterE",
+            "pbfile": "wav/2204.wav",
+            "type": "user"
+        },
+        {
+            "AccountPassword": "2205",
+            "DomainName": "test2.test-eng.com",
+            "PhonePassword": "nBiQ9DEG",
+            "Proxy": "nr5.cpbx.esihs.net",
+            "UserId": "2205",
+            "UserNameIncoming": "Auto Testerf",
+            "dns_list": [
+                "10.0.50.156"
+            ],
+            "name": "Auto TesterF",
+            "pbfile": "wav/2205.wav",
+            "type": "user"
+        }
+    ],
     "local": [
         {
             "AospsHome": "/home/mmccrorey/aosps",
