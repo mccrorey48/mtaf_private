@@ -64,13 +64,15 @@ class SoftphoneManager():
     def __init__(self):
         self.softphones = {}
 
-    def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp):
+    def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp, reg_wait=True):
         if uri in self.softphones:
             self.softphones[uri].account_info.account.set_registration(True)
             log.debug("SoftphoneManager.get_softphone returning existing softphone %s" % uri)
         else:
             log.debug("SoftphoneManager.get_softphone creating softphone %s" % uri)
-            self.softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp)
+            self.softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp, reg_wait=False)
+        if reg_wait:
+            self.softphones[uri].account_info.account_cb.wait()
         return self.softphones[uri]
 
     def end_all_calls(self):
@@ -90,7 +92,7 @@ class Softphone:
 
     @Trace(log)
     def __init__(self, uri, proxy, password, null_snd=True, dns_list=None, tcp=False,
-                 pbfile='default', record=True, quiet=True):
+                 pbfile='default', record=True, quiet=True, reg_wait=True):
         self.uri = uri
         # create and start the pjsua lib instance if not already started
         if not self.lib:
@@ -109,6 +111,8 @@ class Softphone:
                     pbfile = '%s.wav' % ''.join(re.findall('\d', self.number))
                 self.account_info.pbfile_relpath = os.path.join(wav_dir, pbfile)
                 create_wav_file(self.account_info.pbfile_relpath, quiet)
+            if reg_wait:
+                self.account_info.account_cb.wait()
             self.account_info.record = record
             self.account_info.lib = self.lib
 
@@ -249,6 +253,7 @@ class MyAccountCallback(pj.AccountCallback):
 
     def wait(self):
         self.sem = threading.Semaphore(0)
+        log.debug("%s: acquiring semaphore")
         self.sem.acquire()
 
     def on_reg_state(self):
@@ -518,13 +523,14 @@ class PjsuaLib(pj.Lib):
     def start(self, log_cb=pjl_log_cb, null_snd=False, tcp=False, dns_list=None):
         self.tcp = tcp
         my_ua_cfg = pj.UAConfig()
-        my_ua_cfg.max_calls = 8
+        my_ua_cfg.max_calls = 256
         my_media_cfg = pj.MediaConfig()
         my_media_cfg.tx_drop_pct = self.tx_drop_pct
         my_media_cfg.rx_drop_pct = self.rx_drop_pct
         my_media_cfg.quality = self.quality
         my_media_cfg.ptime = 20
         my_media_cfg.no_vad = self.no_vad
+        my_media_cfg.max_media_ports = 256
         if dns_list:
             my_ua_cfg.nameserver = dns_list
         self.init(log_cfg=pj.LogConfig(level=4, callback=log_cb), ua_cfg=my_ua_cfg, media_cfg=my_media_cfg)
@@ -555,9 +561,8 @@ class PjsuaLib(pj.Lib):
         acc_cfg.auth_cred = [pj.AuthCred(realm="*", username=number, passwd=pw)]
         account = self.create_account(acc_cfg)
         account_info = MyAccountInfo(account, uri, number)
-        account_cb = MyAccountCallback(account_info)
-        account.set_callback(account_cb)
-        account_cb.wait()
+        account_info.account_cb = MyAccountCallback(account_info)
+        account.set_callback(account_info.account_cb)
         account_infos[uri] = account_info
         return account_info
 
