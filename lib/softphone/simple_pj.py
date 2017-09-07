@@ -523,14 +523,18 @@ class PjsuaLib(pj.Lib):
     def start(self, log_cb=pjl_log_cb, null_snd=False, tcp=False, dns_list=None):
         self.tcp = tcp
         my_ua_cfg = pj.UAConfig()
-        my_ua_cfg.max_calls = 256
         my_media_cfg = pj.MediaConfig()
+
+        # set these maximum values to accommodate the number of softphones that will be created;
+        # a call from one softphone to another requires 4 distinct call IDs and uses 6 media slots
+        my_ua_cfg.max_calls = 200
+        my_media_cfg.max_media_ports = 300
+
         my_media_cfg.tx_drop_pct = self.tx_drop_pct
         my_media_cfg.rx_drop_pct = self.rx_drop_pct
         my_media_cfg.quality = self.quality
         my_media_cfg.ptime = 20
         my_media_cfg.no_vad = self.no_vad
-        my_media_cfg.max_media_ports = 256
         if dns_list:
             my_ua_cfg.nameserver = dns_list
         self.init(log_cfg=pj.LogConfig(level=4, callback=log_cb), ua_cfg=my_ua_cfg, media_cfg=my_media_cfg)
