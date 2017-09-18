@@ -4,12 +4,15 @@ from lib.softphone.simple_pj import SoftphoneManager
 softphone_manager = SoftphoneManager()
 
 
-def get_softphone(user_name='default', user_group='Users', reg_wait=True):
+def get_softphone(user_name='default', user_group='Users', reg_wait=True, proxy_override=None):
     if user_name == 'default':
         user_name = cfg.site['DefaultSoftphoneUser']
     user_cfg = cfg.site[user_group][user_name]
     uri = "sip:%s@%s" % (user_cfg['UserId'], user_cfg['DomainName'])
-    proxy = user_cfg['Proxy']
+    if proxy_override is not None:
+        proxy = proxy_override
+    else:
+        proxy = user_cfg['Proxy']
     password = user_cfg['PhonePassword']
     null_snd = cfg.site['NullSound']
     dns_list = cfg.site['DnsList']
