@@ -1,3 +1,4 @@
+@removed
 Feature: As a user I want to set up the VLAN (R2D2-2098)
 
   Background: I am at the Network Settings view and VLAN is enabled
@@ -10,7 +11,6 @@ Feature: As a user I want to set up the VLAN (R2D2-2098)
     When  I touch the "Network" option
     Then  [network] I see the Network Settings view
 
-  @regression
   Scenario: VLAN controls are present
     Then  [network] I see the VLAN controls
     And   [network] I touch the back arrow at the top of the Network Settings view

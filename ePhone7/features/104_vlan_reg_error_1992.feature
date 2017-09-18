@@ -1,3 +1,4 @@
+@removed
 Feature: As a user I want to enable VLAN (R2D2-1992)
 
   Background: I am at the Network Settings view and VLAN is disabled
