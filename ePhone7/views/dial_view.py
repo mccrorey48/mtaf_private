@@ -72,6 +72,21 @@ class DialView(UserView):
         '#': [459, 740]
     }
 
+    digit_centers_old_keyboard = {
+        '1': [142, 420],
+        '2': [300, 420],
+        '3': [470, 420],
+        '4': [142, 520],
+        '5': [300, 520],
+        '6': [470, 520],
+        '7': [142, 620],
+        '8': [300, 620],
+        '9': [470, 620],
+        '*': [142, 725],
+        '0': [300, 725],
+        '#': [470, 725]
+    }
+
     numbers = {
         "Current OTA Server": "*682#",
         "Production OTA Server": "*7763#",
@@ -95,7 +110,8 @@ class DialView(UserView):
 
     @Trace(log)
     def dial_set_alpha_ota_server(self):
-        self.dial_named_number("Alpha OTA Server")
+        # if the normal downgrade version has the old keyboard layout, set old_keyboard to True
+        self.dial_named_number("Alpha OTA Server", old_keyboard=True)
 
     @Trace(log)
     def dial_set_beta_ota_server(self):
@@ -122,16 +138,19 @@ class DialView(UserView):
         self.click_named_element('DialButton')
 
     @Trace(log)
-    def dial_number(self, number):
+    def dial_number(self, number, old_keyboard=False):
         # displayed = self.find_named_element('Digits').text
         # displayed_len = len(displayed)
         for digit in number:
-            x, y = self.digit_centers[digit]
+            if old_keyboard:
+                x, y = self.digit_centers_old_keyboard[digit]
+            else:
+                x, y = self.digit_centers[digit]
             TouchAction(self.driver).press(None, x, y).release().wait(250).perform()
 
     @Trace(log)
-    def dial_named_number(self, name):
-        self.dial_number(self.numbers[name])
+    def dial_named_number(self, name, old_keyboard=False):
+        self.dial_number(self.numbers[name], old_keyboard=old_keyboard)
 
     @Trace(log)
     def get_number_buttons(self):
