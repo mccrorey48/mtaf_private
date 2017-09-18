@@ -343,6 +343,8 @@ class MyCallCallback(pj.CallCallback):
             new_call_status = self.account_info.call_status
             actions = {}
         log.debug("_on_state: old call_status = %s, new call_status = %s" % (old_call_status, new_call_status))
+        if new_call_status == 'call' and old_call_status != 'call':
+            self.account_info.call_start_time = time()
         self.account_info.call_status = new_call_status
         if self.account_info.call_status == 'idle':
             self.account_info.remote_uri = None
@@ -508,6 +510,7 @@ class MyAccountInfo:
         self.hold = False
         self.incoming_response = None
         self.remote_uri = None
+        self.call_start_time = None
 
 
 class PjsuaLib(pj.Lib):
@@ -528,7 +531,7 @@ class PjsuaLib(pj.Lib):
         # set these maximum values to accommodate the number of softphones that will be created;
         # a call from one softphone to another requires 4 distinct call IDs and uses 6 media slots
         my_ua_cfg.max_calls = 200
-        my_media_cfg.max_media_ports = 300
+        my_media_cfg.max_media_ports = 302
 
         my_media_cfg.tx_drop_pct = self.tx_drop_pct
         my_media_cfg.rx_drop_pct = self.rx_drop_pct
