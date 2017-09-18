@@ -7,6 +7,7 @@ var http = require('http');
 var fs = require('fs');
 var util = require('util');
 var csv = require('fast-csv');
+var sprintf = require('sprintf');
 
 
 var drs_path = '/drs/v2/socket.io';
@@ -17,9 +18,9 @@ var lab = false;
 var start = Date.now();
 
 // test configuration values
-var option_type = 'corpCon';
 // var option_type = 'presence';
-// var option_type = 'callhistory';
+// var option_type = 'corpCon';
+var option_type = 'callhistory';
 // var option_type = 'google';
 var user_count = 0;
 var max_user_count = 100;
@@ -44,7 +45,14 @@ csv
 });
 
 var log_file = fs.createWriteStream('log/drs_test.log', {flags : 'w'});
+var blf_log_file = fs.createWriteStream('log/blf_updates.log', {flags : 'w'});
 var log_stdout = process.stdout;
+
+function log_blf(s) {
+  var d = new Date();
+  var timestamp = sprintf("%02d:%02d:%02d.%03d", d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
+  blf_log_file.write(sprintf("%s: %s\n", timestamp, s))
+}
 
 function log(s) {
   var elapsed = Date.now() - start;
@@ -55,6 +63,7 @@ function log(s) {
 
 function startWebsocket(accessToken, user) {
   var socket;
+  var last_blf = null;
   log("starting websocket for user " + user.name + '@' + user.domain);
   socket = io.connect('http://' + api_url, {
     query: { auth: accessToken },
@@ -94,6 +103,10 @@ function startWebsocket(accessToken, user) {
 
   socket.on('corpCon-' + user.domain, function(data) {
     log('[' + user.name + ']["corpCon-'+ user.domain + '",'  + JSON.stringify(data));
+    if (data.blf !== last_blf) {
+      log_blf('[' + user.name + '] ' + data.blf);
+      last_blf = data.blf
+    }
   });
 
   socket.on('google-' + user.domain + '-' + user.name, function(data) {

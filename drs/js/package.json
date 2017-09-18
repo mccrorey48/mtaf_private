@@ -12,6 +12,7 @@
     "fast-csv": "^2.4.0",
     "fs": "0.0.1-security",
     "socket.io": "^2.0.3",
+    "sprintf": "^0.1.5",
     "util": "^0.10.3"
   }
 }
