@@ -1,7 +1,10 @@
 from behave import *
 from lib.wrappers import fake
 import lib.logging_esi as logging
+from lib.user_exception import UserException as Ux
+from lib.wrappers import Trace
 log = logging.get_logger('esi.test')
+
 
 @step("I run a step with no substeps")
 def i_run_a_step_with_no_substeps(context):

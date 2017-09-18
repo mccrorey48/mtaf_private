@@ -1,6 +1,8 @@
 # from os import path, makedirs
 #
 import lib.logging_esi as logging
+from lib.user_exception import UserException as Ux
+from lib.wrappers import Trace
 # from ePhone7.config.configure import cfg
 # from ePhone7.views import base_view
 # from ePhone7.utils.get_softphone import softphone_manager
@@ -80,6 +82,18 @@ def after_step(context, step):
 #                 _f.write(xml.encode('utf8'))
 #             base_view.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
     logging.pop_msg_src()
+
+
+def raise_ux():
+    raise Ux("user exception in test step implementation function")
+
+
+def after_scenario(context, scenario):
+    try:
+        # raise_ux()
+        raise Ux("user exception in test step implementation function")
+    except Ux as e:
+        log.warn("after_scenario: got user exception: %s", e)
 
 
 def after_all(context):
