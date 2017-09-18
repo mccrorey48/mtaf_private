@@ -15,6 +15,7 @@ from lib.selenium_actions import SeleniumActions
 from lib.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
 from lib.wrappers import Trace
 from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.utils.usb_enable import usb_enable
 
 log = logging_esi.get_logger('esi.base_view')
 
@@ -253,6 +254,7 @@ class BaseView(SeleniumActions):
         try:
             ss.expect('', 'mtp_open', timeout=timeout, dead_air_timeout=240)
         finally:
+            usb_enable()
             self.open_appium('nolaunch', force=True, timeout=60)
 
 
