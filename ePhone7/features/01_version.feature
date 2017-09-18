@@ -9,7 +9,6 @@ Feature: The version of the software should be correct
 
 
   Scenario: I want to be using the correct version of the ePhone7 software
-    Given I go to the home screen
     When  [user] I touch the Preferences icon
     Then  [prefs] the Preferences window appears
     And   [prefs] I close all open submenus
