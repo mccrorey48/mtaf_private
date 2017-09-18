@@ -52,9 +52,12 @@ def after_scenario(context, scenario):
     softphone_manager.set_defaults()
     tags = str(context.config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
-        base_view.close_appium()
-        base_view.open_appium()
-        base_view.startup()
+        try:
+            base_view.close_appium()
+            base_view.open_appium()
+            base_view.startup()
+        except Ux as e:
+            log.warn("after_scenario: got user exception %s" % e)
     logging.pop_msg_src()
 
 
