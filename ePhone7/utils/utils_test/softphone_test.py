@@ -1,30 +1,38 @@
 from ePhone7.utils.get_softphone import get_softphone
-from time import sleep
+from time import sleep, time
 import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
 
 log = logging_esi.get_logger('esi.softphone_test')
 
+if cfg.site_tag == 'mm':
+    proxy_override = 'nms-21.hs.cs.jfk01.esihs.net'
+else:
+    proxy_override = None
 phones = {}
 logging_esi.console_handler.setLevel(logging_esi.TRACE)
 users = sorted(cfg.site["DrsTestUsers"].keys())
 softphone_pairs = []
 # for index in range(0, len(users), 2):
-for index in range(0, 40, 2):
+for index in range(0, 10, 2):
     if index > len(users):
         break
     caller_name = users[index]
     called_name = users[(index + 1) % len(users)]
-    print "%s --> %s" % (caller_name, called_name)
-    caller = get_softphone(caller_name, user_group="DrsTestUsers", reg_wait=False)
-    called = get_softphone(called_name, user_group="DrsTestUsers", reg_wait=False)
+    log.warn("%s --> %s" % (caller_name, called_name))
+    caller = get_softphone(caller_name, user_group="DrsTestUsers", reg_wait=False, proxy_override=proxy_override)
+    called = get_softphone(called_name, user_group="DrsTestUsers", reg_wait=False, proxy_override=proxy_override)
     softphone_pairs.append({"caller": caller, "called": called})
 sleep(2)
 for pair in softphone_pairs:
     pair["called"].set_incoming_response(200)
     pair["caller"].make_call(pair["called"].uri)
-sleep(5)
+sleep(20)
 for pair in softphone_pairs:
+    log.warn("caller %s call time: %s" % (pair["caller"].account_info.uri,
+                                          time() - pair["caller"].account_info.call_start_time))
+    log.warn("called %s call time: %s" % (pair["called"].account_info.uri,
+                                          time() - pair["called"].account_info.call_start_time))
     pair["caller"].end_call()
     pair["called"].wait_for_call_status('idle', 15)
 for pair in softphone_pairs:
