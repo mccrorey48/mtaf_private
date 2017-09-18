@@ -672,16 +672,16 @@ def i_wait_for_the_phone_to_restart(context):
 @step("I wait for the phone to upgrade and reboot")
 @fake
 def i_wait_for_the_phone_to_upgrade_and_reboot(context):
-    start_time = time()
-    timeout = 20
-    current_activity = None
-    while time() - start_time < timeout:
-        current_activity = base_view.driver.current_activity
-        log.debug('waiting for upgrade and reboot: current activity is %s' % current_activity)
-        if current_activity == '.OTAAppActivity':
-            break
-    else:
-        raise Ux('current_activity %s after %s seconds, expected .OTAAppActivity' % (current_activity, timeout))
+    # start_time = time()
+    # timeout = 20
+    # current_activity = None
+    # while time() - start_time < timeout:
+    #     current_activity = base_view.driver.current_activity
+    #     log.debug('waiting for upgrade and reboot: current activity is %s' % current_activity)
+    #     if current_activity == '.OTAAppActivity':
+    #         break
+    # else:
+    #     raise Ux('current_activity %s after %s seconds, expected .OTAAppActivity' % (current_activity, timeout))
     base_view.close_appium_until_reboot()
     base_view.startup()
 
