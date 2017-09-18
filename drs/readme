@@ -1,0 +1,75 @@
+DRS test procedures
+-------------------
+
+1. Overview
+
+    The script for creating and testing DRS websockets is:
+        mtaf/drs/js/drs_demo.js
+
+    It sets up websockets for multiple users at once. The
+    websockets stay open until the script is terminated. Events and received
+    data are logged, with timestamps, to drs_test.log and to standard output.
+
+    Additional configuration tasks and log file analysis are provided by the
+    Python scripts located in the "mtaf/drs/py" directory:
+        drs_log_analyzer.py   (drs throughput graph generator)
+        blf_delay_hist.py     (blf delay time histogram generator)
+        call_hist_gen.py      (call history and call load generator)
+
+    All of these scripts are designed to run from the "mtaf" directory. All
+    logs are saved in "mtaf/log".
+
+    To run drs_demo.py, cd to the mtaf directory and enter:
+        node drs/js/drs_demo.js
+
+3. Environment
+
+    The entire mtaf repo should be installed on the host PC. The PC should
+    be configured to run as described in "mtaf/doc/install_notes"
+
+3. Configuration
+
+    Modify variable values in the mtaf/drs/js/drs_demo.js file to change the
+    test configuration.
+
+    Set max_user_count to a value between 1 and 100. There are currently 100
+    users in the drs-test (production) and SVAutoDRS (lab) domains, which limits
+    the usable max_user_count to 100. User configurations are stored in csv
+    files, specified in the drs_demo.js file in the csv_file variable.
+
+    The "option_type" value is used as the argument to the DRS websocket's "join
+    room" command. The tested values for option_type are "corpCon" (for
+    corporate contacts) or "callhistory" (for call history).
+
+    When the option_type is 'corpCon', BLF updates are logged to
+    mtaf/log/blf_updates.log.
+
+    It is possible to create more users in the test domains, then include them
+    in the specified csv files and use a higher max_user_count. However, there
+    are some settings in lib/softphone/simple_pj.py (max_calls and
+    max_media_ports) that will have to be changed to use more than 100
+    simultaneous user accounts. See comments in simple_pj.py where these values
+    are assigned.
+
+    The call_hist_gen.py script is useful for generating call history for a
+    configured range of test user accounts, which can include all users in the
+    test domain. It can also be used to generate BLF updates when running
+    drs_demo.js with the "corpCon" option, if started after drs_demo.js has
+    opened the websockets. Since it makes calls simultaneously for the selected
+    group of users, it can stress the PBX proxy server to the point of slowing
+    the SIP responses by several seconds, which is useful for verifying that BLF
+    responses do not slow excessively under high load conditions.
+
+    To make user accounts available to call_hist_gen.py, they must be included
+    in the e7_site database used by the mtaf softphone code. The new user
+    account information will have to be added to mtaf/config/e7_site.json. To
+    update the database, cd to the mtaf directory and enter:
+
+        python mtaf/lib/db_utils.py restore e7_site
+
+
+
+3. Output Analysis
+
+    mtaf/drs/py/
+
