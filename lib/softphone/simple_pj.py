@@ -287,7 +287,7 @@ new_call_settings = {
         (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': ['delete_call']}
     },
     'call': {
-        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call'},
+        (pj.CallState.CONFIRMED, pj.MediaState.ACTIVE): {'status': 'call', 'actions': ['connect_media']},
         (pj.CallState.CONFIRMED, pj.MediaState.NULL): {'status': 'hold'},
         (pj.CallState.DISCONNECTED, pj.MediaState.ACTIVE): {'status': 'idle', 'actions': ['destroy_media', 'delete_call']},
         (pj.CallState.DISCONNECTED, pj.MediaState.NULL): {'status': 'idle', 'actions': ['destroy_media', 'delete_call']}
