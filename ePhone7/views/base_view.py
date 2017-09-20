@@ -1,6 +1,6 @@
 import os
 from PIL import Image
-from time import sleep, time
+from time import sleep, time, strftime, localtime
 
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
@@ -266,7 +266,8 @@ class BaseView(SeleniumActions):
             log.debug('closing appium')
             try:
                 logcat = SeleniumActions.driver.get_log('logcat')
-                with open('log/e7_logcat.log', 'w') as f:
+                timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
+                with open('log/e7_logcat_%s.log' % timestamp, 'w') as f:
                     for line in [item['message'] for item in logcat]:
                         f.write(line.encode('utf-8') + '\n')
                 SeleniumActions.driver.quit()
