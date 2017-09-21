@@ -12,3 +12,4 @@ steps.txt
 substeps.txt
 *.json
 *.log
+*.cap

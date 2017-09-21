@@ -28,9 +28,9 @@ sp.set_incoming_response(200)
 
 def call_e7_from_softphone():
     sp.make_call(e7_uri)
-    sleep(10)
+    sleep(15)
     sp.end_call()
-    sleep(20)
+    sleep(5)
 
 
 def call_softphone_from_e7():
@@ -40,19 +40,21 @@ def call_softphone_from_e7():
     user_view.goto_tab('Dial')
     dial_view.dial_number(sp_user_id)
     dial_view.touch_dial_button()
+    sp.wait_for_call_status('call', timeout=30)
     sleep(10)
     active_call_view.touch_end_call_button()
     sp.wait_for_call_status('idle', timeout=10)
-    sleep(5)
     user_view.close_appium()
-    sleep(20)
+    sleep(10)
 
 
-# if softphone.account_info.reg_status != 200:
-#     raise Ux("%s reg status = %s, exiting" % softphone.account_info.reg_status)
+if sp.account_info.reg_status != 200:
+    raise Ux("%s reg status = %s, exiting" % sp.account_info.reg_status)
+# call_softphone_from_e7()
 while True:
+# for i in range(3):
     try:
-        call_e7_from_softphone()
+        # call_e7_from_softphone()
         call_softphone_from_e7()
     except Ux as e:
         log.info("got user exception: %s" % e)
