@@ -1,0 +1,211 @@
+The following steps were performed on a new Ubuntu 14.04 LTS partition to
+create a working run-time environment for the MTAF test framework.
+------------------------------------------------------------------------
+1. Install required Ubuntu programs and libraries:
+    sudo apt-get update
+    sudo apt-get install openjdk-7-jdk
+    sudo apt-get install git
+    sudo apt-get install vim-gtk
+    sudo apt-get install g++
+    sudo apt-get install lilbasound2-dev
+    sudo apt-get install npm
+    sudo apt-get install python-pip
+    sudo apt-get install python-dev
+    sudo apt-get install minicom
+    sudo apt-get install tftpd
+
+2. Install MTAF framework and PyCharm Community Edition:
+    git clone https://bitbucket.org/estech/mtaf
+    download and install PyCharm community edition from jetbrains.com
+    cd to pycharm-community-<version>/bin
+    run ./pycharm.sh, follow prompts to create desktop entry
+    quit pycharm
+    open "search your computer" by clicking top desktop icon (or tap Windows key)
+    enter "pycharm" in the text box
+    drag PyCharm icon to the toolbar
+
+3. Create a Python virtualenv so you won't need to modify the default Ubuntu
+Python installation, beyond installing virtualenv and virtualenvwrapper:
+    sudo pip install virtualenv
+    sudo pip install virtualenvwrapper
+    add lines to ~/.bashrc:
+       export WORKON_HOME=~/virtualenv
+       . /usr/share/virtualenvwrapper/virtualenvwrapper.sh
+    then run (in the home directory where .bashrc is located):
+       . .bashrc
+    virtualenv virtualenv
+    mkvirtualenv mtaf
+        This creates a virtualenv named mtaf, located in ~/virtualenv/mtaf.
+        Pycharm will be set up to use this virtualenv automatically. However,
+        to run mtaf scripts from the command line, it will be necessary to
+        first run the command:
+
+            workon mtaf
+
+        the terminal prompt should now start with '(mtaf)', so subsequent pip
+        install commands will operate on the mtaf virtiualenv located in
+        ~/virtualenvs, and sudo will not be needed or desired.
+
+        To exit the virtualenv, enter:
+
+            deactivate
+
+        and the '(mtaf)' prefix should disappear from the terminal prompt.
+
+4. Set up the mtaf project in PyCharm
+    start pycharm by clicking desktop entry on toolbar
+    select "Open" and open the mtaf folder cloned earlier
+    from PyCharm menu bar select File->Settings
+    in Settings window select Project->Project Interpreter
+    in the Project Interpreter combo box, click the dropdown icon and select
+        "/home/<your username>/virtualenv/mtaf/bin/python"
+    click OK to save the settings and close settings window
+    quit PyCharm
+    add line to .bashrc:
+        export PYTHONPATH=~/mtaf
+    . .bashrc
+
+5. Install the required Python modules in the mtaf virtualenv:
+    workon mtaf
+    pip install selenium
+    pip install numpy
+    pip install matplotlib
+    pip install spur
+    pip install pymongo
+    pip install Appium-Python-Client
+    pip install behave
+    git clone https://github.com/ardevd/pyand.git
+    cd pyand
+    python setup.py install
+    deactivate
+
+6. Build the pjsip/pjsua libraries and python module
+    git clone https://bitbucket.org/esi-tau/pjproject
+    cd to pjproject directory
+    build pjsip:
+        ./configure CFLAGS=-fPIC CCFLAGS=-fPIC
+        make dep
+        make
+        workon mtaf
+        cd pjsip-apps/src/python
+        deactivate
+
+7. Set up the mtaf to use a specific test site configuration:
+
+    Note: the mtaf uses a site configuration mongodb database normally hosted
+    on a remote server (currently 10.0.12.42). By specifying a "site tag" in the
+    MTAF_SITE environment variable, the mtaf will be use only the configuration
+    data associated with that site tag. This accomplished two requirements:
+
+        1. Allow different test host PC's to be assigned their own test user
+        accounts, so they can run the same mtaf tests against the same
+        PBX proxy server, possible at the same time, without conflict
+
+        2. Allow a test host PC to run the same mtaf tests on different PBX
+        proxy servers, e.g., production and svlab
+
+    To set up a default site configuration for a test host PC, add these lines
+    to ~/.profile so the environment variables will be set at login:
+
+         export MTAF_SITE=<site tag>
+         export MTAF_DB_HOST=10.0.12.42
+
+< special section on how to create a new site tag, if one is needed >
+     The value of <site tag> must match a site tag defined in the e7_site
+     database on the MTAF_DB_HOST server.  The database is updated by editing
+     the file "mtaf/ePhone7/config/e7_site.json", using these steps:
+
+        1. Before changing this file, run the command:
+
+             python lib/db_utils.py -s 10.0.12.42 dump e7_site
+
+         This updates the e7_site.json file to match the database on 10.0.12.42.
+
+         2. Make sure it matches the committed mtaf repo version by running:
+
+            git status
+
+         which will show if the e7_site.json file was modified by the db_utils
+         dump operation.
+
+         3. If it has been modified, find out which version is correct before
+         proceeding; if, for example, a needed change was made to the database
+         without committing the corresponding json file to the repo, the change
+         should be committed to the repo.
+
+         4. Create a new site configuration by editing e7_site.json
+
+         5. Update the database by running the command:
+
+             python lib/db_utils.py -s 10.0.12.42 restore e7_site
+
+< end of special section on how to create a new site tag >
+
+8. Install the Appium server
+
+    cd
+    sudo npm install -g n
+    sudo n 7.5.0
+    (this installs node 7.5.0)
+
+    git clone https://github.com/appium/appium.git
+    cd appium
+    npm install
+
+    create a file ~/appium.sh containing the following lines:
+    <start of appium.sh>
+    #!/bin/bash
+    /usr/local/bin/node ~/appium/build/lib/main.js --address "127.0.0.1" --session-override --debug-log-spacing --log "/tmp/appium2.log" --log-timestamp --log-level "debug" --local-timezone --default-capabilities '{"platformName":"Android","platformVersion":"6.0","automationName":"Appium", "deviceName":"Samsung","noReset":true,"dontStopAppOnReset":true}' --suppress-adb-kill-server
+    <end of appium.sh>
+
+    chmod +x appium.sh
+
+9. Install minicom to communicate with the ePhone7 serial interface
+
+    sudo adduser $USER dialout
+
+    log out and log in so user will be added to dialout group
+    run "sudo minicom -s" and make two changes to the default configuration:
+        serial device ttyUSB0
+        hardware flow control off
+
+10. Install Android Studio
+
+    download android studio from developer.android.com/studio
+    unzip the file
+    cd android-studio/bin
+    ./studio.sh
+        When Android Studio runs the first time, it displays a window titled
+        "Missing SDK".  Click Next to get the window "SDK Components Setup".
+        Then click Next to get the window "Verify Settings". Then click Finish
+        and the Android SDK tools will download to the directory ~/Android/Sdk.
+        When complete, click Finish and then close the Android Studio window.
+
+    add lines to .bashrc:
+        export PATH=$PATH:~/Android/Sdk/platform-tools:~/Android/Sdk/tools/bin
+    . .bashrc
+
+11. Install and set up tftpd
+
+    adb devices
+        (this will list a device is an ePhone7 is connected via USB and USB
+        debugging has been enabled on the phone, but even if not, run adb devices
+        to create the adb key needed for the next steps)
+    sudo mkdir /tftpboot
+    sudo chmod 777 /tftpboot
+    cp .android/adbkey.pub /tftpboot
+    create a file /etc/xinetd.d/tftp containing this text:
+    <start of quoted text>
+    service tftp
+    {
+        protocol        = udp
+        port            = 69
+        socket_type     = dgram
+        wait            = yes
+        user            = nobody
+        server          = /usr/sbin/in.tftpd
+        server_args     = /tftpboot
+        disable         = no
+    }
+    <end of quoted text>
+    sudo service xinetd restart
