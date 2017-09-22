@@ -100,6 +100,9 @@ class Trace(object):
                 logger.warn(('%%s %%s%%-%ds FAIL - %%s' % (35 - logging_esi.trace_indent))
                             % (self.prefix(), f.func_name, sp(), e.get_msg()))
                 raise Tx('User timeout exception: calling %s' % f.func_name)
+            except KeyboardInterrupt:
+                log.warn("got keyboard interrupt")
+                raise
             except:
                 self.elapsed_time = time() - start_time
                 (exc_type, value, tb) = sys.exc_info()
