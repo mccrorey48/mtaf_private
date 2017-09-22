@@ -48,6 +48,13 @@ class UserView(BaseView):
         self.softphones = {}
 
     @Trace(log)
+    def is_present(self):
+        for element_name in self.tab_names:
+            if not self.element_is_present(element_name):
+                return False
+        return True
+
+    @Trace(log)
     def set_dnd(self, on=True):
         if on:
             desired_color = cfg.colors['UserView']['dnd_on_color'][:-1]

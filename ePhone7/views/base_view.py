@@ -57,7 +57,6 @@ class BaseView(SeleniumActions):
             locator["value"] = 'new UiSelector().text("%s")' % locator["value"]
         return locator
 
-
     @Trace(log)
     def send_keycode(self, keycode):
         SeleniumActions.driver.keyevent(keycodes[keycode])
@@ -231,7 +230,8 @@ class BaseView(SeleniumActions):
                     if time() - start_time < timeout:
                         log.info("retrying webdriver.Remote(%s, %s)" % (cfg.site["SeleniumUrl"], cfg.caps[caps_tag]))
                     else:
-                        raise Ux("timed out waiting to connect to webdriver")
+                        log.info("timed out waiting to connect to webdriver")
+                        raise
             self.caps_tag = caps_tag
             driver.implicitly_wait(cfg.site['DefaultTimeout'])
             return driver
@@ -244,8 +244,8 @@ class BaseView(SeleniumActions):
             log.debug('opening appium')
             try:
                 SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
-            except BaseException as e:
-                raise Ux(str(e))
+            except WebDriverException:
+                raise
 
     @Trace(log)
     def close_appium_until_reboot(self, timeout=600):
