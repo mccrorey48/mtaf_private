@@ -352,4 +352,5 @@ class ContactsView(UserView):
     def find_handset_sub_element(self, list_element):
         return self.find_named_sub_element(list_element, 'ContactCallIcon')
 
+
 contacts_view = ContactsView()

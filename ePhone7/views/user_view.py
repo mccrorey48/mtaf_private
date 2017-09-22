@@ -47,13 +47,6 @@ class UserView(BaseView):
         self.call_status_wait = 30
         self.softphones = {}
 
-    # @Trace(log)
-    # def logout(self):
-    #     self.goto_prefs()
-    #     prefs_view.logout()
-    #     prefs_view.logout_confirm()
-    #     self.wait_for_condition_true(lambda: remote.current_activity == '.settings.ui.LoginActivity')
-
     @Trace(log)
     def set_dnd(self, on=True):
         if on:
