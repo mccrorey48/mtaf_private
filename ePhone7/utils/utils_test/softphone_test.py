@@ -22,8 +22,6 @@ password = sp_user_cfg['PhonePassword']
 null_snd = cfg.site['NullSound']
 dns_list = cfg.site['DnsList']
 tcp = cfg.site['UseTcp']
-sp = softphone_manager.get_softphone(uri, proxy, password, null_snd, dns_list, tcp)
-sp.set_incoming_response(200)
 
 
 def call_e7_from_softphone():
@@ -34,27 +32,39 @@ def call_e7_from_softphone():
 
 
 def call_softphone_from_e7():
-    user_view.open_appium()
     sleep(10)
-    # user_view.startup()
-    user_view.goto_tab('Dial')
     dial_view.dial_number(sp_user_id)
     dial_view.touch_dial_button()
     sp.wait_for_call_status('call', timeout=30)
     sleep(10)
     active_call_view.touch_end_call_button()
     sp.wait_for_call_status('idle', timeout=10)
-    user_view.close_appium()
     sleep(10)
 
 
-if sp.account_info.reg_status != 200:
-    raise Ux("%s reg status = %s, exiting" % sp.account_info.reg_status)
-# call_softphone_from_e7()
-while True:
-# for i in range(3):
-    try:
-        # call_e7_from_softphone()
-        call_softphone_from_e7()
-    except Ux as e:
-        log.info("got user exception: %s" % e)
+try:
+    sp = softphone_manager.get_softphone(uri, proxy, password, null_snd, dns_list, tcp)
+    sp.set_incoming_response(200)
+    if sp.account_info.reg_status != 200:
+        raise Ux("%s reg status = %s, exiting" % sp.account_info.reg_status)
+    base_view.open_appium()
+    sleep(10)
+    # while True:
+    for i in range(20):
+        if not user_view.is_present():
+            log.info("Restarting Appium")
+            base_view.close_appium()
+            sleep(10)
+            base_view.open_appium()
+            sleep(10)
+        try:
+            user_view.goto_tab('Dial')
+            call_softphone_from_e7()
+            call_e7_from_softphone()
+        except Ux as e:
+            log.info("got user exception: %s" % e)
+except KeyboardInterrupt:
+    print "\rgot keyboard interrupt"
+finally:
+    user_view.close_appium()
+
