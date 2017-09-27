@@ -1,57 +1,88 @@
-from ePhone7.utils.get_softphone import get_softphone
-from time import sleep, time
+from lib.softphone.simple_pj import SoftphoneManager
+import time
+from time import sleep
 import lib.logging_esi as logging_esi
+from lib.user_exception import UserException as Ux
+from ePhone7.views import *
 from ePhone7.config.configure import cfg
 
 log = logging_esi.get_logger('esi.softphone_test')
 
-if cfg.site_tag == 'mm':
-    proxy_override = 'nms-21.hs.cs.jfk01.esihs.net'
-else:
-    proxy_override = None
-phones = {}
 logging_esi.console_handler.setLevel(logging_esi.TRACE)
-users = sorted(cfg.site["DrsTestUsers"].keys())
-softphone_pairs = []
-# for index in range(0, len(users), 2):
-for index in range(0, 10, 2):
-    if index > len(users):
-        break
-    caller_name = users[index]
-    called_name = users[(index + 1) % len(users)]
-    log.warn("%s --> %s" % (caller_name, called_name))
-    caller = get_softphone(caller_name, user_group="DrsTestUsers", reg_wait=False, proxy_override=proxy_override)
-    called = get_softphone(called_name, user_group="DrsTestUsers", reg_wait=False, proxy_override=proxy_override)
-    softphone_pairs.append({"caller": caller, "called": called})
-sleep(2)
-for pair in softphone_pairs:
-    pair["called"].set_incoming_response(200)
-    pair["caller"].make_call(pair["called"].uri)
-sleep(20)
-for pair in softphone_pairs:
-    log.warn("caller %s call time: %s" % (pair["caller"].account_info.uri,
-                                          time() - pair["caller"].account_info.call_start_time))
-    log.warn("called %s call time: %s" % (pair["called"].account_info.uri,
-                                          time() - pair["called"].account_info.call_start_time))
-    pair["caller"].end_call()
-    pair["called"].wait_for_call_status('idle', 15)
-for pair in softphone_pairs:
-    pair["caller"].unregister()
-    pair["called"].unregister()
-sleep(2)
-# called.send_response_code(100)
-# sleep(5)
-# log.debug("2203 sending 180")
-# called.send_response_code(180)
-# sleep(5)
-# log.debug("2203 sending 200")
-# called.send_response_code(200)
-# sleep(5)
-# log.debug("2203 executing hold")
-# called.hold()
-# sleep(5)
-# log.debug("2203 executing unhold")
-# called.unhold()
-# sleep(5)
-# log.debug("2202 ending call")
+
+softphone_manager = SoftphoneManager()
+
+e7_uri = 'sip:2011@test2.test-eng.com'
+sp_user_name = cfg.site['DefaultSoftphoneUser']
+sp_user_cfg = cfg.site['Users'][sp_user_name]
+sp_user_id = sp_user_cfg['UserId']
+uri = "sip:%s@%s" % (sp_user_id, sp_user_cfg['DomainName'])
+# proxy = sp_user_cfg['Proxy']
+proxy = 'nms-01.hs.cs.lax01.esihs.net'
+password = sp_user_cfg['PhonePassword']
+null_snd = cfg.site['NullSound']
+dns_list = cfg.site['DnsList']
+tcp = cfg.site['UseTcp']
+
+
+def call_e7_from_softphone(short_call=False):
+    sp.make_call(e7_uri)
+    sp.wait_for_call_status('early', timeout=30)
+    try:
+        if not short_call:
+            if not user_view.incoming_call_screen_is_present():
+                raise Ux("incoming call screen not present when ePhone7 is being called")
+            sleep(15)
+    except Ux:
+        raise
+    finally:
+        sp.end_call()
+        sp.wait_for_call_status('idle', timeout=10)
+    sleep(5)
+
+
+def call_softphone_from_e7():
+    sleep(10)
+    dial_view.dial_number(sp_user_id)
+    dial_view.touch_dial_button()
+    sp.wait_for_call_status('early', timeout=30)
+    sleep(10)
+    active_call_view.touch_end_call_button()
+    sp.wait_for_call_status('idle', timeout=10)
+    sleep(10)
+
+
+try:
+    sp = softphone_manager.get_softphone(uri, proxy, password, null_snd, dns_list, tcp)
+    sp.set_incoming_response(200)
+    if sp.account_info.reg_status != 200:
+        raise Ux("%s reg status = %s, exiting" % sp.account_info.reg_status)
+    base_view.open_appium()
+    sleep(10)
+    call_count = 0
+    # while True:
+    for i in range(18):
+        # if not user_view.is_present():
+        #     log.info("Restarting Appium")
+        #     base_view.close_appium()
+        #     sleep(10)
+        #     base_view.open_appium()
+        #     sleep(10)
+        try:
+            call_count += 1
+            # user_view.goto_tab('Dial')
+            # call_softphone_from_e7()
+            # call_e7_from_softphone()
+            if call_count % 6 == 0:
+                log.info("making normal call")
+                call_e7_from_softphone()
+            else:
+                log.info("making short call")
+                call_e7_from_softphone(short_call=True)
+        except Ux as e:
+            log.info("got user exception: %s" % e)
+except KeyboardInterrupt:
+    print "\rgot keyboard interrupt"
+finally:
+    user_view.close_appium()
 

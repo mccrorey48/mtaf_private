@@ -1,6 +1,6 @@
 import os
 from PIL import Image
-from time import sleep, time
+from time import sleep, time, strftime, localtime
 
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
@@ -15,6 +15,7 @@ from lib.selenium_actions import SeleniumActions
 from lib.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
 from lib.wrappers import Trace
 from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.utils.usb_enable import usb_enable
 
 log = logging_esi.get_logger('esi.base_view')
 
@@ -55,7 +56,6 @@ class BaseView(SeleniumActions):
             locator["by"] = "-android uiautomator"
             locator["value"] = 'new UiSelector().text("%s")' % locator["value"]
         return locator
-
 
     @Trace(log)
     def send_keycode(self, keycode):
@@ -230,7 +230,8 @@ class BaseView(SeleniumActions):
                     if time() - start_time < timeout:
                         log.info("retrying webdriver.Remote(%s, %s)" % (cfg.site["SeleniumUrl"], cfg.caps[caps_tag]))
                     else:
-                        raise Ux("timed out waiting to connect to webdriver")
+                        log.info("timed out waiting to connect to webdriver")
+                        raise
             self.caps_tag = caps_tag
             driver.implicitly_wait(cfg.site['DefaultTimeout'])
             return driver
@@ -243,8 +244,8 @@ class BaseView(SeleniumActions):
             log.debug('opening appium')
             try:
                 SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
-            except BaseException as e:
-                raise Ux(str(e))
+            except WebDriverException:
+                raise
 
     @Trace(log)
     def close_appium_until_reboot(self, timeout=600):
@@ -253,6 +254,7 @@ class BaseView(SeleniumActions):
         try:
             ss.expect('', 'mtp_open', timeout=timeout, dead_air_timeout=240)
         finally:
+            usb_enable()
             self.open_appium('nolaunch', force=True, timeout=60)
 
 
@@ -264,7 +266,8 @@ class BaseView(SeleniumActions):
             log.debug('closing appium')
             try:
                 logcat = SeleniumActions.driver.get_log('logcat')
-                with open('log/e7_logcat.log', 'w') as f:
+                timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
+                with open('log/e7_logcat_%s.log' % timestamp, 'w') as f:
                     for line in [item['message'] for item in logcat]:
                         f.write(line.encode('utf-8') + '\n')
                 SeleniumActions.driver.quit()

@@ -25,4 +25,5 @@ class TncView(BaseView):
         self.click_named_element('Continue')
         self.wait_for_activity('.util.AppIntroActivity')
 
+
 tnc_view = TncView()

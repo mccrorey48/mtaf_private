@@ -47,12 +47,12 @@ class UserView(BaseView):
         self.call_status_wait = 30
         self.softphones = {}
 
-    # @Trace(log)
-    # def logout(self):
-    #     self.goto_prefs()
-    #     prefs_view.logout()
-    #     prefs_view.logout_confirm()
-    #     self.wait_for_condition_true(lambda: remote.current_activity == '.settings.ui.LoginActivity')
+    @Trace(log)
+    def is_present(self):
+        for element_name in self.tab_names:
+            if not self.element_is_present(element_name):
+                return False
+        return True
 
     @Trace(log)
     def set_dnd(self, on=True):
@@ -165,6 +165,9 @@ class UserView(BaseView):
         self.softphones[called_name].account_info.incoming_response = 180
         return self.softphones[called_name]
 
+    @Trace(log)
+    def incoming_call_screen_is_present(self):
+        return self.element_is_present('IncomingCallLabel')
 
     @Trace(log)
     def incoming_call_screen_test(self):

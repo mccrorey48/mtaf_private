@@ -92,7 +92,7 @@ def restore_dbs(_db_names, server, cfg_dir, _output_fd):
                     except KeyError:
                         pass
                     try:
-                        if doc['type'] == 'user' or doc['type'] == 'drs_test_user':
+                        if doc['type'] == 'user':
                             user.append(dict(doc, **{'site_tag': collection_name}))
                         elif doc['type'] == 'constants':
                             constants.append(dict(doc, **{'site_tag': collection_name}))

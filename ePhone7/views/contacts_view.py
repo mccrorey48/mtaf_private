@@ -6,6 +6,7 @@ from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.user_view import UserView
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
+from lib.filters import get_filter
 
 log = logging.get_logger('esi.contacts_view')
 
@@ -254,14 +255,16 @@ class ContactsView(UserView):
 
     @Trace(log)
     def scroll_to_top_of_list(self):
-        elems = self.find_named_elements("ContactParent")
-        elems = self.find_named_elements("ContactName")
+        frame = self.find_named_element('ContactsList')
+        parents = self.find_named_elements("ContactParent", get_filter("within_frame", frame))
+        elems = [self.find_named_sub_element(parent, "ContactName") for parent in parents]
         old_names = [el.text for el in elems]
         if len(old_names) < 8:
             return
         while True:
             self.short_press_scroll(elems[0], elems[-1])
-            elems = self.find_named_elements("ContactName")
+            parents = self.find_named_elements("ContactParent", get_filter("within_frame", frame))
+            elems = [self.find_named_sub_element(parent, "ContactName") for parent in parents]
             new_name_count = 0
             for name in [el.text for el in elems]:
                 if name not in old_names:
@@ -348,5 +351,6 @@ class ContactsView(UserView):
     @Trace(log)
     def find_handset_sub_element(self, list_element):
         return self.find_named_sub_element(list_element, 'ContactCallIcon')
+
 
 contacts_view = ContactsView()

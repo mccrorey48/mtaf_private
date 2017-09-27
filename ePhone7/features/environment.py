@@ -5,6 +5,7 @@ from ePhone7.config.configure import cfg
 from ePhone7.views import base_view
 from ePhone7.utils.get_softphone import softphone_manager
 from lib.user_exception import UserException as Ux
+import datetime
 
 log = logging.get_logger('esi.environment')
 substeps = ''
@@ -52,9 +53,12 @@ def after_scenario(context, scenario):
     softphone_manager.set_defaults()
     tags = str(context.config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
-        base_view.close_appium()
-        base_view.open_appium()
-        base_view.startup()
+        try:
+            base_view.close_appium()
+            base_view.open_appium()
+            base_view.startup()
+        except Ux as e:
+            log.warn("after_scenario: got user exception %s" % e)
     logging.pop_msg_src()
 
 
@@ -79,18 +83,19 @@ def after_step(context, step):
         log.info("EXCEPTION in step %s" % step.name)
     if 'fake' not in str(context.config.tags).split(','):
         if step.status == 'failed':
-            xml = base_view.get_source()
-            try:
-                makedirs(cfg.xml_folder)
-            except OSError as e:
-                # ignore 'File exists' error but re-raise any others
-                if e.errno != 17:
-                    raise e
-            xml_fullpath = path.join(cfg.xml_folder, 'exception.xml')
-            log.info("saving xml %s" % xml_fullpath)
-            with open(xml_fullpath, 'w') as _f:
-                _f.write(xml.encode('utf8'))
-            base_view.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
+            # xml = base_view.get_source()
+            # try:
+            #     makedirs(cfg.xml_folder)
+            # except OSError as e:
+            #     # ignore 'File exists' error but re-raise any others
+            #     if e.errno != 17:
+            #         raise e
+            # xml_fullpath = path.join(cfg.xml_folder, 'exception.xml')
+            # log.info("saving xml %s" % xml_fullpath)
+            # with open(xml_fullpath, 'w') as _f:
+            #     _f.write(xml.encode('utf8'))
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            base_view.get_screenshot_as_png('exception-%s' % timestamp, cfg.test_screenshot_folder)
     logging.pop_msg_src()
 
 
