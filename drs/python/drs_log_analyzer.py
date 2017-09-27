@@ -8,7 +8,7 @@ max_ms = 0
 option_type = None
 
 # configuration values
-bin_size_ms = 1000
+bin_size_ms = 100
 
 with open('log/drs_test.log') as f:
     lines = f.readlines()
