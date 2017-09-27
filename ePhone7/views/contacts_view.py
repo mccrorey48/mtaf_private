@@ -25,6 +25,8 @@ class ContactsView(UserView):
         "ContactsList": {"by": "id", "value": "com.esi_estech.ditto:id/contactsList"},
         "Coworkers": {"by": "id", "value": "com.esi_estech.ditto:id/ephone_contacts", "text": "Coworkers"},
         "CorporateContactDetail": {"by": "id", "value": "com.esi_estech.ditto:id/corporate_details_sliding_layout"},
+        "EmptyFavoritesList": {"by": "id", "value": "com.esi_estech.ditto:id/empty_view",
+                               "text": "No Favorite Contacts Added"},
         "Favorites": {"by": "id", "value": "com.esi_estech.ditto:id/favorites", "text": "Favorites"},
         "FavoriteIndicator": {"by": "id", "value": "com.esi_estech.ditto:id/favorite_indicator"},
         "FirstContactName": {"by": "zpath", "value": "//rv/fl[1]/v/tv[1]"},

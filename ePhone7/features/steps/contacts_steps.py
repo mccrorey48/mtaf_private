@@ -253,10 +253,8 @@ def contacts__my_phone_calls_the_contact(context):
 @step("[contacts] no Coworker contacts are shown on the favorites display")
 @fake
 def contacts__no_coworker_contacts_are_shown_on_the_favorites_display(context):
-    contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
-    contacts = contacts_view.get_all_group_contacts(contacts_group)
-    assert contacts_view.element_is_not_present('ContactNumber'), \
-        "Found contacts in Favorites list, expected none"
+    assert contacts_view.element_is_present("EmptyFavoritesList"), \
+        "Empty favorites list not present"
 
 
 @step("[contacts] the color toggles between yellow and white")
