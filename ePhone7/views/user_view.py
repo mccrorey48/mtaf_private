@@ -165,6 +165,9 @@ class UserView(BaseView):
         self.softphones[called_name].account_info.incoming_response = 180
         return self.softphones[called_name]
 
+    @Trace(log)
+    def incoming_call_screen_is_present(self):
+        return self.element_is_present('IncomingCallLabel')
 
     @Trace(log)
     def incoming_call_screen_test(self):
