@@ -136,15 +136,6 @@ def prefs__only_the_contact_i_touched_is_listed(context):
     pass
 
 
-@step("[prefs] the current versions are installed")
-@fake
-def prefs__the_current_versions_are_installed(context):
-    current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
-    installed_aosp, installed_app = get_installed_versions()
-    assert installed_aosp == current_aosp, "Expected installed aosp version %s, got %s" % (current_aosp, installed_aosp)
-    assert installed_app == current_app, "Expected installed app version %s, got %s" % (current_app, installed_app)
-
-
 @step("[prefs] the email notification popup disappears")
 @fake
 def prefs__the_email_notification_popup_disappears(context):
