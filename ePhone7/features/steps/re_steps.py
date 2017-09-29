@@ -13,7 +13,7 @@ def a__with__ptext__appears(context, text):
 
 @step('I touch (?:[^"]*)?"(?P<text>[^"]+)"(?P<tail>[^"]*)')
 @fake
-def i_touch_ptext(context, text, tail):
+def i_touch_ptextptail(context, text, tail):
     # matches: I touch <optional> "<text>" <optional>
     # where <optional> and <text> are any text not including a double quote
     # then looks for an element with full text content matching <text>
