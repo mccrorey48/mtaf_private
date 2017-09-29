@@ -1,4 +1,4 @@
-@required @regression
+@regression
 Feature: The version of the software should be correct
 
   Background: I am at the Home screen
@@ -6,7 +6,6 @@ Feature: The version of the software should be correct
 
   Scenario: I upgrade the phone if the versions are not correct
     Then  I upgrade the phone if the versions are not correct
-
 
   Scenario: I want to be using the correct version of the ePhone7 software
     When  [user] I touch the Preferences icon
@@ -16,7 +15,7 @@ Feature: The version of the software should be correct
     And   I touch "About ePhone7"
     Then  [prefs] I read the displayed versions for the app and AOSP
     And   [prefs] the installed versions are displayed correctly
-    And   [prefs] the current versions are installed
+    And   the current versions are installed
     When  [prefs] I touch the "X" icon
     Then  [prefs] the Preferences window disappears
 
