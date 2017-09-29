@@ -323,13 +323,15 @@ def i_can_see_my_personal_contacts(context):
 @step("I downgrade my aosp to {downgrade_aosp_version}")
 @fake
 def i_downgrade_my_aosp_to_downgradeaospversion(context, downgrade_aosp_version):
-    installed_aosp_version, installed_app_version = get_installed_versions()
-    if installed_aosp_version != downgrade_aosp_version:
+    installed_aosp, installed_app = get_installed_versions()
+    context.installed_aosp = installed_aosp
+    if installed_aosp != downgrade_aosp_version:
         get_downgrade_images(downgrade_aosp_version)
         base_view.close_appium()
         force_aosp_downgrade(downgrade_aosp_version)
-        installed_aosp_version, installed_app_version = get_installed_versions()
-        assert installed_aosp_version == downgrade_aosp_version
+        installed_aosp, installed_app= get_installed_versions()
+        assert installed_aosp == downgrade_aosp_version
+        context.installed_aosp = installed_aosp
         base_view.open_appium()
         base_view.startup()
 
@@ -426,7 +428,7 @@ def i_perform_an_ota_upgrade(context):
     context.run_substep('I touch the "System" menu category')
     context.run_substep('I touch the "Updates" menu item')
     context.run_substep('I wait for the phone to upgrade and reboot')
-    context.run_substep('I verify the system and app versions are current')
+    context.run_substep('the current versions are installed')
 
 
 @step("I receive a call")
@@ -481,7 +483,7 @@ def i_set_the_ota_server(context):
     user_view.goto_tab("Dial")
     ota_server = context.config.userdata.get('ota_server')
     if ota_server.lower() == 'alpha':
-        dial_view.dial_set_alpha_ota_server()
+        dial_view.dial_set_alpha_ota_server(context.installed_aosp)
     elif ota_server.lower() == 'beta':
         dial_view.dial_set_beta_ota_server()
     elif ota_server.lower().startswith('prod'):
@@ -637,6 +639,7 @@ def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
     if 'fake' not in str(context._config.tags).split(','):
         current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
         installed_aosp, installed_app = get_installed_versions()
+        context.installed_aosp = installed_aosp
         log.debug("installed versions: app %s, aosp %s" % (installed_app, installed_aosp))
         log.debug("required versions: app %s, aosp %s" % (current_app, current_aosp))
         aosp_upgrade_required = current_aosp != installed_aosp
@@ -651,15 +654,6 @@ def i_upgrade_the_phone_if_the_versions_are_not_correct(context):
 @fake
 def i_use_the_spud_serial_interface_to_list_the_installed_packages(context):
     pass
-
-
-@step("I verify the system and app versions are current")
-@fake
-def i_verify_the_system_and_app_versions_are_current(context):
-    current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
-    installed_aosp, installed_app = get_installed_versions()
-    assert current_aosp == installed_aosp, "Expected aosp version %s, got %s" % (current_aosp, installed_aosp)
-    assert current_app == installed_app, "Expected app version %s, got %s" % (current_app, installed_app)
 
 
 @step("I wait for the phone to restart")
@@ -842,6 +836,16 @@ def the_current_time_zone_text_is_shown(context):
 @fake
 def the_current_timer_setting_is_selected(context):
     pass
+
+
+@step("the current versions are installed")
+@fake
+def the_current_versions_are_installed(context):
+    current_aosp, current_app = get_current_versions(context.config.userdata['ota_server'])
+    installed_aosp, installed_app = get_installed_versions()
+    context.installed_aosp = installed_aosp
+    assert installed_aosp == current_aosp, "Expected installed aosp version %s, got %s" % (current_aosp, installed_aosp)
+    assert installed_app == current_app, "Expected installed app version %s, got %s" % (current_app, installed_app)
 
 
 @step("the ePhone7 and softphone simultaneously receive a call")

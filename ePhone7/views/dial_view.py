@@ -109,9 +109,13 @@ class DialView(UserView):
         self.touch_dial_button()
 
     @Trace(log)
-    def dial_set_alpha_ota_server(self):
+    def dial_set_alpha_ota_server(self, installed_aosp):
         # if the normal downgrade version has the old keyboard layout, set old_keyboard to True
-        self.dial_named_number("Alpha OTA Server", old_keyboard=True)
+        if int(installed_aosp.split('.')[1]) < 4:
+            has_old_keyboard = True
+        else:
+            has_old_keyboard = False
+        self.dial_named_number("Alpha OTA Server", old_keyboard=has_old_keyboard)
 
     @Trace(log)
     def dial_set_beta_ota_server(self):
