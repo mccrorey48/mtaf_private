@@ -277,20 +277,29 @@ class BaseView(SeleniumActions):
             self.caps_tag = None
 
     @Trace(log)
-    def startup(self, timeout=600, allow_reg_retry=True):
+    def startup(self, timeout=600, allow_reg_retry=True, auto_login_timeout = 60):
         start_time = time()
         reg_retry_handled = False
+        current_activity = None
+        auto_login_start_time = None
         while time() - start_time < timeout:
             try:
+                previous_activity = current_activity
                 current_activity = self.driver.current_activity
                 log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
+                    sleep(10)
                     self.send_keycode_back()
                     self.send_keycode_home()
                     break
                 elif current_activity == '.util.crashreporting.EPhoneCrashReportDialog':
                     self.click_named_element('CrashOkButton')
                 elif current_activity == '.activities.AutoLoginActivity':
+                    if previous_activity == '.activities.AutoLoginActivity':
+                        if time() - auto_login_start_time > auto_login_timeout:
+                            raise Ux('AutoLoginActivity timeout %s exceeded' % auto_login_timeout)
+                    else:
+                        auto_login_start_time = time()
                     if self.element_with_text_is_present('Authentication in progress', timeout=1):
                         sleep(5)
                         continue

@@ -51,8 +51,7 @@ class HistoryView(UserView):
         self.click_element(call_icon)
         softphone.wait_for_call_status('call', 20)
         sleep(10)
-        self.end_call()
-        softphone.wait_for_call_status('idle', 20)
+        softphone.end_call()
 
 
 history_view = HistoryView()

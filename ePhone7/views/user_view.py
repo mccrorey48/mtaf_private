@@ -183,8 +183,7 @@ class UserView(BaseView):
         caller_name, src_cfg = self.receive_call()
         self.click_named_element('IncomingCallAnswerToSpeaker')
         self.softphones[caller_name].wait_for_call_status('call', self.call_status_wait)
-        self.end_call()
-        self.softphones[caller_name].wait_for_call_status('idle', self.call_status_wait)
+        self.softphones[caller_name].end_call()
 
     @Trace(log)
     def auto_answer_call_test(self):
@@ -193,8 +192,7 @@ class UserView(BaseView):
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
         softphone.wait_for_call_status('call', self.call_status_wait)
-        self.end_call()
-        softphone.wait_for_call_status('idle', self.call_status_wait)
+        softphone.end_call()
 
     @Trace(log)
     def ignore_call_test(self):
