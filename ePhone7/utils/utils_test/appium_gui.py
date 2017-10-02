@@ -718,8 +718,9 @@ class TestGui(Frame):
     def dial_alpha_ota():
         print "dialing alpha OTA code...",
         # user_view.goto_tab('Dial')
+        aosp, app = get_installed_versions()
         user_view.touch_element_with_text('Dial')
-        dial_view.dial_set_alpha_ota_server()
+        dial_view.dial_set_alpha_ota_server(aosp)
         dial_view.touch_call_button()
         print "Done"
 
