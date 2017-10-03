@@ -175,6 +175,7 @@ class StepInfo:
                     raise Ux('expected step name %s, got %s' % (step_text, _step))
                 yield m.group('date'), m.group('time')
 
+
 def new_status(old_status, has_passes, has_fails, has_fakes, has_skips, has_incompletes):
     # - calculate the "status" (displayed result) of a step, scenario or feature
     # - the old_status of a step is "fake" (if mock_detector.match() returns true)
@@ -187,7 +188,7 @@ def new_status(old_status, has_passes, has_fails, has_fakes, has_skips, has_inco
     # - all scenarios are submitted to this calculation before their containing features, so the the old_status
     #   of a feature is 'None'
     # - if old_status is not 'None', it's a step, and the value for "has_skips" and "has_incompletes" must be false,
-    #   otherwise raise an exceptioin
+    #   otherwise raise an exception
     # - return the new "status" value based on the following truth table:
     #   | old_status | has_passes | has_fails | has_fakes | has_skips | has_incompletes | status     |
     #   | not 'None' | x          | x         | x         | True      | x               | exception  |
@@ -268,7 +269,6 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
     fail_count = 0
     pass_count = 0
     skip_count = 0
-    start_result = 'passed'
     if _args.json_file:
         info_filename = 'log/esi_info_copy.log'
     else:
@@ -386,18 +386,32 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
         db['features'].insert_one(feature)
         # del feature['start_id']
         # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))
+    start_has_passes = False
+    start_has_fails = False
+    start_has_fakes = False
+    start_has_skips = False
+    start_has_incompletes = False
     for feature in _features:
         if feature['status'] == 'passed':
             pass_count += 1
+            start_has_passes = 'true'
         elif feature['status'] == 'skipped':
             skip_count += 1
+            start_has_skips = 'true'
         elif feature['status'] == 'failed':
             fail_count += 1
-            start_result = 'failed'
+            start_has_fails = 'true'
+        elif feature['status'] == 'fake':
+            start_has_fakes = 'true'
+        elif feature['status'] == 'incomplete':
+            start_has_incompletes = 'true'
+    start_result = new_status('None', start_has_passes, start_has_fails, start_has_fakes, start_has_skips, start_has_incompletes)
     db['test_starts'].find_one_and_update({"_id": start_id}, {'$set': {'pass_count': pass_count,
                                                                        'fail_count': fail_count,
                                                                        'skip_count': skip_count,
                                                                        'status': start_result}})
+
+
 if __name__ == '__main__':
 
     try:
