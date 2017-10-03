@@ -19,6 +19,7 @@ def get_vmids(username, type):
     access_token = roauth.json()["accessToken"]
     vvm_headers = {key: cfg.site["VVMHeaders"][key] for key in cfg.site["VVMHeaders"]}
     vvm_headers["Authorization"] = vvm_headers["Authorization"] % access_token
+    sleep(4)
     rvvm = requests.get(cfg.site["VVMURL"] + "/new", headers=vvm_headers)
     log.debug("rvvm = %s" % rvvm)
     for vm in rvvm.json():
