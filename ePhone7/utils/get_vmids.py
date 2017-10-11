@@ -1,3 +1,5 @@
+import sys
+sys.path = sys.path[1:]
 from lib.wrappers import Trace
 import lib.logging_esi as logging
 from lib.user_exception import UserException as Ux
@@ -19,6 +21,7 @@ def get_vmids(username, type):
     access_token = roauth.json()["accessToken"]
     vvm_headers = {key: cfg.site["VVMHeaders"][key] for key in cfg.site["VVMHeaders"]}
     vvm_headers["Authorization"] = vvm_headers["Authorization"] % access_token
+    sleep(2)
     rvvm = requests.get(cfg.site["VVMURL"] + "/new", headers=vvm_headers)
     log.debug("rvvm = %s" % rvvm)
     for vm in rvvm.json():
@@ -42,3 +45,7 @@ def vmid_count_incremented(username, type, old_vmid_count, timeout=60):
     else:
         return False
 
+if __name__ == "__main__":
+    vmids = get_vmids(cfg.site['DefaultForwardAccount'], 'new')
+    for vmid in vmids:
+        print vmid
