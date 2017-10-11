@@ -1,0 +1,140 @@
+incomplete: some steps were executed, some were skipped or fake
+skipped:    no steps were executed except skipped steps
+fake:       included in scenario but unimplemented only; fake steps were executed
+passed:     all steps were executed, no fakes or skips, and all passed
+failed:     any step failed
+exception:  shouldn't happen:
+                1. has_skips should only be true if has_fails is true, or if
+                   only has_skips is true; either all steps are skipped because
+                   of tagging, or there was a failure and the rest are skipped
+                2. a scenario must have at least one step or it will not be run,
+                   so at lease one of the has_x values must be true
+
+step status is calculated before considering substep status,
+according to this pseudocode:
+
+    step status before considering substeps ("os")
+        if no result.status:
+            os = skipped
+        elif result.status is failed:
+            os = failed
+        elif no_executable_lines:
+            os = fake
+        else:
+            os = passed
+
+then the final step status is calculated according to the following table.
+
+column labels:
+  lnum = line number of pseudocode (shown after table) where result was assigned
+  os = step status before substeps are considered
+  fail = at least one substep failed
+  pass = at least one substep passed
+  fake = at lease one substep was fake
+  ns = step status after substeps are considered
+
+lnum |     os  | fail | pass | fake |   ns
+ 006 | passed  |   0  |   0  |   0  |   passed
+ 012 | passed  |   0  |   0  |   1  |   incomplete
+ 015 | passed  |   0  |   1  |   0  |   passed
+ 012 | passed  |   0  |   1  |   1  |   incomplete
+ 010 | passed  |   1  |   0  |   0  |   failed
+ 010 | passed  |   1  |   0  |   1  |   failed
+ 010 | passed  |   1  |   1  |   0  |   failed
+ 010 | passed  |   1  |   1  |   1  |   failed
+ 004 | failed  |   0  |   0  |   0  |   failed
+ 004 | failed  |   0  |   0  |   1  |   failed
+ 004 | failed  |   0  |   1  |   0  |   failed
+ 004 | failed  |   0  |   1  |   1  |   failed
+ 004 | failed  |   1  |   0  |   0  |   failed
+ 004 | failed  |   1  |   0  |   1  |   failed
+ 004 | failed  |   1  |   1  |   0  |   failed
+ 004 | failed  |   1  |   1  |   1  |   failed
+ 006 | skipped |   0  |   0  |   0  |   skipped
+ 008 | skipped |   0  |   0  |   1  |   exception
+ 008 | skipped |   0  |   1  |   0  |   exception
+ 008 | skipped |   0  |   1  |   1  |   exception
+ 008 | skipped |   1  |   0  |   0  |   exception
+ 008 | skipped |   1  |   0  |   1  |   exception
+ 008 | skipped |   1  |   1  |   0  |   exception
+ 008 | skipped |   1  |   1  |   1  |   exception
+ 006 | fake    |   0  |   0  |   0  |   fake
+ 012 | fake    |   0  |   0  |   1  |   incomplete
+ 015 | fake    |   0  |   1  |   0  |   passed
+ 012 | fake    |   0  |   1  |   1  |   incomplete
+ 010 | fake    |   1  |   0  |   0  |   failed
+ 010 | fake    |   1  |   0  |   1  |   failed
+ 010 | fake    |   1  |   1  |   0  |   failed
+ 010 | fake    |   1  |   1  |   1  |   failed
+
+
+ 001 |step status after considering os and substeps
+ 002 |	ns = unknown
+ 003 |	if os == failed:
+ 004 |		ns = failed
+ 005 |	elif there are no substeps (has_x == False for all x):
+ 006 |		ns = os
+ 007 |	elif os == skipped:
+ 008 |		exception (skipped step should not have run substeps)
+ 009 |	elif has_fails:
+ 010 |		ns = failed
+ 011 |	elif has_fakes:
+ 012 |		ns = incomplete
+ 013 |	else:
+ 014 |		if os == passed or os == fake:
+ 015 |			ns = passed
+ 016 |	return ns
+
+
+scenario status after considering steps,
+or feature status after considering scenarios:
+
+ lnum | has_fails | has_passes | has_skips | has_fakes | has_incompletes | ns
+ 014  |     0     |     0      |    0      |    0      |        0        | exception
+ 012  |     0     |     0      |    0      |    0      |        1        | incomplete
+ 010  |     0     |     0      |    0      |    1      |        0        | fake
+ 012  |     0     |     0      |    0      |    1      |        1        | incomplete
+ 008  |     0     |     0      |    1      |    0      |        0        | skipped
+ 012  |     0     |     0      |    1      |    0      |        1        | incomplete
+ 012  |     0     |     0      |    1      |    1      |        0        | incomplete
+ 012  |     0     |     0      |    1      |    1      |        1        | incomplete
+ 006  |     0     |     1      |    0      |    0      |        0        | passed
+ 012  |     0     |     1      |    0      |    0      |        1        | incomplete
+ 012  |     0     |     1      |    0      |    1      |        0        | incomplete
+ 012  |     0     |     1      |    0      |    1      |        1        | incomplete
+ 012  |     0     |     1      |    1      |    0      |        0        | incomplete
+ 012  |     0     |     1      |    1      |    0      |        1        | incomplete
+ 012  |     0     |     1      |    1      |    1      |        0        | incomplete
+ 012  |     0     |     1      |    1      |    1      |        1        | incomplete
+ 003  |     1     |     0      |    0      |    0      |        0        | failed
+ 003  |     1     |     0      |    0      |    0      |        1        | failed
+ 003  |     1     |     0      |    0      |    1      |        0        | failed
+ 003  |     1     |     0      |    0      |    1      |        1        | failed
+ 003  |     1     |     0      |    1      |    0      |        0        | failed
+ 003  |     1     |     0      |    1      |    0      |        1        | failed
+ 003  |     1     |     0      |    1      |    1      |        0        | failed
+ 003  |     1     |     0      |    1      |    1      |        1        | failed
+ 003  |     1     |     1      |    0      |    0      |        0        | failed
+ 003  |     1     |     1      |    0      |    0      |        1        | failed
+ 003  |     1     |     1      |    0      |    1      |        0        | failed
+ 003  |     1     |     1      |    0      |    1      |        1        | failed
+ 003  |     1     |     1      |    1      |    0      |        0        | failed
+ 003  |     1     |     1      |    1      |    0      |        1        | failed
+ 003  |     1     |     1      |    1      |    1      |        0        | failed
+ 003  |     1     |     1      |    1      |    1      |        1        | failed
+                                                    
+ 002 |	if has_fails:
+ 003 |		ns = failed
+ 004 |	else:
+ 005 |		if all steps passed:
+ 006 |			ns = passed
+ 007 |		elif all steps skipped:
+ 008 |			ns = skipped
+ 009 |		elif all steps fake:
+ 010 |			ns = fake
+ 011 |		elif any step fake or incomplete or skipped:  
+ 012 |			ns = incomplete
+ 013 |	return ns
+
+
+
