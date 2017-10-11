@@ -24,9 +24,12 @@
 from logging import getLoggerClass, addLevelName, setLoggerClass, NOTSET, DEBUG, INFO, WARN
 from logging import Formatter, FileHandler, getLogger, StreamHandler
 from contextlib import contextmanager
-from time import sleep
+from time import sleep, strftime, localtime
 from pymongo import MongoClient
 import re
+import platform
+from os import link, remove
+from lib.prune_logs import prune_logs
 
 msg_len_max = 18
 msg_src_stack = []
@@ -67,6 +70,7 @@ class EsiLogger(getLoggerClass()):
         cls.db_client = MongoClient(host_name)
         cls.db = cls.db_client[db_name]
         cls.db_collection = cls.db[collection_name]
+
 
 setLoggerClass(EsiLogger)
 
@@ -118,6 +122,7 @@ def set_msg_src(src='', set_linefeed=False):
 
 def get_logger(name):
     return getLogger(name)
+
 
 re_common = re.compile(
     '(?P<date>\S+)\s+'
@@ -178,21 +183,48 @@ def parse_msg_to_dict(msg):
     # print '  ' + ', '.join(['%s: %s' % (name, all_values[name]) for name in names])
     return all_values
 
+
 _log = getLogger(root_name)
 _log.setLevel(DEBUG)
+prune_logs('log/%s_warn_*.log' % root_name, 5)
+prune_logs('log/%s_info_*.log' % root_name, 5)
+prune_logs('log/%s_trace_*.log' % root_name, 5)
+prune_logs('log/%s_debug_*.log' % root_name, 5)
+prune_logs('log/*logcat_*.log', 5)
+timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
 # file logging for info, debug, trace and warn levels, each with its own output file
-fh = FileHandler('log/%s_debug.log' % root_name, mode='w', encoding=None, delay=False)
-fh.setLevel(DEBUG)
-_log.addHandler(fh)
-fh = FileHandler('log/%s_trace.log' % root_name, mode='w', encoding=None, delay=False)
-fh.setLevel(TRACE)
-_log.addHandler(fh)
-fh = FileHandler('log/%s_info.log' % root_name, mode='w', encoding=None, delay=False)
-fh.setLevel(INFO)
-_log.addHandler(fh)
-fh = FileHandler('log/%s_warn.log' % root_name, mode='w', encoding=None, delay=False)
+base_warn_fname = 'log/%s_warn.log' % root_name
+extended_warn_fname = 'log/%s_warn_%s.log' % (root_name, timestamp)
+base_info_fname = 'log/%s_info.log' % root_name
+extended_info_fname = 'log/%s_info_%s.log' % (root_name, timestamp)
+base_trace_fname = 'log/%s_trace.log' % root_name
+extended_trace_fname = 'log/%s_trace_%s.log' % (root_name, timestamp)
+base_debug_fname = 'log/%s_debug.log' % root_name
+extended_debug_fname = 'log/%s_debug_%s.log' % (root_name, timestamp)
+fh = FileHandler(extended_warn_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(WARN)
 _log.addHandler(fh)
+fh = FileHandler(extended_info_fname, mode='w', encoding=None, delay=False)
+fh.setLevel(INFO)
+_log.addHandler(fh)
+fh = FileHandler(extended_trace_fname, mode='w', encoding=None, delay=False)
+fh.setLevel(TRACE)
+_log.addHandler(fh)
+fh = FileHandler(extended_debug_fname, mode='w', encoding=None, delay=False)
+fh.setLevel(DEBUG)
+_log.addHandler(fh)
+if platform.system() == 'Linux':
+    try:
+        remove(base_warn_fname)
+        remove(base_info_fname)
+        remove(base_trace_fname)
+        remove(base_debug_fname)
+    except OSError:
+        pass
+    link(extended_warn_fname, base_warn_fname)
+    link(extended_info_fname, base_info_fname)
+    link(extended_trace_fname, base_trace_fname)
+    link(extended_debug_fname, base_debug_fname)
 # console logging for info level
 console_handler = StreamHandler()
 console_handler.setLevel(INFO)

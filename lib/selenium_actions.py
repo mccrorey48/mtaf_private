@@ -62,6 +62,17 @@ class SeleniumActions(Tc):
     @Trace(log)
     def click_named_element(self, name):
         elem = self.find_named_element(name)
+        text = elem.text
+        x = int(elem.location['x'])
+        y = int(elem.location['y'])
+        w = int(elem.size['width'])
+        h = int(elem.size['height'])
+        xw = x + w
+        yh = y + h
+        xc = int(elem.location['x']) + (int(elem.size['width']) / 2)
+        yc = int(elem.location['y']) + (int(elem.size['height']) / 2)
+        log.debug("element attributes: text=%s, x=%s, w=%s, x+w=%s, xc=%s, y=%s, h=%s, y+h=%s, yc=%s" % (
+            text, x, w, xw, xc, y, h, yh, yc))
         self.click_element(elem)
 
     @Trace(log, log_level='debug')
