@@ -59,7 +59,7 @@ def pjl_log_cb(level, _str, _len):
 # (previously it was a SoftphoneManager class attribute)
 
 
-class SoftphoneManager():
+class SoftphoneManager:
 
     def __init__(self):
         self.softphones = {}
@@ -70,7 +70,8 @@ class SoftphoneManager():
             log.debug("SoftphoneManager.get_softphone returning existing softphone %s" % uri)
         else:
             log.debug("SoftphoneManager.get_softphone creating softphone %s" % uri)
-            self.softphones[uri] = Softphone(uri, proxy, password, null_snd, dns_list, tcp, reg_wait=False)
+            self.softphones[uri] = Softphone(uri, proxy=proxy, password=password, null_snd=null_snd, dns_list=dns_list,
+                                             tcp=tcp, reg_wait=False)
         if reg_wait:
             self.softphones[uri].account_info.account_cb.wait()
         return self.softphones[uri]
