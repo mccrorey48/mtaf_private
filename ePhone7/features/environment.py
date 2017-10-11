@@ -59,6 +59,8 @@ def after_scenario(context, scenario):
             base_view.startup()
         except Ux as e:
             log.warn("after_scenario: got user exception %s" % e)
+    if scenario.status == 'failed' and 'critical' in scenario.tags + scenario.feature.tags:
+        context._config.stop = True
     logging.pop_msg_src()
 
 
