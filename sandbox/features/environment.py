@@ -1,5 +1,5 @@
 # from os import path, makedirs
-#
+from time import sleep
 import lib.logging_esi as logging
 # from ePhone7.config.configure import cfg
 # from ePhone7.views import base_view
@@ -36,14 +36,17 @@ def before_scenario(context, scenario):
     log.info('scenario.name: %s' % scenario.name)
 
 
-# def after_scenario(context, scenario):
+def after_scenario(context, scenario):
     # softphone_manager.end_all_calls()
     # tags = str(context._config.tags).split(',')
     # if 'fake' not in tags and 'json' not in tags:
     #     base_view.close_appium()
     #     base_view.open_appium()
     #     base_view.startup()
-    # logging.pop_msg_src()
+    if scenario.status == 'failed' and 'critical' in scenario.tags + scenario.feature.tags:
+        context._config.stop = True
+        sleep(1)
+    logging.pop_msg_src()
 
 
 def before_step(context, step):

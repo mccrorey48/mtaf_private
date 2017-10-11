@@ -61,3 +61,14 @@ def this_happens(context):
 @step("and also this")
 def and_also_this(context):
     log.info("nothing to see here")
+
+
+@step("I run a step with failing then passing substeps")
+def step_impl(context):
+    context.run_substep("failing substep")
+    context.run_substep("passing substep")
+
+
+@step("I run a step with substeps that have substeps")
+def step_impl(context):
+    context.run_substep("I run a step with fake and passing substeps")
