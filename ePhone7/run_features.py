@@ -241,7 +241,7 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
         feature_has_skips = False
         feature_has_fakes = False
         feature_has_fails = False
-        # feature_has_known_bugs = False
+        feature_has_known_bug = False
         feature_has_passes = False
         feature_has_incompletes = False
         feature['start_id'] = start_id
@@ -333,11 +333,9 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                                             scenario_has_skips, scenario_has_incompletes)
             if scenario['status'] == 'failed':
                 feature_has_fails = True
-                # if 'known_bugs' in scenario['tags'] + feature['tags']:
-                #     scenario['status'] = 'known_bug'
-                #     feature_has_known_bugs = True
-                # else:
-                #     feature_has_fails = True
+                if 'known_bug' in scenario['tags'] + feature['tags']:
+                    scenario['status'] = 'known_bug'
+                    feature_has_known_bug = True
             elif scenario['status'] == 'skipped':
                 feature_has_skips = True
             elif scenario['status'] == 'fake':
@@ -350,8 +348,8 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
         del feature['elements']
         feature['status'] = new_status(feature_has_passes, feature_has_fails, feature_has_fakes,
                                        feature_has_skips, feature_has_incompletes)
-        # if feature_has_known_bugs and feature_has_:
-        #     feature['status'] = 'known_bugs'
+        if feature['status'] == 'failed' and feature_has_known_bug:
+            feature['status'] = 'known_bug'
         db['features'].insert_one(feature)
         # del feature['start_id']
         # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))
@@ -360,21 +358,28 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
     start_has_fakes = False
     start_has_skips = False
     start_has_incompletes = False
+    start_has_known_bug = False
     for feature in _features:
         if feature['status'] == 'passed':
             pass_count += 1
-            start_has_passes = 'true'
+            start_has_passes = True
         elif feature['status'] == 'skipped':
             skip_count += 1
-            start_has_skips = 'true'
+            start_has_skips = True
         elif feature['status'] == 'failed':
             fail_count += 1
-            start_has_fails = 'true'
+            start_has_fails = True
         elif feature['status'] == 'fake':
-            start_has_fakes = 'true'
+            start_has_fakes = True
         elif feature['status'] == 'incomplete':
-            start_has_incompletes = 'true'
+            start_has_incompletes = True
+        elif feature['status'] == 'known_bug':
+            fail_count += 1
+            start_has_fails = True
+            start_has_known_bug = True
     start_result = new_status(start_has_passes, start_has_fails, start_has_fakes, start_has_skips, start_has_incompletes)
+    if start_result == 'failed' and start_has_known_bug:
+        start_result = 'known_bug'
     db['test_starts'].find_one_and_update({"_id": start_id}, {'$set': {'pass_count': pass_count,
                                                                        'fail_count': fail_count,
                                                                        'skip_count': skip_count,
