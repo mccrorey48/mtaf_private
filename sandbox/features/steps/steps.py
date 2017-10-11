@@ -38,6 +38,7 @@ def i_run_a_step_with_a_fake_substep(context):
 
 
 @step("failing substep")
+@fake
 def failing_substep(context):
     assert False, "failed this one"
 
@@ -49,11 +50,13 @@ def passing_substep(context):
 
 
 @step("fake substep")
+@fake
 def fake_substep(context):
     pass
 
 
 @step("this happens")
+@fake
 def this_happens(context):
     log.info("nothing to see here")
 
