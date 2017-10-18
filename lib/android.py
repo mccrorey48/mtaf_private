@@ -49,24 +49,22 @@ def get_abbrev(path):
     else:
         return path
 
+
 re_elem_index = re.compile('([^\[\]]*)(\[[^\]]+\])?')
 
+re_tokens = re.compile(r'\b[a-z]{1,3}\b')
 
 def expand_zpath(zpath):
-    # short names will be expanded to their long name equivalents if the locator["by"] method is "zpath"
-    token_list = zpath.split('/')
-    term_list = []
-    for token in token_list:
-        re_match = re_elem_index.match(token)
-        if not re_match:
-            raise Ux('Program Error: expand_zpath(%s), token %s does not match re' % (zpath, token))
-        bare_token = re_match.group(1)
-        index_suffix = re_match.group(2)
-        path_term = get_path(bare_token)
-        if index_suffix is not None:
-            path_term += index_suffix
-        term_list.append(path_term)
-    return '/'.join(term_list)
+    other = re_tokens.split(zpath)
+    tokens = re_tokens.findall(zpath)
+    new_zpath = ''
+    while len(other) or len(tokens):
+        if len(other):
+            new_zpath += other.pop(0)
+        if len(tokens):
+            new_zpath += get_path(tokens.pop(0))
+    return new_zpath
+
 
 
 mock_log = lib.logging_esi.get_logger('mock_element')

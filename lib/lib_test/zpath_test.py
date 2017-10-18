@@ -1,3 +1,2 @@
 import lib.android
-print lib.android.get_path('bt')
-print lib.android.get_abbrev('android.widget.Button')
+print lib.android.expand_zpath('(//rv/rl[11]/tv/foo/barr)[1])/parent::*')
