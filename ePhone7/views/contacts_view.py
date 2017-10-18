@@ -261,7 +261,7 @@ class ContactsView(UserView):
         parents = self.find_named_elements("ContactParent", get_filter("within_frame", frame))
         elems = [self.find_named_sub_element(parent, "ContactName") for parent in parents]
         old_names = [el.text for el in elems]
-        if len(old_names) < 8:
+        if len(old_names) < 7:
             return
         while True:
             self.short_press_scroll(elems[0], elems[-1])
