@@ -9,13 +9,21 @@ def get_filter(method, *args, **kwargs):
     def by_within_frame(elem):
         e = elem
         f = kwargs['frame']
-        f_loc = f.loc
+        try:
+            f_loc = f.location
+        except AttributeError:
+            print "f_loc = f.location: %s" % e
+            return True
         f_size = f.size
         f_x1 = f_loc['x']
         f_x2 = f_loc['x'] + f_size['width']
         f_y1 = f_loc['y']
         f_y2 = f_loc['y'] + f_size['height']
-        e_loc = e.loc
+        try:
+            e_loc = e.location
+        except AttributeError:
+            print "e_loc = e.location: %s" % e
+            return True
         e_size = e.size
         e_x1 = e_loc['x']
         e_x2 = e_loc['x'] + e_size['width']
