@@ -2,7 +2,7 @@ import os
 import sys
 from Tkinter import *
 from ttk import Combobox
-from time import sleep
+from time import sleep, time
 
 from pyand import ADB
 import lib.logging_esi as logging
@@ -18,9 +18,10 @@ from ePhone7.utils.versions import *
 from lib.android import expand_zpath
 from ePhone7.utils.versions import force_aosp_downgrade, remove_apk_upgrades
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
 import json
+from lib.filters import get_filter
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -68,7 +69,7 @@ class LogFrame(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent, bg='brown')
         print "parent = " + repr(parent)
-        self.txt = ScrolledLogwin(self, width=80, height=10, name='cmd')
+        self.txt = ScrolledLogwin(self, width=80, height=20, name='cmd')
         self.txt.grid(row=0, column=0, sticky='news', padx=2, pady=2)
 
     def write(self, *args, **kwargs):
@@ -174,6 +175,7 @@ class TestGui(Frame):
     elem_index = None
     worker_thread = None
     parent_element = None
+    frame_element = None
     use_parent = None
     locators = {"Coworkers": {"by": "uia_text", "use_parent": 0}}
     try:
@@ -181,6 +183,8 @@ class TestGui(Frame):
             locators = json.loads(f.read())
     except:
         pass
+    views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
+             'prefs': prefs_view}
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
@@ -246,7 +250,7 @@ class TestGui(Frame):
         bottom_frame.grid_columnconfigure(0, weight=1)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", command=self.close_appium_and_quit)
         bottom_frame.Quit.grid(row=0, column=0, sticky='e', padx=2, pady=2)
-        bottom_frame.grid(row=self.top_frame_row, column=0, padx=2, pady=2, sticky='news')
+        bottom_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
         self.top_frame_row += 1
         return bottom_frame
 
@@ -263,7 +267,7 @@ class TestGui(Frame):
     def create_softphone_frame(self):
         softphone_frame = Frame(self, bg='brown')
         softphone_frame.columnconfigure(0, weight=1)
-        softphone_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
+        softphone_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2)
         softphone_frame.row = self.top_frame_row
         self.top_frame_row += 1
         return softphone_frame
@@ -288,9 +292,11 @@ class TestGui(Frame):
         self.find_by_var = StringVar()
         self.find_by_var.set('uia_text')
         btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16,
-                                           values=['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator'],
+                                           values=['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator',
+                                                   'contacts_locator', 'voicemail_locator', 'history_locator',
+                                                   'dial_locator', 'prefs_locator'],
                                            textvariable=self.find_by_var, state='readonly', takefocus=False)
-        btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_from_parent)
+        btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_find_cbs)
         btn_frame.find_frame.by.bind("<FocusIn>", self.defocus)
         btn_frame.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
         self.use_parent = IntVar()
@@ -298,9 +304,16 @@ class TestGui(Frame):
         btn_frame.find_frame.use_parent = Checkbutton(btn_frame.find_frame, text='from Parent',
                                                       variable=self.use_parent, state=DISABLED)
         btn_frame.find_frame.use_parent.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
+        self.within_frame = IntVar()
+        self.within_frame.set(0)
+        btn_frame.find_frame.within_frame = Checkbutton(btn_frame.find_frame, text='within frame',
+                                                        variable=self.within_frame, state=DISABLED)
+        btn_frame.find_frame.within_frame.grid(row=1, column=2, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
         btn_frame.find_frame.value = Combobox(btn_frame.find_frame, width=60,
-                                              values=self.locators.keys(), textvariable=self.find_value_var)
+                                              values=sorted(self.locators.keys(),
+                                                            key=lambda x: self.locators[x]['time'], reverse=True),
+                                              textvariable=self.find_value_var)
         btn_frame.find_frame.value.bind('<<ComboboxSelected>>', self.update_find_frame)
         btn_frame.find_frame.value.bind("<FocusIn>", self.defocus)
         btn_frame.find_frame.hsb = Scrollbar(btn_frame.find_frame, orient=HORIZONTAL,
@@ -333,8 +346,31 @@ class TestGui(Frame):
         btn = Button(btn_frame.key_code_frame, text="tap:", command=self.tap_xy, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=2, padx=2, pady=2, sticky='w')
-        x_entry.grid(row=0, column=3, padx=2, pady=2, sticky='w')
-        y_entry.grid(row=0, column=4, padx=2, pady=2, sticky='w')
+        Label(btn_frame.key_code_frame, text=" x:").grid(row=0, column=3)
+        x_entry.grid(row=0, column=4, padx=2, pady=2, sticky='w')
+        Label(btn_frame.key_code_frame, text=" y:").grid(row=0, column=5)
+        y_entry.grid(row=0, column=6, padx=2, pady=2, sticky='w')
+        self.swipe_y1_var = StringVar()
+        y1_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.swipe_y1_var)
+        self.appium_btns.append(y1_entry)
+        self.swipe_y2_var = StringVar()
+        y2_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.swipe_y2_var)
+        self.appium_btns.append(y2_entry)
+        self.swipe_ms_var = StringVar()
+        ms_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.swipe_ms_var)
+        self.swipe_ms_var.set(100)
+        self.appium_btns.append(ms_entry)
+        Label(btn_frame.key_code_frame, text="   ", bg='tan').grid(row=0, column=7)
+        btn = Button(btn_frame.key_code_frame, text="swipe:", command=self.swipe, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=8, padx=2, pady=2, sticky='w')
+        Label(btn_frame.key_code_frame, text=" y1:").grid(row=0, column=9)
+        y1_entry.grid(row=0, column=10, padx=2, pady=2, sticky='w')
+        Label(btn_frame.key_code_frame, text=" y2:").grid(row=0, column=11)
+        y2_entry.grid(row=0, column=12, padx=2, pady=2, sticky='w')
+        btn_frame.key_code_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        Label(btn_frame.key_code_frame, text=" ms:").grid(row=0, column=13)
+        ms_entry.grid(row=0, column=14, padx=2, pady=2, sticky='w')
         btn_frame.key_code_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
         self.attr_frame = Frame(btn_frame, bg='tan')
@@ -353,10 +389,13 @@ class TestGui(Frame):
         btn = Button(self.attr_frame, text="set parent", command=self.set_parent, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=4, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="set frame", command=self.set_frame, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=5, padx=2, pady=2)
         self.elem_index = StringVar()
         self.elem_index.set('')
         self.attr_frame.index = Combobox(self.attr_frame, width=6, values=[], textvariable=self.elem_index)
-        self.attr_frame.index.grid(row=0, column=5, padx=2, pady=2, sticky='ew')
+        self.attr_frame.index.grid(row=0, column=6, padx=2, pady=2, sticky='ew')
         self.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.grid_columnconfigure(0, weight=1)
         btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
@@ -367,6 +406,7 @@ class TestGui(Frame):
     def update_find_frame(self, event):
         if self.find_value_var.get() in self.locators:
             self.find_by_var.set(self.locators[self.find_value_var.get()]["by"])
+            self.update_find_cbs(None)
             self.use_parent.set(self.locators[self.find_value_var.get()]["use_parent"])
 
     def create_menus(self, parent):
@@ -409,7 +449,8 @@ class TestGui(Frame):
         self.appium_commands.append(Command("Skip Walkthrough", lambda: self.do_cmd(self.skip_walkthrough)))
         self.appium_commands.append(Command("Startup", lambda: self.do_cmd(self.startup)))
         self.appium_commands.append(Command("Toggle Multi-Edit", lambda: self.do_cmd(self.toggle_multi_edit)))
-        self.appium_commands.append(Command("Get Digit Centers", lambda: self.do_cmd(self.get_digit_centers())))
+        self.appium_commands.append(Command("Get Digit Centers", lambda: self.do_cmd(self.get_digit_centers)))
+        self.appium_commands.append(Command("VM scroll to top", lambda: self.do_cmd(self.scroll_to_top_vm)))
         self.other_commands.append(Command("Enable USB", lambda: self.do_cmd(self.usb_enable)))
         self.other_commands.append(
             Command("Get Alpha Current Versions", lambda: self.do_cmd(self.get_alpha_current_versions)))
@@ -468,23 +509,37 @@ class TestGui(Frame):
             base_view.tap([(x, y)])
             print "Done"
 
-    def update_from_parent(self, event):
+    def swipe(self):
+        try:
+            y1 = int(self.swipe_y1_var.get())
+            y2 = int(self.swipe_y2_var.get())
+            ms = int(self.swipe_ms_var.get())
+        except (ValueError, TypeError) as e:
+            print "Can't execute swipe with x='%s', y='%s'" % (self.tap_x_var.get(), self.tap_y_var.get())
+        else:
+            print "Executing swipe([(300, %d, 300, %d, %d)])..." % (y1, y2, ms),
+            base_view.long_press_swipe(300, y1, 300, y2, duration=ms)
+            print "Done"
+
+    def update_find_cbs(self, event):
         find_by = self.find_by_var.get()
-        print "find by %s" % find_by
         if (find_by == 'id') and self.parent_element is not None:
             self.btn_frame.find_frame.use_parent.configure(state=NORMAL)
         else:
             self.btn_frame.find_frame.use_parent.configure(state=DISABLED)
             self.use_parent.set(0)
+        if find_by[-7:] == 'locator' and self.frame_element is not None:
+            self.btn_frame.find_frame.within_frame.configure(state=NORMAL)
+        else:
+            self.btn_frame.find_frame.within_frame.configure(state=DISABLED)
 
-    def find_elements(self):
-        print "finding elements...",
-        by = self.find_by_var.get()
-        value = self.find_value_var.get()
-        use_parent = self.use_parent.get()
-        if value not in self.locators.keys():
-            self.locators[value] = {"by": by, "use_parent": use_parent}
-            self.btn_frame.find_frame.value.configure(value=self.locators.keys())
+    def find_elements_by_locator_name(self, by, value):
+        if self.within_frame.get():
+            return self.views[by[:-8]].find_named_elements(value, filter_fn=get_filter('within_frame', frame=self.frame_element))
+        else:
+            return self.views[by[:-8]].find_named_elements(value)
+
+    def find_elements_with_driver(self, by, value):
         if by == 'zpath':
             value = expand_zpath(value)
             by = 'xpath'
@@ -493,9 +548,35 @@ class TestGui(Frame):
             by = '-android uiautomator'
             value = 'new UiSelector().text("%s")' % value
         if self.use_parent.get():
-            self.elems = self.parent_element.find_elements(by, value)
+            return self.parent_element.find_elements(by, value)
         else:
-            self.elems = base_view.driver.find_elements(by, value)
+            return base_view.driver.find_elements(by, value)
+
+    def find_elements(self):
+        print "finding elements...",
+        by = self.find_by_var.get()
+        value = self.find_value_var.get()
+        use_parent = self.use_parent.get()
+        if value in self.locators.keys():
+            self.locators[value]['time'] = time()
+        else:
+            self.locators[value] = {"by": by, "use_parent": use_parent, "time": time()}
+        sorted_keys = sorted(self.locators.keys(), key=lambda x: self.locators[x]['time'], reverse=True)
+        for key in sorted_keys[50:]:
+            del self.locators[key]
+            sorted_keys.pop()
+        self.btn_frame.find_frame.value.configure(value=sorted_keys)
+        if by[-7:] == 'locator':
+            self.elems = self.find_elements_by_locator_name(by, value)
+        else:
+            try:
+                self.elems = self.find_elements_with_driver(by, value)
+            except InvalidSelectorException as e:
+                print str(e).strip()
+                return
+            # keep frame element setting if using "by" value ending in '*_locator'
+            self.frame_element = None
+            self.within_frame.set(0)
         print "%s element%s found" % (len(self.elems), '' if len(self.elems) == 1 else 's')
         elem_indices = [str(i) for i in range(len(self.elems))]
         self.attr_frame.index.configure(values=elem_indices)
@@ -506,6 +587,7 @@ class TestGui(Frame):
         self.parent_element = None
         self.btn_frame.find_frame.use_parent.configure(state=DISABLED)
         self.use_parent.set(0)
+        self.update_find_cbs(None)
 
     def get_elem_attrs(self):
         text_index = self.elem_index.get()
@@ -561,7 +643,15 @@ class TestGui(Frame):
             return
         index = int(text_index)
         self.parent_element = self.elems[index]
-        self.update_from_parent(None)
+        self.update_find_cbs(None)
+
+    def set_frame(self):
+        text_index = self.elem_index.get()
+        if text_index == '':
+            return
+        index = int(text_index)
+        self.frame_element = self.elems[index]
+        self.update_find_cbs(None)
 
     def open_appium(self, max_attempts=10, retry_seconds=5):
         attempts = 0
@@ -581,6 +671,7 @@ class TestGui(Frame):
         else:
             raise Ux("max attempts reached in open_appium")
         self.appium_is_open = True
+        self.update_find_cbs(None)
         print "Done"
 
     def close_appium(self):
@@ -757,6 +848,12 @@ class TestGui(Frame):
             x = int(el.location['x']) + (int(el.size['width']) / 2)
             y = int(el.location['y']) + (int(el.size['height']) / 2)
             print "%s: (%d, %d)" % (btn, x, y)
+        print "Done"
+
+    @staticmethod
+    def scroll_to_top_vm():
+        print "Scrolling to top of voicemail window...",
+        voicemail_view.scroll_to_top_of_list()
         print "Done"
 
     @staticmethod
