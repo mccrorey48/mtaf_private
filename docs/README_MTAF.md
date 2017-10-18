@@ -12,4 +12,6 @@ The MTAF supports test automation for web and mobile apps by providing these fea
 * Call processing using PJSIP/PJSUA
 * MongoDB interface for test configurations and test result reporting
 
-For detailed documentation please see [the "Test Automation Frameworks" Confluence page](https://estech.atlassian.net/wiki/display/~mmccrorey/Test+Automation+Frameworks)
+For detailed documentation please see the 
+["Mobile Test Automation Framework"](https://estech.atlassian.net/wiki/spaces/~mmccrorey/pages/76251181/Mobile+Test+Automation+Framework+MTAF)
+ Confluence page.
