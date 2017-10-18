@@ -90,6 +90,7 @@ class Softphone:
     lib = None
     dst_uri = None
     rec_id = None
+    last_msg_length = 0
 
     @Trace(log)
     def __init__(self, uri, proxy, password, null_snd=True, dns_list=None, tcp=False,
@@ -217,7 +218,13 @@ class Softphone:
         sleep(5)
         if length is None:
             random.seed(time())
-            length = random.randrange(10, 30, 1)
+            for tries in range(20):
+                length = random.randrange(10, 30, 1)
+                if abs(length - self.last_msg_length) > 5:
+                    self.last_msg_length = length
+                    break
+            else:
+                raise Ux("couldn't get message length > 5 sec different from last msg")
         sleep(length)
 
     @Trace(log)
