@@ -179,7 +179,10 @@ class SeleniumActions(Tc):
                 elems = self.find_sub_elements_by_locator(parent, locator)
             else:
                 elems = self.find_elements_by_locator(locator)
-            return elems
+            if filter_fn is None:
+                return elems
+            else:
+                return filter(filter_fn, elems)
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 

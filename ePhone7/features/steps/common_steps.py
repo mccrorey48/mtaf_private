@@ -441,7 +441,7 @@ def i_receive_a_call(context):
 @step("I receive a new voicemail")
 @fake
 def i_receive_a_new_voicemail(context):
-    pass
+    user_view.receive_voicemail()
 
 
 @step("I receive and ignore a call")

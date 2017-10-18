@@ -8,6 +8,8 @@ from ePhone7.views.user_view import UserView
 from lib.wrappers import Trace
 from lib.user_exception import UserException as Ux
 from ePhone7.utils.get_vmids import get_vmids
+from lib.filters import get_filter
+from selenium.common.exceptions import WebDriverException
 
 log = logging.get_logger('esi.voicemail_view')
 
@@ -31,7 +33,10 @@ class VoicemailView(UserView):
         "VmButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_button"},
         "VmCallButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_call_button"},
         "VmDetailHeader": {"by": "id", "value": "com.esi_estech.ditto:id/vm_user_header_layout"},
-        "VmParent": {"by": "id", "value": "com.esi_estech.ditto:id/voicemail_card"}
+        "VmFrame": {"by": "zpath", "value": "//rv"},
+        "VmParents": {"by": "zpath", "value": "//rv/rl"},
+        "Vm1Parent": {"by": "zpath", "value": "//rv/rl[1]"},
+        "Vm1Texts": {"by": "zpath", "value": "(//rv/rl[1])/tv"},
     }
 
     def __init__(self):
@@ -41,19 +46,6 @@ class VoicemailView(UserView):
         self.elems = []
         self.saved_vals = {}
         self.new_vals = {}
-
-    @Trace(log)
-    def receive_voicemail(self):
-        from ePhone7.utils.get_softphone import get_softphone
-        softphone = get_softphone()
-        self.set_dnd(on=True)
-        dst_cfg = cfg.site['Users']['R2d2User']
-        dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
-        softphone.make_call(dst_uri)
-        softphone.wait_for_call_status('call', 10)
-        softphone.leave_msg()
-        self.set_dnd(on=False)
-        softphone.end_call()
 
     @Trace(log)
     def call_first_vm_caller(self):
@@ -78,8 +70,9 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def swipe_get_vm_parents(self):
+        frame = self.find_named_element('VmFrame')
         self.swipe_down()
-        self.elems = self.find_named_elements('VmParent')
+        self.elems = self.find_named_elements("VmParents", filter_fn=get_filter("within_frame", frame=frame))
         if len(self.elems) > 0:
             return True
         return False
@@ -151,7 +144,7 @@ class VoicemailView(UserView):
     @Trace(log)
     def clear_all_vm(self):
         while True:
-            elems = [elem for elem in self.find_named_elements('VmParent') if elem.size['width'] != 0]
+            elems = [elem for elem in self.find_named_elements('VmParents') if elem.size['width'] != 0]
             if len(elems) == 0:
                 break
             self.click_element(elems[0])
@@ -180,6 +173,29 @@ class VoicemailView(UserView):
     @Trace(log)
     def verify_forward(self):
         self.wait_for_condition_true(self.compare_vmid, lambda: 'voicemail was not a match', seconds=120)
+
+    @Trace(log)
+    def scroll_to_top_of_list(self):
+        frame = self.find_named_element('VmFrame')
+        parents = self.find_named_elements("VmParents", filter_fn=get_filter("within_frame", frame=frame))
+        if len(parents) > 0:
+            old_top_y = parents[0].location['y']
+            for tries in range(10):
+                self.swipe(300, 0, 300, 975)
+                try:
+                    top_y = parents[0].location['y']
+                except WebDriverException as e:
+                    print "got WebDriverException: %s" % e
+                    parents = self.find_named_elements("VmParents", filter_fn=get_filter("within_frame", frame=frame))
+                    if len(parents) == 0:
+                        raise Ux("no VmParent elements found within VmFrame")
+                    top_y = parents[0].location['y']
+                if top_y == old_top_y:
+                    break
+                old_top_y = top_y
+            else:
+                raise Ux("could not scroll to tup of vm list")
+        return parents
 
 
 voicemail_view = VoicemailView()

@@ -217,5 +217,18 @@ class UserView(BaseView):
         softphone.set_monitor_off()
         softphone.end_call()
 
+    @Trace(log)
+    def receive_voicemail(self):
+        from ePhone7.utils.get_softphone import get_softphone
+        softphone = get_softphone()
+        self.set_dnd(on=True)
+        dst_cfg = cfg.site['Users']['R2d2User']
+        dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
+        softphone.make_call(dst_uri)
+        softphone.wait_for_call_status('call', 10)
+        softphone.leave_msg()
+        self.set_dnd(on=False)
+        softphone.end_call()
+
 
 user_view = UserView()

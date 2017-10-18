@@ -131,3 +131,6 @@ def voicemail__the_voicemail_view_appears(context):
     pass
 
 
+@step("[voicemail] I scroll to the top of the voicemail list")
+def step_impl(context):
+    voicemail_view.scroll_to_top_of_list()

@@ -104,8 +104,12 @@ class BaseView(SeleniumActions):
         TouchAction(self.driver).press(origin_el).move_to(destination_el).release().perform()
 
     @Trace(log)
-    def swipe(self, origin_x, origin_y, destination_x, destination_y, duration_ms):
+    def swipe(self, origin_x, origin_y, destination_x, destination_y, duration_ms=500):
         SeleniumActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration_ms)
+
+    @Trace(log)
+    def long_press_swipe(self, x1, y1, x2, y2, duration=500):
+        TouchAction(self.driver).long_press(x=x1, y=y1, duration=duration).move_to(x=x2, y=y2).release().perform()
 
     @Trace(log)
     def swipe_named_element(self, name, direction):
