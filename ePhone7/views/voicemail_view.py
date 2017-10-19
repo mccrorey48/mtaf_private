@@ -20,6 +20,7 @@ class VoicemailView(UserView):
         "CallerName": {"by": "id", "value": "com.esi_estech.ditto:id/callerName"},
         "CallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/callerNumber"},
         "DeleteButton": {"by": "id", "value": "com.esi_estech.ditto:id/delete_voicemail"},
+        "EndCall": {"by": "uia_text", "value": "END CALL"},
         "ForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_voicemail"},
         "New": {"by": "zpath", "value": "//bt[@text='NEW']"},
         "NoVoicemails": {"by": "id", "value": "com.esi_estech.ditto:id/call_log_empty"},
@@ -29,10 +30,10 @@ class VoicemailView(UserView):
         "Saved": {"by": "zpath", "value": "//ll/bt[@text='SAVED']"},
         "ShareButton": {"by": "id", "value": "com.esi_estech.ditto:id/share_voicemail"},
         "Trash": {"by": "zpath", "value": "//ll/bt[@text='TRASH']"},
-        "VmDuration": {"by": "id", "value": "com.esi_estech.ditto:id/vmDuration"},
         "VmButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_button"},
         "VmCallButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_call_button"},
         "VmDetailHeader": {"by": "id", "value": "com.esi_estech.ditto:id/vm_user_header_layout"},
+        "VmDuration": {"by": "id", "value": "com.esi_estech.ditto:id/vmDuration"},
         "VmFrame": {"by": "zpath", "value": "//rv"},
         "VmParents": {"by": "zpath", "value": "//rv/rl"},
         "Vm1Parent": {"by": "zpath", "value": "//rv/rl[1]"},
@@ -175,7 +176,7 @@ class VoicemailView(UserView):
         self.wait_for_condition_true(self.compare_vmid, lambda: 'voicemail was not a match', seconds=120)
 
     @Trace(log)
-    def scroll_to_top_of_list(self):
+    def get_top_vm_parents(self):
         frame = self.find_named_element('VmFrame')
         parents = self.find_named_elements("VmParents", filter_fn=get_filter("within_frame", frame=frame))
         if len(parents) > 0:
@@ -194,7 +195,7 @@ class VoicemailView(UserView):
                     break
                 old_top_y = top_y
             else:
-                raise Ux("could not scroll to tup of vm list")
+                raise Ux("could not scroll to too of vm list")
         return parents
 
 

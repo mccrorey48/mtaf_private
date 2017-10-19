@@ -4,26 +4,29 @@ Feature: As a user I want to use and manage my voicemail lists
   Background: a new voicemail is shown in the New Voicemails view
     Given I go to the home screen
     Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
+    When  I touch the "Voicemail" button
+    Then  [voicemail] I see my existing new voicemails
     When  I receive a new voicemail
     And   I touch the "Voicemail" button
     And   [voicemail] I see the New, Saved and Trash tabs at the top of the screen
     And   I touch the "NEW" tab
-    And   [voicemail] I scroll to the top of the voicemail list
     Then  [voicemail] the new voicemail is the first item listed
 
-  @wip
+  @regression
   Scenario: I listen to a selected new voicemail
     When  [voicemail] I touch the new voicemail element
     Then  [voicemail] a voicemail detail window appears
     And   [voicemail] the voicemail audio plays back
 
+  @regression
   Scenario: I call the contact that left a new voicemail
     When  [voicemail] I touch the new voicemail element
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the handset icon
     Then  [voicemail] the voicemail detail window disappears
-    And   my phone calls the voicemail sender
+    And   [voicemail] my phone calls the voicemail sender
 
+  @wip
   Scenario: I delete a new voicemail
     When  [voicemail] I touch the new voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -64,7 +67,7 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the handset icon
     Then  [voicemail] the voicemail detail window disappears
-    And   my phone calls the voicemail sender
+    And   [voicemail] my phone calls the voicemail sender
 
   Scenario: I delete a saved voicemail
     When  [voicemail] I touch the new voicemail element
