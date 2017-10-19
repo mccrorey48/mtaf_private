@@ -331,9 +331,13 @@ class TestGui(Frame):
 
     def make_canvas(self):
         self.bottom_frame.mk_canvas.configure(state=DISABLED)
+        x = self.winfo_rootx()
+        y = self.winfo_rooty()
+        w = self.winfo_width()
         self.cwin = Toplevel(root, bg='cyan')
         self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
         self.cwin.resizable(width=False, height=True)
+        self.cwin.geometry("+%d+%d" % (x + w + 20, y - 70))
         self.cwin.scale = 0.5
         im_width = int(600 * self.cwin.scale)
         im_height = int(1024 * self.cwin.scale)
