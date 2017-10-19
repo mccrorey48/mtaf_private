@@ -1,5 +1,4 @@
 import os
-import sys
 from Tkinter import *
 from ttk import Combobox
 from time import sleep, time
@@ -16,13 +15,13 @@ from lib.user_exception import UserException as Ux
 from ePhone7.utils.get_focused_app import get_focused_app
 from ePhone7.utils.versions import *
 from lib.android import expand_zpath
-from ePhone7.utils.versions import force_aosp_downgrade, remove_apk_upgrades
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
 import json
 from lib.filters import get_filter
 from PIL import Image, ImageTk
+from ePhone7.utils.csv.parse_ids import parse_ids
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -31,6 +30,56 @@ class Command(object):
     def __init__(self, label, action):
         self.label = label
         self.action = action
+
+
+class VerticalScrolledFrame(Frame):
+    """A pure Tkinter scrollable frame that actually works!
+    * Use the 'interior' attribute to place widgets inside the scrollable frame
+    * Construct and pack/place/grid normally
+    * This frame only allows vertical scrolling
+    """
+    def __init__(self, parent, *args, **kw):
+        Frame.__init__(self, parent, *args, **kw)
+
+        # create a canvas object and a vertical scrollbar for scrolling it
+        vscrollbar = Scrollbar(self, orient=VERTICAL)
+
+        self.rowconfigure(0, weight=1)
+        vscrollbar.grid(sticky='ns', row=0, column=1)
+
+        canvas = Canvas(self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
+
+        canvas.grid(sticky='nsew', row=0, column=0)
+
+        vscrollbar.config(command=canvas.yview)
+
+        # reset the view
+        canvas.xview_moveto(0)
+        canvas.yview_moveto(0)
+
+        # create a frame inside the canvas which will be scrolled with it
+        self.interior = interior = Frame(canvas)
+        interior_id = canvas.create_window(0, 0, window=interior, anchor=NW)
+
+        # track changes to the canvas and frame width and sync them,
+        # also updating the scrollbar
+        def _configure_interior(event):
+            # update the scrollbars to match the size of the inner frame
+            size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
+            canvas.config(scrollregion="0 0 %s %s" % size)
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the canvas's width to fit the inner frame
+                canvas.config(width=interior.winfo_reqwidth())
+            if interior.winfo_reqheight() != canvas.winfo_height():
+                # update the canvas's height to fit the inner frame
+                canvas.config(height=interior.winfo_reqheight())
+        interior.bind('<Configure>', _configure_interior)
+
+        def _configure_canvas(event):
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the inner frame's width to fill the canvas
+                canvas.itemconfigure(interior_id, width=canvas.winfo_width())
+        canvas.bind('<Configure>', _configure_canvas)
 
 
 class ScrolledLogwin(Text):
@@ -160,37 +209,58 @@ class MyMenu(Menu):
         self.other_sub_menu_max_index = None
 
 
-class TestGui(Frame):
+class AttrFrame(Frame):
+    index = None
 
-    elems = []
-    appium_is_open = False
-    appium_btns = []
-    no_appium_btns = []
-    elem_indices = []
-    appium_commands = []
-    other_commands = []
-    find_by_var = None
-    find_value_var = None
-    keycode_name = None
-    attr_frame = None
-    elem_index = None
-    worker_thread = None
-    parent_element = None
-    frame_element = None
-    use_parent = None
-    canvas = None
-    polygon = None
-    locators = {"Coworkers": {"by": "uia_text", "use_parent": 0}}
-    try:
-        with open('tmp/appium_gui_locators.json', 'r') as f:
-            locators = json.loads(f.read())
-    except:
-        pass
-    views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
-             'prefs': prefs_view}
+
+class BottomFrame(Frame):
+    mk_canvas = None
+
+
+class ButtonFrame(Frame):
+    find_frame = None
+
+
+class TestGui(Frame):
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
+        self.elems = []
+        self.appium_is_open = False
+        self.appium_btns = []
+        self.no_appium_btns = []
+        self.elem_indices = []
+        self.appium_commands = []
+        self.other_commands = []
+        self.find_by_var = None
+        self.find_value_var = None
+        self.keycode_name = None
+        self.attr_frame = None
+        self.elem_index = None
+        self.worker_thread = None
+        self.parent_element = None
+        self.frame_element = None
+        self.use_parent = None
+        self.im_canvas = None
+        self.id_canvas = None
+        self.id_frame = None
+        self.polygons = []
+        self.cwin = None
+        self.ids = None
+        self.locators = {"Coworkers": {"by": "uia_text", "use_parent": 0}}
+        self.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
+                      'prefs': prefs_view}
+        try:
+            with open('tmp/appium_gui_locators.json', 'r') as f:
+                self.locators = json.loads(f.read())
+        except IOError:
+            pass
+        self.within_frame = IntVar()
+        self.tap_y_var = StringVar()
+        self.tap_x_var = StringVar()
+        self.swipe_y1_var = StringVar()
+        self.swipe_y2_var = StringVar()
+        self.swipe_ms_var = StringVar()
         self.create_commands()
         self.menu = self.create_menus(parent)
         self.top_frame_row = 0
@@ -249,7 +319,7 @@ class TestGui(Frame):
                     self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
 
     def create_bottom_frame(self):
-        bottom_frame = Frame(self, bg="tan")
+        bottom_frame = BottomFrame(self, bg="tan")
         bottom_frame.grid_columnconfigure(0, weight=1)
         bottom_frame.mk_canvas = Button(bottom_frame, text="canvas", command=self.make_canvas)
         bottom_frame.mk_canvas.grid(row=0, column=0, sticky='e', padx=2, pady=2)
@@ -263,15 +333,39 @@ class TestGui(Frame):
         self.bottom_frame.mk_canvas.configure(state=DISABLED)
         self.cwin = Toplevel(root, bg='cyan')
         self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
-        self.canvas = Canvas(self.cwin, height=1024, width=600, bg='darkgray')
+        self.cwin.resizable(width=False, height=True)
+        self.cwin.scale = 0.5
+        im_width = int(600 * self.cwin.scale)
+        im_height = int(1024 * self.cwin.scale)
+        self.cwin.minsize(width=im_width, height=im_height)
+        self.im_canvas = Canvas(self.cwin, height=im_height, width=im_width, bg='darkgray')
         fullpath = os.path.join(cfg.test_screenshot_folder, 'appium_gui.png')
-        self.canvas.im = Image.open(fullpath)
-        self.canvas.photo = ImageTk.PhotoImage(self.canvas.im)
-        self.canvas.create_image(600/2, 1024/2, image=self.canvas.photo)
-        self.canvas.grid(column=0, row=0)
+        self.im_canvas.im = Image.open(fullpath)
+        small = self.im_canvas.im.resize((im_width, im_height))
+        self.im_canvas.photo = ImageTk.PhotoImage(small)
+        self.im_canvas.create_image(im_width/2, im_height/2, image=self.im_canvas.photo)
+        self.im_canvas.grid(column=0, row=0)
+        self.cwin.rowconfigure(0, weight=1)
+        self.id_frame = VerticalScrolledFrame(self.cwin)
+        self.id_frame.btns = {}
+        csv_fullpath = os.path.join(cfg.csv_folder, 'csv_appium_gui', 'appium_gui.csv')
+        row = 0
+        self.ids = parse_ids(csv_fullpath)
+        for _id in self.ids:
+            self.id_frame.btns[id] = Button(self.id_frame.interior, text=_id, command=self.get_outline_fn(_id))
+            self.id_frame.btns[id].grid(row=row, column=0, sticky='w')
+            row += 1
+        self.id_frame.grid(column=1, row=0)
+        self.id_frame.update()
+        self.cwin.geometry('%dx%d' % (im_width + self.id_frame.winfo_reqwidth(), self.im_canvas.winfo_reqheight()))
+
+    def get_outline_fn(self, id_name):
+        def f():
+            self.outline_elems(self.ids[id_name])
+        return f
 
     def on_canvas_closing(self):
-        self.canvas = None
+        self.im_canvas = None
         self.cwin.destroy()
         self.bottom_frame.mk_canvas.configure(state=NORMAL)
 
@@ -306,9 +400,10 @@ class TestGui(Frame):
 
     def create_btn_frame(self):
         btn_frame_row = 0
-        btn_frame = Frame(self, bg="brown")
+        btn_frame = ButtonFrame(self, bg="brown")
         btn_frame.find_frame = Frame(btn_frame, bg='tan')
-        btn = Button(btn_frame.find_frame, text="find elements:", command=lambda: self.do_cmd(self.find_elements), state=DISABLED)
+        btn = Button(btn_frame.find_frame, text="find elements:", command=lambda: self.do_cmd(self.find_elements),
+                     state=DISABLED)
         self.appium_btns.append(btn)
         self.find_by_var = StringVar()
         self.find_by_var.set('uia_text')
@@ -325,7 +420,6 @@ class TestGui(Frame):
         btn_frame.find_frame.use_parent = Checkbutton(btn_frame.find_frame, text='from Parent',
                                                       variable=self.use_parent, state=DISABLED)
         btn_frame.find_frame.use_parent.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
-        self.within_frame = IntVar()
         self.within_frame.set(0)
         btn_frame.find_frame.within_frame = Checkbutton(btn_frame.find_frame, text='within frame',
                                                         variable=self.within_frame, state=DISABLED)
@@ -358,10 +452,8 @@ class TestGui(Frame):
         btn.grid(row=0, column=0, padx=2, pady=2, sticky='w')
         btn_frame.key_code_frame.grid_columnconfigure(1, weight=1)
         btn_frame.key_code_frame.value.grid(row=0, column=1, padx=2, pady=2, sticky='w')
-        self.tap_y_var = StringVar()
         y_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.tap_y_var)
         self.appium_btns.append(y_entry)
-        self.tap_x_var = StringVar()
         x_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.tap_x_var)
         self.appium_btns.append(x_entry)
         btn = Button(btn_frame.key_code_frame, text="tap:", command=self.tap_xy, state=DISABLED)
@@ -371,13 +463,10 @@ class TestGui(Frame):
         x_entry.grid(row=0, column=4, padx=2, pady=2, sticky='w')
         Label(btn_frame.key_code_frame, text=" y:").grid(row=0, column=5)
         y_entry.grid(row=0, column=6, padx=2, pady=2, sticky='w')
-        self.swipe_y1_var = StringVar()
         y1_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.swipe_y1_var)
         self.appium_btns.append(y1_entry)
-        self.swipe_y2_var = StringVar()
         y2_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.swipe_y2_var)
         self.appium_btns.append(y2_entry)
-        self.swipe_ms_var = StringVar()
         ms_entry = Entry(btn_frame.key_code_frame, width=4, textvariable=self.swipe_ms_var)
         self.swipe_ms_var.set(100)
         self.appium_btns.append(ms_entry)
@@ -394,7 +483,7 @@ class TestGui(Frame):
         ms_entry.grid(row=0, column=14, padx=2, pady=2, sticky='w')
         btn_frame.key_code_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
-        self.attr_frame = Frame(btn_frame, bg='tan')
+        self.attr_frame = AttrFrame(btn_frame, bg='tan')
         btn = Button(self.attr_frame, text="get element attributes", command=self.get_elem_attrs, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=0, padx=2, pady=2)
@@ -507,10 +596,11 @@ class TestGui(Frame):
         if self.appium_is_open:
             self.close_appium()
         try:
-            with open('tmp/appium_gui_locators.json', 'w') as f:
-                f.write(json.dumps(self.locators, sort_keys=True, indent=4, separators=(',', ': ')))
-        except:
+            os.mkdir('tmp')
+        except OSError:
             pass
+        with open('tmp/appium_gui_locators.json', 'w') as f:
+            f.write(json.dumps(self.locators, sort_keys=True, indent=4, separators=(',', ': ')))
         root.destroy()
 
     def send_keycode(self):
@@ -556,7 +646,8 @@ class TestGui(Frame):
 
     def find_elements_by_locator_name(self, by, value):
         if self.within_frame.get():
-            return self.views[by[:-8]].find_named_elements(value, filter_fn=get_filter('within_frame', frame=self.frame_element))
+            return self.views[by[:-8]].find_named_elements(value, filter_fn=get_filter('within_frame',
+                                                                                       frame=self.frame_element))
         else:
             return self.views[by[:-8]].find_named_elements(value)
 
@@ -620,23 +711,33 @@ class TestGui(Frame):
         print "  %10s: %s" % ("location_in_view", elem.location_in_view)
         print "  %10s: %s" % ("location", elem.location)
         print "  %10s: %s" % ("size", elem.size)
-        for attr in ['name', 'contentDescription', 'text', 'className', 'resourceId', 'enabled', 'checkable', 'checked', 'clickable',
-                     'focusable', 'focused', 'longClickable', 'scrollable', 'selected', 'displayed']:
+        for attr in ['name', 'contentDescription', 'text', 'className', 'resourceId', 'enabled', 'checkable', 'checked',
+                     'clickable', 'focusable', 'focused', 'longClickable', 'scrollable', 'selected', 'displayed']:
             print "  %10s:" % attr,
             try:
                 print elem.get_attribute(attr)
             except NoSuchElementException:
                 log.debug("NoSuchElementException running elem.get_attribute(%s)" % attr)
                 print
-        if hasattr(self, 'canvas') and self.canvas is not None:
-            # print 'canvas = %s' % repr(self.canvas)
-            x1 = int(elem.location['x'])
-            y1 = int(elem.location['y'])
-            x2 = x1 + int(elem.size['width'])
-            y2 = y1 + int(elem.size['height'])
-            if self.polygon is not None:
-                self.canvas.delete(self.polygon)
-            self.polygon = self.canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red', fill='')
+        self.outline_elems([{
+            "x1": int(elem.location['x']),
+            "y1": int(elem.location['y']),
+            "x2": int(elem.location['x']) + int(elem.size['width']),
+            "y2": int(elem.location['y']) + int(elem.size['height'])
+        }])
+
+    def outline_elems(self, geoms):
+        if hasattr(self, 'im_canvas') and self.im_canvas is not None:
+            while len(self.polygons):
+                self.im_canvas.delete(self.polygons.pop())
+            for geom in geoms:
+                x1 = int(geom["x1"] * self.cwin.scale)
+                y1 = int(geom["y1"] * self.cwin.scale)
+                y2 = int(geom["y2"] * self.cwin.scale)
+                x2 = int(geom["x2"] * self.cwin.scale)
+                # print "calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1)
+                self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red', fill=''))
+                pass
 
     def get_elem_color(self):
         text_index = self.elem_index.get()
@@ -792,7 +893,8 @@ class TestGui(Frame):
         print "rebooting...",
         ss = SpudSerial(cfg.site['SerialDev'])
         self.log_action(ss, {'cmd': 'cd\n', 'new_cwd': 'data'})
-        self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'dead_air_timeout': 20, 'timeout': 120})
+        self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'dead_air_timeout': 20,
+                             'timeout': 120})
         print "Done"
 
     @staticmethod
@@ -892,7 +994,8 @@ class TestGui(Frame):
         contacts_view.toggle_multi_edit()
         print "Done"
 
-    def force_aosp_downgrade(self):
+    @staticmethod
+    def force_aosp_downgrade():
         print "Forcing AOSP Downgrade...",
         force_aosp_downgrade('2.3.12')
         print "Done"
@@ -953,6 +1056,6 @@ def on_closing():
     sleep(5)
     root.destroy()
 
+
 root.protocol("WM_DELETE_WINDOW", on_closing)
 _app.mainloop()
-
