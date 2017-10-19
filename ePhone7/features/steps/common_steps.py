@@ -710,12 +710,6 @@ def my_phone_calls_the_number(context):
     pass
 
 
-@step("my phone calls the voicemail sender")
-@fake
-def my_phone_calls_the_voicemail_sender(context):
-    pass
-
-
 @step("my saved voicemails are listed")
 @fake
 def my_saved_voicemails_are_listed(context):
