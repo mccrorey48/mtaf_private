@@ -22,6 +22,7 @@ from selenium.common.exceptions import NoSuchElementException, InvalidSelectorEx
 import threading
 import json
 from lib.filters import get_filter
+from PIL import Image, ImageTk
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -177,6 +178,8 @@ class TestGui(Frame):
     parent_element = None
     frame_element = None
     use_parent = None
+    canvas = None
+    polygon = None
     locators = {"Coworkers": {"by": "uia_text", "use_parent": 0}}
     try:
         with open('tmp/appium_gui_locators.json', 'r') as f:
@@ -248,11 +251,29 @@ class TestGui(Frame):
     def create_bottom_frame(self):
         bottom_frame = Frame(self, bg="tan")
         bottom_frame.grid_columnconfigure(0, weight=1)
+        bottom_frame.mk_canvas = Button(bottom_frame, text="canvas", command=self.make_canvas)
+        bottom_frame.mk_canvas.grid(row=0, column=0, sticky='e', padx=2, pady=2)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", command=self.close_appium_and_quit)
-        bottom_frame.Quit.grid(row=0, column=0, sticky='e', padx=2, pady=2)
+        bottom_frame.Quit.grid(row=0, column=1, sticky='e', padx=2, pady=2)
         bottom_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
         self.top_frame_row += 1
         return bottom_frame
+
+    def make_canvas(self):
+        self.bottom_frame.mk_canvas.configure(state=DISABLED)
+        self.cwin = Toplevel(root, bg='cyan')
+        self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
+        self.canvas = Canvas(self.cwin, height=1024, width=600, bg='darkgray')
+        fullpath = os.path.join(cfg.test_screenshot_folder, 'appium_gui.png')
+        self.canvas.im = Image.open(fullpath)
+        self.canvas.photo = ImageTk.PhotoImage(self.canvas.im)
+        self.canvas.create_image(600/2, 1024/2, image=self.canvas.photo)
+        self.canvas.grid(column=0, row=0)
+
+    def on_canvas_closing(self):
+        self.canvas = None
+        self.cwin.destroy()
+        self.bottom_frame.mk_canvas.configure(state=NORMAL)
 
     def create_log_frame(self):
         log_frame = LogFrame(self)
@@ -607,6 +628,15 @@ class TestGui(Frame):
             except NoSuchElementException:
                 log.debug("NoSuchElementException running elem.get_attribute(%s)" % attr)
                 print
+        if hasattr(self, 'canvas') and self.canvas is not None:
+            # print 'canvas = %s' % repr(self.canvas)
+            x1 = int(elem.location['x'])
+            y1 = int(elem.location['y'])
+            x2 = x1 + int(elem.size['width'])
+            y2 = y1 + int(elem.size['height'])
+            if self.polygon is not None:
+                self.canvas.delete(self.polygon)
+            self.polygon = self.canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red', fill='')
 
     def get_elem_color(self):
         text_index = self.elem_index.get()
@@ -853,7 +883,7 @@ class TestGui(Frame):
     @staticmethod
     def scroll_to_top_vm():
         print "Scrolling to top of voicemail window...",
-        voicemail_view.scroll_to_top_of_list()
+        voicemail_view.get_top_vm_parents()
         print "Done"
 
     @staticmethod
