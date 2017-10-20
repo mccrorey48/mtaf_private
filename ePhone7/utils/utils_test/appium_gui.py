@@ -15,13 +15,13 @@ from lib.user_exception import UserException as Ux
 from ePhone7.utils.get_focused_app import get_focused_app
 from ePhone7.utils.versions import *
 from lib.android import expand_zpath
-from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
+from ePhone7.utils.csv.xml_to_csv import xml_to_csv
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
 import json
 from lib.filters import get_filter
 from PIL import Image, ImageTk
-from ePhone7.utils.csv.parse_ids import parse_ids
+from ePhone7.utils.csv.parse_ids import parse_ids, parse_zpaths
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -242,14 +242,15 @@ class TestGui(Frame):
         self.frame_element = None
         self.use_parent = None
         self.im_canvas = None
-        self.id_canvas = None
         self.id_frame = None
+        self.ids = None
+        self.zpath_frame = None
+        self.zpaths = None
         self.polygons = []
         self.cwin = None
-        self.ids = None
         self.locators = {"Coworkers": {"by": "uia_text", "use_parent": 0}}
-        self.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
-                      'prefs': prefs_view}
+        self.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view,
+                      'dial': dial_view, 'prefs': prefs_view}
         try:
             with open('tmp/appium_gui_locators.json', 'r') as f:
                 self.locators = json.loads(f.read())
@@ -321,16 +322,25 @@ class TestGui(Frame):
     def create_bottom_frame(self):
         bottom_frame = BottomFrame(self, bg="tan")
         bottom_frame.grid_columnconfigure(0, weight=1)
-        bottom_frame.mk_canvas = Button(bottom_frame, text="canvas", command=self.make_canvas)
+        bottom_frame.mk_canvas = Button(bottom_frame, text="screenshot", command=self.make_canvas)
         bottom_frame.mk_canvas.grid(row=0, column=0, sticky='e', padx=2, pady=2)
+        self.appium_btns.append(bottom_frame.mk_canvas)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", command=self.close_appium_and_quit)
         bottom_frame.Quit.grid(row=0, column=1, sticky='e', padx=2, pady=2)
         bottom_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
         self.top_frame_row += 1
         return bottom_frame
 
+    def show_ids(self):
+        pass
+
+    def show_zpaths(self):
+        pass
+
     def make_canvas(self):
         self.bottom_frame.mk_canvas.configure(state=DISABLED)
+        self.get_screenshot()
+        self.get_xml()
         x = self.winfo_rootx()
         y = self.winfo_rooty()
         w = self.winfo_width()
@@ -356,16 +366,47 @@ class TestGui(Frame):
         row = 0
         self.ids = parse_ids(csv_fullpath)
         for _id in self.ids:
-            self.id_frame.btns[id] = Button(self.id_frame.interior, text=_id, command=self.get_outline_fn(_id))
+            self.id_frame.btns[id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id))
             self.id_frame.btns[id].grid(row=row, column=0, sticky='w')
             row += 1
+        # self.id_frame.interior.bind('<4>', self.mouse_wheel)
+        # self.id_frame.interior.bind('<5>', self.mouse_wheel)
         self.id_frame.grid(column=1, row=0)
         self.id_frame.update()
-        self.cwin.geometry('%dx%d' % (im_width + self.id_frame.winfo_reqwidth(), self.im_canvas.winfo_reqheight()))
+        self.zpath_frame = VerticalScrolledFrame(self.cwin)
+        self.zpath_frame.btns = {}
+        row = 0
+        self.zpaths = parse_zpaths(csv_fullpath)
+        zpath_keys = self.zpaths.keys()
+        for zpath in sorted(zpath_keys):
+            self.zpath_frame.btns[zpath] = Button(self.zpath_frame.interior, text=zpath,
+                                                  command=self.get_zpath_outline_fn(zpath))
+            self.zpath_frame.btns[zpath].grid(row=row, column=0, sticky='w')
+            row += 1
+        self.zpath_frame.grid(column=2, row=0)
+        self.zpath_frame.update()
+        self.cwin.geometry('%dx%d' % (im_width + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth(),
+                                      self.im_canvas.winfo_reqheight()))
 
-    def get_outline_fn(self, id_name):
+    # def mouse_wheel(self, event):
+    #     # print "event.num = %s" % event.num
+    #     # if event.num == 4:
+    #     #     self.id_frame.interior.yview_scroll(1, "units")
+    #     # else:
+    #     #     self.id_frame.interior.yview_scroll(-1, "units")
+
+    def get_id_outline_fn(self, id_name):
         def f():
             self.outline_elems(self.ids[id_name])
+            self.find_by_var.set('id')
+            self.find_value_var.set(id_name)
+        return f
+
+    def get_zpath_outline_fn(self, zpath):
+        def f():
+            self.outline_elems(self.zpaths[zpath])
+            self.find_by_var.set('zpath')
+            self.find_value_var.set(zpath)
         return f
 
     def on_canvas_closing(self):
@@ -488,28 +529,30 @@ class TestGui(Frame):
         btn_frame.key_code_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
         self.attr_frame = AttrFrame(btn_frame, bg='tan')
-        btn = Button(self.attr_frame, text="get element attributes", command=self.get_elem_attrs, state=DISABLED)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=0, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="get element color", command=self.get_elem_color, state=DISABLED)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=1, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="click element", command=self.click_element, state=DISABLED)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=2, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="clear element", command=self.clear_element, state=DISABLED)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=3, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="set parent", command=self.set_parent, state=DISABLED)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=4, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="set frame", command=self.set_frame, state=DISABLED)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=5, padx=2, pady=2)
+        self.attr_frame.index_label = Label(self.attr_frame, text="select elem:", bg="tan")
+        self.attr_frame.index_label.grid(row=0, column=0, padx=2, pady=2, sticky='e')
         self.elem_index = StringVar()
         self.elem_index.set('')
         self.attr_frame.index = Combobox(self.attr_frame, width=6, values=[], textvariable=self.elem_index)
-        self.attr_frame.index.grid(row=0, column=6, padx=2, pady=2, sticky='ew')
+        self.attr_frame.index.grid(row=0, column=1, padx=2, pady=2, sticky='e')
+        btn = Button(self.attr_frame, text="get elem attributes", command=self.get_elem_attrs, state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=2, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="get elem color", command=self.get_elem_color, state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=3, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="click elem", command=self.click_element, state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=4, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="clear elem", command=self.clear_element, state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=5, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="set parent", command=self.set_parent, state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=6, padx=2, pady=2)
+        btn = Button(self.attr_frame, text="set frame", command=self.set_frame, state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=7, padx=2, pady=2)
         self.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.grid_columnconfigure(0, weight=1)
         btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
@@ -740,7 +783,8 @@ class TestGui(Frame):
                 y2 = int(geom["y2"] * self.cwin.scale)
                 x2 = int(geom["x2"] * self.cwin.scale)
                 # print "calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1)
-                self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red', fill=''))
+                self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
+                                                                   fill=''))
                 pass
 
     def get_elem_color(self):
@@ -1009,17 +1053,25 @@ class TestGui(Frame):
         print "Getting XML and CSV...",
         xml = base_view.get_source()
         xml_dir = os.path.join(cfg.xml_folder, 'xml_appium_gui')
+        csv_dir = os.path.join(cfg.csv_folder, 'csv_appium_gui')
         try:
             os.makedirs(xml_dir)
         except OSError as e:
             # ignore 'File exists' error but re-raise any others
             if e.errno != 17:
                 raise e
+        try:
+            os.makedirs(csv_dir)
+        except OSError as e:
+            # ignore 'File exists' error but re-raise any others
+            if e.errno != 17:
+                raise e
         xml_fullpath = os.path.join(xml_dir, 'appium_gui.xml')
+        csv_fullpath = os.path.join(csv_dir, 'appium_gui.csv')
         log.info("saving xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
-        xml_folder_to_csv()
+        xml_to_csv(xml_fullpath, csv_fullpath)
 
         print "Done"
 
