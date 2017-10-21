@@ -248,9 +248,10 @@ class TestGui(Frame):
         self.zpaths = None
         self.polygons = []
         self.cwin = None
-        self.locators = {"Coworkers": {"by": "uia_text", "use_parent": 0}}
-        self.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view,
-                      'dial': dial_view, 'prefs': prefs_view}
+        self.ids = None
+        self.locators = {"Coworkers": {"by": "uia_text", "use_parent": 0, "time": ""}}
+        self.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
+                      'prefs': prefs_view}
         try:
             with open('tmp/appium_gui_locators.json', 'r') as f:
                 self.locators = json.loads(f.read())
