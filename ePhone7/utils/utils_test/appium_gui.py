@@ -325,7 +325,7 @@ class TestGui(Frame):
         bottom_frame.grid_columnconfigure(0, weight=1)
         bottom_frame.mk_canvas = Button(bottom_frame, text="screenshot", command=self.make_canvas)
         bottom_frame.mk_canvas.grid(row=0, column=0, sticky='e', padx=2, pady=2)
-        self.appium_btns.append(bottom_frame.mk_canvas)
+        # self.appium_btns.append(bottom_frame.mk_canvas)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", command=self.close_appium_and_quit)
         bottom_frame.Quit.grid(row=0, column=1, sticky='e', padx=2, pady=2)
         bottom_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
@@ -340,8 +340,9 @@ class TestGui(Frame):
 
     def make_canvas(self):
         self.bottom_frame.mk_canvas.configure(state=DISABLED)
-        self.get_screenshot()
-        self.get_xml()
+        if self.appium_is_open:
+            self.get_screenshot()
+            self.get_xml()
         x = self.winfo_rootx()
         y = self.winfo_rooty()
         w = self.winfo_width()
