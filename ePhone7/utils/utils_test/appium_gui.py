@@ -225,44 +225,53 @@ class TestGui(Frame):
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
-        self.elems = []
         self.appium_is_open = False
-        self.appium_btns = []
-        self.no_appium_btns = []
-        self.elem_indices = []
-        self.appium_commands = []
-        self.other_commands = []
+        self.attr_frame = None
+        self.cwin = None
+        self.drag_polygon = None
+        self.drag_polygon_x1 = None
+        self.drag_polygon_y1 = None
+        self.drag_polygon_x2 = None
+        self.drag_polygon_y2 = None
+        self.elem_index = None
         self.find_by_var = None
         self.find_value_var = None
-        self.keycode_name = None
-        self.attr_frame = None
-        self.elem_index = None
-        self.worker_thread = None
-        self.parent_element = None
         self.frame_element = None
-        self.use_parent = None
-        self.im_canvas = None
         self.id_frame = None
         self.ids = None
+        self.ids = None
+        self.im_canvas = None
+        self.im_width = None
+        self.im_height = None
+        self.keycode_name = None
+        self.parent_element = None
+        self.use_parent = None
+        self.worker_thread = None
         self.zpath_frame = None
         self.zpaths = None
+        self.appium_btns = []
+        self.appium_commands = []
+        self.elem_indices = []
+        self.elems = []
+        self.no_appium_btns = []
+        self.other_commands = []
         self.polygons = []
-        self.cwin = None
-        self.ids = None
         self.locators = {"Coworkers": {"by": "uia_text", "use_parent": 0, "time": ""}}
         self.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
                       'prefs': prefs_view}
-        try:
-            with open('tmp/appium_gui_locators.json', 'r') as f:
-                self.locators = json.loads(f.read())
-        except IOError:
-            pass
         self.within_frame = IntVar()
         self.tap_y_var = StringVar()
         self.tap_x_var = StringVar()
         self.swipe_y1_var = StringVar()
         self.swipe_y2_var = StringVar()
         self.swipe_ms_var = StringVar()
+
+        try:
+            with open('tmp/appium_gui_locators.json', 'r') as f:
+                self.locators = json.loads(f.read())
+        except IOError:
+            pass
+
         self.create_commands()
         self.menu = self.create_menus(parent)
         self.top_frame_row = 0
@@ -332,8 +341,22 @@ class TestGui(Frame):
         self.top_frame_row += 1
         return bottom_frame
 
-    def show_ids(self):
-        pass
+    def elem_selected(self, elems):
+        if self.drag_polygon is None:
+            return True
+        dx1 = self.drag_polygon_x1
+        dx2 = self.drag_polygon_x2
+        dy1 = self.drag_polygon_y1
+        dy2 = self.drag_polygon_y2
+        for elem in elems:
+            x1 = int(elem['x1']) * self.cwin.scale
+            x2 = int(elem['x2']) * self.cwin.scale
+            y1 = int(elem['y1']) * self.cwin.scale
+            y2 = int(elem['y2']) * self.cwin.scale
+            if x1 >= dx1 and x2 <= dx2 and y1 >= dy1 and y2 <= dy2:
+                return True
+        # print "(%s,%s) -> (%s,%s) not in (%s,%s) -> (%s,%s)" % (x1, y1, x2, y2, dx1, dy1, dx2, dy2)
+        return False
 
     def show_zpaths(self):
         pass
@@ -351,51 +374,86 @@ class TestGui(Frame):
         self.cwin.resizable(width=False, height=True)
         self.cwin.geometry("+%d+%d" % (x + w + 20, y - 70))
         self.cwin.scale = 0.5
-        im_width = int(600 * self.cwin.scale)
-        im_height = int(1024 * self.cwin.scale)
-        self.cwin.minsize(width=im_width, height=im_height)
-        self.im_canvas = Canvas(self.cwin, height=im_height, width=im_width, bg='darkgray')
+        self.im_width = int(600 * self.cwin.scale)
+        self.im_height = int(1024 * self.cwin.scale)
+        self.cwin.minsize(width=self.im_width, height=self.im_height)
+        self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='darkgray')
         fullpath = os.path.join(cfg.test_screenshot_folder, 'appium_gui.png')
         self.im_canvas.im = Image.open(fullpath)
-        small = self.im_canvas.im.resize((im_width, im_height))
+        small = self.im_canvas.im.resize((self.im_width, self.im_height))
         self.im_canvas.photo = ImageTk.PhotoImage(small)
-        self.im_canvas.create_image(im_width/2, im_height/2, image=self.im_canvas.photo)
+        self.im_canvas.create_image(self.im_width/2, self.im_height/2, image=self.im_canvas.photo)
         self.im_canvas.grid(column=0, row=0)
+        self.im_canvas.bind('<Button-1>', self.mouse_btn)
+        self.im_canvas.bind('<Button-2>', self.mouse_btn)
+        self.im_canvas.bind('<Button-3>', self.mouse_btn)
+        self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
+        self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
         self.cwin.rowconfigure(0, weight=1)
         self.id_frame = VerticalScrolledFrame(self.cwin)
         self.id_frame.btns = {}
+        self.id_frame.grid(column=1, row=0)
+        self.zpath_frame = VerticalScrolledFrame(self.cwin)
+        self.zpath_frame.btns = {}
+        self.zpath_frame.grid(column=2, row=0)
+        self.update_loc_frames()
+
+    def update_loc_frames(self):
+        for _id in self.id_frame.btns:
+            self.id_frame.btns[_id].grid_forget()
+        self.id_frame.btns = {}
+        for zpath in self.zpath_frame.btns:
+            self.zpath_frame.btns[zpath].grid_forget()
+        self.zpath_frame.btns = {}
         csv_fullpath = os.path.join(cfg.csv_folder, 'csv_appium_gui', 'appium_gui.csv')
         row = 0
         self.ids = parse_ids(csv_fullpath)
         for _id in self.ids:
-            self.id_frame.btns[id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id))
-            self.id_frame.btns[id].grid(row=row, column=0, sticky='w')
-            row += 1
-        # self.id_frame.interior.bind('<4>', self.mouse_wheel)
-        # self.id_frame.interior.bind('<5>', self.mouse_wheel)
-        self.id_frame.grid(column=1, row=0)
-        self.id_frame.update()
-        self.zpath_frame = VerticalScrolledFrame(self.cwin)
-        self.zpath_frame.btns = {}
+            if self.elem_selected(self.ids[_id]):
+                # print "_id selected: %s" % _id
+                self.id_frame.btns[_id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id))
+                self.id_frame.btns[_id].grid(row=row, column=0, sticky='w')
+                row += 1
         row = 0
         self.zpaths = parse_zpaths(csv_fullpath)
         zpath_keys = self.zpaths.keys()
         for zpath in sorted(zpath_keys):
-            self.zpath_frame.btns[zpath] = Button(self.zpath_frame.interior, text=zpath,
-                                                  command=self.get_zpath_outline_fn(zpath))
-            self.zpath_frame.btns[zpath].grid(row=row, column=0, sticky='w')
-            row += 1
-        self.zpath_frame.grid(column=2, row=0)
+            if self.elem_selected(self.zpaths[zpath]):
+                # print "zpath selected: %s" % zpath
+                self.zpath_frame.btns[zpath] = Button(self.zpath_frame.interior, text=zpath,
+                                                      command=self.get_zpath_outline_fn(zpath))
+                self.zpath_frame.btns[zpath].grid(row=row, column=0, sticky='w')
+                row += 1
+        self.id_frame.update()
         self.zpath_frame.update()
-        self.cwin.geometry('%dx%d' % (im_width + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth(),
-                                      self.im_canvas.winfo_reqheight()))
+        self.cwin.geometry(
+            '%dx%d' % (self.im_width + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth(),
+                       self.im_canvas.winfo_reqheight()))
 
-    # def mouse_wheel(self, event):
-    #     # print "event.num = %s" % event.num
-    #     # if event.num == 4:
-    #     #     self.id_frame.interior.yview_scroll(1, "units")
-    #     # else:
-    #     #     self.id_frame.interior.yview_scroll(-1, "units")
+    def mouse_btn(self, event):
+        # event.type values: 4=press, 6=motion, 5=release
+        # print "type = %s, type(type) = %s, x = %d, y = %d" % (event.type, type(event.type), event.x, event.y)
+        if event.type == '4':
+            if event.num == 1:
+                self.drag_polygon_x1 = event.x
+                self.drag_polygon_y1 = event.y
+            elif event.num == 3:
+                if self.drag_polygon is not None:
+                    self.im_canvas.delete(self.drag_polygon)
+                    self.drag_polygon = None
+                    self.update_loc_frames()
+        elif event.type == '5':
+            self.update_loc_frames()
+        elif event.type == '6':
+            if self.drag_polygon is not None:
+                self.im_canvas.delete(self.drag_polygon)
+            x1 = self.drag_polygon_x1
+            y1 = self.drag_polygon_y1
+            x2 = event.x
+            y2 = event.y
+            self.drag_polygon = self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='blue', fill='')
+            self.drag_polygon_x2 = x2
+            self.drag_polygon_y2 = y2
 
     def get_id_outline_fn(self, id_name):
         def f():
@@ -413,6 +471,7 @@ class TestGui(Frame):
 
     def on_canvas_closing(self):
         self.im_canvas = None
+        self.drag_polygon = None
         self.cwin.destroy()
         self.bottom_frame.mk_canvas.configure(state=NORMAL)
 
