@@ -1,4 +1,3 @@
-import argparse
 import os
 
 from selenium.common.exceptions import NoSuchElementException

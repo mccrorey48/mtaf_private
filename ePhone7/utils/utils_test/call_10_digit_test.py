@@ -1,9 +1,7 @@
 from lib.softphone.simple_pj import SoftphoneManager
-import time
 from time import sleep
 import lib.logging_esi as logging_esi
 from lib.user_exception import UserException as Ux, UserTimeoutException as Tx
-# from ePhone7.views import *
 from ePhone7.config.configure import cfg
 
 log = logging_esi.get_logger('esi.softphone_test')

@@ -4,7 +4,6 @@ import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.user_view import UserView
-from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 from appium.webdriver.common.touch_action import TouchAction
 
@@ -134,8 +133,7 @@ class DialView(UserView):
         self.touch_dial_button()
         softphone.wait_for_call_status('call', 20)
         sleep(10)
-        self.end_call()
-        softphone.wait_for_call_status('idle', 20)
+        softphone.end_call()
 
     @Trace(log)
     def touch_dial_button(self):

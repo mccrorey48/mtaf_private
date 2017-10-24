@@ -1,5 +1,4 @@
 from lib.softphone.simple_pj import SoftphoneManager
-import time
 from time import sleep
 import lib.logging_esi as logging_esi
 from lib.user_exception import UserException as Ux

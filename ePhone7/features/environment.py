@@ -1,5 +1,3 @@
-from os import path, makedirs
-
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import base_view

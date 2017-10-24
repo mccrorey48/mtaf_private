@@ -1,5 +1,4 @@
 import re
-import requests
 from time import sleep
 
 import lib.logging_esi as logging
