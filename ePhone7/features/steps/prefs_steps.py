@@ -3,6 +3,9 @@ from behave import *
 from ePhone7.utils.versions import *
 from ePhone7.views import *
 from lib.wrappers import fake
+import lib.logging_esi as logging
+import re
+from lib.user_exception import UserException as Ux
 
 log = logging.get_logger('esi.prefs')
 
