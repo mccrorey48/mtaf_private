@@ -99,10 +99,10 @@ def contacts__i_longpress_a_contact_list_item(context):
 @step("[contacts] I see the Personal, Coworkers, Favorites and Groups tabs")
 @fake
 def contacts__i_see_the_personal_coworkers_favorites_and_groups_tabs(context):
-    assert contacts_view.element_is_present('Personal')
-    assert contacts_view.element_is_present('Coworkers')
-    assert contacts_view.element_is_present('Favorites')
-    assert contacts_view.element_is_present('Groups')
+    assert contacts_view.Personal is not None, "contacts_view.Personal element not found"
+    assert contacts_view.Coworkers is not None, "contacts_view.Coworkers element not found"
+    assert contacts_view.Favorites is not None, "contacts_view.Favorites element not found"
+    assert contacts_view.Groups is not None, "contacts_view.Groups element not found"
 
 
 @step("[contacts] I touch a check a box next to a contact")
@@ -154,7 +154,7 @@ def contacts__i_touch_the_name_of_a_system_group_list(context):
 @step("[contacts] I touch the star icon")
 @fake
 def contacts__i_touch_the_star_icon(context):
-    contacts_view.click_named_element('FavoriteIndicator')
+    contacts_view.FavoriteIndicator.click()
 
 
 @step("[contacts] I touch the star icons so all are white")
@@ -167,12 +167,6 @@ def contacts__i_touch_the_star_icons_so_all_are_white(context):
 @fake
 def contacts__i_touch_the_star_icons_so_favorites_are_yellow_and_others_are_white(context):
     contacts_view.set_all_favorites()
-
-
-@step("[contacts] I touch the yellow star icon")
-@fake
-def contacts__i_touch_the_yellow_star_icon(context):
-    pass
 
 
 @step("[contacts] my Coworker contacts are displayed in a list with checkboxes")

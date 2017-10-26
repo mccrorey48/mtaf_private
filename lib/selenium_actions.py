@@ -25,6 +25,14 @@ class SeleniumActions(Tc):
     def __init__(self):
         Tc.__init__(self)
 
+    class PresenceOfElementsByName(object):
+
+        def __init__(self, name):
+            self.name = name
+
+        def __call__(self, actions):
+            return actions.find_named_elements(self.name)
+
     def get_locator(self, name):
         cls = self.__class__
         while True:

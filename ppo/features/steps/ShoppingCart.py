@@ -36,17 +36,18 @@ def step_impl(context):
 def step_impl(context):
     page = SummerDressesCatalogPage(context).PrintedSummerDress1(context)
     # so that we can compare unit price in downstream steps
-    context.browser.execute_script('window.scrollTo(0,500)')
+    # context.browser.execute_script('window.scrollTo(0,500)')
     page.hover(page.img_dress1)
     context.unitprice = page.product_price.text
-    page.add_cart_dress1.click()
+    elem = page.add_cart_dress1
+    elem.click()
     page.CartPopup(context).proceed_to_checkout.click()
 
 
 @step("verify the item and price")
 def step_impl(context):
     page = ShoppingCartSummaryPage(context)
-    context.browser.execute_script('window.scrollTo(0,500)')
+    # context.browser.execute_script('window.scrollTo(0,1000)')
     assert context.unitprice in page.unit_price.text
     page.proceed_to_checkout.click()
 
@@ -54,7 +55,8 @@ def step_impl(context):
 @step("I verify the address and proceed")
 def step_impl(context):
     page = AddressPage(context)
-    assert "Addresses" in page.page_heading.text
+    assert "ADDRESSES" in page.page_heading.text, "page.page_heading.text = %s" % page.page_heading.text
+    # context.browser.execute_script('window.scrollTo(0,500)')
     page.proceed_to_checkout.click()
 
 

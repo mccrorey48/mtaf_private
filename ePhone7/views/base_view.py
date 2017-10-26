@@ -5,7 +5,10 @@ from time import sleep, time, strftime, localtime
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.touch_action import TouchAction
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, TimeoutException, StaleElementReferenceException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+import traceback
 
 import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
@@ -46,6 +49,7 @@ class BaseView(SeleniumActions):
         super(BaseView, self).__init__()
         self.cfg = cfg
         self.By = MobileBy
+        self.locator_timeout = 10
 
     def get_locator(self, name):
         locator = SeleniumActions.get_locator(self, name)
@@ -57,9 +61,37 @@ class BaseView(SeleniumActions):
             locator["value"] = 'new UiSelector().text("%s")' % locator["value"]
         return locator
 
+    class All(object):
+        def __init__(self, view):
+            self.view = view
+
+        def __getattr__(self, attr_name):
+            return self.view.find_named_elements(attr_name)
+
+    class Missing(object):
+        def __init__(self, view):
+            self.view = view
+
+        def __getattr__(self, attr_name):
+            return self.view.element_is_not_present(attr_name, self.view.locator_timeout)
+
+    def __getattr__(self, attr_name):
+        if attr_name == 'all':
+            return self.All(self)
+        elif attr_name == 'missing':
+            return self.Missing(self)
+        try:
+            elements = WebDriverWait(self, self.locator_timeout).until(
+                self.PresenceOfElementsByName(attr_name))
+        except TimeoutException:
+            return None
+        if len(elements) != 1:
+            raise Ux("self.PresenceOfElementsByName(%s) returned %s elements" % (attr_name, len(elements)))
+        return elements[0]
+
     @Trace(log)
     def send_keycode(self, keycode):
-        SeleniumActions.driver.keyevent(keycodes[keycode])
+        self.driver.keyevent(keycodes[keycode])
 
     @Trace(log)
     def send_keycode_back(self):
@@ -89,7 +121,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def hide_keyboard(self):
-        SeleniumActions.driver.hide_keyboard()
+        self.driver.hide_keyboard()
 
     @Trace(log)
     def long_press(self, element=None, x=None, y=None, duration=1000):
@@ -105,7 +137,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def swipe(self, origin_x, origin_y, destination_x, destination_y, duration_ms=500):
-        SeleniumActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration_ms)
+        self.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration_ms)
 
     @Trace(log)
     def long_press_swipe(self, x1, y1, x2, y2, duration=500):
@@ -139,7 +171,7 @@ class BaseView(SeleniumActions):
         sleep(5)
         fullpath = os.path.join(screenshot_folder, filebase + '.png')
         log.debug("saving screenshot to %s" % fullpath)
-        SeleniumActions.driver.get_screenshot_as_file(fullpath)
+        self.driver.get_screenshot_as_file(fullpath)
         im = Image.open(fullpath)
         if im.getbbox()[2] == 1024:
             log.debug("rotating screenshot -90 degrees")

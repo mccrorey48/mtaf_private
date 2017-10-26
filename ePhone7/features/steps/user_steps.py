@@ -33,10 +33,10 @@ def user__i_get_the_logo_element_from_the_home_screen(context):
 @step("[user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen")
 @fake
 def user__i_see_the_contacts_history_voicemail_and_dial_buttons_at_the_bottom_of_the_screen(context):
-    user_view.find_named_element('Contacts')
-    user_view.find_named_element('History')
-    user_view.find_named_element('Voicemail')
-    user_view.find_named_element('Dial')
+    assert user_view.Contacts is not None, "user_view.Contacts element not found"
+    assert user_view.History is not None, "user_view.History element not found"
+    assert user_view.Voicemail is not None, "user_view.Voicemail element not found"
+    assert user_view.Dial is not None, "user_view.Dial element not found"
 
 
 @step("[user] I touch a contact element")
@@ -83,10 +83,11 @@ def user__i_touch_the_home_button(context):
 @step("[user] I touch the Preferences icon")
 @fake
 def user__i_touch_the_preferences_icon(context):
-    user_view.tap([(559, 74)])
-    if not prefs_view.element_is_present('Preferences'):
-        # one retry
-        user_view.tap([(559, 74)])
+    user_view.PrefsButton.click()
+    # user_view.tap([(559, 74)])
+    # if not prefs_view.element_is_present('Preferences'):
+    #     # one retry
+    #     user_view.tap([(559, 74)])
     # user_view.click_named_element('PrefsButton')
 
 

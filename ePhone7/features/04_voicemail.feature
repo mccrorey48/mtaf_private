@@ -18,12 +18,12 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     And   [voicemail] the voicemail audio plays back
 
-  @regression
+  @regression @wip
   Scenario: I call the contact that left a new voicemail
     When  [voicemail] I touch the new voicemail element
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the handset icon
-    Then  [voicemail] the voicemail detail window disappears
+    Then  [active_call] an "Active Call" window appears
     And   [voicemail] my phone calls the voicemail sender
 
   @wip

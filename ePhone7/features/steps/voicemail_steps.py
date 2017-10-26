@@ -6,22 +6,22 @@ from time import sleep
 from ePhone7.utils.get_softphone import get_softphone
 
 
-@step("[voicemail] A keypad appears")
+@step("[voicemail] a keypad appears")
 @fake
 def voicemail__a_keypad_appears(context):
     pass
 
 
-@step("[voicemail] A list of Coworker contacts appears")
+@step("[voicemail] a list of Coworker contacts appears")
 @fake
 def voicemail__a_list_of_coworker_contacts_appears(context):
     pass
 
 
-@step("[voicemail] A voicemail detail window appears")
+@step("[voicemail] a voicemail detail window appears")
 @fake
 def voicemail__a_voicemail_detail_window_appears(context):
-    assert voicemail_view.element_is_present("PlaybackStartStop"), '"PlaybackStartStop" element not present after 10 seconds'
+    assert voicemail_view.PlaybackStartStop is not None, '"PlaybackStartStop" element not present after 10 seconds'
 
 
 @step("[voicemail] I can choose Cancel or OK by touching the corresponding button")
@@ -47,9 +47,9 @@ def voicemail__i_see_my_existing_new_voicemails(context):
 @step("[voicemail] I see the New, Saved and Trash tabs at the top of the screen")
 @fake
 def voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(context):
-    assert voicemail_view.element_is_present('New')
-    assert voicemail_view.element_is_present('Saved')
-    assert voicemail_view.element_is_present('Trash')
+    assert voicemail_view.New, "voicemail_view.New element not present"
+    assert voicemail_view.Saved, "voicemail_view.Saved element not present"
+    assert voicemail_view.Trash, "voicemail_view.Trash element not present"
 
 
 @step("[voicemail] I touch a contact element")
@@ -61,7 +61,7 @@ def voicemail__i_touch_a_contact_element(context):
 @step("[voicemail] I touch the Delete icon")
 @fake
 def voicemail__i_touch_the_delete_icon(context):
-    pass
+    voicemail_view.DeleteButton.click()
 
 
 @step("[voicemail] I touch the Forward icon")
@@ -108,24 +108,24 @@ def voicemail__the_new_voicemail_is_the_first_item_listed(context):
     sleep(10)
     parents = voicemail_view.get_top_vm_parents()
     context.top_vm_parent = parents[0]
-    new_vm_parent_texts = []
+    context.new_vm_parent_texts = []
     for parent in parents:
-        new_vm_parent_texts.append({
+        context.new_vm_parent_texts.append({
             "CallerName": voicemail_view.find_named_sub_element(parent, "CallerName").text,
             "CallerNumber": voicemail_view.find_named_sub_element(parent, "CallerNumber").text,
             "CalledTime": voicemail_view.find_named_sub_element(parent, "CalledTime").text,
             "VmDuration": voicemail_view.find_named_sub_element(parent, "VmDuration").text
         })
     expect_name = cfg.site["DefaultSoftphoneUser"]
-    got_name = new_vm_parent_texts[0]["CallerName"]
+    got_name = context.new_vm_parent_texts[0]["CallerName"]
     assert got_name == expect_name, "Expect first CallerName to be %s, got %s" % (expect_name, got_name)
     for i in range(len(parents) - 1):
         # for text_name in "CallerName", "CallerNumber", "CalledTime", "VmDuration":
         # CalledTime changes since existing vms were checked so don't compare those values
         for text_name in "CallerName", "CallerNumber", "VmDuration":
             expect_name = context.existing_vm_parent_texts[i][text_name]
-            got_name = new_vm_parent_texts[i + 1][text_name]
-            assert got_name == expect_name, "Index %d: expect first %s to be %s, got %s" % (
+            got_name = context.new_vm_parent_texts[i + 1][text_name]
+            assert got_name == expect_name, "Index %d: expect %s to be %s, got %s" % (
                 i, text_name, expect_name, got_name)
 
 
@@ -142,7 +142,7 @@ def voicemail__the_voicemail_audio_plays_back(context):
 @step("[voicemail] the voicemail detail window disappears")
 @fake
 def voicemail__the_voicemail_detail_window_disappears(context):
-    assert voicemail_view.element_is_present("EndCall"), '"EndCall" element not present after 10 seconds'
+    assert voicemail_view.missing.PlaybackStartStop is True, '"PlaybackStartStop" element present after 10 seconds'
 
 
 @step("[voicemail] the voicemail is also available in the destination contact's new voicemails list")
@@ -154,7 +154,24 @@ def voicemail__the_voicemail_is_also_available_in_the_destination_contacts_new_v
 @step("[voicemail] the voicemail is no longer listed")
 @fake
 def voicemail__the_voicemail_is_no_longer_listed(context):
-    pass
+    sleep(10)
+    parents = voicemail_view.get_top_vm_parents()
+    vm_parent_texts = []
+    for parent in parents:
+        vm_parent_texts.append({
+            "CallerName": voicemail_view.find_named_sub_element(parent, "CallerName").text,
+            "CallerNumber": voicemail_view.find_named_sub_element(parent, "CallerNumber").text,
+            "CalledTime": voicemail_view.find_named_sub_element(parent, "CalledTime").text,
+            "VmDuration": voicemail_view.find_named_sub_element(parent, "VmDuration").text
+        })
+    for i in range(len(parents) - 1):
+        # for text_name in "CallerName", "CallerNumber", "CalledTime", "VmDuration":
+        # CalledTime changes since existing vms were checked so don't compare those values
+        for text_name in "CallerName", "CallerNumber", "VmDuration":
+            expect_name = context.new_vm_parent_texts[i + 1][text_name]
+            got_name = vm_parent_texts[i][text_name]
+            assert got_name == expect_name, "Index %d: expect %s to be %s, got %s" % (
+                i, text_name, expect_name, got_name)
 
 
 @step("[voicemail] the voicemail is still the first item in the view")

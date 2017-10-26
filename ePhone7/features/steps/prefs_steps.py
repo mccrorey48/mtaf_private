@@ -130,7 +130,7 @@ def prefs__i_touch_the_delete_icon(context):
 @step('[prefs] I touch the "X" icon')
 @fake
 def prefs__i_touch_the_x_icon(context):
-        prefs_view.click_named_element('CloseButton')
+        prefs_view.CloseButton.click()
 
 
 @step('[prefs] Only the contact I touched is listed')
@@ -158,7 +158,7 @@ def prefs__the_installed_versions_are_displayed_correctly(context):
 @step("[prefs] the Preferences window appears")
 @fake
 def prefs__the_preferences_window_appears(context):
-    assert prefs_view.element_is_present('Preferences')
+    assert prefs_view.Preferences is not None, "prefs_view.Preferences not present"
     for i in range(5):
         elems = prefs_view.find_named_elements('Collapse')
         if len(elems) == 0:

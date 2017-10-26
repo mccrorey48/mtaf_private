@@ -6,8 +6,8 @@ from lib.wrappers import fake
 @step("[history] I see the All and Missed tabs at the top of the screen")
 @fake
 def history__i_see_the_all_and_missed_tabs_at_the_top_of_the_screen(context):
-    history_view.find_named_element('All')
-    history_view.find_named_element('Missed')
+    assert history_view.All is not None, 'history_view.All element not present'
+    assert history_view.Missed is not None, 'history_view.Missed element not present'
 
 
 @step("[history] I see the call at the top of the All History view")

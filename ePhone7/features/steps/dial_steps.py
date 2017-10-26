@@ -87,6 +87,6 @@ def dial__the_buttons_are_x_pixels_wide_and_y_pixels_high(context):
 @step("[dial] the Dial view appears")
 @fake
 def dial__the_dial_view_appears(context):
-    assert dial_view.element_is_present('DialPad')
+    assert dial_view.DialPad is not None, "dial_view.DialPad element not present"
 
 
