@@ -265,6 +265,7 @@ class TestGui(Frame):
         self.swipe_y1_var = StringVar()
         self.swipe_y2_var = StringVar()
         self.swipe_ms_var = StringVar()
+        self.exec_text = StringVar()
 
         try:
             with open('tmp/appium_gui_locators.json', 'r') as f:
@@ -277,6 +278,7 @@ class TestGui(Frame):
         self.top_frame_row = 0
         self.btn_frame = self.create_btn_frame()
         self.softphone_frame = self.create_softphone_frame()
+        self.exec_frame = self.create_exec_frame()
         self.log_frame = self.create_log_frame()
         self.bottom_frame = self.create_bottom_frame()
         self.grid_columnconfigure(0, weight=1)
@@ -504,6 +506,24 @@ class TestGui(Frame):
     def defocus(event):
         event.widget.selection_clear()
 
+    def create_exec_frame(self):
+        exec_frame = Frame(self, bg="brown")
+        exec_frame.btn = Button(exec_frame, text="exec:", command=lambda: self.do_cmd(self.exec_code), state=NORMAL)
+        exec_frame.btn.grid(row=0, column=0)
+        exec_frame.entry = Entry(exec_frame, textvariable = self.exec_text)
+        exec_frame.entry.grid(row=0, column=1, sticky='news')
+        exec_frame.columnconfigure(1, weight=1)
+        exec_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
+        self.top_frame_row += 1
+        return exec_frame
+
+    def exec_code(self):
+        text = self.exec_text.get()
+        try:
+            exec text in globals()
+        except Exception as e:
+            print "exec raised exception: %s" % e
+
     def create_btn_frame(self):
         btn_frame_row = 0
         btn_frame = ButtonFrame(self, bg="brown")
@@ -516,7 +536,10 @@ class TestGui(Frame):
         btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16,
                                            values=['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator',
                                                    'contacts_locator', 'voicemail_locator', 'history_locator',
-                                                   'dial_locator', 'prefs_locator'],
+                                                   'dial_locator', 'prefs_locator', 'contacts_locator_all',
+                                                   'voicemail_locator_all', 'history_locator_all', 'dial_locator_all',
+                                                   'prefs_locator_all'
+                                                   ],
                                            textvariable=self.find_by_var, state='readonly', takefocus=False)
         btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_find_cbs)
         btn_frame.find_frame.by.bind("<FocusIn>", self.defocus)
@@ -625,7 +648,10 @@ class TestGui(Frame):
         if self.find_value_var.get() in self.locators:
             self.find_by_var.set(self.locators[self.find_value_var.get()]["by"])
             self.update_find_cbs(None)
-            self.use_parent.set(self.locators[self.find_value_var.get()]["use_parent"])
+            if self.parent_element is not None:
+                self.use_parent.set(self.locators[self.find_value_var.get()]["use_parent"])
+            else:
+                self.use_parent.set(0)
 
     def create_menus(self, parent):
         menu = MyMenu(parent)
@@ -747,17 +773,20 @@ class TestGui(Frame):
         else:
             self.btn_frame.find_frame.use_parent.configure(state=DISABLED)
             self.use_parent.set(0)
-        if find_by[-7:] == 'locator' and self.frame_element is not None:
+        if find_by[-11:] == 'locator_all' and self.frame_element is not None:
             self.btn_frame.find_frame.within_frame.configure(state=NORMAL)
         else:
             self.btn_frame.find_frame.within_frame.configure(state=DISABLED)
 
     def find_elements_by_locator_name(self, by, value):
-        if self.within_frame.get():
-            return self.views[by[:-8]].find_named_elements(value, filter_fn=get_filter('within_frame',
-                                                                                       frame=self.frame_element))
+        if by[-3:] == 'all':
+            elems = getattr(self.views[by[:-12]].all, value)
         else:
-            return self.views[by[:-8]].find_named_elements(value)
+            elems = [getattr(self.views[by[:-8]], value)]
+        if self.within_frame.get():
+            return filter(get_filter('within_frame', frame=self.frame_element), elems)
+        else:
+            return elems
 
     def find_elements_with_driver(self, by, value):
         if by == 'zpath':
@@ -786,7 +815,7 @@ class TestGui(Frame):
             del self.locators[key]
             sorted_keys.pop()
         self.btn_frame.find_frame.value.configure(value=sorted_keys)
-        if by[-7:] == 'locator':
+        if by[-7:] == 'locator' or by[-11:] == 'locator_all':
             self.elems = self.find_elements_by_locator_name(by, value)
         else:
             try:
@@ -833,6 +862,7 @@ class TestGui(Frame):
             "x2": int(elem.location['x']) + int(elem.size['width']),
             "y2": int(elem.location['y']) + int(elem.size['height'])
         }])
+        pass
 
     def outline_elems(self, geoms):
         if hasattr(self, 'im_canvas') and self.im_canvas is not None:
