@@ -33,7 +33,7 @@ class VoicemailView(UserView):
         "VmCallButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_call_button"},
         "VmDetailHeader": {"by": "id", "value": "com.esi_estech.ditto:id/vm_user_header_layout"},
         "VmDuration": {"by": "id", "value": "com.esi_estech.ditto:id/vmDuration"},
-        "VmFrame": {"by": "zpath", "value": "//rv"},
+        "VmFrame": {"by": "id", "value": "com.esi_estech.ditto:id/swipeContainer"},
         "VmParents": {"by": "zpath", "value": "//rv/rl"},
         "Vm1Parent": {"by": "zpath", "value": "//rv/rl[1]"},
         "Vm1Texts": {"by": "zpath", "value": "(//rv/rl[1])/tv"},
