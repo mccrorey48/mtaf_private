@@ -103,7 +103,7 @@ class Trace(object):
             except KeyboardInterrupt:
                 log.warn("got keyboard interrupt")
                 raise
-            except:
+            except Exception as e:
                 self.elapsed_time = time() - start_time
                 (exc_type, value, tb) = sys.exc_info()
                 tb_array = traceback.extract_tb(tb)
@@ -123,7 +123,8 @@ class Trace(object):
                         self.except_cb(exc_type, value, tb)
                     except:
                         pass
-                raise Ux('calling %s from %s' % (f.func_name, "%s:%s" % tuple(inspect.stack()[1][1:3])), sp=False)
+                raise Ux('%s: calling %s from %s' % (value.text, f.func_name, "%s:%s" % tuple(inspect.stack()[1][1:3])),
+                         sp=False)
             finally:
                 logging_esi.trace_indent -= 1
                 val_reprs = []

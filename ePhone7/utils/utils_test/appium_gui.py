@@ -346,10 +346,10 @@ class TestGui(Frame):
     def elem_selected(self, elems):
         if self.drag_polygon is None:
             return True
-        dx1 = self.drag_polygon_x1
-        dx2 = self.drag_polygon_x2
-        dy1 = self.drag_polygon_y1
-        dy2 = self.drag_polygon_y2
+        dx1 = min(self.drag_polygon_x1, self.drag_polygon_x2)
+        dx2 = max(self.drag_polygon_x1, self.drag_polygon_x2)
+        dy1 = min(self.drag_polygon_y1, self.drag_polygon_y2)
+        dy2 = max(self.drag_polygon_y1, self.drag_polygon_y2)
         for elem in elems:
             x1 = int(elem['x1']) * self.cwin.scale
             x2 = int(elem['x2']) * self.cwin.scale
@@ -779,10 +779,14 @@ class TestGui(Frame):
             self.btn_frame.find_frame.within_frame.configure(state=DISABLED)
 
     def find_elements_by_locator_name(self, by, value):
-        if by[-3:] == 'all':
-            elems = getattr(self.views[by[:-12]].all, value)
-        else:
-            elems = [getattr(self.views[by[:-8]], value)]
+        elems = []
+        try:
+            if by[-3:] == 'all':
+                elems = getattr(self.views[by[:-12]].all, value)
+            else:
+                elems = [getattr(self.views[by[:-8]], value)]
+        except Ux as e:
+            print e.message
         if self.within_frame.get():
             return filter(get_filter('within_frame', frame=self.frame_element), elems)
         else:
