@@ -1,5 +1,5 @@
 import re
-from time import sleep
+from time import sleep, time
 
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
@@ -93,6 +93,23 @@ class VoicemailView(UserView):
         log.debug("first vm caller_number = %s" % self.new_vals['caller_number'])
         log.debug("first vm called_time = %s" % self.new_vals['called_time'])
         return elem
+
+    @Trace(log)
+    def wait_for_first_vm_match(self, caller_name, caller_number, vm_duration, timeout):
+        start_time = time()
+        first_name = None
+        first_number = None
+        first_duration = None
+        while time() - start_time < timeout:
+            first_name = self.all.CallerName[0].text
+            first_number = self.all.CallerNumber[0].text
+            first_duration = self.all.VmDuration[0].text
+            if first_name == caller_name and  first_number == caller_number and first_duration == vm_duration:
+                break
+        else:
+            log.debug("%s seconds timeout reached with no vm match" % timeout)
+        return {'CallerName': first_name, 'CallerNumber': first_number, 'VmDuration': first_duration}
+
 
     @Trace(log)
     def first_vm_opened(self):

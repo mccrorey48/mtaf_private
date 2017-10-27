@@ -4,6 +4,8 @@ from lib.wrappers import fake
 from ePhone7.config.configure import cfg
 from time import sleep
 from ePhone7.utils.get_softphone import get_softphone
+import lib.logging_esi
+log = lib.logging_esi.get_logger('esi.vm_steps')
 
 
 @step("[voicemail] a keypad appears")
@@ -34,14 +36,15 @@ def voicemail__i_can_choose_cancel_or_ok_by_touching_the_corresponding_button(co
 @fake
 def voicemail__i_see_my_existing_new_voicemails(context):
     parents = voicemail_view.get_top_vm_parents()
-    context.existing_vm_parent_texts = []
+    context.existing_new_vm_texts = []
     for parent in parents:
-        context.existing_vm_parent_texts.append({
+        context.existing_new_vm_texts.append({
             "CallerName": voicemail_view.find_named_sub_element(parent, "CallerName").text,
             "CallerNumber": voicemail_view.find_named_sub_element(parent, "CallerNumber").text,
             "CalledTime": voicemail_view.find_named_sub_element(parent, "CalledTime").text,
             "VmDuration": voicemail_view.find_named_sub_element(parent, "VmDuration").text
         })
+    log.debug('VM_DEBUG I see my existing new voicemails: %s' % context.existing_new_vm_texts)
 
 
 @step("[voicemail] I see the New, Saved and Trash tabs at the top of the screen")
@@ -67,7 +70,7 @@ def voicemail__i_touch_the_delete_icon(context):
 @step("[voicemail] I touch the Forward icon")
 @fake
 def voicemail__i_touch_the_forward_icon(context):
-    pass
+    voicemail_view.ForwardButton.click()
 
 
 @step("[voicemail] I touch the handset icon")
@@ -78,22 +81,16 @@ def voicemail__i_touch_the_handset_icon(context):
     voicemail_view.click_named_element('VmCallButton')
 
 
-@step("[voicemail] I touch the new voicemail element")
+@step("[voicemail] I touch the top voicemail element")
 @fake
 def voicemail__i_touch_the_new_voicemail_element(context):
-    context.top_vm_parent.click()
+    context.top_vm.click()
 
 
 @step("[voicemail] I touch the Save icon")
 @fake
 def voicemail__i_touch_the_save_icon(context):
-    pass
-
-
-@step("[voicemail] I touch the voicemail element")
-@fake
-def voicemail__i_touch_the_voicemail_element(context):
-    pass
+    voicemail_view.SaveButton.click()
 
 
 @step("[voicemail] I use the keypad to filter the list of contacts")
@@ -102,31 +99,32 @@ def voicemail__i_use_the_keypad_to_filter_the_list_of_contacts(context):
     pass
 
 
-@step("[voicemail] the new voicemail is the first item listed")
+@step("[voicemail] the new voicemail is the first \"{vm_type}\" item listed")
 @fake
-def voicemail__the_new_voicemail_is_the_first_item_listed(context):
+def voicemail__the_new_voicemail_is_the_first_type_item_listed(context, vm_type):
     sleep(10)
-    parents = voicemail_view.get_top_vm_parents()
-    context.top_vm_parent = parents[0]
-    context.new_vm_parent_texts = []
-    for parent in parents:
-        context.new_vm_parent_texts.append({
-            "CallerName": voicemail_view.find_named_sub_element(parent, "CallerName").text,
-            "CallerNumber": voicemail_view.find_named_sub_element(parent, "CallerNumber").text,
-            "CalledTime": voicemail_view.find_named_sub_element(parent, "CalledTime").text,
-            "VmDuration": voicemail_view.find_named_sub_element(parent, "VmDuration").text
-        })
-    expect_name = cfg.site["DefaultSoftphoneUser"]
-    got_name = context.new_vm_parent_texts[0]["CallerName"]
-    assert got_name == expect_name, "Expect first CallerName to be %s, got %s" % (expect_name, got_name)
-    for i in range(len(parents) - 1):
-        # for text_name in "CallerName", "CallerNumber", "CalledTime", "VmDuration":
-        # CalledTime changes since existing vms were checked so don't compare those values
-        for text_name in "CallerName", "CallerNumber", "VmDuration":
-            expect_name = context.existing_vm_parent_texts[i][text_name]
-            got_name = context.new_vm_parent_texts[i + 1][text_name]
-            assert got_name == expect_name, "Index %d: expect %s to be %s, got %s" % (
-                i, text_name, expect_name, got_name)
+    vms_visible = voicemail_view.get_top_vm_parents()
+    context.make_assertion("Number of VMs displayed > 0", True, len(vms_visible) > 0)
+    context.top_vm = vms_visible[0]
+    if vm_type == "NEW":
+        vm_texts = []
+        for vm in vms_visible:
+            vm_texts.append({
+                "CallerName": voicemail_view.find_named_sub_element(vm, "CallerName").text,
+                "CallerNumber": voicemail_view.find_named_sub_element(vm, "CallerNumber").text,
+                "CalledTime": voicemail_view.find_named_sub_element(vm, "CalledTime").text,
+                "VmDuration": voicemail_view.find_named_sub_element(vm, "VmDuration").text
+            })
+        context.new_vm_text = vm_texts[0]
+        expect_name = cfg.site["DefaultSoftphoneUser"]
+        got_name = context.new_vm_text["CallerName"]
+        context.make_assertion("first CallerName", expect_name, got_name)
+        for i in range(len(vms_visible) - 1):
+            # CalledTime changes since existing vms were checked so don't compare those values
+            for text_name in "CallerName", "CallerNumber", "VmDuration":
+                expect_name = context.existing_new_vm_texts[i][text_name]
+                got_name = vm_texts[i + 1][text_name]
+                context.make_assertion("Index %d: %s" % (i, text_name), expect_name, got_name)
 
 
 @step("[voicemail] the voicemail audio plays back")
@@ -135,7 +133,8 @@ def voicemail__the_voicemail_audio_plays_back(context):
     elem = voicemail_view.find_named_element("PlaybackStartStop")
     voicemail_view.get_screenshot_as_png('playback')
     color = voicemail_view.get_element_color_and_count('playback', elem, color_list_index=0)
-    assert color[:3] == [56, 62, 77], "Voicemail playback/start/stop wrong color, expected (56, 62, 77), got %s" % color[:3]
+    assert color[:3] == [56, 62, 77], "Voicemail playback/start/stop wrong first color, expected (56, 62, 77), got %s" % color[:3]
+    # paused: color[3] == 10930     playing: color[3] == 38160
     assert color[3] == 38160, "Voicemail paused, should be playing back (1st color count %s, expected %s" % (color[3], 38160)
 
 
@@ -151,38 +150,24 @@ def voicemail__the_voicemail_is_also_available_in_the_destination_contacts_new_v
     pass
 
 
-@step("[voicemail] the voicemail is no longer listed")
+@step("[voicemail] the new voicemail is no longer listed")
 @fake
-def voicemail__the_voicemail_is_no_longer_listed(context):
+def voicemail__the_new_voicemail_is_no_longer_listed(context):
     sleep(10)
     parents = voicemail_view.get_top_vm_parents()
-    vm_parent_texts = []
-    for parent in parents:
-        vm_parent_texts.append({
-            "CallerName": voicemail_view.find_named_sub_element(parent, "CallerName").text,
-            "CallerNumber": voicemail_view.find_named_sub_element(parent, "CallerNumber").text,
-            "CalledTime": voicemail_view.find_named_sub_element(parent, "CalledTime").text,
-            "VmDuration": voicemail_view.find_named_sub_element(parent, "VmDuration").text
-        })
-    for i in range(len(parents) - 1):
-        # for text_name in "CallerName", "CallerNumber", "CalledTime", "VmDuration":
-        # CalledTime changes since existing vms were checked so don't compare those values
-        for text_name in "CallerName", "CallerNumber", "VmDuration":
-            expect_name = context.new_vm_parent_texts[i + 1][text_name]
-            got_name = vm_parent_texts[i][text_name]
-            assert got_name == expect_name, "Index %d: expect %s to be %s, got %s" % (
-                i, text_name, expect_name, got_name)
+    if len(parents) > 0:
+        caller_name = voicemail_view.find_named_sub_element(parents[0], "CallerName").text
+        caller_number = voicemail_view.find_named_sub_element(parents[0], "CallerNumber").text
+        vm_duration = voicemail_view.find_named_sub_element(parents[0], "VmDuration").text
+        context.make_assertion("First VM item does not match new VM", True, (
+            context.new_vm_text["CallerName"] != caller_name
+            or context.new_vm_text["CallerNumber"] != caller_number
+            or context.new_vm_text["VmDuration"] != vm_duration))
 
 
 @step("[voicemail] the voicemail is still the first item in the view")
 @fake
 def voicemail__the_voicemail_is_still_the_first_item_in_the_view(context):
-    pass
-
-
-@step("[voicemail] the voicemail is the first item listed")
-@fake
-def voicemail__the_voicemail_is_the_first_item_listed(context):
     pass
 
 

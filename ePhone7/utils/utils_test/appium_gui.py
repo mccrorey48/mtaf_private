@@ -790,6 +790,8 @@ class TestGui(Frame):
         if self.within_frame.get():
             return filter(get_filter('within_frame', frame=self.frame_element), elems)
         else:
+            if elems == [None]:
+                return []
             return elems
 
     def find_elements_with_driver(self, by, value):
