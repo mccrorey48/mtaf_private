@@ -1,4 +1,4 @@
-@regression
+@regression @known_bug
 Feature: As a user I want to transfer an active call to voicemail (R2D2-1612)
 
   Scenario: I transfer an incoming call to voicemail
