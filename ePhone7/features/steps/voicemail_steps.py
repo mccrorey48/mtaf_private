@@ -4,6 +4,7 @@ from lib.wrappers import fake
 from ePhone7.config.configure import cfg
 from time import sleep
 from ePhone7.utils.get_softphone import get_softphone
+from time import time
 import lib.logging_esi
 log = lib.logging_esi.get_logger('esi.vm_steps')
 
@@ -102,9 +103,19 @@ def voicemail__i_use_the_keypad_to_filter_the_list_of_contacts(context):
 @step("[voicemail] the new voicemail is the first \"{vm_type}\" item listed")
 @fake
 def voicemail__the_new_voicemail_is_the_first_type_item_listed(context, vm_type):
-    sleep(10)
-    vms_visible = voicemail_view.get_top_vm_parents()
-    context.make_assertion("Number of VMs displayed > 0", True, len(vms_visible) > 0)
+    start_time = time()
+    timeout = 60
+    vms_visible = []
+    while time() - start_time < timeout:
+        vms_visible = voicemail_view.get_top_vm_parents()
+        if len(vms_visible):
+            if vm_type != "NEW":
+                break
+            if len(vms_visible) > 1 and voicemail_view.find_named_sub_element(
+                    vms_visible[1], "VmDuration").text == context.existing_new_vm_texts[0]["VmDuration"]:
+                break
+    else:
+        assert False, "New voicemail did not appear at top of %s list in %s seconds" % (vm_type, timeout)
     context.top_vm = vms_visible[0]
     if vm_type == "NEW":
         vm_texts = []
