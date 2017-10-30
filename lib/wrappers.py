@@ -81,6 +81,15 @@ class Trace(object):
                     arg_reprs.append(arg.__class__.__name__)
                 else:
                     arg_reprs.append(repr(arg))
+            for key in kwargs:
+                arg = kwargs[key]
+                if type(arg) == webdriver.webelement.WebElement:
+                    arg_reprs.append('%s=<%s>' % (key, arg._id))
+                elif arg.__class__.__name__[-4:] == 'View':
+                    arg_reprs.append('%s=%s' % (key, arg.__class__.__name__))
+                else:
+                    arg_reprs.append('%s=%s' % (key, repr(arg)))
+
             called = "%s%s" % (f.func_name, '(%s)' % ','.join(arg_reprs))
             log_fn("%s %s" % (self.prefix(), called))
             logging_esi.trace_indent += 1
