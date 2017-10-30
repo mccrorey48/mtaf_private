@@ -258,14 +258,14 @@ class ContactsView(UserView):
     @Trace(log)
     def scroll_to_top_of_list(self):
         frame = self.find_named_element('ContactsList')
-        parents = self.find_named_elements("ContactParent", get_filter("within_frame", frame))
+        parents = self.find_named_elements("ContactParent", get_filter("within_frame", frame=frame))
         elems = [self.find_named_sub_element(parent, "ContactName") for parent in parents]
         old_names = [el.text for el in elems]
         if len(old_names) < 7:
             return
         while True:
             self.short_press_scroll(elems[0], elems[-1])
-            parents = self.find_named_elements("ContactParent", get_filter("within_frame", frame))
+            parents = self.find_named_elements("ContactParent", get_filter("within_frame", frame=frame))
             elems = [self.find_named_sub_element(parent, "ContactName") for parent in parents]
             new_name_count = 0
             for name in [el.text for el in elems]:
