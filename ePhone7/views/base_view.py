@@ -165,7 +165,7 @@ class BaseView(SeleniumActions):
         self.swipe(start_x, y, end_x, y, 1000)
 
     @Trace(log)
-    def get_screenshot_as_png(self, filebase, screenshot_folder=None):
+    def get_screenshot_as_png(self, filebase, screenshot_folder=None, scale=None):
         if screenshot_folder is None:
             screenshot_folder = cfg.test_screenshot_folder
         sleep(5)
@@ -176,8 +176,13 @@ class BaseView(SeleniumActions):
         if im.getbbox()[2] == 1024:
             log.debug("rotating screenshot -90 degrees")
             im = im.rotate(-90, expand=True)
-            log.debug("saving rotated screenshot to %s" % fullpath)
-            im.save(fullpath)
+        if scale is not None:
+            bbox = im.getbbox()
+            log.debug("im.getbbox() = %s" % repr(bbox))
+            im.thumbnail((int(bbox[2] * scale), int(bbox[3] * scale)), Image.ANTIALIAS)
+        log.debug("saving rotated screenshot to %s" % fullpath)
+        im.save(fullpath)
+        return fullpath
 
     @staticmethod
     @Trace(log)

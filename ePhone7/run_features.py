@@ -10,10 +10,15 @@ from ePhone7.config.configure import cfg
 from lib.mock_detector import MockDetector
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
+from lib.prune_db import prune_db
 import argparse
 from os import path, getenv, mkdir
 from ePhone7.utils.versions import *
 from shutil import copyfile
+from bson.binary import Binary, STANDARD
+from bson.codec_options import CodecOptions
+from cStringIO import StringIO
+from PIL import Image
 
 log = logging.get_logger('esi.run_features')
 
@@ -88,6 +93,8 @@ def run_features(config):
                 "duration": splitname[-1]
             }
             current_step["substeps"].append(substep)
+        elif _type == 'screenshot' and current_step is not None:
+            current_step['screenshot'] = name
     if current_step is not None:
         printed_steps.append(current_step)
 
@@ -122,13 +129,14 @@ def run_features(config):
                         if printed_step["name"] != step["name"]:
                             raise Ux("Error processing new_steps list, %s != %s" % (printed_step["name"], step["name"]))
                         step["substeps"] = printed_step["substeps"]
+                        step["screenshot"] = printed_step["screenshot"]
                     else:
                         print '    ' + step['name'] + ' (skipped)'
                     new_steps.append(step)
                 element["steps"] = new_steps
-    json_repr = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+    output = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
     with open('tmp/output.json', 'w') as f:
-        f.write(json_repr)
+        f.write(output)
     copyfile('log/esi_info.log', 'log/esi_info_copy.log')
     return data
 
@@ -308,6 +316,11 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                         scenario_has_fakes = True
                     elif step['status'] == 'failed':
                         scenario_has_fails = True
+                        if 'screenshot' in step:
+                            with open(step['screenshot'], 'rb') as f:
+                                bin_data = StringIO(f.read())
+                                step['screenshot_id'] = db['screenshots'].insert_one(
+                                    {'screenshot': Binary(bin_data.getvalue())}).inserted_id
                     else:
                         scenario_has_passes = True
                     if 'error_message' in step['result']:
@@ -384,6 +397,8 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                                                                        'fail_count': fail_count,
                                                                        'skip_count': skip_count,
                                                                        'status': start_result}})
+    # with open('tmp/screenshots.txt', 'r') as f:
+    #     screenshots = f.read().strip().split('\n')
 
 
 if __name__ == '__main__':
@@ -439,5 +454,6 @@ if __name__ == '__main__':
         report_configuration = "site_tag:%s, run_tags:%s, installed_aosp:%s, installed_app:%s" % \
                                (cfg.site_tag, args.run_tags, installed_aosp, installed_app)
         write_result_to_db(args, report_configuration, mock_detector, features)
+        # prune_db('e7_results', args.server, 'prune', 10, 30)
     except Ux as e:
         print "User Exception: " + e.get_msg()
