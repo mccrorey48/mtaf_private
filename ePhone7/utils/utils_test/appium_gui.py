@@ -39,7 +39,7 @@ class VerticalScrolledFrame(Frame):
     * This frame only allows vertical scrolling
     """
     def __init__(self, parent, *args, **kw):
-        Frame.__init__(self, parent, *args, **kw)
+        Frame.__init__(self, parent, *args)
 
         # create a canvas object and a vertical scrollbar for scrolling it
         vscrollbar = Scrollbar(self, orient=VERTICAL)
@@ -238,6 +238,7 @@ class TestGui(Frame):
         self.find_value_var = None
         self.frame_element = None
         self.id_frame = None
+        self.id_frame_btns = {}
         self.ids = None
         self.ids = None
         self.im_canvas = None
@@ -248,6 +249,7 @@ class TestGui(Frame):
         self.use_parent = None
         self.worker_thread = None
         self.zpath_frame = None
+        self.zpath_frame_btns = {}
         self.zpaths = None
         self.appium_btns = []
         self.appium_commands = []
@@ -385,6 +387,7 @@ class TestGui(Frame):
         small = self.im_canvas.im.resize((self.im_width, self.im_height))
         self.im_canvas.photo = ImageTk.PhotoImage(small)
         self.im_canvas.create_image(self.im_width/2, self.im_height/2, image=self.im_canvas.photo)
+        # self.im_canvas.grid(column=0, row=0, rowspan=2)
         self.im_canvas.grid(column=0, row=0)
         self.im_canvas.bind('<Button-1>', self.mouse_btn)
         self.im_canvas.bind('<Button-2>', self.mouse_btn)
@@ -392,42 +395,53 @@ class TestGui(Frame):
         self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
         self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
         self.cwin.rowconfigure(0, weight=1)
-        self.id_frame = VerticalScrolledFrame(self.cwin)
-        self.id_frame.btns = {}
-        self.id_frame.grid(column=1, row=0)
-        self.zpath_frame = VerticalScrolledFrame(self.cwin)
-        self.zpath_frame.btns = {}
-        self.zpath_frame.grid(column=2, row=0)
         self.update_loc_frames()
 
     def update_loc_frames(self):
-        for _id in self.id_frame.btns:
-            self.id_frame.btns[_id].grid_forget()
-        self.id_frame.btns = {}
-        for zpath in self.zpath_frame.btns:
-            self.zpath_frame.btns[zpath].grid_forget()
-        self.zpath_frame.btns = {}
+        if self.id_frame is not None:
+            for _id in self.id_frame_btns:
+                self.id_frame_btns[_id].grid_forget()
+            self.id_frame_btns = {}
+            self.id_frame.grid_forget()
+        if self.zpath_frame is not None:
+            for zpath in self.zpath_frame_btns:
+                self.zpath_frame_btns[zpath].grid_forget()
+            self.zpath_frame_btns = {}
+            self.zpath_frame.grid_forget()
+        self.id_frame = VerticalScrolledFrame(self.cwin)
+        self.id_frame_btns = {}
+        self.id_frame.grid(column=1, row=0)
+        self.zpath_frame = VerticalScrolledFrame(self.cwin)
+        self.zpath_frame_btns = {}
+        self.zpath_frame.grid(column=2, row=0)
         csv_fullpath = os.path.join(cfg.csv_folder, 'csv_appium_gui', 'appium_gui.csv')
         row = 0
         self.ids = parse_ids(csv_fullpath)
+        self.id_label = Label(self.id_frame.interior, text='IDs', width=30, bg='brown')
+        self.id_label.grid(column=0, row=0, stick='ew')
+        row += 1
         for _id in self.ids:
             if self.elem_selected(self.ids[_id]):
                 # print "_id selected: %s" % _id
-                self.id_frame.btns[_id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id))
-                self.id_frame.btns[_id].grid(row=row, column=0, sticky='w')
+                self.id_frame_btns[_id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id))
+                self.id_frame_btns[_id].grid(row=row, column=0, sticky='w')
                 row += 1
         row = 0
         self.zpaths = parse_zpaths(csv_fullpath)
+        self.zpath_label = Label(self.zpath_frame.interior, text='zpaths', width=10, bg='brown')
+        self.zpath_label.grid(column=0, row=0, sticky='ew')
+        row += 1
         zpath_keys = self.zpaths.keys()
         for zpath in sorted(zpath_keys):
             if self.elem_selected(self.zpaths[zpath]):
                 # print "zpath selected: %s" % zpath
-                self.zpath_frame.btns[zpath] = Button(self.zpath_frame.interior, text=zpath,
+                self.zpath_frame_btns[zpath] = Button(self.zpath_frame.interior, text=zpath,
                                                       command=self.get_zpath_outline_fn(zpath))
-                self.zpath_frame.btns[zpath].grid(row=row, column=0, sticky='w')
+                self.zpath_frame_btns[zpath].grid(row=row, column=0, sticky='w')
                 row += 1
         self.id_frame.update()
         self.zpath_frame.update()
+        self.cwin.update()
         self.cwin.geometry(
             '%dx%d' % (self.im_width + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth(),
                        self.im_canvas.winfo_reqheight()))
