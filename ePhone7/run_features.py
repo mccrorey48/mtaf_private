@@ -129,7 +129,8 @@ def run_features(config):
                         if printed_step["name"] != step["name"]:
                             raise Ux("Error processing new_steps list, %s != %s" % (printed_step["name"], step["name"]))
                         step["substeps"] = printed_step["substeps"]
-                        step["screenshot"] = printed_step["screenshot"]
+                        if 'screenshot' in printed_step:
+                            step["screenshot"] = printed_step["screenshot"]
                     else:
                         print '    ' + step['name'] + ' (skipped)'
                     new_steps.append(step)
