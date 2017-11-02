@@ -454,6 +454,6 @@ if __name__ == '__main__':
         report_configuration = "site_tag:%s, run_tags:%s, installed_aosp:%s, installed_app:%s" % \
                                (cfg.site_tag, args.run_tags, installed_aosp, installed_app)
         write_result_to_db(args, report_configuration, mock_detector, features)
-        # prune_db('e7_results', args.server, 'prune', 10, 30)
+        prune_db('e7_results', args.server, 'prune', 10, 30)
     except Ux as e:
         print "User Exception: " + e.get_msg()

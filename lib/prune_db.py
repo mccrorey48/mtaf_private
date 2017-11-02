@@ -9,12 +9,11 @@ import datetime
 
 
 def prune_db(db_name, server, operation, number_to_keep, max_age):
-    print 'pruning %s on server %s to latest %d test runs within last %d days' % (
-        db_name, server, number_to_keep, max_age)
+    if operation=='list':
+        print 'pruning %s on server %s to latest %d test runs within last %d days' % (
+            db_name, server, number_to_keep, max_age)
     client = MongoClient(server)
     db = client[db_name]
-    # configs = db['test_starts'].distinct('configuration')
-    # dates = db['test_starts'].distinct('date')
     starts = db['test_starts'].find({}, {'date': 1, 'time': 1, 'configuration': 1})
     starts_by_cfg={}
     now = datetime.datetime.now()
@@ -30,29 +29,51 @@ def prune_db(db_name, server, operation, number_to_keep, max_age):
             starts_by_cfg[cfg].append(d)
         else:
             starts_by_cfg[cfg] = [d]
+    keep_start_ids = []
+    remove_start_ids = []
+    keep_feature_ids = []
+    remove_feature_ids = []
+    keep_screenshot_ids = []
+    remove_screenshot_ids = []
     for cfg in starts_by_cfg:
+        print 'cfg = %s' % cfg
         removed = 0
         remaining = 0
         for i, d in enumerate(sorted(starts_by_cfg[cfg], key=lambda x: x['days'], reverse=False)):
             removable = i >= number_to_keep or d['days'] > max_age
-            if operation=='list':
-                print '%s: removable = %s' % (d, removable)
-            elif operation=='prune':
+            if removable:
+                remove_start_ids.append(d['_id'])
+            else:
+                keep_start_ids.append(d['_id'])
+            features = []
+            for doc in db['features'].find({'start_id': d['_id']}):
+                features.append(doc)
+            for feature in features:
                 if removable:
-                    removed += 1
-                    db['test_starts'].delete_one({'_id': d['_id']})
-                    db['features'].delete_many({'_id': d['_id']})
+                    remove_feature_ids.append(feature['_id'])
                 else:
-                    remaining += 1
-        print '%s (%d removed, %d remain)' % (cfg, removed, remaining)
-    # for config in  configs:
-    #     print "%2d  %s" % (db['test_starts'].count({"configuration": config}), config)
-    # now = datetime.datetime.now()
-    # for date in sorted(dates, key=lambda x: datetime.datetime.strptime(x, "%m/%d/%y"), reverse=True):
-    #     td = datetime.datetime.strptime(date, "%m/%d/%y")
-    #     print date, (now - td).days, td
-    # for ts_datetime in ts_datetimes:
-    #     print ts_datetime
+                    keep_feature_ids.append(feature['_id'])
+                for scenario in feature['scenarios']:
+                    for step in scenario['steps']:
+                        if not removable and 'screenshot_id' in step:
+                            keep_screenshot_ids.append(step['screenshot_id'])
+    for doc in db['screenshots'].find():
+        if doc['_id'] not in keep_screenshot_ids:
+            remove_screenshot_ids.append(doc['_id'])
+    if operation == 'list':
+        print "keep_start_ids: %s" % keep_start_ids
+        print "remove_start_ids: %s" % remove_start_ids
+        print "keep_feature_ids: %s" % keep_feature_ids
+        print "remove_feature_ids: %s" % remove_feature_ids
+        print "keep_screenshot_ids: %s" % keep_screenshot_ids
+        print "remove_screenshot_ids: %s" % remove_screenshot_ids
+    elif operation == 'prune':
+        for _id in remove_start_ids:
+            db['test_starts'].delete_one({'_id': _id})
+        for _id in remove_feature_ids:
+            db['features'].delete_one({'_id': _id})
+        for _id in remove_screenshot_ids:
+            db['screenshots'].delete_one({'_id': _id})
 
 if __name__ == '__main__':
 
