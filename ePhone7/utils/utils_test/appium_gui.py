@@ -239,6 +239,7 @@ class TestGui(Frame):
         self.frame_element = None
         self.id_frame = None
         self.id_frame_btns = {}
+        self.id_label = None
         self.ids = None
         self.ids = None
         self.im_canvas = None
@@ -250,6 +251,7 @@ class TestGui(Frame):
         self.worker_thread = None
         self.zpath_frame = None
         self.zpath_frame_btns = {}
+        self.zpath_label = None
         self.zpaths = None
         self.appium_btns = []
         self.appium_commands = []
@@ -410,10 +412,10 @@ class TestGui(Frame):
             self.zpath_frame.grid_forget()
         self.id_frame = VerticalScrolledFrame(self.cwin)
         self.id_frame_btns = {}
-        self.id_frame.grid(column=1, row=0)
+        self.id_frame.grid(column=1, row=0, sticky='n')
         self.zpath_frame = VerticalScrolledFrame(self.cwin)
         self.zpath_frame_btns = {}
-        self.zpath_frame.grid(column=2, row=0)
+        self.zpath_frame.grid(column=2, row=0, sticky='n')
         csv_fullpath = os.path.join(cfg.csv_folder, 'csv_appium_gui', 'appium_gui.csv')
         row = 0
         self.ids = parse_ids(csv_fullpath)
@@ -487,6 +489,10 @@ class TestGui(Frame):
 
     def on_canvas_closing(self):
         self.im_canvas = None
+        self.id_frame_btns = {}
+        self.id_frame = None
+        self.zpath_frame_btns = {}
+        self.zpath_frame = None
         self.drag_polygon = None
         self.cwin.destroy()
         self.bottom_frame.mk_canvas.configure(state=NORMAL)
