@@ -42,7 +42,8 @@ class BaseView(SeleniumActions):
         "E7HasStoppedText": {"by": "id", "value": "android:id/message", "text": "Unfortunately, ePhone7 has stopped."},
         "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
         "ReleaseNotes": {"by": "id", "value": "com.esi_estech.ditto:id/release_notes"},
-        "ReleaseNotesOK": {"by": "id", "value": "android:id/button1"}
+        "ReleaseNotesOK": {"by": "id", "value": "android:id/button1"},
+        "RootFrameLayout": {"by": "zpath", "value": "/h/fl"}
     }
 
     def __init__(self):

@@ -1,9 +1,9 @@
 Feature: test feature
 
-  @known_bug
+#  @known_bug
   Scenario: a scenario
     Given I run a step with no substeps
-    And   I run a step with a failing substep
+    And   I run a step with a passing substep
 #    And   I run a step with a fake substep
 #    And   I run a step with fake and passing substeps
 #    Given I run a step with substeps that have substeps

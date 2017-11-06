@@ -55,6 +55,7 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     And   [voicemail] the voicemail audio plays back
 
+  @regression
   Scenario: I call the contact that left a saved voicemail
     When  [voicemail] I touch the top voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -84,13 +85,14 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the new voicemail is no longer listed
 
+  @regression
   Scenario: I move a voicemail from the trash list to the saved list
     When  [voicemail] I touch the top voicemail element
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Delete icon
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the new voicemail is no longer listed
-    When  I touch the "Trash" tab
+    When  I touch the "TRASH" tab
     Then  [voicemail] the new voicemail is the first "TRASH" item listed
     When  [voicemail] I touch the top voicemail element
     Then  [voicemail] a voicemail detail window appears

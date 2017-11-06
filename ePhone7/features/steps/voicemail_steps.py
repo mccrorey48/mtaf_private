@@ -6,19 +6,20 @@ from time import sleep
 from ePhone7.utils.get_softphone import get_softphone
 from time import time
 import lib.logging_esi
+from lib.filters import get_filter
 log = lib.logging_esi.get_logger('esi.vm_steps')
 
 
 @step("[voicemail] a keypad appears")
 @fake
 def voicemail__a_keypad_appears(context):
-    pass
+    assert voicemail_view.RootFrameLayout.size['height'] == 610
 
 
 @step("[voicemail] a list of Coworker contacts appears")
 @fake
 def voicemail__a_list_of_coworker_contacts_appears(context):
-    pass
+    assert voicemail_view.ForwardDialogTitle is not None, '"ForwardDialogTitle" element not present after 10 seconds'
 
 
 @step("[voicemail] a voicemail detail window appears")
@@ -59,7 +60,7 @@ def voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(conte
 @step("[voicemail] I touch a contact element")
 @fake
 def voicemail__i_touch_a_contact_element(context):
-    pass
+    voicemail_view.all.SearchItem[0].click()
 
 
 @step("[voicemail] I touch the Delete icon")
@@ -97,7 +98,13 @@ def voicemail__i_touch_the_save_icon(context):
 @step("[voicemail] I use the keypad to filter the list of contacts")
 @fake
 def voicemail__i_use_the_keypad_to_filter_the_list_of_contacts(context):
-    pass
+    frame = voicemail_view.ForwardList
+    items = filter(get_filter('within_frame', frame=frame), voicemail_view.all.SearchItem)
+    assert len(items) > 1, "Expected number of search items > 1, got %d" % len(items)
+    voicemail_view.ForwardText.send_keys(cfg.site['Users'][cfg.site['DefaultForwardAccount']['UserId']])
+    frame = voicemail_view.ForwardList
+    items = filter(get_filter('within_frame', frame=frame), voicemail_view.all.SearchItem)
+    assert len(items) == 1, "Expected number of search items to be 1, got %d" % len(items)
 
 
 @step("[voicemail] the new voicemail is the first \"{vm_type}\" item listed")

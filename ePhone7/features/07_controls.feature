@@ -15,7 +15,7 @@ Feature: As a user, I should be able to change the settings on my ePhone7 using 
     And   I touch the "Voicemail" button
     Then  [voicemail] I see the New, Saved and Trash tabs at the top of the screen
     When  I touch the "NEW" tab
-    Then  [voicemail] the new voicemail is the first item listed
+    Then  [voicemail] the new voicemail is the first "NEW" item listed
 
   Scenario: I want to deactivate Do Not Disturb
     Given [user] the Do Not Disturb icon is red
