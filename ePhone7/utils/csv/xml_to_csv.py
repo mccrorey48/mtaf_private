@@ -30,7 +30,7 @@ def printall(ofile, node, tag_index, pfx):
                     else:
                         items.append(',,,')
                 else:
-                    items.append(_str)
+                    items.append(repr(_str))
             except UnicodeEncodeError as e:
                 print e.message
         else:
@@ -99,4 +99,5 @@ def xml_folder_to_csv():
     os.path.walk(cfg.xml_folder, visit, '')
 
 if __name__ == '__main__':
-    xml_folder_to_csv()
+    # xml_folder_to_csv()
+    os.path.walk('ePhone7/utils/xml/xml_appium_gui/', visit, '')
