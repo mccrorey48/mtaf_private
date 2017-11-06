@@ -65,7 +65,7 @@ def parse_ids(csv_fullpath):
                 x2 = int(row['lim_x'])
                 y2 = int(row['lim_y'])
                 if _id in ids:
-                    ids[_id].append([{"x1": x1, "y1": y1, "x2": x2, "y2": y2}])
+                    ids[_id].append({"x1": x1, "y1": y1, "x2": x2, "y2": y2})
                 else:
                     ids[_id] = [{"x1": x1, "y1": y1, "x2": x2, "y2": y2}]
     return ids
