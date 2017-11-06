@@ -132,7 +132,7 @@ class Trace(object):
                         self.except_cb(exc_type, value, tb)
                     except:
                         pass
-                raise Ux('%s: calling %s from %s' % (value.text, f.func_name, "%s:%s" % tuple(inspect.stack()[1][1:3])),
+                raise Ux('%s: calling %s from %s' % (value, f.func_name, "%s:%s" % tuple(inspect.stack()[1][1:3])),
                          sp=False)
             finally:
                 logging_esi.trace_indent -= 1

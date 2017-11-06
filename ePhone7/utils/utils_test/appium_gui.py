@@ -915,6 +915,8 @@ class TestGui(Frame):
         print "first color and count: %s" % color
         color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=1)
         print "second color and count: %s" % color
+        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=2)
+        print "third color and count: %s" % color
         for color_name in ['favorite_on_color', 'favorite_off_color']:
             if base_view.color_match(color, cfg.colors['ContactsView'][color_name]):
                 print color_name

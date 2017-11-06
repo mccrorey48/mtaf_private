@@ -231,7 +231,42 @@ class BaseView(SeleniumActions):
     def get_element_color(self, filebase, elem, cropped_suffix=''):
         return self.get_element_color_and_count(filebase, elem, cropped_suffix)[:3]
 
+    # @Trace(log)
+    # def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
+    #     im = Image.open(os.path.join(self.cfg.test_screenshot_folder, filebase + '.png'))
+    #     # calculate image crop points from element location['x'], location['y'], size['height'] and size['width']
+    #     location = elem.location
+    #     size = elem.size
+    #     min_x = location['x']
+    #     min_y = location['y']
+    #     lim_x = min_x + size['width']
+    #     lim_y = min_y + size['height']
+    #     # print "min_x = %s, min_y = %s, lim_x = %s, lim_y = %s" % (min_x, min_y, lim_x, lim_y)
+    #     # (x1, y1, x2, y2) = (min_y, 600-lim_x, lim_y, 600-min_x)
+    #     (x1, y1, x2, y2) = (min_x, min_y, lim_x, lim_y)
+    #     crop_points = [int(i) for i in (x1, y1, x2, y2)]
+    #     # print "crop_points: " + repr(crop_points)
+    #     cropped = im.crop(crop_points)
+    #     cropped.save(os.path.join(self.cfg.test_screenshot_folder, 'cropped%s.png' % cropped_suffix))
+    #     colors = cropped.getcolors(1000)
+    #     if len(colors) > color_list_index:
+    #         color_band = Image.new('RGBA', (crop_points[2] - crop_points[0], crop_points[3] - crop_points[1]), 'yellow')
+    #         im.paste(color_band, crop_points, 0)
+    #         im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after.png'))
+    #         current_color_and_count = sorted(colors, reverse=True, key=lambda x: x[0])[color_list_index]
+    #         current_color = list(current_color_and_count[1])[:-1]
+    #         current_count = current_color_and_count[0]
+    #         return current_color + [current_count]
+    #     else:
+    #         return None
+
+    @Trace(log)
     def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
+        el_image = self.get_cropped_image(filebase, elem, cropped_suffix)
+        return self.get_image_color(el_image, color_list_index)
+
+    @Trace(log)
+    def get_cropped_image(self, filebase, elem, cropped_suffix=''):
         im = Image.open(os.path.join(self.cfg.test_screenshot_folder, filebase + '.png'))
         # calculate image crop points from element location['x'], location['y'], size['height'] and size['width']
         location = elem.location
@@ -247,14 +282,21 @@ class BaseView(SeleniumActions):
         # print "crop_points: " + repr(crop_points)
         cropped = im.crop(crop_points)
         cropped.save(os.path.join(self.cfg.test_screenshot_folder, 'cropped%s.png' % cropped_suffix))
-        colors = cropped.getcolors(1000)
         color_band = Image.new('RGBA', (crop_points[2] - crop_points[0], crop_points[3] - crop_points[1]), 'yellow')
         im.paste(color_band, crop_points, 0)
         im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after.png'))
-        current_color_and_count = sorted(colors, reverse=True, key=lambda x: x[0])[color_list_index]
-        current_color = list(current_color_and_count[1])[:-1]
-        current_count = current_color_and_count[0]
-        return current_color + [current_count]
+        return cropped
+
+    @Trace(log)
+    def get_image_color(self, image, color_list_index):
+        colors = image.getcolors(1000)
+        if len(colors) > color_list_index:
+            current_color_and_count = sorted(colors, reverse=True, key=lambda x: x[0])[color_list_index]
+            current_color = list(current_color_and_count[1])[:-1]
+            current_count = current_color_and_count[0]
+            return current_color + [current_count]
+        else:
+            return None
 
     @Trace(log)
     def tap_element(self, el, duration=200):
