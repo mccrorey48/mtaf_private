@@ -18,8 +18,9 @@ def parse_zpaths(csv_fullpath):
                 zpaths[row['zpath']] = [{"x1": int(row['min_x']), "y1": int(row['min_y']), "x2": int(row['lim_x']),
                                          "y2": int(row['lim_y'])}]
             except ValueError:
-                # print "got value error"
                 pass
+            except TypeError:
+                print "TypeError processing %s" % repr(row)
 
     for zpath in zpaths:
         zterms = zpath.split('/')
@@ -55,16 +56,18 @@ def parse_zpaths(csv_fullpath):
 def parse_ids(csv_fullpath):
     ids = {}
     with open(csv_fullpath) as f:
-        lines = f.readlines()
-        for line in lines:
-            m = re_id.match(line)
-            if m:
-                if m.group(1) not in ids:
-                    ids[m.group(1)] = [{"x1": int(m.group(2)), "y1": int(m.group(3)), "x2": int(m.group(4)),
-                                        "y2": int(m.group(5))}]
+        reader = csv.DictReader(f, quotechar="'")
+        for row in reader:
+            _id = row['resource-id']
+            if _id != '':
+                x1 = int(row['min_x'])
+                y1 = int(row['min_y'])
+                x2 = int(row['lim_x'])
+                y2 = int(row['lim_y'])
+                if _id in ids:
+                    ids[_id].append([{"x1": x1, "y1": y1, "x2": x2, "y2": y2}])
                 else:
-                    ids[m.group(1)].append({"x1": int(m.group(2)), "y1": int(m.group(3)), "x2": int(m.group(4)),
-                                            "y2": int(m.group(5))})
+                    ids[_id] = [{"x1": x1, "y1": y1, "x2": x2, "y2": y2}]
     return ids
 
 
