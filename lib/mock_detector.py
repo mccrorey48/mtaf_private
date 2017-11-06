@@ -11,7 +11,7 @@ triple_single_quoted_re = re.compile("(?ms)[ \t]*'''.*?'''\n?")
 triple_double_quoted_re = re.compile('(?ms)[ \t]*""".*?"""\n?')
 comment_re = re.compile('\s*#')
 fake_re = re.compile("(\s*)if ['\"]fake['\"]")
-substep_re = re.compile("\s*context\.run_substep\((\"([^\"]+)\"|\'([^\']+)\')\)")
+substep_re = re.compile(r"\s*context\.run_substep\((['\"])(.+)\1")
 
 
 class MockDetector:
@@ -75,8 +75,6 @@ class MockDetector:
                             if substep_re.match(line):
                                 if substep_re.match(line).group(2) is not None:
                                     substep = substep_re.match(line).group(2)
-                                elif substep_re.match(line).group(3) is not None:
-                                    substep = substep_re.match(line).group(3)
                                 else:
                                     raise Ux("substep re error, line = %s" % line)
                                 if current_key not in substeps:
