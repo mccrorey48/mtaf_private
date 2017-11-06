@@ -36,7 +36,7 @@ class BaseView(SeleniumActions):
         "ActiveCallScreen": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_call_details"},
         "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/recordButton"},
         "OtaServerOk": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
-        "CrashOkButton": {"by": "id", "value": "com.esi_estech.ditto:id/acra_crash_ok_button"},
+        "CrashOkButton": {"by": "id", "value": "com.esi_estech.ditto:id/acra_crash_ok_btn"},
         "CrashOkButton2": {"by": "id", "value": "android:id/button1", "text": "OK"},
         "E7HasStoppedOk": {"by": "id", "value": "android:id/button1"},
         "E7HasStoppedText": {"by": "id", "value": "android:id/message", "text": "Unfortunately, ePhone7 has stopped."},
