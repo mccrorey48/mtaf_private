@@ -5,10 +5,7 @@
     <option name="CUSTOM_SCOPE_NAME" value="ePhone7 features" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d839b42d-35a8-43d7-af26-b9c9a4607b05" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/lib_test/mock_detector_test.py" afterPath="$PROJECT_DIR$/lib/lib_test/mock_detector_test.py" />
-    </list>
+    <list default="true" id="d839b42d-35a8-43d7-af26-b9c9a4607b05" name="Default" comment="" />
     <ignored path="mtaf.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -110,7 +107,7 @@
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_regression_local.coverage" NAME="run_features e7 regression local Coverage Results" MODIFIED="1509719872932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_regression_fake_local_.coverage" NAME="run_features e7 regression fake local  Coverage Results" MODIFIED="1501700464761" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$dbutils_restore_ego_android_site.coverage" NAME="dbutils restore ego_android_site Coverage Results" MODIFIED="1486746644484" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/mtaf$mock_detector_test.coverage" NAME="mock_detector_test Coverage Results" MODIFIED="1510162586340" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mtaf$mock_detector_test.coverage" NAME="mock_detector_test Coverage Results" MODIFIED="1510170110338" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$ePhone7_mm_wip_fake.coverage" NAME="ePhone7 mm wip fake Coverage Results" MODIFIED="1493128861794" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$softphone2_test.coverage" NAME="softphone2_test mm Coverage Results" MODIFIED="1479236400215" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$usb_enable.coverage" NAME="usb_enable Coverage Results" MODIFIED="1493731742555" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -178,7 +175,7 @@
       <file leaf-file-name="re_steps.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/re_steps.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="389">
+            <state relative-caret-position="396">
               <caret line="22" column="8" lean-forward="false" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
               <folding />
             </state>
@@ -205,7 +202,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mock_detector_test.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="mock_detector_test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/lib_test/mock_detector_test.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
@@ -228,8 +225,28 @@
       <file leaf-file-name="mock_detector.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/mock_detector.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+            <state relative-caret-position="135">
+              <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="contacts_steps.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/contacts_steps.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="59" column="12" lean-forward="false" selection-start-line="59" selection-start-column="12" selection-end-line="59" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="03_contacts.feature" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ePhone7/features/03_contacts.feature">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="425">
+              <caret line="63" column="4" lean-forward="false" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -238,7 +255,7 @@
       <file leaf-file-name="run_features.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ePhone7/run_features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
+            <state relative-caret-position="5580">
               <caret line="310" column="38" lean-forward="false" selection-start-line="310" selection-start-column="38" selection-end-line="310" selection-end-column="38" />
               <folding />
             </state>
@@ -362,7 +379,6 @@
         <option value="$PROJECT_DIR$/ePhone7/features/steps/history_steps.py" />
         <option value="$PROJECT_DIR$/ePhone7/features/steps/dial_steps.py" />
         <option value="$PROJECT_DIR$/ePhone7/features/01_version.feature" />
-        <option value="$PROJECT_DIR$/ePhone7/features/steps/contacts_steps.py" />
         <option value="$PROJECT_DIR$/ePhone7/utils/csv/csv_appium_gui/appium_gui.csv" />
         <option value="$PROJECT_DIR$/lib/selenium_actions.py" />
         <option value="$PROJECT_DIR$/ePhone7/views/contacts_view.py" />
@@ -395,6 +411,7 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/lib/lib_test/mock_detector_test.py" />
         <option value="$PROJECT_DIR$/ePhone7/features/steps/re_steps.py" />
+        <option value="$PROJECT_DIR$/ePhone7/features/steps/contacts_steps.py" />
       </list>
     </option>
   </component>
@@ -508,78 +525,12 @@
       <hideEmptyPackages />
       <abbreviatePackageNames />
       <autoscrollToSource ProjectPane="true" />
-      <autoscrollFromSource Scratches="true" ProjectPane="true" />
+      <autoscrollFromSource ProjectPane="true" Scratches="true" />
       <sortByType />
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="ePhone7" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="ePhone7" type="462c0819:PsiDirectoryNode" />
-              <item name="features" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="ePhone7" type="462c0819:PsiDirectoryNode" />
-              <item name="features" type="462c0819:PsiDirectoryNode" />
-              <item name="steps" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
-              <item name="features" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
-              <item name="features" type="462c0819:PsiDirectoryNode" />
-              <item name="steps" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scratches">
-        <subPane>
-          <expand>
-            <path>
-              <item name="" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
-              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="Scope">
         <subPane subId="e7Views">
           <expand>
@@ -691,6 +642,72 @@
               <item name="mtaf" type="cbb8eebc:String" user="mtaf" />
               <item name="lib" type="cbb8eebc:String" user="lib" />
               <item name="softphone" type="cbb8eebc:String" user="softphone" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scratches">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
+              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="ePhone7" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="ePhone7" type="462c0819:PsiDirectoryNode" />
+              <item name="features" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="ePhone7" type="462c0819:PsiDirectoryNode" />
+              <item name="features" type="462c0819:PsiDirectoryNode" />
+              <item name="steps" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
+              <item name="features" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
+              <item name="features" type="462c0819:PsiDirectoryNode" />
+              <item name="steps" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -2847,15 +2864,16 @@
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20232172" sideWeight="0.8046768" order="0" side_tool="false" content_ui="combo" x="749" y="177" width="487" height="786" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47419354" sideWeight="0.38142622" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946378" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29354838" sideWeight="0.6185738" order="2" side_tool="false" content_ui="tabs" x="88" y="400" width="1809" height="276" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2580645" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26174498" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30514097" sideWeight="0.81043476" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20453289" sideWeight="0.8046768" order="0" side_tool="false" content_ui="combo" x="749" y="177" width="487" height="786" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946378" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18064517" sideWeight="0.49087894" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30514097" sideWeight="0.81043476" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4483871" sideWeight="0.656952" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20011055" sideWeight="0.19532324" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.32946378" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -2868,7 +2886,6 @@
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2824765" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30107528" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18064517" sideWeight="0.49087894" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5591398" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
     </layout>
@@ -2966,7 +2983,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="1749" />
+      <option name="time" value="1751" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PyBehaveRunConfigurationType">
@@ -2980,8 +2997,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/appium_gui.spec" />
-    <entry file="file://$PROJECT_DIR$/run_features.spec" />
     <entry file="file://$PROJECT_DIR$/seleniumframework_tests.log" />
     <entry file="file://$PROJECT_DIR$/tmp/screenshots.txt" />
     <entry file="file://$PROJECT_DIR$/tmp/json_repr.json">
@@ -3059,7 +3074,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="468">
           <caret line="245" column="44" lean-forward="false" selection-start-line="245" selection-start-column="44" selection-end-line="245" selection-end-column="44" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3095,7 +3109,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
           <caret line="32" column="69" lean-forward="false" selection-start-line="32" selection-start-column="69" selection-end-line="32" selection-end-column="69" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3154,7 +3167,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
           <caret line="800" column="0" lean-forward="false" selection-start-line="800" selection-start-column="0" selection-end-line="800" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3177,7 +3189,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="309">
           <caret line="67" column="78" lean-forward="false" selection-start-line="67" selection-start-column="78" selection-end-line="67" selection-end-column="78" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3185,7 +3196,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
           <caret line="907" column="19" lean-forward="false" selection-start-line="907" selection-start-column="19" selection-end-line="907" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3216,7 +3226,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
           <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3224,7 +3233,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3232,7 +3240,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-216">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3240,7 +3247,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3256,7 +3262,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ePhone7/run_features.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
+        <state relative-caret-position="5580">
           <caret line="310" column="38" lean-forward="false" selection-start-line="310" selection-start-column="38" selection-end-line="310" selection-end-column="38" />
           <folding />
         </state>
@@ -3278,14 +3284,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/mock_detector.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/prefs_steps.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -3296,7 +3294,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/re_steps.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="389">
+        <state relative-caret-position="396">
           <caret line="22" column="8" lean-forward="false" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
           <folding />
         </state>
@@ -3314,6 +3312,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="10" column="24" lean-forward="false" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ePhone7/features/03_contacts.feature">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="63" column="4" lean-forward="false" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/mock_detector.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/contacts_steps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="59" column="12" lean-forward="false" selection-start-line="59" selection-start-column="12" selection-end-line="59" selection-end-column="12" />
           <folding />
         </state>
       </provider>
