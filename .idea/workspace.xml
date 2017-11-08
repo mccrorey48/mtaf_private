@@ -5,9 +5,7 @@
     <option name="CUSTOM_SCOPE_NAME" value="ePhone7 features" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d839b42d-35a8-43d7-af26-b9c9a4607b05" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-    </list>
+    <list default="true" id="d839b42d-35a8-43d7-af26-b9c9a4607b05" name="Default" comment="" />
     <ignored path="mtaf.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -109,7 +107,7 @@
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_regression_local.coverage" NAME="run_features e7 regression local Coverage Results" MODIFIED="1509719872932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_regression_fake_local_.coverage" NAME="run_features e7 regression fake local  Coverage Results" MODIFIED="1501700464761" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$dbutils_restore_ego_android_site.coverage" NAME="dbutils restore ego_android_site Coverage Results" MODIFIED="1486746644484" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/mtaf$mock_detector_test.coverage" NAME="mock_detector_test Coverage Results" MODIFIED="1510160569933" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mtaf$mock_detector_test.coverage" NAME="mock_detector_test Coverage Results" MODIFIED="1510161173985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$ePhone7_mm_wip_fake.coverage" NAME="ePhone7 mm wip fake Coverage Results" MODIFIED="1493128861794" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$softphone2_test.coverage" NAME="softphone2_test mm Coverage Results" MODIFIED="1479236400215" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$usb_enable.coverage" NAME="usb_enable Coverage Results" MODIFIED="1493731742555" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -164,21 +162,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="steps.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="steps.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/lib_test/features/steps/steps.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="252">
-              <caret line="14" column="38" lean-forward="true" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+              <caret line="14" column="38" lean-forward="false" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -447,29 +435,55 @@
       <hideEmptyPackages />
       <abbreviatePackageNames />
       <autoscrollToSource ProjectPane="true" />
-      <autoscrollFromSource ProjectPane="true" Scratches="true" />
+      <autoscrollFromSource Scratches="true" ProjectPane="true" />
       <sortByType />
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches">
-        <subPane>
-          <expand>
-            <path>
-              <item name="" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
-              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
               <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
+              <item name="features" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
+              <item name="features" type="462c0819:PsiDirectoryNode" />
+              <item name="steps" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scratches">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
+              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
             </path>
           </expand>
           <select />
@@ -1699,7 +1713,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="mtaf" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lib/lib_test/fake_detector_test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lib/lib_test/mock_detector_test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -2285,32 +2299,32 @@
       <item index="27" class="java.lang.String" itemvalue="Python.xml_to_csv" />
       <item index="28" class="java.lang.String" itemvalue="Python.list e7 fakes" />
       <item index="29" class="java.lang.String" itemvalue="Python.log_test" />
-      <item index="30" class="java.lang.String" itemvalue="Python.prune_db e7 list local" />
-      <item index="31" class="java.lang.String" itemvalue="Python.prune_db e7 prune local" />
-      <item index="32" class="java.lang.String" itemvalue="Python.simple_pj_test" />
-      <item index="33" class="java.lang.String" itemvalue="Python.simple_pj_plot" />
-      <item index="34" class="java.lang.String" itemvalue="Python.mock_steps e7 features" />
-      <item index="35" class="java.lang.String" itemvalue="Python.wrappers_test" />
-      <item index="36" class="java.lang.String" itemvalue="Python.zpath_test" />
-      <item index="37" class="java.lang.String" itemvalue="Behave.ePhone7 mm wip fake" />
-      <item index="38" class="java.lang.String" itemvalue="Behave.ePhone7 mm regression" />
-      <item index="39" class="java.lang.String" itemvalue="Behave.ePhone7 mm req" />
-      <item index="40" class="java.lang.String" itemvalue="Behave.ccd test mock" />
-      <item index="41" class="java.lang.String" itemvalue="Behave.ego android mm" />
-      <item index="42" class="java.lang.String" itemvalue="Behave.ccd test" />
-      <item index="43" class="java.lang.String" itemvalue="Python.e7 test" />
-      <item index="44" class="java.lang.String" itemvalue="Python.e7 test no_ff" />
-      <item index="45" class="java.lang.String" itemvalue="Python.run_features e7 wip" />
-      <item index="46" class="java.lang.String" itemvalue="Python.run_features e7 wip fake local" />
-      <item index="47" class="java.lang.String" itemvalue="Python.run_features e7 req" />
-      <item index="48" class="java.lang.String" itemvalue="Python.run_features e7 regression fake local " />
-      <item index="49" class="java.lang.String" itemvalue="Python.run_features e7 regression local" />
-      <item index="50" class="java.lang.String" itemvalue="Python.run_features e7 wip local" />
-      <item index="51" class="java.lang.String" itemvalue="Python.run_features json" />
-      <item index="52" class="java.lang.String" itemvalue="Python.run_features json local" />
-      <item index="53" class="java.lang.String" itemvalue="Python.run_features sandbox local" />
-      <item index="54" class="java.lang.String" itemvalue="Python.run_features ppo wip local" />
-      <item index="55" class="java.lang.String" itemvalue="Python.run_features ppo regression local" />
+      <item index="30" class="java.lang.String" itemvalue="Python.prune_db e7 prune local" />
+      <item index="31" class="java.lang.String" itemvalue="Python.simple_pj_test" />
+      <item index="32" class="java.lang.String" itemvalue="Python.simple_pj_plot" />
+      <item index="33" class="java.lang.String" itemvalue="Python.mock_steps e7 features" />
+      <item index="34" class="java.lang.String" itemvalue="Python.wrappers_test" />
+      <item index="35" class="java.lang.String" itemvalue="Python.zpath_test" />
+      <item index="36" class="java.lang.String" itemvalue="Behave.ePhone7 mm wip fake" />
+      <item index="37" class="java.lang.String" itemvalue="Behave.ePhone7 mm regression" />
+      <item index="38" class="java.lang.String" itemvalue="Behave.ePhone7 mm req" />
+      <item index="39" class="java.lang.String" itemvalue="Behave.ccd test mock" />
+      <item index="40" class="java.lang.String" itemvalue="Behave.ego android mm" />
+      <item index="41" class="java.lang.String" itemvalue="Behave.ccd test" />
+      <item index="42" class="java.lang.String" itemvalue="Python.e7 test" />
+      <item index="43" class="java.lang.String" itemvalue="Python.e7 test no_ff" />
+      <item index="44" class="java.lang.String" itemvalue="Python.run_features e7 wip" />
+      <item index="45" class="java.lang.String" itemvalue="Python.run_features e7 wip fake local" />
+      <item index="46" class="java.lang.String" itemvalue="Python.run_features e7 req" />
+      <item index="47" class="java.lang.String" itemvalue="Python.run_features e7 regression fake local " />
+      <item index="48" class="java.lang.String" itemvalue="Python.run_features e7 regression local" />
+      <item index="49" class="java.lang.String" itemvalue="Python.run_features e7 wip local" />
+      <item index="50" class="java.lang.String" itemvalue="Python.run_features json" />
+      <item index="51" class="java.lang.String" itemvalue="Python.run_features json local" />
+      <item index="52" class="java.lang.String" itemvalue="Python.run_features sandbox local" />
+      <item index="53" class="java.lang.String" itemvalue="Python.run_features ppo wip local" />
+      <item index="54" class="java.lang.String" itemvalue="Python.run_features ppo regression local" />
+      <item index="55" class="java.lang.String" itemvalue="Python.prune_db e7 list local" />
       <item index="56" class="java.lang.String" itemvalue="Python.prune_db e7 list" />
       <item index="57" class="java.lang.String" itemvalue="Python.prune_db e7 prune" />
       <item index="58" class="java.lang.String" itemvalue="Python.prune_db ppo list local" />
@@ -2739,21 +2753,20 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="75" y="82" width="1857" height="1092" extended-state="6" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20232172" sideWeight="0.8046768" order="0" side_tool="false" content_ui="combo" x="749" y="177" width="487" height="786" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47419354" sideWeight="0.38142622" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946378" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21827957" sideWeight="0.6185738" order="2" side_tool="false" content_ui="tabs" x="88" y="400" width="1809" height="276" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2580645" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26174498" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21827957" sideWeight="0.6185738" order="2" side_tool="false" content_ui="tabs" x="88" y="400" width="1809" height="276" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20011055" sideWeight="0.8046768" order="0" side_tool="false" content_ui="combo" x="749" y="177" width="487" height="786" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946378" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18064517" sideWeight="0.49087894" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30514097" sideWeight="0.81043476" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20011055" sideWeight="0.19532324" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4483871" sideWeight="0.656952" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20011055" sideWeight="0.19532324" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.32946378" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -2764,6 +2777,7 @@
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2824765" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30107528" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18064517" sideWeight="0.49087894" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5591398" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
     </layout>
@@ -2914,7 +2928,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
           <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2933,7 +2946,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2941,7 +2953,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="443">
           <caret line="1134" column="0" lean-forward="false" selection-start-line="1134" selection-start-column="0" selection-end-line="1134" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2949,7 +2960,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="163">
           <caret line="32" column="27" lean-forward="false" selection-start-line="32" selection-start-column="27" selection-end-line="32" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2964,7 +2974,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="540">
           <caret line="30" column="14" lean-forward="false" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2972,7 +2981,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2980,7 +2988,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="209">
           <caret line="2558" column="8" lean-forward="false" selection-start-line="2558" selection-start-column="8" selection-end-line="2558" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2988,7 +2995,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="212">
           <caret line="753" column="8" lean-forward="false" selection-start-line="753" selection-start-column="8" selection-end-line="753" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3012,268 +3018,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="366">
           <caret line="1306" column="0" lean-forward="false" selection-start-line="1306" selection-start-column="0" selection-end-line="1306" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!block;n#caps#0;n#!!top" expanded="false" />
-            <element signature="n#!!block;n#login#0;n#!!block;n#caps#0;n#!!top" expanded="false" />
-            <element signature="n#!!block;n#main#0;n#!!block;n#caps#0;n#!!top" expanded="false" />
-            <element signature="n#!!block;n#nolaunch#0;n#!!block;n#caps#0;n#!!top" expanded="false" />
-            <element signature="n#!!block;n#settings#0;n#!!block;n#caps#0;n#!!top" expanded="false" />
-            <element signature="n#!!block;n#tnc#0;n#!!block;n#caps#0;n#!!top" expanded="false" />
-            <element signature="n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="n#!!block;n#ContactsView#0;n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="e#2157#2252#0" expanded="false" />
-            <element signature="n#!!block;n#crop_points#0;n#!!block;n#ContactsView#0;n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="e#2312#2430#0" expanded="false" />
-            <element signature="e#2461#2579#0" expanded="false" />
-            <element signature="e#2607#2725#0" expanded="false" />
-            <element signature="e#2755#2872#0" expanded="false" />
-            <element signature="e#2922#3020#0" expanded="false" />
-            <element signature="e#3055#3151#0" expanded="false" />
-            <element signature="e#3186#3282#0" expanded="false" />
-            <element signature="e#3319#3414#0" expanded="false" />
-            <element signature="e#3453#3548#0" expanded="false" />
-            <element signature="e#3586#3683#0" expanded="false" />
-            <element signature="e#3726#3822#0" expanded="false" />
-            <element signature="e#3854#3949#0" expanded="false" />
-            <element signature="e#3991#4089#0" expanded="false" />
-            <element signature="e#4130#4226#0" expanded="false" />
-            <element signature="n#!!block;n#HistoryView#0;n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="e#4291#4387#0" expanded="false" />
-            <element signature="n#!!block;n#crop_points#0;n#!!block;n#HistoryView#0;n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="e#4441#4558#0" expanded="false" />
-            <element signature="e#4586#4704#0" expanded="false" />
-            <element signature="e#4750#4845#0" expanded="false" />
-            <element signature="n#!!block;n#UserView#0;n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="e#4907#5005#0" expanded="false" />
-            <element signature="n#!!block;n#crop_points#0;n#!!block;n#UserView#0;n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="e#5064#5181#0" expanded="false" />
-            <element signature="e#5207#5325#0" expanded="false" />
-            <element signature="e#5354#5472#0" expanded="false" />
-            <element signature="e#5503#5621#0" expanded="false" />
-            <element signature="e#5666#5763#0" expanded="false" />
-            <element signature="e#5793#5889#0" expanded="false" />
-            <element signature="e#5921#6016#0" expanded="false" />
-            <element signature="n#!!block;n#VoicemailView#0;n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="e#6083#6179#0" expanded="false" />
-            <element signature="n#!!block;n#crop_points#0;n#!!block;n#VoicemailView#0;n#!!block;n#colors#0;n#!!top" expanded="false" />
-            <element signature="e#6233#6350#0" expanded="false" />
-            <element signature="e#6377#6495#0" expanded="false" />
-            <element signature="e#6522#6640#0" expanded="false" />
-            <element signature="e#6686#6781#0" expanded="false" />
-            <element signature="e#7514#7578#0" expanded="false" />
-            <element signature="n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="n#!!block;n#DRS tester00#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#7832#7885#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester01#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#8169#8222#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester02#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#8506#8559#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester03#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#8843#8896#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester04#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#9180#9233#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester05#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#9517#9570#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester06#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#9854#9907#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester07#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#10191#10244#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester08#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#10528#10581#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester09#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#10865#10918#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester10#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#11202#11255#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester11#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#11539#11592#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester12#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#11876#11929#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester13#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#12213#12266#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester14#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#12550#12603#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester15#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#12887#12940#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester16#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#13224#13277#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester17#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#13561#13614#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester18#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#13898#13951#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester19#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#14235#14288#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester20#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#14572#14625#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester21#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#14909#14962#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester22#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#15246#15299#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester23#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#15583#15636#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester24#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#15920#15973#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester25#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#16257#16310#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester26#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#16594#16647#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester27#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#16931#16984#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester28#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#17268#17321#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester29#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#17605#17658#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester30#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#17942#17995#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester31#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#18279#18332#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester32#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#18616#18669#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester33#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#18953#19006#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester34#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#19290#19343#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester35#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#19627#19680#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester36#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#19964#20017#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester37#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#20301#20354#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester38#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#20638#20691#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester39#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#20975#21028#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester40#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#21312#21365#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester41#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#21649#21702#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester42#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#21986#22039#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester43#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#22323#22376#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester44#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#22660#22713#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester45#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#22997#23050#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester46#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#23334#23387#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester47#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#23671#23724#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester48#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#24008#24061#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester49#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#24345#24398#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester50#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#24682#24735#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester51#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#25019#25072#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester52#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#25356#25409#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester53#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#25693#25746#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester54#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#26030#26083#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester55#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#26367#26420#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester56#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#26704#26757#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester57#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#27041#27094#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester58#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#27378#27431#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester59#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#27715#27768#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester60#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#28052#28105#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester61#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#28389#28442#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester62#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#28726#28779#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester63#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#29063#29116#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester64#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#29400#29453#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester65#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#29737#29790#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester66#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#30074#30127#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester67#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#30411#30464#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester68#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#30748#30801#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester69#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#31085#31138#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester70#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#31422#31475#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester71#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#31759#31812#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester72#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#32096#32149#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester73#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#32433#32486#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester74#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#32770#32823#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester75#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#33107#33160#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester76#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#33444#33497#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester77#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#33781#33834#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester78#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#34118#34171#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester79#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#34455#34508#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester80#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#34792#34845#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester81#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#35129#35182#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester82#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#35466#35519#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester83#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#35803#35856#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester84#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#36140#36193#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester85#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#36477#36530#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester86#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#36814#36867#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester87#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#37151#37204#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester88#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#37488#37541#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester89#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#37825#37878#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester90#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#38162#38215#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester91#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#38499#38552#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester92#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#38836#38889#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester93#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#39173#39226#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester94#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#39510#39563#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester95#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#39847#39900#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester96#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#40184#40237#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester97#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#40521#40574#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester98#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#40858#40911#0" expanded="false" />
-            <element signature="n#!!block;n#DRS tester99#0;n#!!block;n#DrsTestUsers#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#41195#41248#0" expanded="false" />
-            <element signature="n#!!block;n#OauthHeaders#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#42341#42394#0" expanded="false" />
-            <element signature="n#!!block;n#Auto TesterD#0;n#!!block;n#Users#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#42783#42836#0" expanded="false" />
-            <element signature="n#!!block;n#R2d2AltUser#0;n#!!block;n#Users#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#43223#43276#0" expanded="false" />
-            <element signature="n#!!block;n#R2d2User#0;n#!!block;n#Users#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-            <element signature="e#43434#43592#0" expanded="false" />
-            <element signature="e#43630#43816#0" expanded="false" />
-            <element signature="e#43906#44008#0" expanded="false" />
-            <element signature="n#!!block;n#VVMHeaders#0;n#!!block;n#site#0;n#!!top" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3281,7 +3025,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="10" lean-forward="false" selection-start-line="0" selection-start-column="10" selection-end-line="0" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3289,7 +3032,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3297,7 +3039,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="492">
           <caret line="60" column="46" lean-forward="false" selection-start-line="60" selection-start-column="46" selection-end-line="60" selection-end-column="46" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3313,7 +3054,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="266">
           <caret line="70" column="35" lean-forward="false" selection-start-line="70" selection-start-column="35" selection-end-line="70" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3321,7 +3061,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3329,7 +3068,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3337,7 +3075,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1116">
           <caret line="74" column="1" lean-forward="true" selection-start-line="74" selection-start-column="1" selection-end-line="74" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3345,18 +3082,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
           <caret line="34" column="19" lean-forward="true" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/lib_test/features/mock_detector.feature">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/lib_test/features/mock_detector.feature" />
     <entry file="file://$PROJECT_DIR$/lib/lib_test/features/environment.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -3369,7 +3098,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="447">
           <caret line="71" column="47" lean-forward="false" selection-start-line="71" selection-start-column="47" selection-end-line="71" selection-end-column="47" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3385,21 +3113,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="558">
           <caret line="134" column="58" lean-forward="false" selection-start-line="134" selection-start-column="58" selection-end-line="134" selection-end-column="58" />
-          <folding>
-            <marker date="1510160529059" expanded="true" signature="1272:6766" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="1739:6766" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="1999:6741" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="4304:5606" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="5627:6715" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="5864:6715" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="5909:6254" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="5952:6190" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="6280:6497" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="6872:7014" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="6913:6970" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="6997:7014" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="7134:7176" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3407,7 +3121,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="317">
           <caret line="71" column="56" lean-forward="false" selection-start-line="71" selection-start-column="56" selection-end-line="71" selection-end-column="56" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3415,15 +3128,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="309">
           <caret line="67" column="78" lean-forward="false" selection-start-line="67" selection-start-column="78" selection-end-line="67" selection-end-column="78" />
-          <folding>
-            <marker date="1510160529059" expanded="true" signature="2390:2953" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="2437:2938" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="2514:2938" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="2577:2938" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="2982:3972" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="3690:3972" ph="..." />
-            <marker date="1510160529059" expanded="true" signature="3850:3972" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3439,7 +3144,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="173">
           <caret line="60" column="27" lean-forward="false" selection-start-line="60" selection-start-column="27" selection-end-line="60" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3455,7 +3159,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="427">
           <caret line="200" column="4" lean-forward="false" selection-start-line="200" selection-start-column="4" selection-end-line="200" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3499,34 +3202,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/lib_test/features/steps/steps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="38" lean-forward="true" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/lib_test/fake_detector_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="24" lean-forward="false" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/fake_detector.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2772">
-          <caret line="156" column="57" lean-forward="false" selection-start-line="156" selection-start-column="57" selection-end-line="156" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/lib_test/fake_detector_test.py" />
+    <entry file="file://$PROJECT_DIR$/lib/fake_detector.py" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
-          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/lib_test/features/steps/steps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="14" column="38" lean-forward="false" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
           <folding />
         </state>
       </provider>
