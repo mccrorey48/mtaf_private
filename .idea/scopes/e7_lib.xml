@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="e7 lib" pattern="file[mtaf]:lib//*||file[mtaf]:ePhone7//*||file[mtaf]:ePhone7/*" />
+</component>
