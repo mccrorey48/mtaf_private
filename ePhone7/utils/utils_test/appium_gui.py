@@ -761,7 +761,8 @@ class TestGui(Frame):
         keycode_name = self.keycode_name.get()
         keycode = keycodes[keycode_name]
         print "sending keycode %s (value %d)" % (keycode_name, keycode)
-        base_view.driver.keyevent(keycode)
+        # base_view.driver.keyevent(keycode)
+        base_view.send_keycode(keycode_name)
 
     def tap_xy(self):
         try:

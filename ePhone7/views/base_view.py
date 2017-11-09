@@ -92,6 +92,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def send_keycode(self, keycode):
+        log.debug("sending keyevent(%s)" % keycodes[keycode])
         self.driver.keyevent(keycodes[keycode])
 
     @Trace(log)
