@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from behave.__main__ import main
 from pymongo import MongoClient
 import lib.logging_esi as logging
-from lib.mock_detector import MockDetector
+from lib.fake_detector import FakeDetector
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 import argparse
@@ -410,7 +410,7 @@ if __name__ == '__main__':
         parser.add_argument("-r", "--run_tags", type=str, default='', help="run tags (comma separated list)")
         args = parser.parse_args()
         fake_tag = 'fake' in args.run_tags.split(',')
-        mock_detector = MockDetector(path.join(args.features_directory, "steps"),
+        mock_detector = FakeDetector(path.join(args.features_directory, "steps"),
                                      fake_tag=fake_tag)
         if args.json_file:
             with open(args.json_file) as fp:

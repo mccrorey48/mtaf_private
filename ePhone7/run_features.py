@@ -7,7 +7,7 @@ from behave.__main__ import main
 from pymongo import MongoClient
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
-from lib.mock_detector import MockDetector
+from lib.fake_detector import FakeDetector
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
 from lib.prune_db import prune_db
@@ -208,13 +208,14 @@ def new_status(has_passes=False, has_fails=False, has_fakes=False, has_skips=Fal
         return 'passed'
     if has_passes is False and has_fakes is False and has_skips is True and has_incompletes is False:
         return 'skipped'
-    if has_passes is False and has_fakes is True and has_skips is False and has_incompletes is False:
+    # if has_passes is False and has_fakes is True and has_skips is False and has_incompletes is False:
+    if has_passes is False and has_fakes is True and has_incompletes is False:
         return 'fake'
     if has_fakes or has_incompletes or has_skips:
             return 'incomplete'
 
 
-def write_result_to_db(_args, configuration, _mock_detector, _features):
+def write_result_to_db(_args, configuration, _fake_detector, _features):
     print 'writing to db_name %s, server %s:' % (_args.db_name, _args.server)
     client = MongoClient(_args.server)
     db = client[_args.db_name]
@@ -298,7 +299,7 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                             start_datetime = datetime.strptime("%s %s" % (_date, _time), '%x %X')
                             substep['time'] = start_datetime.strftime('%X')
                             substep['date'] = start_datetime.strftime('%x')
-                            if _mock_detector.match(substep["name"]):
+                            if _fake_detector.match(substep["name"]):
                                 substep['status'] = 'fake'
                                 step_has_fakes = True
                             elif substep['status'] == 'failed':
@@ -308,7 +309,7 @@ def write_result_to_db(_args, configuration, _mock_detector, _features):
                             else:
                                 raise Ux("non-fake substep status not passed or failed")
 
-                    if _mock_detector.match(step['name']):
+                    if _fake_detector.match(step['name']):
                         step['status'] = 'fake'
                     step['status'] = new_step_status(step['status'], step_has_passes, step_has_fails, step_has_fakes)
                     if step['status'] == 'incomplete':
@@ -431,7 +432,7 @@ if __name__ == '__main__':
                             help="apk downgrade version (default 1.3.6)")
         args = parser.parse_args()
         fake_tag = 'fake' in args.run_tags.split(',')
-        mock_detector = MockDetector(path.join(args.features_directory, "steps"),
+        fake_detector = FakeDetector(path.join(args.features_directory, "steps"),
                                      fake_tag=fake_tag)
         if args.json_file:
             with open(args.json_file) as fp:
@@ -449,12 +450,14 @@ if __name__ == '__main__':
             }
             features = run_features(run_configuration)
         if fake_tag or args.json_file:
-            installed_aosp, installed_app = 'fake', 'fake'
+            now = datetime.now()
+            installed_aosp = now.strftime("%d")
+            installed_app = now.strftime("%H-%M-%S")
         else:
             installed_aosp, installed_app = get_current_versions(args.ota_server)
         report_configuration = "site_tag:%s, run_tags:%s, installed_aosp:%s, installed_app:%s" % \
                                (cfg.site_tag, args.run_tags, installed_aosp, installed_app)
-        write_result_to_db(args, report_configuration, mock_detector, features)
+        write_result_to_db(args, report_configuration, fake_detector, features)
         prune_db('e7_results', args.server, 'prune', 10, 30)
     except Ux as e:
         print "User Exception: " + e.get_msg()
