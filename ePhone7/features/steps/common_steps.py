@@ -274,9 +274,9 @@ def both_windows_disappear(context):
     pass
 
 
-@step("I add a my favorite Coworker contacts to my Favorites list")
+@step("I add my favorite Coworker contacts to my Favorites list")
 @fake
-def i_add_a_my_favorite_coworker_contacts_to_my_favorites_list(context):
+def i_add_my_favorite_coworker_contacts_to_my_favorites_list(context):
     context.run_substep("I touch the \"Contacts\" button")
     context.run_substep("I touch the \"Coworkers\" tab")
     context.run_substep("[contacts] my Coworker contacts are shown on the display")
