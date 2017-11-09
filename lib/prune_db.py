@@ -1,14 +1,14 @@
 from pymongo import MongoClient
-# import lib.logging_esi as logging
 import argparse
 from os import getenv
-from time import strptime
 import datetime
+import re
 
 # log = logging.get_logger('esi.run_features')
 
 
 def prune_db(db_name, server, operation, number_to_keep, max_age):
+    re_cfg = re.compile(', installed[^,]*, installed[^,]*')
     if operation=='list':
         print 'pruning %s on server %s to latest %d test runs within last %d days' % (
             db_name, server, number_to_keep, max_age)
@@ -22,7 +22,7 @@ def prune_db(db_name, server, operation, number_to_keep, max_age):
         dt = datetime.datetime.strptime(timestamp, "%m/%d/%y-%H:%M:%S")
         age = now - dt
         days = age.total_seconds() / datetime.timedelta(1).total_seconds()
-        cfg = start['configuration']
+        cfg = re_cfg.sub('', start['configuration'])
         _id = start['_id']
         d = {'_id': _id, 'timestamp': timestamp, 'cfg': cfg, 'days': days}
         if cfg in starts_by_cfg:
@@ -36,12 +36,19 @@ def prune_db(db_name, server, operation, number_to_keep, max_age):
     keep_screenshot_ids = []
     remove_screenshot_ids = []
     for cfg in starts_by_cfg:
-        print 'cfg = %s' % cfg
         removed = 0
         remaining = 0
         for i, d in enumerate(sorted(starts_by_cfg[cfg], key=lambda x: x['days'], reverse=False)):
-            removable = i >= number_to_keep or d['days'] > max_age
+            too_many = i >= number_to_keep
+            too_old = d['days'] > max_age
+            removable = too_many or too_old
+            why_msgs = []
+            if too_many:
+                why_msgs.append("count > %d" % number_to_keep)
+            if too_old:
+                why_msgs.append("age > %d days" % max_age)
             if removable:
+                print 'cfg = "%s": _id = %s: removing test data [%s]' % (cfg, d['_id'], ', '.join(why_msgs))
                 remove_start_ids.append(d['_id'])
             else:
                 keep_start_ids.append(d['_id'])
