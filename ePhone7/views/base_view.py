@@ -150,20 +150,12 @@ class BaseView(SeleniumActions):
             raise Ux('unknown direction %s' % direction)
         el = self.find_named_element(name)
         left_x = el.location["x"]
-        right_x = left_x + el.size["width"]
+        right_x = left_x + el.size["width"] - 1
         y = el.location["y"] + (el.size["height"]/2)
         if direction == 'left':
             self.swipe(right_x, y, left_x, y, 1000)
         else:
             self.swipe(left_x, y, right_x, y, 1000)
-
-    @Trace(log)
-    def swipe_named_element_right(self, name):
-        el = self.find_named_element(name)
-        end_x = el.location["x"]
-        start_x = end_x + el.size["width"]
-        y = el.location["y"] + (el.size["height"]/2)
-        self.swipe(start_x, y, end_x, y, 1000)
 
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder=None, scale=None):
