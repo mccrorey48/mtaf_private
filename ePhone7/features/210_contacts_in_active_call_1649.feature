@@ -12,7 +12,7 @@ Feature: As a user I want to be able to see my favorite contacts from the active
     Then  [active_call] I end the call
 
   Scenario: the in-call screen Coworkers button shows Favorite contacts
-    Given I add a my favorite Coworker contacts to my Favorites list
+    Given I add my favorite Coworker contacts to my Favorites list
     When  I touch the "Dial" button
     And   [dial] I make a call to a coworker contact
     And   the coworker contact answers the call
