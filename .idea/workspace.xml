@@ -5,7 +5,14 @@
     <option name="CUSTOM_SCOPE_NAME" value="ePhone7 features" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d839b42d-35a8-43d7-af26-b9c9a4607b05" name="Default" comment="" />
+    <list default="true" id="d839b42d-35a8-43d7-af26-b9c9a4607b05" name="Default" comment="minor grammar fix">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ePhone7/features/210_contacts_in_active_call_1649.feature" afterPath="$PROJECT_DIR$/ePhone7/features/210_contacts_in_active_call_1649.feature" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ePhone7/run_features.py" afterPath="$PROJECT_DIR$/ePhone7/run_features.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/lib_test/features/steps/steps.py" afterPath="$PROJECT_DIR$/lib/lib_test/features/steps/steps.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/prune_db.py" afterPath="$PROJECT_DIR$/lib/prune_db.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ppo/run_features.py" afterPath="$PROJECT_DIR$/ppo/run_features.py" />
+    </list>
     <ignored path="mtaf.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -75,17 +82,19 @@
     <SUITE FILE_PATH="coverage/mtaf$scratch_2.coverage" NAME="scratch_2 Coverage Results" MODIFIED="1506015725196" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_ppo_wip_local.coverage" NAME="run_features ppo wip local Coverage Results" MODIFIED="1508874917321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$prune_db_e7_prune_local.coverage" NAME="prune_db e7 prune local Coverage Results" MODIFIED="1509636349518" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mtaf$prune_db_e7_list_local.coverage" NAME="prune_db e7 list local Coverage Results" MODIFIED="1510246513085" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features.coverage" NAME="run_features Coverage Results" MODIFIED="1490042092518" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_req_wip_local.coverage" NAME="run_features e7 req wip local Coverage Results" MODIFIED="1497023597809" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$get_aosp_version.coverage" NAME="get_aosp_version Coverage Results" MODIFIED="1495124826712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$prune_db_e7_list_screenshots_local.coverage" NAME="prune_db e7 list local Coverage Results" MODIFIED="1509636358508" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_sprint.coverage" NAME="run_features e7 sprint Coverage Results" MODIFIED="1493660715372" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$mock_steps_e7_features.coverage" NAME="mock_steps e7 features Coverage Results" MODIFIED="1490217369101" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mtaf$fake_detector_test.coverage" NAME="fake_detector_test Coverage Results" MODIFIED="1510177728648" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$softphone2_test_mm_svlab.coverage" NAME="softphone2_test mm_svlab Coverage Results" MODIFIED="1479756138768" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_wip_fake_local.coverage" NAME="run_features e7 wip fake local Coverage Results" MODIFIED="1507749001396" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$dbutils_dump_ccd1_results.coverage" NAME="dbutils dump ccd1_results local Coverage Results" MODIFIED="1488914042302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$call_hist_gen.coverage" NAME="call hist gen Coverage Results" MODIFIED="1503924460884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/mtaf$run_features_json_local.coverage" NAME="run_features json local Coverage Results" MODIFIED="1507749580551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mtaf$run_features_json_local.coverage" NAME="run_features json local Coverage Results" MODIFIED="1510237154904" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_sprint_fake_local.coverage" NAME="run_features e7 sprint fake local Coverage Results" MODIFIED="1494342733312" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$dbutils_dump_e7_site.coverage" NAME="dbutils dump e7_site Coverage Results" MODIFIED="1506519530705" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_req_local.coverage" NAME="run_features e7 req local Coverage Results" MODIFIED="1494940645090" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -105,7 +114,7 @@
     <SUITE FILE_PATH="coverage/mtaf$configure_mm_local.coverage" NAME="configure mm local Coverage Results" MODIFIED="1509455410070" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_json.coverage" NAME="run_features json Coverage Results" MODIFIED="1495125451331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$run_features_e7_regression_local.coverage" NAME="run_features e7 regression local Coverage Results" MODIFIED="1509719872932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/mtaf$run_features_e7_regression_fake_local_.coverage" NAME="run_features e7 regression fake local  Coverage Results" MODIFIED="1501700464761" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mtaf$run_features_e7_regression_fake_local_.coverage" NAME="run_features e7 regression fake local  Coverage Results" MODIFIED="1510246727047" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$dbutils_restore_ego_android_site.coverage" NAME="dbutils restore ego_android_site Coverage Results" MODIFIED="1486746644484" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$mock_detector_test.coverage" NAME="mock_detector_test Coverage Results" MODIFIED="1510170110338" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/mtaf$ePhone7_mm_wip_fake.coverage" NAME="ePhone7 mm wip fake Coverage Results" MODIFIED="1493128861794" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -162,28 +171,18 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="steps.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/lib_test/features/steps/steps.py">
+      <file leaf-file-name="prune_db.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/prune_db.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="14" column="38" lean-forward="false" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
+            <state relative-caret-position="137">
+              <caret line="40" column="38" lean-forward="false" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="re_steps.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/re_steps.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="22" column="8" lean-forward="false" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="step_naming_conventions.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/step_naming_conventions.txt">
+      <file leaf-file-name="fake_detector_test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/lib_test/fake_detector_test.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -192,51 +191,78 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="prefs_steps.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/prefs_steps.py">
+      <file leaf-file-name="run_features.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ePhone7/run_features.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="279">
+              <caret line="211" column="53" lean-forward="false" selection-start-line="211" selection-start-column="53" selection-end-line="211" selection-end-column="53" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mock_detector_test.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/lib_test/mock_detector_test.py">
+      <file leaf-file-name="environment.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ePhone7/features/environment.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="371">
+              <caret line="71" column="50" lean-forward="false" selection-start-line="71" selection-start-column="50" selection-end-line="71" selection-end-column="50" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="output.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tmp/output.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
-              <caret line="10" column="24" lean-forward="false" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
-              <folding />
+              <caret line="51" column="20" lean-forward="false" selection-start-line="51" selection-start-column="20" selection-end-line="51" selection-end-column="20" />
+              <folding>
+                <marker date="1510246728001" expanded="true" signature="0:679900" ph="[...]" />
+                <marker date="1510246728001" expanded="true" signature="6:1247" ph="{&quot;name&quot;: &quot;The version of the software should be correct&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="28:1247" ph="[...]" />
+                <marker date="1510246728001" expanded="true" signature="672115:672189" ph="{&quot;duration&quot;: 4.9114227294921875e-05...}" />
+                <marker date="1510246728001" expanded="true" signature="672115:672296" ph="{&quot;name&quot;: &quot;[active_call] I end the call&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="672115:672314" ph="[...]" />
+                <marker date="1510246728001" expanded="true" signature="672115:672392" ph="{&quot;name&quot;: &quot;the in-call screen audio icon is correct when using the wired headset&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="672115:672402" ph="[...]" />
+                <marker date="1510246728001" expanded="true" signature="672115:672694" ph="{&quot;name&quot;: &quot;As a user I want the current audio path indicated on the in-call screen (R2D2-2142)&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="672652:672688" ph="[...]" />
+                <marker date="1510246728001" expanded="true" signature="672700:679898" ph="{&quot;name&quot;: &quot;As a user I want to be able to see my favorite contacts from the active call screen (R2D2-1649)&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="672722:679615" ph="[...]" />
+                <marker date="1510246728001" expanded="true" signature="672736:675850" ph="{&quot;name&quot;: &quot;the in-call screen Coworkers button shows Coworker contacts&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="672980:675772" ph="[...]" />
+                <marker date="1510246728001" expanded="true" signature="673002:673274" ph="{&quot;name&quot;: &quot;I touch the \&quot;Dial\&quot; button&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="673296:673582" ph="{&quot;name&quot;: &quot;[dial] I make a call to a coworker contact&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="673604:673885" ph="{&quot;name&quot;: &quot;the coworker contact answers the call&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="673907:674198" ph="{&quot;name&quot;: &quot;[active_call] an \&quot;Active Call\&quot; window appears&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="674220:674497" ph="{&quot;name&quot;: &quot;I touch the \&quot;Coworkers\&quot; button&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="674519:674813" ph="{&quot;name&quot;: &quot;[active_call] the in-call contacts screen appears&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="674835:675123" ph="{&quot;name&quot;: &quot;[active_call] the Coworkers tab is selected&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="675145:675458" ph="{&quot;name&quot;: &quot;[active_call] my Coworker contacts are listed on the contacts screen&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="675480:675754" ph="{&quot;name&quot;: &quot;[active_call] I end the call&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="675864:679605" ph="{&quot;name&quot;: &quot;the in-call screen Coworkers button shows Favorite contacts&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="676109:679527" ph="[...]" />
+                <marker date="1510246728001" expanded="true" signature="676131:676435" ph="{&quot;name&quot;: &quot;I add my favorite Coworker contacts to my Favorites list&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="676457:676730" ph="{&quot;name&quot;: &quot;I touch the \&quot;Dial\&quot; button&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="676752:677039" ph="{&quot;name&quot;: &quot;[dial] I make a call to a coworker contact&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="677061:677343" ph="{&quot;name&quot;: &quot;the coworker contact answers the call&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="677365:677657" ph="{&quot;name&quot;: &quot;[active_call] an \&quot;Active Call\&quot; window appears&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="677679:677957" ph="{&quot;name&quot;: &quot;I touch the \&quot;Coworkers\&quot; button&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="677979:678274" ph="{&quot;name&quot;: &quot;[active_call] the in-call contacts screen appears&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="678296:678584" ph="{&quot;name&quot;: &quot;[active_call] the Coworkers tab is selected&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="678606:678892" ph="{&quot;name&quot;: &quot;[active_call] I select the Favorites tab&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="678914:679213" ph="{&quot;name&quot;: &quot;[active_call] my favorite Coworker contacts are listed&quot;...}" />
+                <marker date="1510246728001" expanded="true" signature="679235:679509" ph="{&quot;name&quot;: &quot;[active_call] I end the call&quot;...}" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="210_contacts_in_active_call_1649.feature" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ePhone7/features/210_contacts_in_active_call_1649.feature">
+      <file leaf-file-name="04_voicemail.feature" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ePhone7/features/04_voicemail.feature">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mock_detector.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/mock_detector.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="contacts_steps.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/contacts_steps.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="59" column="12" lean-forward="false" selection-start-line="59" selection-start-column="12" selection-end-line="59" selection-end-column="12" />
+            <state relative-caret-position="288">
+              <caret line="104" column="0" lean-forward="false" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -245,18 +271,8 @@
       <file leaf-file-name="03_contacts.feature" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ePhone7/features/03_contacts.feature">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
+            <state relative-caret-position="1134">
               <caret line="63" column="4" lean-forward="false" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="run_features.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ePhone7/run_features.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5580">
-              <caret line="310" column="38" lean-forward="false" selection-start-line="310" selection-start-column="38" selection-end-line="310" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -273,8 +289,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>&lt;&lt;&lt;</find>
-      <find>get_vmids</find>
       <find>sibling</find>
       <find>UiSelector</find>
       <find>VmParent</find>
@@ -303,6 +317,8 @@
       <find>inserted</find>
       <find>@wip</find>
       <find>not_present</find>
+      <find>datetime</find>
+      <find>cfg =</find>
     </findStrings>
     <replaceStrings>
       <replace>Users</replace>
@@ -339,9 +355,9 @@
       <dir>$PROJECT_DIR$/ppo/features/lib/pages</dir>
       <dir>$PROJECT_DIR$/ppo/features</dir>
       <dir>$PROJECT_DIR$/ePhone7</dir>
-      <dir>$PROJECT_DIR$</dir>
       <dir>$PROJECT_DIR$/ePhone7/features</dir>
       <dir>$PROJECT_DIR$/ePhone7/features/steps</dir>
+      <dir>$PROJECT_DIR$</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -391,7 +407,6 @@
         <option value="$PROJECT_DIR$/ePhone7/features/environment.py" />
         <option value="$PROJECT_DIR$/ePhone7/features/steps/common_steps.py" />
         <option value="$PROJECT_DIR$/ePhone7/features/02_navigation.feature" />
-        <option value="$PROJECT_DIR$/lib/prune_db.py" />
         <option value="$PROJECT_DIR$/ePhone7/views/voicemail_view.py" />
         <option value="$PROJECT_DIR$/ePhone7/features/07_controls.feature" />
         <option value="$PROJECT_DIR$/ePhone7/features/steps/voicemail_steps.py" />
@@ -402,8 +417,6 @@
         <option value="$PROJECT_DIR$/lib/wrappers.py" />
         <option value="$PROJECT_DIR$/ePhone7/utils/csv/parse_ids.py" />
         <option value="$PROJECT_DIR$/ePhone7/utils/utils_test/appium_gui.py" />
-        <option value="$PROJECT_DIR$/ePhone7/features/04_voicemail.feature" />
-        <option value="$PROJECT_DIR$/ePhone7/run_features.py" />
         <option value="$PROJECT_DIR$/lib/mock_detector.py" />
         <option value="$PROJECT_DIR$/lib/fake_detector.py" />
         <option value="$PROJECT_DIR$/lib/lib_test/fake_detector_test.py" />
@@ -412,6 +425,9 @@
         <option value="$PROJECT_DIR$/lib/lib_test/mock_detector_test.py" />
         <option value="$PROJECT_DIR$/ePhone7/features/steps/re_steps.py" />
         <option value="$PROJECT_DIR$/ePhone7/features/steps/contacts_steps.py" />
+        <option value="$PROJECT_DIR$/ePhone7/features/04_voicemail.feature" />
+        <option value="$PROJECT_DIR$/lib/prune_db.py" />
+        <option value="$PROJECT_DIR$/ePhone7/run_features.py" />
       </list>
     </option>
   </component>
@@ -525,7 +541,7 @@
       <hideEmptyPackages />
       <abbreviatePackageNames />
       <autoscrollToSource ProjectPane="true" />
-      <autoscrollFromSource ProjectPane="true" Scratches="true" />
+      <autoscrollFromSource Scratches="true" ProjectPane="true" />
       <sortByType />
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
@@ -686,28 +702,18 @@
             <path>
               <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
               <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="ePhone7" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
               <item name="mtaf" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
               <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
-              <item name="features" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mtaf" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mtaf" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib_test" type="462c0819:PsiDirectoryNode" />
-              <item name="features" type="462c0819:PsiDirectoryNode" />
-              <item name="steps" type="462c0819:PsiDirectoryNode" />
+              <item name="tmp" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -783,7 +789,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.mock_detector_test">
+  <component name="RunManager" selected="Python.run_features e7 regression fake local ">
     <configuration default="true" type="Python.AppEngineServer" factoryName="App Engine server">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -1696,6 +1702,25 @@
       <WHAT_TO_RUN WHAT_TO_RUN="$PROJECT_DIR$/ePhoneGoAndroid/features" />
       <option name="ADDITIONAL_ARGS" value="-D version=1.0.3 -D site_tag=mm" />
     </configuration>
+    <configuration name="fake_detector_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <log_file path="$PROJECT_DIR$/log/esi_debug.log" checked="true" skipped="true" show_all="false" alias="mtaf_logs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="mtaf" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lib/lib_test/fake_detector_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
     <configuration name="get_aosp_version" type="PythonConfigurationType" factoryName="Python" folderName="e7 utils">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -1901,6 +1926,25 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
+    <configuration name="prune_db e7 list local" type="PythonConfigurationType" factoryName="Python" folderName="lib">
+      <log_file path="$PROJECT_DIR$/log/esi_debug.log" checked="true" skipped="true" show_all="false" alias="mtaf_logs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="mtaf" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lib/prune_db.py" />
+      <option name="PARAMETERS" value="-s localhost" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
     <configuration name="prune_db e7 list" type="PythonConfigurationType" factoryName="Python" folderName="sandbox">
       <log_file path="$PROJECT_DIR$/log/esi_debug.log" checked="true" skipped="true" show_all="false" alias="mtaf_logs" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -1917,25 +1961,6 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sandbox/prune_db.py" />
       <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-    </configuration>
-    <configuration name="prune_db e7 prune local" type="PythonConfigurationType" factoryName="Python" folderName="lib">
-      <log_file path="$PROJECT_DIR$/log/esi_debug.log" checked="true" skipped="true" show_all="false" alias="mtaf_logs" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="mtaf" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lib/prune_db.py" />
-      <option name="PARAMETERS" value="-s localhost -o prune" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
@@ -2407,12 +2432,12 @@
       <item index="27" class="java.lang.String" itemvalue="Python.xml_to_csv" />
       <item index="28" class="java.lang.String" itemvalue="Python.list e7 fakes" />
       <item index="29" class="java.lang.String" itemvalue="Python.log_test" />
-      <item index="30" class="java.lang.String" itemvalue="Python.prune_db e7 prune local" />
-      <item index="31" class="java.lang.String" itemvalue="Python.simple_pj_test" />
-      <item index="32" class="java.lang.String" itemvalue="Python.simple_pj_plot" />
-      <item index="33" class="java.lang.String" itemvalue="Python.mock_steps e7 features" />
-      <item index="34" class="java.lang.String" itemvalue="Python.wrappers_test" />
-      <item index="35" class="java.lang.String" itemvalue="Python.zpath_test" />
+      <item index="30" class="java.lang.String" itemvalue="Python.simple_pj_test" />
+      <item index="31" class="java.lang.String" itemvalue="Python.simple_pj_plot" />
+      <item index="32" class="java.lang.String" itemvalue="Python.mock_steps e7 features" />
+      <item index="33" class="java.lang.String" itemvalue="Python.wrappers_test" />
+      <item index="34" class="java.lang.String" itemvalue="Python.zpath_test" />
+      <item index="35" class="java.lang.String" itemvalue="Python.prune_db e7 list local" />
       <item index="36" class="java.lang.String" itemvalue="Behave.ePhone7 mm wip fake" />
       <item index="37" class="java.lang.String" itemvalue="Behave.ePhone7 mm regression" />
       <item index="38" class="java.lang.String" itemvalue="Behave.ePhone7 mm req" />
@@ -2432,27 +2457,28 @@
       <item index="52" class="java.lang.String" itemvalue="Python.run_features sandbox local" />
       <item index="53" class="java.lang.String" itemvalue="Python.run_features ppo wip local" />
       <item index="54" class="java.lang.String" itemvalue="Python.run_features ppo regression local" />
-      <item index="55" class="java.lang.String" itemvalue="Python.prune_db e7 list local" />
-      <item index="56" class="java.lang.String" itemvalue="Python.prune_db e7 list" />
-      <item index="57" class="java.lang.String" itemvalue="Python.prune_db e7 prune" />
-      <item index="58" class="java.lang.String" itemvalue="Python.prune_db ppo list local" />
-      <item index="59" class="java.lang.String" itemvalue="Python.prune_db ppo prune local" />
-      <item index="60" class="java.lang.String" itemvalue="Python.configure ds local" />
-      <item index="61" class="java.lang.String" itemvalue="Python.configure ds vqda1" />
-      <item index="62" class="java.lang.String" itemvalue="Python.configure mm local" />
-      <item index="63" class="java.lang.String" itemvalue="Python.configure mm vqda1" />
-      <item index="64" class="java.lang.String" itemvalue="Python.configure js local" />
-      <item index="65" class="java.lang.String" itemvalue="Python.configure js vqda1" />
-      <item index="66" class="java.lang.String" itemvalue="Behave.ePhone7 mm wip noreq" />
-      <item index="67" class="java.lang.String" itemvalue="Behave.ePhone7 mm wip" />
-      <item index="68" class="java.lang.String" itemvalue="Node.js.drs_demo" />
-      <item index="69" class="java.lang.String" itemvalue="Python.appium_gui" />
-      <item index="70" class="java.lang.String" itemvalue="Python.sort_steps e7 features" />
-      <item index="71" class="java.lang.String" itemvalue="Python.mock_detector_test" />
+      <item index="55" class="java.lang.String" itemvalue="Python.prune_db e7 list" />
+      <item index="56" class="java.lang.String" itemvalue="Python.prune_db e7 prune" />
+      <item index="57" class="java.lang.String" itemvalue="Python.prune_db ppo list local" />
+      <item index="58" class="java.lang.String" itemvalue="Python.prune_db ppo prune local" />
+      <item index="59" class="java.lang.String" itemvalue="Python.configure ds local" />
+      <item index="60" class="java.lang.String" itemvalue="Python.configure ds vqda1" />
+      <item index="61" class="java.lang.String" itemvalue="Python.configure mm local" />
+      <item index="62" class="java.lang.String" itemvalue="Python.configure mm vqda1" />
+      <item index="63" class="java.lang.String" itemvalue="Python.configure js local" />
+      <item index="64" class="java.lang.String" itemvalue="Python.configure js vqda1" />
+      <item index="65" class="java.lang.String" itemvalue="Behave.ePhone7 mm wip noreq" />
+      <item index="66" class="java.lang.String" itemvalue="Behave.ePhone7 mm wip" />
+      <item index="67" class="java.lang.String" itemvalue="Node.js.drs_demo" />
+      <item index="68" class="java.lang.String" itemvalue="Python.appium_gui" />
+      <item index="69" class="java.lang.String" itemvalue="Python.sort_steps e7 features" />
+      <item index="70" class="java.lang.String" itemvalue="Python.mock_detector_test" />
+      <item index="71" class="java.lang.String" itemvalue="Python.fake_detector_test" />
     </list>
     <recent_temporary>
-      <list size="1">
-        <item index="0" class="java.lang.String" itemvalue="Python.mock_detector_test" />
+      <list size="2">
+        <item index="0" class="java.lang.String" itemvalue="Python.fake_detector_test" />
+        <item index="1" class="java.lang.String" itemvalue="Python.mock_detector_test" />
       </list>
     </recent_temporary>
   </component>
@@ -2472,20 +2498,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1478538908706</updated>
-    </task>
-    <task id="LOCAL-00240" summary="change method of testing for empty favorites list">
-      <created>1506540954835</created>
-      <option name="number" value="00240" />
-      <option name="presentableId" value="LOCAL-00240" />
-      <option name="project" value="LOCAL" />
-      <updated>1506540954835</updated>
-    </task>
-    <task id="LOCAL-00241" summary="experimenting with BeautifulSoup">
-      <created>1507146773899</created>
-      <option name="number" value="00241" />
-      <option name="presentableId" value="LOCAL-00241" />
-      <option name="project" value="LOCAL" />
-      <updated>1507146773899</updated>
     </task>
     <task id="LOCAL-00242" summary="rework step status calculation functions in run_features.py and add bdd_status.txt to docs directory explaining the logic">
       <created>1507738186835</created>
@@ -2816,7 +2828,21 @@
       <option name="project" value="LOCAL" />
       <updated>1510160510383</updated>
     </task>
-    <option name="localTasksCounter" value="289" />
+    <task id="LOCAL-00289" summary="minor grammar fix">
+      <created>1510246810111</created>
+      <option name="number" value="00289" />
+      <option name="presentableId" value="LOCAL-00289" />
+      <option name="project" value="LOCAL" />
+      <updated>1510246810111</updated>
+    </task>
+    <task id="LOCAL-00290" summary=".idea update">
+      <created>1510246890380</created>
+      <option name="number" value="00290" />
+      <option name="presentableId" value="LOCAL-00290" />
+      <option name="project" value="LOCAL" />
+      <updated>1510246890380</updated>
+    </task>
+    <option name="localTasksCounter" value="291" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2862,19 +2888,18 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47419354" sideWeight="0.38142622" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29354838" sideWeight="0.6185738" order="2" side_tool="false" content_ui="tabs" x="88" y="400" width="1809" height="276" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18817204" sideWeight="0.6185738" order="2" side_tool="false" content_ui="tabs" x="88" y="400" width="1809" height="276" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2580645" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26174498" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20453289" sideWeight="0.8046768" order="0" side_tool="false" content_ui="combo" x="749" y="177" width="487" height="786" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20674406" sideWeight="0.8046768" order="0" side_tool="false" content_ui="combo" x="749" y="177" width="487" height="786" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946378" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18064517" sideWeight="0.49087894" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2" sideWeight="0.49087894" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30514097" sideWeight="0.81043476" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4483871" sideWeight="0.656952" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4483871" sideWeight="0.656952" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20011055" sideWeight="0.19532324" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.32946378" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -2944,8 +2969,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="move &quot;my phone calls the voicemail sender&quot; to voicemail_steps.py" />
-    <MESSAGE value="implement new voicemail scenarios" />
     <MESSAGE value="add canvas screenshot/item locator" />
     <MESSAGE value="fix missing imports" />
     <MESSAGE value="remove unused imports" />
@@ -2969,10 +2992,19 @@
     <MESSAGE value="fix bug in parse_ids" />
     <MESSAGE value="add third color to appium_gui &quot;get element color&quot; output" />
     <MESSAGE value="handle splits (parameterized step names) in fake_detector" />
-    <option name="LAST_COMMIT_MESSAGE" value="handle splits (parameterized step names) in fake_detector" />
+    <MESSAGE value="minor grammar fix" />
+    <MESSAGE value=".idea update" />
+    <option name="LAST_COMMIT_MESSAGE" value=".idea update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ePhone7/run_features.py</url>
+          <line>394</line>
+          <option name="timeStamp" value="1754" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -2983,7 +3015,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="1751" />
+      <option name="time" value="1755" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PyBehaveRunConfigurationType">
@@ -3010,13 +3042,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/common_steps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="1134" column="0" lean-forward="false" selection-start-line="1134" selection-start-column="0" selection-end-line="1134" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -3112,13 +3137,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/prune_db.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="70" column="35" lean-forward="false" selection-start-line="70" selection-start-column="35" selection-end-line="70" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tmp/steps.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -3130,13 +3148,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tmp/output.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1116">
-          <caret line="74" column="1" lean-forward="true" selection-start-line="74" selection-start-column="1" selection-end-line="74" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -3199,14 +3210,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ePhone7/features/environment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="60" column="27" lean-forward="false" selection-start-line="60" selection-start-column="27" selection-end-line="60" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ePhone7/views/base_view.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3780">
@@ -3219,13 +3222,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="427">
           <caret line="200" column="4" lean-forward="false" selection-start-line="200" selection-start-column="4" selection-end-line="200" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ePhone7/features/04_voicemail.feature">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -3250,20 +3246,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/lib_test/fake_detector_test.py" />
     <entry file="file://$PROJECT_DIR$/lib/fake_detector.py" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ePhone7/run_features.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5580">
-          <caret line="310" column="38" lean-forward="false" selection-start-line="310" selection-start-column="38" selection-end-line="310" selection-end-column="38" />
           <folding />
         </state>
       </provider>
@@ -3279,8 +3266,10 @@
     <entry file="file://$PROJECT_DIR$/lib/lib_test/features/steps/steps.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
-          <caret line="14" column="38" lean-forward="false" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
-          <folding />
+          <caret line="55" column="38" lean-forward="false" selection-start-line="55" selection-start-column="38" selection-end-line="55" selection-end-column="38" />
+          <folding>
+            <marker date="1510178034639" expanded="true" signature="855:1061" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -3318,7 +3307,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ePhone7/features/03_contacts.feature">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
+        <state relative-caret-position="1134">
           <caret line="63" column="4" lean-forward="false" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="4" />
           <folding />
         </state>
@@ -3326,7 +3315,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/mock_detector.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
+        <state relative-caret-position="1836">
           <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
           <folding />
         </state>
@@ -3336,6 +3325,99 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="59" column="12" lean-forward="false" selection-start-line="59" selection-start-column="12" selection-end-line="59" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/lib_test/fake_detector_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ePhone7/features/04_voicemail.feature">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="104" column="0" lean-forward="false" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tmp/output.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="51" column="20" lean-forward="false" selection-start-line="51" selection-start-column="20" selection-end-line="51" selection-end-column="20" />
+          <folding>
+            <marker date="1510246728001" expanded="true" signature="0:679900" ph="[...]" />
+            <marker date="1510246728001" expanded="true" signature="6:1247" ph="{&quot;name&quot;: &quot;The version of the software should be correct&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="28:1247" ph="[...]" />
+            <marker date="1510246728001" expanded="true" signature="672115:672189" ph="{&quot;duration&quot;: 4.9114227294921875e-05...}" />
+            <marker date="1510246728001" expanded="true" signature="672115:672296" ph="{&quot;name&quot;: &quot;[active_call] I end the call&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="672115:672314" ph="[...]" />
+            <marker date="1510246728001" expanded="true" signature="672115:672392" ph="{&quot;name&quot;: &quot;the in-call screen audio icon is correct when using the wired headset&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="672115:672402" ph="[...]" />
+            <marker date="1510246728001" expanded="true" signature="672115:672694" ph="{&quot;name&quot;: &quot;As a user I want the current audio path indicated on the in-call screen (R2D2-2142)&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="672652:672688" ph="[...]" />
+            <marker date="1510246728001" expanded="true" signature="672700:679898" ph="{&quot;name&quot;: &quot;As a user I want to be able to see my favorite contacts from the active call screen (R2D2-1649)&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="672722:679615" ph="[...]" />
+            <marker date="1510246728001" expanded="true" signature="672736:675850" ph="{&quot;name&quot;: &quot;the in-call screen Coworkers button shows Coworker contacts&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="672980:675772" ph="[...]" />
+            <marker date="1510246728001" expanded="true" signature="673002:673274" ph="{&quot;name&quot;: &quot;I touch the \&quot;Dial\&quot; button&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="673296:673582" ph="{&quot;name&quot;: &quot;[dial] I make a call to a coworker contact&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="673604:673885" ph="{&quot;name&quot;: &quot;the coworker contact answers the call&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="673907:674198" ph="{&quot;name&quot;: &quot;[active_call] an \&quot;Active Call\&quot; window appears&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="674220:674497" ph="{&quot;name&quot;: &quot;I touch the \&quot;Coworkers\&quot; button&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="674519:674813" ph="{&quot;name&quot;: &quot;[active_call] the in-call contacts screen appears&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="674835:675123" ph="{&quot;name&quot;: &quot;[active_call] the Coworkers tab is selected&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="675145:675458" ph="{&quot;name&quot;: &quot;[active_call] my Coworker contacts are listed on the contacts screen&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="675480:675754" ph="{&quot;name&quot;: &quot;[active_call] I end the call&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="675864:679605" ph="{&quot;name&quot;: &quot;the in-call screen Coworkers button shows Favorite contacts&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="676109:679527" ph="[...]" />
+            <marker date="1510246728001" expanded="true" signature="676131:676435" ph="{&quot;name&quot;: &quot;I add my favorite Coworker contacts to my Favorites list&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="676457:676730" ph="{&quot;name&quot;: &quot;I touch the \&quot;Dial\&quot; button&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="676752:677039" ph="{&quot;name&quot;: &quot;[dial] I make a call to a coworker contact&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="677061:677343" ph="{&quot;name&quot;: &quot;the coworker contact answers the call&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="677365:677657" ph="{&quot;name&quot;: &quot;[active_call] an \&quot;Active Call\&quot; window appears&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="677679:677957" ph="{&quot;name&quot;: &quot;I touch the \&quot;Coworkers\&quot; button&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="677979:678274" ph="{&quot;name&quot;: &quot;[active_call] the in-call contacts screen appears&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="678296:678584" ph="{&quot;name&quot;: &quot;[active_call] the Coworkers tab is selected&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="678606:678892" ph="{&quot;name&quot;: &quot;[active_call] I select the Favorites tab&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="678914:679213" ph="{&quot;name&quot;: &quot;[active_call] my favorite Coworker contacts are listed&quot;...}" />
+            <marker date="1510246728001" expanded="true" signature="679235:679509" ph="{&quot;name&quot;: &quot;[active_call] I end the call&quot;...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ePhone7/features/steps/common_steps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="122" column="29" lean-forward="false" selection-start-line="122" selection-start-column="29" selection-end-line="122" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ePhone7/features/environment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="71" column="50" lean-forward="false" selection-start-line="71" selection-start-column="50" selection-end-line="71" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/prune_db.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="40" column="38" lean-forward="false" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ePhone7/run_features.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="279">
+          <caret line="211" column="53" lean-forward="false" selection-start-line="211" selection-start-column="53" selection-end-line="211" selection-end-column="53" />
           <folding />
         </state>
       </provider>
