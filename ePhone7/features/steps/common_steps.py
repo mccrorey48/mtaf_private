@@ -386,8 +386,18 @@ def i_go_to_the_contacts_view(context):
 @step("I go to the home screen")
 @fake
 def i_go_to_the_home_screen(context):
-    context.run_substep("I touch the Home icon")
-    context.run_substep("I am at the home screen")
+    tries = 3
+    for i in range(tries):
+        tries -= 1
+        base_view.send_keycode_home()
+        if user_view.UserHeaderName is None:
+            log.warn("retrying send_keycode_home: UserHeaderName element not present")
+        elif user_view.HomeScreenLogo is None:
+            log.warn("retrying send_keycode_home: HomeScreenLogo element not present")
+        else:
+            break
+    else:
+        raise Ux("Did not go to home screen in %d tries" % tries)
 
 
 @step("I go to the New Voicemail view")
@@ -620,12 +630,6 @@ def i_touch_the_cancel_button(context):
 @fake
 def i_touch_the_current_time_zone_text(context):
     pass
-
-
-@step("I touch the Home icon")
-@fake
-def i_touch_the_home_icon(context):
-    base_view.send_keycode_home()
 
 
 @step("I touch the voicemail icon")
