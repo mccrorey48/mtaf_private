@@ -3,9 +3,9 @@ Feature: As a user I want to use and manage my voicemail lists
 
   Background: a new voicemail is shown in the New Voicemails view
     Given I go to the home screen
-    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  I touch the "Voicemail" button
-    And   I touch the "NEW" tab
+    Then  the "Voicemail" view is present
+    When  I touch the "NEW" tab
     Then  [voicemail] I see my existing new voicemails
     When  I receive a new voicemail
     Then  [voicemail] the new voicemail is the first "NEW" item listed

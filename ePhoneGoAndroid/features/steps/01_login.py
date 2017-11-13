@@ -44,7 +44,7 @@ def step_impl(context):
 @then("The Attention Alert Message disappears")
 def step_impl(context):
     pass
-    # assert login_view.element_is_not_present("AttentionAlertTitle", 10), \
+    # assert login_view.element_becomes_not_present("AttentionAlertTitle", 10), \
     #     "Expected Attention Alert Message to disappear but it did not"
 
 
@@ -61,7 +61,7 @@ def step_impl(context):
 
 @then("The Phone Permission Message disappears")
 def step_impl(context):
-    assert login_view.element_is_not_present("PhonePermissionAlertTitle", 10), \
+    assert login_view.element_becomes_not_present("PhonePermissionAlertTitle", 10), \
         "Expected Phone Permission Message to disappear but it did not"
 
 
@@ -73,7 +73,7 @@ def step_impl(context):
 
 @then("The Record Audio Permission Message disappears")
 def step_impl(context):
-    assert login_view.element_is_not_present("RecordAudioAlertTitle", 10), \
+    assert login_view.element_becomes_not_present("RecordAudioAlertTitle", 10), \
         "Expected Record Audio Permission Message to disappear but it did not"
 
 
@@ -89,5 +89,5 @@ def step_impl(context):
 
 @then("The Battery Usage Alert Message disappears")
 def step_impl(context):
-    assert login_view.element_is_not_present("BatteryUsageAlertTitle", 10), \
+    assert login_view.element_becomes_not_present("BatteryUsageAlertTitle", 10), \
         "Expected Battery Usage Alert Message to disappear but it did not"

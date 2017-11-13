@@ -343,5 +343,3 @@ def contacts__the_star_turns_colorname(context, color_name):
     base_view.get_screenshot_as_png('contact_detail', cfg.test_screenshot_folder)
     actual_color = contacts_view.get_element_color_and_count('contact_detail', el)
     assert actual_color == expect_color, "expected color %s, got %s" % (expect_color, actual_color)
-
-

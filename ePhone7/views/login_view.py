@@ -20,6 +20,7 @@ class LoginView(BaseView):
         self.png_file_base = 'login'
         self.last_activity = None
         BaseView.login_view = self
+        self.presence_element_names = ['Login']
 
     @Trace(log)
     def login(self):

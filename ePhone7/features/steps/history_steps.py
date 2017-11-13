@@ -39,5 +39,3 @@ def history__the_call_has_a_green_handset_icon_with_an_outgoing_arrow(context):
 def history__the_history_view_appears(context):
     assert history_view.element_with_text_is_present('All')
     assert history_view.element_with_text_is_present('Missed')
-
-

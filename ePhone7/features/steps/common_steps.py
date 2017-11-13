@@ -330,7 +330,7 @@ def i_downgrade_my_aosp_to_downgradeaospversion(context, downgrade_aosp_version)
         get_downgrade_images(downgrade_aosp_version)
         base_view.close_appium()
         force_aosp_downgrade(downgrade_aosp_version)
-        installed_aosp, installed_app= get_installed_versions()
+        installed_aosp, installed_app = get_installed_versions()
         assert installed_aosp == downgrade_aosp_version
         context.installed_aosp = installed_aosp
         base_view.open_appium()
@@ -748,7 +748,7 @@ def the_account_deleted_popup_disappears(context):
 @step("the Advanced Options view disappears")
 @fake
 def the_advanced_options_view_disappears(context):
-    assert advanced_settings_view.element_is_not_present('AdvancedOptions'), \
+    assert advanced_settings_view.element_becomes_not_present('AdvancedOptions'), \
         "Expected Advanced Options view to disappear but it did not"
 
 
@@ -822,7 +822,7 @@ def the_current_ota_server_popup_appears(context):
 @step("the Current OTA Server popup disappears")
 @fake
 def the_current_ota_server_popup_disappears(context):
-    assert(dial_view.element_is_not_present('CurrentOtaPopup'))
+    assert(dial_view.element_becomes_not_present('CurrentOtaPopup'))
 
 
 @step("the current time zone text is shown")
@@ -869,7 +869,7 @@ def the_ephone7_app_should_not_crash(context):
     sleep(5)
     try:
         activity = base_view.driver.current_activity
-    except:
+    except BaseException:
         assert False, "could not read current activity"
     assert activity == '.activities.MainViewActivity', 'Expected .activities.MainViewActivity, got %s' % activity
 
@@ -984,7 +984,7 @@ def the_ota_server_update_popup_appears(context):
 @step('the "OTA Server Update" popup disappears')
 @fake
 def the_ota_server_update_popup_disappears(context):
-    assert(dial_view.element_is_not_present('OtaUpdatePopup'))
+    assert(dial_view.element_becomes_not_present('OtaUpdatePopup'))
 
 
 @step("The package com.android.wallpaper.livepicker is not listed")
@@ -1135,5 +1135,3 @@ def there_is_a_softphone_registered_on_my_ephone7s_user_account(context):
 @fake
 def vlan_is_enabled(context):
     pass
-
-

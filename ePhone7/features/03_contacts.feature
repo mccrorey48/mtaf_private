@@ -3,9 +3,8 @@ Feature: As a user I want to use and manage my contact lists
 
   Background: I am at the Contacts view and no Favorites are set
     Given I go to the home screen
-    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
-    When  I touch "Contacts"
-    Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
+    Given I touch the "Contacts" button
+    Then  the "Contacts" view is present
     When  I touch the "Coworkers" tab
     Then  [contacts] my Coworker contacts are shown on the display
     When  [contacts] I long-press a contact list item
@@ -15,18 +14,6 @@ Feature: As a user I want to use and manage my contact lists
     And   [contacts] I touch the star icons so all are white
     When  [contacts] I long-press a contact list item
     Then  [contacts] my Coworker contacts are each shown with a handset icon
-
-#  Scenario: I want to import my Google contacts
-#    Given I touch the "Personal" tab
-#    When  I touch the "Sign in with Google" banner
-#    Then  [contacts] a Google login screen appears
-#    And   [contacts] I enter my Google user id and password
-#    Then  [contacts] my Google contacts are shown on the display
-
-#  @regression
-#  Scenario: I want to see my Coworkers list
-#    Given I touch the "Coworkers" tab
-#    Then  [contacts] my Coworker contacts are shown on the display
 
   Scenario: I want to call a contact from my Coworkers list
     Given I touch the "Coworkers" tab

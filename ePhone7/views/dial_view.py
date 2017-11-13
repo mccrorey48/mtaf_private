@@ -97,6 +97,7 @@ class DialView(UserView):
     def __init__(self):
         super(DialView, self).__init__()
         self.png_file_base = 'keypad'
+        self.presence_element_names = ['NumKey1']
 
     @Trace(log)
     def dial_advanced_settings(self):

@@ -20,6 +20,7 @@ class UserView(BaseView):
         "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
         "HeadsetButton": {"by": "id", "value": "com.esi_estech.ditto:id/headset_button"},
         "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
+        "HomeScreenLogo": {"by": "id", "value": "com.esi_estech.ditto:id/home_screen_company_logo"},
         "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
         "IncomingCallIgnore": {"by": "id", "value": "com.esi_estech.ditto:id/ignore_button"},
         "IncomingCallAnswerToSpeaker": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_speaker_button"},
@@ -27,7 +28,6 @@ class UserView(BaseView):
         "IncomingCallCallerImage": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_image"},
         "IncomingCallCallerName": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_name"},
         "IncomingCallCallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/incoming_call_caller_number"},
-        "HomeScreenLogo": {"by": "id", "value": "com.esi_estech.ditto:id/home_screen_company_logo"},
         "PrefsButton": {"by": "id", "value": "com.esi_estech.ditto:id/settings_button"},
         "PrefsButtonz": {"by": "zpath", "value": "//rl/bt[4]"},
         "SettingsButton": {"by": "zpath", "value": "//sv/fl/fl[3]"},
@@ -46,13 +46,7 @@ class UserView(BaseView):
         self.active_tab = None
         self.call_status_wait = 30
         self.softphones = {}
-
-    @Trace(log)
-    def is_present(self):
-        for element_name in self.tab_names:
-            if not self.element_is_present(element_name):
-                return False
-        return True
+        self.presence_element_names = ['Contacts', 'History', 'Voicemail', 'Dial']
 
     @Trace(log)
     def set_dnd(self, on=True):

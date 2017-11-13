@@ -16,6 +16,7 @@ class AppIntroView(BaseView):
         super(AppIntroView, self).__init__()
         self.png_file_base = 'tnc'
         BaseView.app_intro_view = self
+        self.presence_element_names = ['Skip']
 
     @Trace(log)
     def skip_intro(self):

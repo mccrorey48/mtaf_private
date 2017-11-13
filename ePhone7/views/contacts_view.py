@@ -43,6 +43,7 @@ class ContactsView(UserView):
         self.png_file_base = 'contacts'
         self.displayed_elems = []
         self.displayed_numbers = []
+        self.presence_element_names = ['ContactsList']
 
     @Trace(log)
     def call_contact_from_list_element(self, list_element):

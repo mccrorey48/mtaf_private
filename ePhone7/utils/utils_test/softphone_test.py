@@ -61,7 +61,7 @@ try:
     call_count = 0
     # while True:
     for i in range(18):
-        # if not user_view.is_present():
+        # if not user_view.becomes_present():
         #     log.info("Restarting Appium")
         #     base_view.close_appium()
         #     sleep(10)

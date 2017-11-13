@@ -32,6 +32,7 @@ class ActiveCallView(BaseView):
         self.cfg = cfg
         self.png_file_base = 'active_call'
         BaseView.active_call_view = self
+        self.presence_element_names = ['ActiveCallLabel']
 
     @Trace(log)
     def vm_xfer_dest_banner_present(self):
@@ -54,7 +55,7 @@ class ActiveCallView(BaseView):
         self.click_named_element('EndActiveCall')
 
     @Trace(log)
-    def is_present(self):
+    def becomes_present(self):
         return self.element_is_present('ActiveCallLabel')
 
     @Trace(log)

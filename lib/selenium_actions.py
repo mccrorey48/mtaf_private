@@ -144,7 +144,7 @@ class SeleniumActions(Tc):
         # and returns True if that happens before timeout, False otherwise
         # Note:
         # - "not element_is_present()" is true when timeout expires before exactly one matching element is found;
-        # - "element_is_not_present()" is true when zero matching elements are found before timeout expires
+        # - "element_becomes_not_present()" is true when zero matching elements are found before timeout expires
         start_time = time()
         while True:
             if 'parent_key' in locator:
@@ -160,7 +160,7 @@ class SeleniumActions(Tc):
                 return False
 
     @Trace(log)
-    def element_is_not_present(self, name, timeout=1):
+    def element_becomes_not_present(self, name, timeout=1):
         locator = self.get_locator(name)
         return self.wait_for_no_elements_by_locator(locator, timeout)
 

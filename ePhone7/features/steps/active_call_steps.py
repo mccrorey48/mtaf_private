@@ -18,7 +18,7 @@ def active_call__i_touch_dial(context):
 @step("[active call] the active call screen appears")
 @fake
 def active_call__the_active_call_screen_appears(context):
-    assert active_call_view.is_present(), 'Active call screen not present'
+    assert active_call_view.becomes_present(), 'Active call screen not present'
 
 
 @step("[active_call] a Record button is visible")
@@ -31,7 +31,7 @@ def activecall__a_record_button_is_visible(context):
 @step('[active_call] an "Active Call" window appears')
 @fake
 def activecall__an_active_call_window_appears(context):
-    assert active_call_view.is_present()
+    assert active_call_view.becomes_present()
 
 
 @step("[active_call] I end the call")
@@ -115,7 +115,7 @@ def activecall__the_buttons_are_w_pixels_wide_and_h_pixels_high(context, w, h):
     #                                                      % (location['x'], location['y'])
     size = elems[0].size
     assert size['width'] == int(w) and size['height'] == int(h), "Expected key 1 size %dw, %dh), got %dh, %dw" \
-                                                         % (int(w), int(h), size['width'], size['height'])
+                                                                 % (int(w), int(h), size['width'], size['height'])
 
 
 @step("[active_call] the caller leaves a message and hangs up")
@@ -179,5 +179,3 @@ def activecall__the_record_button_is_white(context):
 @fake
 def activecall__the_transfer_dialog_appears(context):
     assert active_call_view.transfer_dialog_is_present()
-
-

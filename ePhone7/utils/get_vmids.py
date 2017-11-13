@@ -1,5 +1,5 @@
 import sys
-sys.path = sys.path[1:]
+# sys.path = sys.path[1:]
 from lib.wrappers import Trace
 import lib.logging_esi as logging
 from lib.user_exception import UserException as Ux

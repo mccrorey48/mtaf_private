@@ -51,7 +51,27 @@ class BaseView(SeleniumActions):
         self.cfg = cfg
         self.By = MobileBy
         self.locator_timeout = 10
+        self.presence_element_names = []
 
+    @Trace(log)
+    def becomes_present(self):
+        if len(self.presence_element_names) == 0:
+            raise Ux("becomes_present() not implemented here")
+        for element_name in self.presence_element_names:
+            if not self[element_name]:
+                return False
+        return True
+
+    @Trace(log)
+    def becomes_not_present(self):
+        if len(self.presence_element_names) == 0:
+            raise Ux("becomes_not_present() not implemented here")
+        for element_name in self.presence_element_names:
+            if not self.missing[element_name]:
+                return False
+        return True
+
+    @Trace(log)
     def get_locator(self, name):
         locator = SeleniumActions.get_locator(self, name)
         if locator["by"] == "zpath":
@@ -66,6 +86,9 @@ class BaseView(SeleniumActions):
         def __init__(self, view):
             self.view = view
 
+        def __getitem__(self, item_name):
+            return self.__getattr__(item_name)
+
         def __getattr__(self, attr_name):
             return self.view.find_named_elements(attr_name)
 
@@ -73,8 +96,14 @@ class BaseView(SeleniumActions):
         def __init__(self, view):
             self.view = view
 
+        def __getitem__(self, item_name):
+            return self.__getattr__(item_name)
+
         def __getattr__(self, attr_name):
-            return self.view.element_is_not_present(attr_name, self.view.locator_timeout)
+            return self.view.element_becomes_not_present(attr_name, self.view.locator_timeout)
+
+    def __getitem__(self, item_name):
+        return self.__getattr__(item_name)
 
     def __getattr__(self, attr_name):
         if attr_name == 'all':
@@ -365,7 +394,7 @@ class BaseView(SeleniumActions):
                 current_activity = self.driver.current_activity
                 log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
-                    sleep(10)
+                    # sleep(10)
                     self.send_keycode_back()
                     self.send_keycode_home()
                     break

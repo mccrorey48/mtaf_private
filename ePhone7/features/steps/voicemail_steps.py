@@ -83,16 +83,16 @@ def voicemail__i_touch_the_handset_icon(context):
     voicemail_view.click_named_element('VmCallButton')
 
 
-@step("[voicemail] I touch the top voicemail element")
-@fake
-def voicemail__i_touch_the_new_voicemail_element(context):
-    context.top_vm.click()
-
-
 @step("[voicemail] I touch the Save icon")
 @fake
 def voicemail__i_touch_the_save_icon(context):
     voicemail_view.SaveButton.click()
+
+
+@step("[voicemail] I touch the top voicemail element")
+@fake
+def voicemail__i_touch_the_top_voicemail_element(context):
+    context.top_vm.click()
 
 
 @step("[voicemail] I use the keypad to filter the list of contacts")
@@ -107,9 +107,30 @@ def voicemail__i_use_the_keypad_to_filter_the_list_of_contacts(context):
     assert len(items) == 1, "Expected number of search items to be 1, got %d" % len(items)
 
 
+@step("[voicemail] my phone calls the voicemail sender")
+@fake
+def voicemail__my_phone_calls_the_voicemail_sender(context):
+    context.softphone.wait_for_call_status('call', user_view.call_status_wait)
+
+
+@step("[voicemail] the new voicemail is no longer listed")
+@fake
+def voicemail__the_new_voicemail_is_no_longer_listed(context):
+    sleep(10)
+    parents = voicemail_view.get_top_vm_parents()
+    if len(parents) > 0:
+        caller_name = voicemail_view.find_named_sub_element(parents[0], "CallerName").text
+        caller_number = voicemail_view.find_named_sub_element(parents[0], "CallerNumber").text
+        vm_duration = voicemail_view.find_named_sub_element(parents[0], "VmDuration").text
+        context.make_assertion("First VM item does not match new VM", True, (
+            context.new_vm_text["CallerName"] != caller_name
+            or context.new_vm_text["CallerNumber"] != caller_number
+            or context.new_vm_text["VmDuration"] != vm_duration))
+
+
 @step("[voicemail] the new voicemail is the first \"{vm_type}\" item listed")
 @fake
-def voicemail__the_new_voicemail_is_the_first_type_item_listed(context, vm_type):
+def voicemail__the_new_voicemail_is_the_first_vmtype_item_listed(context, vm_type):
     start_time = time()
     timeout = 60
     vms_visible = []
@@ -151,9 +172,11 @@ def voicemail__the_voicemail_audio_plays_back(context):
     elem = voicemail_view.find_named_element("PlaybackStartStop")
     voicemail_view.get_screenshot_as_png('playback')
     color = voicemail_view.get_element_color_and_count('playback', elem, color_list_index=0)
-    assert color[:3] == [56, 62, 77], "Voicemail playback/start/stop wrong first color, expected (56, 62, 77), got %s" % color[:3]
+    assert color[:3] == [56, 62, 77], \
+        "Voicemail playback/start/stop wrong first color, expected (56, 62, 77), got %s" % color[:3]
     # paused: color[3] == 10930     playing: color[3] == 38160
-    assert color[3] == 38160, "Voicemail paused, should be playing back (1st color count %s, expected %s" % (color[3], 38160)
+    assert color[3] == 38160, \
+        "Voicemail paused, should be playing back (1st color count %s, expected %s" % (color[3], 38160)
 
 
 @step("[voicemail] the voicemail detail window disappears")
@@ -168,21 +191,6 @@ def voicemail__the_voicemail_is_also_available_in_the_destination_contacts_new_v
     pass
 
 
-@step("[voicemail] the new voicemail is no longer listed")
-@fake
-def voicemail__the_new_voicemail_is_no_longer_listed(context):
-    sleep(10)
-    parents = voicemail_view.get_top_vm_parents()
-    if len(parents) > 0:
-        caller_name = voicemail_view.find_named_sub_element(parents[0], "CallerName").text
-        caller_number = voicemail_view.find_named_sub_element(parents[0], "CallerNumber").text
-        vm_duration = voicemail_view.find_named_sub_element(parents[0], "VmDuration").text
-        context.make_assertion("First VM item does not match new VM", True, (
-            context.new_vm_text["CallerName"] != caller_name
-            or context.new_vm_text["CallerNumber"] != caller_number
-            or context.new_vm_text["VmDuration"] != vm_duration))
-
-
 @step("[voicemail] the voicemail is still the first item in the view")
 @fake
 def voicemail__the_voicemail_is_still_the_first_item_in_the_view(context):
@@ -193,11 +201,3 @@ def voicemail__the_voicemail_is_still_the_first_item_in_the_view(context):
 @fake
 def voicemail__the_voicemail_view_appears(context):
     pass
-
-
-@step("[voicemail] my phone calls the voicemail sender")
-@fake
-def my_phone_calls_the_voicemail_sender(context):
-    context.softphone.wait_for_call_status('call', user_view.call_status_wait)
-
-

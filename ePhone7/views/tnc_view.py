@@ -18,6 +18,7 @@ class TncView(BaseView):
         super(TncView, self).__init__()
         self.png_file_base = 'tnc'
         BaseView.tnc_view = self
+        self.presence_element_names = ['Accept']
 
     @Trace(log)
     def accept_tnc(self):

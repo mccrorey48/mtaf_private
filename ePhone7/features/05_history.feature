@@ -3,9 +3,8 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Background: I am in the History view
     Given I go to the home screen
-    Then  [user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen
     When  I touch the "History" button
-    Then  [history] I see the All and Missed tabs at the top of the screen
+    Then  the "History" view is present
 
   Scenario: I want to see an answered call indicated on the All History view
     Given I receive and ignore a call
@@ -35,7 +34,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
   Scenario: I want to see an outgoing call indicated on the All History view
     Given I touch the "Dial" button
     When  [dial] I make a call to a coworker contact
-    Then  [active_call] an "Active Call" window appears
+    Then  the "Active Call" window appears
     When  [active_call] I end the call
     Then  the in-call window disappears
     When  I touch the "All" tab

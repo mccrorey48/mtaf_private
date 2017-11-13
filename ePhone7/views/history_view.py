@@ -24,6 +24,7 @@ class HistoryView(UserView):
         super(HistoryView, self).__init__()
         self.tab_names = ('All', 'Missed')
         self.png_file_base = 'history'
+        self.presence_element_names = ['Missed']
 
     @Trace(log)
     def call_contact_test(self):

@@ -19,6 +19,7 @@ class AdvancedSettingsView(BaseView):
         "AppsText": {"parent_key": "AppsBar", "by": "id", "value": "title"},
         "CallRecordEnableText": {"by": "id", "value": "android:id/title", "text": "Call Record Enable"},
         "OtaAddressOk": {"by": "id", "value": "android:id/button1"},
+        "SetDtmfType": {"by": "id", "value": "android:id/title", "text": "Set DTMF Type"},
         "TestOtaEditText": {"by": "id", "value": "android:id/edit"},
         "TestOtaServerUrlText": {"by": "id", "value": "android:id/title", "text": "Test OTA Server URL"},
         "UseTestOtaServerText": {"by": "id", "value": "android:id/title", "text": "Use Test OTA Server"},
@@ -27,6 +28,7 @@ class AdvancedSettingsView(BaseView):
     def __init__(self):
         super(AdvancedSettingsView, self).__init__()
         BaseView.settings_view = self
+        self.presence_element_names = ['SetDtmfType']
 
     @Trace(log)
     def goto_apps(self):

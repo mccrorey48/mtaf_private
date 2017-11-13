@@ -39,12 +39,12 @@ def network__i_enter_a_vlan_priority_greater_than_7(context):
     context.run_substep("[network] I enter 8 as a VLAN priority")
 
 
-@step("[network] I enter {id} as a VLAN identifier")
+@step("[network] I enter {_id} as a VLAN identifier")
 @fake
-def network__i_enter_id_as_a_vlan_identifier(context, id):
+def network__i_enter_id_as_a_vlan_identifier(context, _id):
     network_view.find_named_element('VlanIdentifier').clear()
     network_view.send_keycode_back()
-    for digit in [int(c) for c in id]:
+    for digit in [int(c) for c in _id]:
         network_view.send_keycode_number(digit)
 
 
@@ -126,5 +126,3 @@ def network__the_enable_button_is_inactive(context):
 @fake
 def network__the_reboot_alert_window_appears(context):
     assert network_view.element_is_present("VlanRebootAlert")
-
-

@@ -41,6 +41,7 @@ class PrefsView(BaseView):
         "Personal": {"by": "zpath", "value": "//el/rl[2]/tv[1]", "text": "Personal"},
         "Phone": {"by": "zpath", "value": "//el/rl[3]/tv[1]", "text": "Phone"},
         "Preferences": {"by": "id", "value": "com.esi_estech.ditto:id/settings_list"},
+        "PrefsLabel": {"by": "id", "value": "com.esi_estech.ditto:id/preferences_label"},
         "RebootEPhone7": {"by": "uia_text", "value": "Reboot ePhone7"},
         "Ringtones": {"by": "zpath", "value": "//lv/ll[7]/tv", "text": "Ringtones"},
         "SignInWithGoogle": {"by": "zpath", "value": "//lv/ll[2]/tv", "text": "Sign in with Google"},
@@ -56,6 +57,7 @@ class PrefsView(BaseView):
     def __init__(self):
         super(PrefsView, self).__init__()
         BaseView.prefs_view = self
+        self.presence_element_names = ['Preferences', 'PrefsLabel']
 
     def hide_list_items(self):
         titles_shown = [el.text for el in self.find_named_elements('ListItemTitle')]

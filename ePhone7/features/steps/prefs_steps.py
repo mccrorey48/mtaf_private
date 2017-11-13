@@ -171,6 +171,4 @@ def prefs__the_preferences_window_appears(context):
 @step("[prefs] the Preferences window disappears")
 @fake
 def prefs__the_preferences_window_disappears(context):
-    assert prefs_view.element_is_not_present('Preferences')
-
-
+    assert prefs_view.element_becomes_not_present('Preferences')

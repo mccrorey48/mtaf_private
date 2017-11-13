@@ -26,6 +26,7 @@ class NetworkView(BaseView):
     def __init__(self):
         super(NetworkView, self).__init__()
         BaseView.network_view = self
+        self.presence_element_names = ['NetworkSettingsLabel']
 
     @Trace(log)
     def verify_view(self):
