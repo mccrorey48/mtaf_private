@@ -2,11 +2,12 @@ from behave import *
 from ePhone7.views import *
 from lib.wrappers import fake
 from ePhone7.config.configure import cfg
-from time import sleep
 from ePhone7.utils.get_softphone import get_softphone
+from ePhone7.utils.vvm_microservice import *
 from time import time
 import lib.logging_esi
 from lib.filters import get_filter
+from lib.user_exception import UserException as Ux
 log = lib.logging_esi.get_logger('esi.vm_steps')
 
 
@@ -34,19 +35,14 @@ def voicemail__i_can_choose_cancel_or_ok_by_touching_the_corresponding_button(co
     pass
 
 
-@step("[voicemail] I see my existing new voicemails")
+@step("[voicemail] I see my existing {category} voicemails")
 @fake
-def voicemail__i_see_my_existing_new_voicemails(context):
-    parents = voicemail_view.get_top_vm_parents()
-    context.existing_new_vm_texts = []
-    for parent in parents:
-        context.existing_new_vm_texts.append({
-            "CallerName": voicemail_view.find_named_sub_element(parent, "CallerName").text,
-            "CallerNumber": voicemail_view.find_named_sub_element(parent, "CallerNumber").text,
-            "CalledTime": voicemail_view.find_named_sub_element(parent, "CalledTime").text,
-            "VmDuration": voicemail_view.find_named_sub_element(parent, "VmDuration").text
-        })
-    log.debug('VM_DEBUG I see my existing new voicemails: %s' % context.existing_new_vm_texts)
+def step_impl(context, category):
+    vm_displayed_texts = voicemail_view.get_top_vm_texts()
+    metadata = get_vm_metadata('R2d2User', category)
+    context.existing_vm_metadata[category.lower()] = metadata
+    fail_msg = "visible VM's did not match VM's from vvm API"
+    assert all_views.voicemail.vm_match_all(vm_displayed_texts, metadata), fail_msg
 
 
 @step("[voicemail] I see the New, Saved and Trash tabs at the top of the screen")
@@ -92,7 +88,9 @@ def voicemail__i_touch_the_save_icon(context):
 @step("[voicemail] I touch the top voicemail element")
 @fake
 def voicemail__i_touch_the_top_voicemail_element(context):
-    context.top_vm.click()
+    parents = voicemail_view.get_top_vm_parents()
+    assert len(parents) > 0, "No VM parents found"
+    parents[0].click()
 
 
 @step("[voicemail] I use the keypad to filter the list of contacts")
@@ -113,57 +111,70 @@ def voicemail__my_phone_calls_the_voicemail_sender(context):
     context.softphone.wait_for_call_status('call', user_view.call_status_wait)
 
 
-@step("[voicemail] the new voicemail is no longer listed")
+@step('[voicemail] the new voicemail is no longer listed as "{vm_type}"')
 @fake
-def voicemail__the_new_voicemail_is_no_longer_listed(context):
-    sleep(10)
-    parents = voicemail_view.get_top_vm_parents()
-    if len(parents) > 0:
-        caller_name = voicemail_view.find_named_sub_element(parents[0], "CallerName").text
-        caller_number = voicemail_view.find_named_sub_element(parents[0], "CallerNumber").text
-        vm_duration = voicemail_view.find_named_sub_element(parents[0], "VmDuration").text
-        context.make_assertion("First VM item does not match new VM", True, (
-            context.new_vm_text["CallerName"] != caller_name
-            or context.new_vm_text["CallerNumber"] != caller_number
-            or context.new_vm_text["VmDuration"] != vm_duration))
-
-
-@step("[voicemail] the new voicemail is the first \"{vm_type}\" item listed")
-@fake
-def voicemail__the_new_voicemail_is_the_first_vmtype_item_listed(context, vm_type):
+def voicemail__the_new_voicemail_is_no_longer_listed(context, vm_type):
     start_time = time()
     timeout = 60
     vms_visible = []
+    # wait timeout seconds for the new VM to disappear
+    # if it's not the NEW tab, we haven't recorded whether or not there were already VMS (SAVED or TRASH) so:
+    #     - if there are no VMs visible, the step passes (break the while loop)
+    #     - if there is at least one VM visible:
+    #           - if duration matches the new VM, keep waiting until timeout (continue the while loop)
+    #           - else  the step passes (break the while loop)
+    # if it's the NEW tab, we have a list of existing VM texts, so:
+    #     - if there are no VMs visible:
+    #           - if the list of existing VMs is not empty, it's an error, the visible list should never be empty
+    #           - otherwise the step passes (break the while loop)
+    #     - if there is at least one VM visible:
+    #           - if the duration doesn't match the new VM's duration, the step passes (break the while loop)
+    #           - else keep waiting (continue the while loop)
+    context.top_vm = None
     while time() - start_time < timeout:
         vms_visible = voicemail_view.get_top_vm_parents()
-        if len(vms_visible):
-            if vm_type != "NEW":
+        if vm_type != "NEW":
+            if len(vms_visible) == 0:
                 break
-            if len(vms_visible) > 1 and voicemail_view.find_named_sub_element(
-                    vms_visible[1], "VmDuration").text == context.existing_new_vm_texts[0]["VmDuration"]:
+            else:
+                context.top_vm = vms_visible[0]
+                top_duration = voicemail_view.find_named_sub_element(vms_visible[0], 'VmDuration').text
+                if top_duration == context.new_vm_duration:
+                    continue
                 break
+        else:
+            if len(vms_visible) == 0:
+                assert len(context.existing_new_vm_texts) == 0, "unexpected empty NEW VM list"
+                break
+            else:
+                top_duration = voicemail_view.find_named_sub_element(vms_visible[0], 'VmDuration').text
+                if top_duration != context.new_vm_duration:
+                    break
+                continue
     else:
-        assert False, "New voicemail did not appear at top of %s list in %s seconds" % (vm_type, timeout)
-    context.top_vm = vms_visible[0]
-    if vm_type == "NEW":
-        vm_texts = []
-        for vm in vms_visible:
-            vm_texts.append({
-                "CallerName": voicemail_view.find_named_sub_element(vm, "CallerName").text,
-                "CallerNumber": voicemail_view.find_named_sub_element(vm, "CallerNumber").text,
-                "CalledTime": voicemail_view.find_named_sub_element(vm, "CalledTime").text,
-                "VmDuration": voicemail_view.find_named_sub_element(vm, "VmDuration").text
-            })
-        context.new_vm_text = vm_texts[0]
-        expect_name = cfg.site["DefaultSoftphoneUser"]
-        got_name = context.new_vm_text["CallerName"]
-        context.make_assertion("first CallerName", expect_name, got_name)
-        for i in range(len(vms_visible) - 1):
-            # CalledTime changes since existing vms were checked so don't compare those values
-            for text_name in "CallerName", "CallerNumber", "VmDuration":
-                expect_name = context.existing_new_vm_texts[i][text_name]
-                got_name = vm_texts[i + 1][text_name]
-                context.make_assertion("Index %d: %s" % (i, text_name), expect_name, got_name)
+        assert False, "New voicemail did not disappear from top of %s list in %s seconds" % (vm_type, timeout)
+
+
+@step("[voicemail] the new voicemail is the first \"{category}\" item listed")
+@fake
+def voicemail__the_new_voicemail_is_the_first_vmtype_item_listed(context, category):
+    start_time = time()  # compare both timeouts to this start time
+    api_timeout = 30
+    view_timeout = 60
+    # wait timeout seconds for the new VM to appear in both the VM metadata and on the ePhone7 display
+    while time() - start_time < api_timeout:
+        metadata = get_vm_metadata('R2d2User', category)
+        if metadata[0]['vmid'] != context.existing_vm_metadata[category.lower()][0]['vmid']:
+            break
+    else:
+        raise Ux('New voicemail not reported by vvm API within %d seconds' % api_timeout)
+    context.new_vmid = metadata[0]['vmid']
+    while time() - start_time < view_timeout:
+        vm_displayed_texts = voicemail_view.get_top_vm_texts()
+        if voicemail_view.vm_match_all(vm_displayed_texts, metadata):
+            break
+    else:
+        assert False, "New voicemail did not appear at top of %s list in %s seconds" % (category, view_timeout)
 
 
 @step("[voicemail] the voicemail audio plays back")

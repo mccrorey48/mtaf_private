@@ -29,6 +29,7 @@ def before_all(context):
     context.is_substep = False
     context.run_substep = run_substep(context)
     context.make_assertion = make_assertion(context)
+    context.existing_vm_metadata = {}
     tags = str(context.config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
         base_view.open_appium('nolaunch', force=True, timeout=60)
@@ -71,7 +72,7 @@ def after_scenario(context, scenario):
         if scenario.status == 'failed':
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             screenshot_path = base_view.get_screenshot_as_png('exception-%s' % timestamp, cfg.test_screenshot_folder,
-                                                              scale=0.2)
+                                                              scale=0.5)
             substeps += 'screenshot = %s\n' % screenshot_path
     logging.pop_msg_src()
 

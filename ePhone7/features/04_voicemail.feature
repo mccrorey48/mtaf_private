@@ -10,7 +10,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  I receive a new voicemail
     Then  [voicemail] the new voicemail is the first "NEW" item listed
 
-  @regression
+  @regression @wip
   Scenario: I listen to a selected new voicemail
     When  [voicemail] I touch the top voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -30,7 +30,7 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Delete icon
     Then  [voicemail] the voicemail detail window disappears
-    And   [voicemail] the new voicemail is no longer listed
+    And   [voicemail] the new voicemail is no longer listed as "NEW"
 
   @regression
   Scenario: I save a new voicemail
@@ -38,7 +38,7 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
-    And   [voicemail] the new voicemail is no longer listed
+    And   [voicemail] the new voicemail is no longer listed as "NEW"
     When  I touch the "SAVED" tab
     Then  [voicemail] the new voicemail is the first "SAVED" item listed
 
@@ -48,7 +48,7 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
-    And   [voicemail] the new voicemail is no longer listed
+    And   [voicemail] the new voicemail is no longer listed as "NEW"
     When  I touch the "SAVED" tab
     Then  [voicemail] the new voicemail is the first "SAVED" item listed
     When  [voicemail] I touch the top voicemail element
@@ -61,7 +61,7 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
-    And   [voicemail] the new voicemail is no longer listed
+    And   [voicemail] the new voicemail is no longer listed as "NEW"
     When  I touch the "SAVED" tab
     Then  [voicemail] the new voicemail is the first "SAVED" item listed
     When  [voicemail] I touch the top voicemail element
@@ -76,14 +76,14 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
-    And   [voicemail] the new voicemail is no longer listed
+    And   [voicemail] the new voicemail is no longer listed as "NEW"
     When  I touch the "SAVED" tab
     Then  [voicemail] the new voicemail is the first "SAVED" item listed
     When  [voicemail] I touch the top voicemail element
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Delete icon
     Then  [voicemail] the voicemail detail window disappears
-    And   [voicemail] the new voicemail is no longer listed
+    And   [voicemail] the new voicemail is no longer listed as "SAVED"
 
   @regression
   Scenario: I move a voicemail from the trash list to the saved list
@@ -91,14 +91,14 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Delete icon
     Then  [voicemail] the voicemail detail window disappears
-    And   [voicemail] the new voicemail is no longer listed
+    And   [voicemail] the new voicemail is no longer listed as "NEW"
     When  I touch the "TRASH" tab
     Then  [voicemail] the new voicemail is the first "TRASH" item listed
     When  [voicemail] I touch the top voicemail element
     Then  [voicemail] a voicemail detail window appears
     When  [voicemail] I touch the Save icon
     Then  [voicemail] the voicemail detail window disappears
-    And   [voicemail] the new voicemail is no longer listed
+    And   [voicemail] the new voicemail is no longer listed as "TRASH"
     When  I touch the "SAVED" tab
     Then  [voicemail] the new voicemail is the first "SAVED" item listed
 

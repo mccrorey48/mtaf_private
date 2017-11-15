@@ -1,11 +1,14 @@
+from time import sleep, time
+
 from behave import *
-from ePhone7.views import *
-from lib.wrappers import fake
-from ePhone7.utils.get_vmids import get_vmids, vmid_count_incremented
-from ePhone7.config.configure import cfg
-from lib.user_exception import UserException as Ux
-from time import sleep
+
 import lib.logging_esi as logging
+from ePhone7.config.configure import cfg
+from ePhone7.utils.vvm_microservice import get_vmids
+from ePhone7.views import *
+from lib.user_exception import UserException as Ux
+from lib.wrappers import fake
+
 log = logging.get_logger('esi.active_steps')
 
 
@@ -123,8 +126,13 @@ def activecall__the_buttons_are_w_pixels_wide_and_h_pixels_high(context, w, h):
 def activecall__the_caller_leaves_a_message_and_hangs_up(context):
     user_view.caller_leaves_voicemail()
     user_view.caller_ends_received_call()
-    sleep(10)
-    assert vmid_count_incremented(cfg.site['DefaultForwardAccount'], 'new', context.vmid_count)
+    start_time = time()
+    timeout = 30
+    while time() - start_time < timeout:
+        if len(get_vmids()) > context.vmid_count:
+            break
+    else:
+        raise Ux('vmid count not incremented before %s second timeout' % timeout)
 
 
 @step("[active_call] the Coworkers tab is selected")

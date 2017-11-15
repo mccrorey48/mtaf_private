@@ -31,13 +31,13 @@ class AutomationHomePage1(BasePage):
     # def method_missing(self, what):
     #     print "No %s here!"%what
 
-    # def __getattr__(self, method_name):
+    # def __getattr__(self, get_age_text):
     #     def get(self, **kwargs):
     #         print self.method_dictionary
-    #         if method_name in self.method_dictionary:
+    #         if get_age_text in self.method_dictionary:
     #             print("inside if")
     #             return get.__get__(self)
     #         else:
     #             print("inside else")
     #             # If the method isn't in our dictionary, act normal.
-    #             raise AttributeError, method_name
+    #             raise AttributeError, get_age_text

@@ -1,9 +1,8 @@
 import re
 import lib.logging_esi
 from lib.wrappers import Trace
+from datetime import datetime, timedelta
 
-
-from lib.user_exception import UserException as Ux
 
 path_by_abbrev = {
     "": "",
@@ -65,6 +64,45 @@ def expand_zpath(zpath):
             new_zpath += get_path(tokens.pop(0))
     return new_zpath
 
+
+def get_age_range_minutes(display_age, delta_minutes=2):
+    # analyze the displayed vm age and return a min and max age (in minutes)
+    # that would match the age of the timestamp in the vm metadata "dateRecorded" field
+    min_age = 0
+    max_age = 0
+    if display_age.endswith(' minutes ago') or display_age == '1 minute ago':
+        age = int(display_age.split()[0])
+        min_age = age
+        max_age = age
+    elif display_age.endswith(' hours ago') or display_age == '1 hour ago':
+        age = int(display_age.split()[0]) * 60
+        min_age = age
+        max_age = age + 59
+    elif display_age == 'Yesterday':
+        now = datetime.now()
+        midnight = datetime(now.year, now.month, now.day)
+        oldest = midnight - timedelta(days=1)
+        newest = midnight - timedelta(minutes=1)
+        min_age = int((now - newest).total_seconds())/60
+        max_age = int((now - oldest).total_seconds())/60
+    elif display_age.endswith(' days ago'):
+        days = int(display_age.split()[0])
+        now = datetime.now()
+        midnight = datetime(now.year, now.month, now.day)
+        oldest = midnight - timedelta(days=days)
+        newest = midnight - timedelta(days=days - 1, minutes=1)
+        min_age = int((now - newest).total_seconds())/60
+        max_age = int((now - oldest).total_seconds())/60
+    else:
+        date = datetime.strptime(display_age, '%b %d, %Y')
+        now = datetime.now()
+        midnight = datetime(now.year, now.month, now.day)
+        days = (now - date).days
+        oldest = midnight - timedelta(days=days)
+        newest = midnight - timedelta(days=days - 1, minutes=1)
+        min_age = int((now - newest).total_seconds())/60
+        max_age = int((now - oldest).total_seconds())/60
+    return max(min_age - delta_minutes, 0), max_age + delta_minutes
 
 
 mock_log = lib.logging_esi.get_logger('mock_element')

@@ -12,7 +12,7 @@ for fname in glob('ePhone7/features/*.feature'):
 
 
 pass
-# mock_detector = MockDetector('lib/lib_test/features/steps', fake_tag=False)
+# mock_detector = MockDetector('lib/test/features/steps', fake_tag=False)
 # steps = [
 #         'A fake step',
 #         'A real step',

@@ -1,14 +1,16 @@
 import re
 from time import sleep, time
 
+from selenium.common.exceptions import WebDriverException
+
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
+from ePhone7.utils.vvm_microservice import *
 from ePhone7.views.user_view import UserView
-from lib.wrappers import Trace
-from lib.user_exception import UserException as Ux
-from ePhone7.utils.get_vmids import get_vmids
 from lib.filters import get_filter
-from selenium.common.exceptions import WebDriverException
+from lib.user_exception import UserException as Ux
+from lib.wrappers import Trace
+from lib.android import get_age_range_minutes
 
 log = logging.get_logger('esi.voicemail_view')
 
@@ -50,6 +52,7 @@ class VoicemailView(UserView):
         self.elems = []
         self.saved_vals = {}
         self.new_vals = {}
+        self.presence_element_names = ['New', 'Saved', 'Trash']
 
     @Trace(log)
     def call_first_vm_caller(self):
@@ -133,6 +136,57 @@ class VoicemailView(UserView):
     def save_first_vm_vals(self):
         for key in self.new_vals:
             self.saved_vals[key] = self.new_vals[key]
+
+    @Trace(log)
+    def get_top_vm_texts(self):
+        top_vm_texts = []
+        parents = self.get_top_vm_parents()
+        for parent in parents:
+            top_vm_texts.append({
+                "CallerName": voicemail_view.find_named_sub_element(parent, "CallerName").text,
+                "CallerNumber": voicemail_view.find_named_sub_element(parent, "CallerNumber").text,
+                "CalledTime": voicemail_view.find_named_sub_element(parent, "CalledTime").text,
+                "VmDuration": voicemail_view.find_named_sub_element(parent, "VmDuration").text
+            })
+        return top_vm_texts
+
+    @Trace(log)
+    def vm_match_all(self, displayed_vm_texts, vm_metadata_all):
+        for i in range(len(displayed_vm_texts)):
+            md = vm_metadata_all[i]
+            log.debug("(vvm api) %s  %s  %s  %s sec" % (md['callerName'], md['callerNumber'],
+                                                                md['dateRecorded'], md['duration']))
+            vm_texts = displayed_vm_texts[i]
+            log.debug('(vm view) %s  %s  %s  %s' % (vm_texts['CallerName'], vm_texts['CallerNumber'],
+                                                            vm_texts['CalledTime'], vm_texts['VmDuration']))
+            # check the name, number and duration for an exact text match
+            if md['callerName'] != vm_texts['CallerName']:
+                log.debug("%s != %s; returning False" % (md['callerName'], vm_texts['CallerName']))
+                return False
+            if md['callerNumber'] != vm_texts['CallerNumber']:
+                log.debug("%s != %s; returning False" % (md['callerNumber'], vm_texts['CallerNumber']))
+                return False
+            # convert the vm_texts['VmDuration'] from "x min, y sec" to the equivalent number of seconds
+            # to compare it to the md['duration'] value
+            terms = vm_texts['VmDuration'].split()
+            if len(terms) == 4 and terms[1] == 'min' and terms[3] == 'sec':
+                vm_text_duration = str(int(terms[0]) * 60 + int(terms[2]))
+            elif len(terms) == 2 and terms[1] == 'sec':
+                vm_text_duration = terms[0]
+            else:
+                raise Ux('VM duration string "%s" has unknown format' % vm_texts['VmDuration'])
+            if md['duration'] != vm_text_duration:
+                log.debug("%s != %s; returning False" % (md['duration'] + ' sec', vm_texts['VmDuration']))
+                return False
+            # check the displayed age against the metadata timestamp by calculating the vm age in minutes from the
+            # metadata timestamp, then comparing it to a calculated valid range of ages (in minutes) represented by the
+            # displayed age text
+            md_age = get_age_minutes(md['dateRecorded'])
+            vm_min_age, vm_max_age = get_age_range_minutes(vm_texts['CalledTime'])
+            if not vm_min_age <= md_age <= vm_max_age:
+                log.debug("vm index %d:  vm_min_age: %d,  md_age: %d,  vm_max_age: %d; returning False")
+                return False
+        return True
 
     @Trace(log)
     def vm_match(self):

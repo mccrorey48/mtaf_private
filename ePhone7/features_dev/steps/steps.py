@@ -1,6 +1,7 @@
 from behave import *
 from ePhone7.views import all_views
 from lib.wrappers import fake
+from ePhone7.utils.vvm_microservice import *
 
 use_step_matcher("re")
 
@@ -47,3 +48,11 @@ def step_impl(context, name):
 def a__with__ptext__appears(context, text):
     assert all_views.base.element_with_text_is_present(text)
 
+
+@step("I see my existing (?P<category>\S+) voicemails")
+@fake
+def step_impl(context, category):
+    displayed_texts = all_views.voicemail.get_top_vm_texts()
+    metadata_all = get_vm_metadata('R2d2User', 'new', ['callerName', 'callerNumber', 'duration', 'dateRecorded'])
+    fail_msg = "visible VM's did not match VM's from vvm API"
+    assert all_views.voicemail.vm_match_all(displayed_texts, metadata_all), fail_msg
