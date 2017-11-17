@@ -53,6 +53,7 @@ re_elem_index = re.compile('([^\[\]]*)(\[[^\]]+\])?')
 
 re_tokens = re.compile(r'\b[a-z]{1,3}\b')
 
+
 def expand_zpath(zpath):
     other = re_tokens.split(zpath)
     tokens = re_tokens.findall(zpath)
@@ -68,9 +69,12 @@ def expand_zpath(zpath):
 def get_age_range_minutes(display_age, delta_minutes=2):
     # analyze the displayed vm age and return a min and max age (in minutes)
     # that would match the age of the timestamp in the vm metadata "dateRecorded" field
-    min_age = 0
-    max_age = 0
-    if display_age.endswith(' minutes ago') or display_age == '1 minute ago':
+    # min_age = 0
+    # max_age = 0
+    if display_age == 'in 0 minutes':
+        min_age = 0
+        max_age = 0
+    elif display_age.endswith(' minutes ago') or display_age == '1 minute ago':
         age = int(display_age.split()[0])
         min_age = age
         max_age = age
@@ -175,7 +179,7 @@ class MockElement:
 
     @staticmethod
     @Trace(mock_log)
-    def find_element_by_id(id):
+    def find_element_by_id(_id):
         return MockElement()
 
     @staticmethod
@@ -195,7 +199,7 @@ class MockElement:
 
     @staticmethod
     @Trace(mock_log)
-    def find_elements_by_id(id):
+    def find_elements_by_id(_id):
         return [MockElement(), MockElement()]
 
 
@@ -283,5 +287,3 @@ class MockDriver:
     @Trace(mock_log)
     def get_screenshot_as_file(filename):
         pass
-
-

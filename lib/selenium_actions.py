@@ -146,6 +146,7 @@ class SeleniumActions(Tc):
         # - "not element_is_present()" is true when timeout expires before exactly one matching element is found;
         # - "element_becomes_not_present()" is true when zero matching elements are found before timeout expires
         start_time = time()
+        poll_interval = 2
         while True:
             if 'parent_key' in locator:
                 parent = self.find_named_element(locator['parent_key'])
@@ -158,6 +159,7 @@ class SeleniumActions(Tc):
             if time() - start_time > timeout:
                 log.debug("timed out after %d seconds" % timeout)
                 return False
+            sleep(2)
 
     @Trace(log)
     def element_becomes_not_present(self, name, timeout=1):

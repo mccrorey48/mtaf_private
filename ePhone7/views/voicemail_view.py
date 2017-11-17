@@ -1,5 +1,6 @@
 import re
 from time import sleep, time
+import datetime
 
 from selenium.common.exceptions import WebDriverException
 
@@ -111,19 +112,18 @@ class VoicemailView(UserView):
             first_name = self.all.CallerName[0].text
             first_number = self.all.CallerNumber[0].text
             first_duration = self.all.VmDuration[0].text
-            if first_name == caller_name and  first_number == caller_number and first_duration == vm_duration:
+            if first_name == caller_name and first_number == caller_number and first_duration == vm_duration:
                 break
         else:
             log.debug("%s seconds timeout reached with no vm match" % timeout)
         return {'CallerName': first_name, 'CallerNumber': first_number, 'VmDuration': first_duration}
-
 
     @Trace(log)
     def first_vm_opened(self):
         self.click_element(self.get_first_vm_parent())
         try:
             self.find_named_element('DeleteButton')
-        except:
+        except BaseException:
             return False
         return True
 
@@ -155,10 +155,10 @@ class VoicemailView(UserView):
         for i in range(len(displayed_vm_texts)):
             md = vm_metadata_all[i]
             log.debug("(vvm api) %s  %s  %s  %s sec" % (md['callerName'], md['callerNumber'],
-                                                                md['dateRecorded'], md['duration']))
+                                                        md['dateRecorded'], md['duration']))
             vm_texts = displayed_vm_texts[i]
             log.debug('(vm view) %s  %s  %s  %s' % (vm_texts['CallerName'], vm_texts['CallerNumber'],
-                                                            vm_texts['CalledTime'], vm_texts['VmDuration']))
+                                                    vm_texts['CalledTime'], vm_texts['VmDuration']))
             # check the name, number and duration for an exact text match
             if md['callerName'] != vm_texts['CallerName']:
                 log.debug("%s != %s; returning False" % (md['callerName'], vm_texts['CallerName']))
@@ -181,7 +181,7 @@ class VoicemailView(UserView):
             # check the displayed age against the metadata timestamp by calculating the vm age in minutes from the
             # metadata timestamp, then comparing it to a calculated valid range of ages (in minutes) represented by the
             # displayed age text
-            md_age = get_age_minutes(md['dateRecorded'])
+            md_age = self.get_age_minutes(md['dateRecorded'])
             vm_min_age, vm_max_age = get_age_range_minutes(vm_texts['CalledTime'])
             if not vm_min_age <= md_age <= vm_max_age:
                 log.debug("vm index %d:  vm_min_age: %d,  md_age: %d,  vm_max_age: %d; returning False")
@@ -271,6 +271,15 @@ class VoicemailView(UserView):
             else:
                 raise Ux("could not scroll to too of vm list")
         return parents
+
+    @staticmethod
+    @Trace(log)
+    def get_age_minutes(timestamp):
+        # timestamp is in format of vm metadata "dateRecorded" field: 'YYYY-MM-DD hh:mm:ss'
+        utcnow = datetime.datetime.utcnow()
+        timestamp_dt = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+        delta = utcnow - timestamp_dt
+        return delta.days * 24 * 60 + delta.seconds / 60
 
 
 voicemail_view = VoicemailView()

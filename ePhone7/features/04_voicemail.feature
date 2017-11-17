@@ -10,7 +10,7 @@ Feature: As a user I want to use and manage my voicemail lists
     When  I receive a new voicemail
     Then  [voicemail] the new voicemail is the first "NEW" item listed
 
-  @regression @wip
+  @regression
   Scenario: I listen to a selected new voicemail
     When  [voicemail] I touch the top voicemail element
     Then  [voicemail] a voicemail detail window appears
@@ -85,7 +85,7 @@ Feature: As a user I want to use and manage my voicemail lists
     Then  [voicemail] the voicemail detail window disappears
     And   [voicemail] the new voicemail is no longer listed as "SAVED"
 
-  @regression
+
   Scenario: I move a voicemail from the trash list to the saved list
     When  [voicemail] I touch the top voicemail element
     Then  [voicemail] a voicemail detail window appears

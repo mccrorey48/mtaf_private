@@ -53,6 +53,7 @@ def a__with__ptext__appears(context, text):
 @fake
 def step_impl(context, category):
     displayed_texts = all_views.voicemail.get_top_vm_texts()
-    metadata_all = get_vm_metadata('R2d2User', 'new', ['callerName', 'callerNumber', 'duration', 'dateRecorded'])
+    metadata_all = context.vvm_microservice.get_vm_metadata('new', ['callerName', 'callerNumber', 'duration',
+                                                                     'dateRecorded'])
     fail_msg = "visible VM's did not match VM's from vvm API"
     assert all_views.voicemail.vm_match_all(displayed_texts, metadata_all), fail_msg

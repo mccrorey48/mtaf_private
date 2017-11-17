@@ -39,8 +39,7 @@ def voicemail__i_can_choose_cancel_or_ok_by_touching_the_corresponding_button(co
 @fake
 def step_impl(context, category):
     vm_displayed_texts = voicemail_view.get_top_vm_texts()
-    metadata = get_vm_metadata('R2d2User', category)
-    context.existing_vm_metadata[category.lower()] = metadata
+    metadata = context.existing_vm_metadata[category.lower()]
     fail_msg = "visible VM's did not match VM's from vvm API"
     assert all_views.voicemail.vm_match_all(vm_displayed_texts, metadata), fail_msg
 
@@ -111,60 +110,43 @@ def voicemail__my_phone_calls_the_voicemail_sender(context):
     context.softphone.wait_for_call_status('call', user_view.call_status_wait)
 
 
-@step('[voicemail] the new voicemail is no longer listed as "{vm_type}"')
+@step('[voicemail] the new voicemail is no longer listed as "{category}"')
 @fake
-def voicemail__the_new_voicemail_is_no_longer_listed(context, vm_type):
+def voicemail__the_new_voicemail_is_no_longer_listed(context, category):
+    category = category.lower()
+    if category == 'trash':
+        category = 'deleted'
     start_time = time()
-    timeout = 60
-    vms_visible = []
+    api_timeout = 30
+    view_timeout = 60
     # wait timeout seconds for the new VM to disappear
-    # if it's not the NEW tab, we haven't recorded whether or not there were already VMS (SAVED or TRASH) so:
-    #     - if there are no VMs visible, the step passes (break the while loop)
-    #     - if there is at least one VM visible:
-    #           - if duration matches the new VM, keep waiting until timeout (continue the while loop)
-    #           - else  the step passes (break the while loop)
-    # if it's the NEW tab, we have a list of existing VM texts, so:
-    #     - if there are no VMs visible:
-    #           - if the list of existing VMs is not empty, it's an error, the visible list should never be empty
-    #           - otherwise the step passes (break the while loop)
-    #     - if there is at least one VM visible:
-    #           - if the duration doesn't match the new VM's duration, the step passes (break the while loop)
-    #           - else keep waiting (continue the while loop)
-    context.top_vm = None
-    while time() - start_time < timeout:
-        vms_visible = voicemail_view.get_top_vm_parents()
-        if vm_type != "NEW":
-            if len(vms_visible) == 0:
-                break
-            else:
-                context.top_vm = vms_visible[0]
-                top_duration = voicemail_view.find_named_sub_element(vms_visible[0], 'VmDuration').text
-                if top_duration == context.new_vm_duration:
-                    continue
-                break
-        else:
-            if len(vms_visible) == 0:
-                assert len(context.existing_new_vm_texts) == 0, "unexpected empty NEW VM list"
-                break
-            else:
-                top_duration = voicemail_view.find_named_sub_element(vms_visible[0], 'VmDuration').text
-                if top_duration != context.new_vm_duration:
-                    break
-                continue
+    while time() - start_time < api_timeout:
+        metadata = context.vvm_microservice.get_vm_metadata(category)
+        if metadata[0]['vmid'] == context.existing_vm_metadata[category][0]['vmid']:
+            break
     else:
-        assert False, "New voicemail did not disappear from top of %s list in %s seconds" % (vm_type, timeout)
+        raise Ux('New voicemail still reported by vvm API as %s after %d seconds' % (category, api_timeout))
+    while time() - start_time < view_timeout:
+        vm_displayed_texts = voicemail_view.get_top_vm_texts()
+        if voicemail_view.vm_match_all(vm_displayed_texts, metadata):
+            break
+    else:
+        assert False, "New voicemail did not disappear from top of %s list in %s seconds" % (category, view_timeout)
 
 
 @step("[voicemail] the new voicemail is the first \"{category}\" item listed")
 @fake
 def voicemail__the_new_voicemail_is_the_first_vmtype_item_listed(context, category):
+    category = category.lower()
+    if category == 'trash':
+        category = 'deleted'
     start_time = time()  # compare both timeouts to this start time
     api_timeout = 30
     view_timeout = 60
     # wait timeout seconds for the new VM to appear in both the VM metadata and on the ePhone7 display
     while time() - start_time < api_timeout:
-        metadata = get_vm_metadata('R2d2User', category)
-        if metadata[0]['vmid'] != context.existing_vm_metadata[category.lower()][0]['vmid']:
+        metadata = context.vvm_microservice.get_vm_metadata(category)
+        if metadata[0]['vmid'] != context.existing_vm_metadata[category][0]['vmid']:
             break
     else:
         raise Ux('New voicemail not reported by vvm API within %d seconds' % api_timeout)
@@ -193,7 +175,8 @@ def voicemail__the_voicemail_audio_plays_back(context):
 @step("[voicemail] the voicemail detail window disappears")
 @fake
 def voicemail__the_voicemail_detail_window_disappears(context):
-    assert voicemail_view.missing.PlaybackStartStop is True, '"PlaybackStartStop" element present after 10 seconds'
+    fail_msg = '"PlaybackStartStop" element present after %s seconds' % voicemail_view.locator_timeout
+    assert voicemail_view.missing.PlaybackStartStop is True, fail_msg
 
 
 @step("[voicemail] the voicemail is also available in the destination contact's new voicemails list")

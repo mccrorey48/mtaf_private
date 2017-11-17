@@ -2,6 +2,7 @@ import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import base_view
 from ePhone7.utils.get_softphone import softphone_manager
+from ePhone7.utils.vvm_microservice import *
 from lib.user_exception import UserException as Ux
 import datetime
 
@@ -29,7 +30,6 @@ def before_all(context):
     context.is_substep = False
     context.run_substep = run_substep(context)
     context.make_assertion = make_assertion(context)
-    context.existing_vm_metadata = {}
     tags = str(context.config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
         base_view.open_appium('nolaunch', force=True, timeout=60)
@@ -41,6 +41,13 @@ def before_feature(context, feature):
     substeps += "feature = %s\n" % feature.name
     logging.push_msg_src('feature')
     log.info('feature.name: %s' % feature.name)
+    if feature.name.lower().find('voicemail') != -1:
+        context.vvm_microservice = VvmMicroservice('R2d2User')
+        context.existing_vm_metadata = {
+            'new': context.vvm_microservice.get_vm_metadata('new'),
+            'saved': context.vvm_microservice.get_vm_metadata('saved'),
+            'deleted': context.vvm_microservice.get_vm_metadata('deleted')
+        }
 
 
 def after_feature(context, feature):
