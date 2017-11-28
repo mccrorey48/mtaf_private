@@ -177,7 +177,7 @@ class VoicemailView(UserView):
                 secs_displayed = int(terms[0])
             else:
                 raise Ux('VM duration string "%s" has unknown format' % vm_texts['VmDuration'])
-            if md['duration'] != secs_displayed:
+            if not md['duration'] - 2 <= secs_displayed <= md['duration'] + 2:
                 log.debug("%d sec != %s; returning False" % (md['duration'], vm_texts['VmDuration']))
                 return False
             # check the displayed age against the metadata timestamp by calculating the vm age in minutes from the
