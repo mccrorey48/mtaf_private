@@ -194,48 +194,26 @@ prune_logs('log/*logcat_*.log', 5)
 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
 # file logging for info, debug, trace and warn levels, each with its own output file
 base_warn_fname = 'log/%s_warn.log' % root_name
-extended_warn_fname = 'log/%s_warn_%s.log' % (root_name, timestamp)
 base_info_fname = 'log/%s_info.log' % root_name
-extended_info_fname = 'log/%s_info_%s.log' % (root_name, timestamp)
 base_trace_fname = 'log/%s_trace.log' % root_name
-extended_trace_fname = 'log/%s_trace_%s.log' % (root_name, timestamp)
 base_debug_fname = 'log/%s_debug.log' % root_name
 extended_debug_fname = 'log/%s_debug_%s.log' % (root_name, timestamp)
-fh = FileHandler(extended_warn_fname, mode='w', encoding=None, delay=False)
+fh = FileHandler(base_warn_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(WARN)
 _log.addHandler(fh)
-fh = FileHandler(extended_info_fname, mode='w', encoding=None, delay=False)
+fh = FileHandler(base_info_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(INFO)
 _log.addHandler(fh)
-fh = FileHandler(extended_trace_fname, mode='w', encoding=None, delay=False)
+fh = FileHandler(base_trace_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(TRACE)
 _log.addHandler(fh)
+fh = FileHandler(base_debug_fname, mode='w', encoding=None, delay=False)
+fh.setLevel(DEBUG)
 fh = FileHandler(extended_debug_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(DEBUG)
 _log.addHandler(fh)
-if platform.system() == 'Linux':
-    try:
-        remove(base_warn_fname)
-        remove(base_info_fname)
-        remove(base_trace_fname)
-        remove(base_debug_fname)
-    except OSError:
-        pass
-    link(extended_warn_fname, base_warn_fname)
-    link(extended_info_fname, base_info_fname)
-    link(extended_trace_fname, base_trace_fname)
-    link(extended_debug_fname, base_debug_fname)
 # console logging for info level
 console_handler = StreamHandler()
 console_handler.setLevel(INFO)
 _log.addHandler(console_handler)
 push_msg_src('logging_init')
-
-
-if __name__ == '__main__':
-    log = get_logger('esi.mm')
-    log.info("hello")
-    push_msg_src('just a test')
-    log.info("world")
-    pop_msg_src()
-    log.info("goodbye")
