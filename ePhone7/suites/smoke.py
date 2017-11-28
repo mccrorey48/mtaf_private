@@ -1,7 +1,7 @@
 from os import path, makedirs
 
 import lib.logging_esi as logging_esi
-from ePhone7.utils.vvm_microservice import get_vmids
+from ePhone7.utils.e7_microservices import get_vmids
 
 logging_esi.console_handler.setLevel(logging_esi.INFO)
 log = logging_esi.get_logger('esi.smoke')

@@ -4,10 +4,10 @@ from behave import *
 
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
-from ePhone7.utils.vvm_microservice import get_vmids
 from ePhone7.views import *
 from lib.user_exception import UserException as Ux
 from lib.wrappers import fake
+from ePhone7.utils.e7_microservices import get_vmids
 
 log = logging.get_logger('esi.active_steps')
 
@@ -72,7 +72,7 @@ def activecall__i_see_the_keypad(context):
 def activecall__i_select_a_coworkers_mailbox(context):
     # before forwarding the call to the coworker, count the voicemails in that mailbox
     # so we can verify later that a new one has been added
-    context.vmid_count = len(get_vmids(cfg.site['DefaultForwardAccount'], 'new'))
+    context.vmid_count = len(get_vmids('DefaultForwardAccount', 'new'))
     active_call_view.touch_default_forward_account_name()
 
 
@@ -127,12 +127,12 @@ def activecall__the_caller_leaves_a_message_and_hangs_up(context):
     user_view.caller_leaves_voicemail()
     user_view.caller_ends_received_call()
     start_time = time()
-    timeout = 30
-    while time() - start_time < timeout:
-        if len(get_vmids()) > context.vmid_count:
+    api_timeout = 60
+    while time() - start_time < api_timeout:
+        if len(get_vmids('DefaultForwardAccount', 'new')) > context.vmid_count:
             break
     else:
-        raise Ux('vmid count not incremented before %s second timeout' % timeout)
+        raise Ux('vmid count not incremented before %s second timeout' % api_timeout)
 
 
 @step("[active_call] the Coworkers tab is selected")
@@ -187,3 +187,5 @@ def activecall__the_record_button_is_white(context):
 @fake
 def activecall__the_transfer_dialog_appears(context):
     assert active_call_view.transfer_dialog_is_present()
+
+

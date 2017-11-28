@@ -338,7 +338,7 @@ class TestGui(Frame):
     def create_bottom_frame(self):
         bottom_frame = BottomFrame(self, bg="tan")
         bottom_frame.grid_columnconfigure(0, weight=1)
-        bottom_frame.mk_canvas = Button(bottom_frame, text="screenshot", command=self.make_canvas)
+        bottom_frame.mk_canvas = Button(bottom_frame, text="screenshot", command=self.create_cwin)
         bottom_frame.mk_canvas.grid(row=0, column=0, sticky='e', padx=2, pady=2)
         # self.appium_btns.append(bottom_frame.mk_canvas)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", command=self.close_appium_and_quit)
@@ -367,7 +367,7 @@ class TestGui(Frame):
     def show_zpaths(self):
         pass
 
-    def make_canvas(self):
+    def create_cwin(self):
         self.bottom_frame.mk_canvas.configure(state=DISABLED)
         if self.appium_is_open:
             self.get_screenshot()
@@ -375,6 +375,11 @@ class TestGui(Frame):
         x = self.winfo_rootx()
         y = self.winfo_rooty()
         w = self.winfo_width()
+        if self.cwin is not None:
+            self.destroy_loc_frames()
+            self.cwin.destroy()
+            self.cwin = None
+        self.update_idletasks()
         self.cwin = Toplevel(root, bg='cyan')
         self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
         self.cwin.resizable(width=False, height=True)
@@ -397,19 +402,29 @@ class TestGui(Frame):
         self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
         self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
         self.cwin.rowconfigure(0, weight=1)
-        self.update_loc_frames()
+        self.create_loc_frames()
+        self.bottom_frame.mk_canvas.configure(state=NORMAL)
 
     def update_loc_frames(self):
+        self.destroy_loc_frames()
+        self.create_loc_frames()
+
+    def destroy_loc_frames(self):
         if self.id_frame is not None:
             for _id in self.id_frame_btns:
                 self.id_frame_btns[_id].grid_forget()
             self.id_frame_btns = {}
             self.id_frame.grid_forget()
+            self.id_frame = None
         if self.zpath_frame is not None:
             for zpath in self.zpath_frame_btns:
                 self.zpath_frame_btns[zpath].grid_forget()
             self.zpath_frame_btns = {}
             self.zpath_frame.grid_forget()
+            self.zpath_frame = None
+
+    def create_loc_frames(self):
+        self.destroy_loc_frames()
         self.id_frame = VerticalScrolledFrame(self.cwin)
         self.id_frame_btns = {}
         self.id_frame.grid(column=1, row=0, sticky='n')
@@ -495,7 +510,7 @@ class TestGui(Frame):
         self.zpath_frame = None
         self.drag_polygon = None
         self.cwin.destroy()
-        self.bottom_frame.mk_canvas.configure(state=NORMAL)
+        # self.bottom_frame.mk_canvas.configure(state=NORMAL)
 
     def create_log_frame(self):
         log_frame = LogFrame(self)

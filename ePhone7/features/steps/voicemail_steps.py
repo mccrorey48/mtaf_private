@@ -1,9 +1,9 @@
 from behave import *
 from ePhone7.views import *
-from lib.wrappers import fake
 from ePhone7.config.configure import cfg
+from lib.wrappers import fake
 from ePhone7.utils.get_softphone import get_softphone
-from ePhone7.utils.vvm_microservice import *
+from ePhone7.utils.e7_microservices import *
 from time import time
 import lib.logging_esi
 from lib.filters import get_filter
@@ -32,12 +32,19 @@ def voicemail__a_voicemail_detail_window_appears(context):
 @step("[voicemail] I can choose Cancel or OK by touching the corresponding button")
 @fake
 def voicemail__i_can_choose_cancel_or_ok_by_touching_the_corresponding_button(context):
-    pass
+    assert voicemail_view.OkForwardButton is not None, '"OkForwardButton" element not present after 10 seconds'
+    assert voicemail_view.CancelForwardButton is not None, '"CancelForwardButton" element not present after 10 seconds'
+
+
+@step("[voicemail] I close the voicemail detail window")
+@fake
+def voicemail__i_close_the_voicemail_detail_window(context):
+    voicemail_view.VmDetailHeader.click()
 
 
 @step("[voicemail] I see my existing {category} voicemails")
 @fake
-def step_impl(context, category):
+def voicemail__i_see_my_existing_category_voicemails(context, category):
     vm_displayed_texts = voicemail_view.get_top_vm_texts()
     metadata = context.existing_vm_metadata[category.lower()]
     fail_msg = "visible VM's did not match VM's from vvm API"
@@ -55,7 +62,7 @@ def voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(conte
 @step("[voicemail] I touch a contact element")
 @fake
 def voicemail__i_touch_a_contact_element(context):
-    voicemail_view.all.SearchItem[0].click()
+    voicemail_view.all.SearchNumber[0].click()
 
 
 @step("[voicemail] I touch the Delete icon")
@@ -95,11 +102,11 @@ def voicemail__i_touch_the_top_voicemail_element(context):
 @step("[voicemail] I use the keypad to filter the list of contacts")
 @fake
 def voicemail__i_use_the_keypad_to_filter_the_list_of_contacts(context):
-    frame = voicemail_view.ForwardList
+    frame = voicemail_view.all.ForwardList[0]
     items = filter(get_filter('within_frame', frame=frame), voicemail_view.all.SearchItem)
     assert len(items) > 1, "Expected number of search items > 1, got %d" % len(items)
-    voicemail_view.ForwardText.send_keys(cfg.site['Users'][cfg.site['DefaultForwardAccount']['UserId']])
-    frame = voicemail_view.ForwardList
+    voicemail_view.ForwardText.send_keys(cfg.site['Users'][cfg.site['DefaultForwardAccount']]['UserId'])
+    frame = voicemail_view.all.ForwardList[0]
     items = filter(get_filter('within_frame', frame=frame), voicemail_view.all.SearchItem)
     assert len(items) == 1, "Expected number of search items to be 1, got %d" % len(items)
 
@@ -112,7 +119,7 @@ def voicemail__my_phone_calls_the_voicemail_sender(context):
 
 @step('[voicemail] the new voicemail is no longer listed as "{category}"')
 @fake
-def voicemail__the_new_voicemail_is_no_longer_listed(context, category):
+def voicemail__the_new_voicemail_is_no_longer_listed_as_category(context, category):
     category = category.lower()
     if category == 'trash':
         category = 'deleted'
@@ -121,7 +128,7 @@ def voicemail__the_new_voicemail_is_no_longer_listed(context, category):
     view_timeout = 60
     # wait timeout seconds for the new VM to disappear
     while time() - start_time < api_timeout:
-        metadata = context.vvm_microservice.get_vm_metadata(category)
+        metadata = get_e7_microservices('R2d2User').get_vm_metadata(category)
         if metadata[0]['vmid'] == context.existing_vm_metadata[category][0]['vmid']:
             break
     else:
@@ -136,7 +143,7 @@ def voicemail__the_new_voicemail_is_no_longer_listed(context, category):
 
 @step("[voicemail] the new voicemail is the first \"{category}\" item listed")
 @fake
-def voicemail__the_new_voicemail_is_the_first_vmtype_item_listed(context, category):
+def voicemail__the_new_voicemail_is_the_first_category_item_listed(context, category):
     category = category.lower()
     if category == 'trash':
         category = 'deleted'
@@ -145,7 +152,7 @@ def voicemail__the_new_voicemail_is_the_first_vmtype_item_listed(context, catego
     view_timeout = 60
     # wait timeout seconds for the new VM to appear in both the VM metadata and on the ePhone7 display
     while time() - start_time < api_timeout:
-        metadata = context.vvm_microservice.get_vm_metadata(category)
+        metadata = get_e7_microservices('R2d2User').get_vm_metadata(category)
         if metadata[0]['vmid'] != context.existing_vm_metadata[category][0]['vmid']:
             break
     else:
@@ -182,16 +189,32 @@ def voicemail__the_voicemail_detail_window_disappears(context):
 @step("[voicemail] the voicemail is also available in the destination contact's new voicemails list")
 @fake
 def voicemail__the_voicemail_is_also_available_in_the_destination_contacts_new_voicemails_list(context):
-    pass
+    start_time = time()
+    api_timeout = 60
+    while time() - start_time < api_timeout:
+        if get_vmids(cfg.site['DefaultForwardAccount'], 'new')[0] == context.new_vmid:
+            break
+        else:
+            assert False, "Forwarded VM did not appear as new in forward account metadata after 60 seconds"
 
 
 @step("[voicemail] the voicemail is still the first item in the view")
 @fake
 def voicemail__the_voicemail_is_still_the_first_item_in_the_view(context):
-    pass
+    metadata = get_e7_microservices('R2d2User').get_vm_metadata('new')
+    assert metadata[0]['vmid'] == context.new_vmid, "first VM in list changed, expected it to stay the same"
+    start_time = time()
+    view_timeout = 60
+    while time() - start_time < view_timeout:
+        vm_displayed_texts = voicemail_view.get_top_vm_texts()
+        if voicemail_view.vm_match_all(vm_displayed_texts, metadata):
+            break
+    else:
+        assert False, "Displayed voicemails do not match metadata after %s seconds" % view_timeout
 
 
 @step("[voicemail] the Voicemail view appears")
 @fake
 def voicemail__the_voicemail_view_appears(context):
     pass
+

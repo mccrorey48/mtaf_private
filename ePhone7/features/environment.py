@@ -2,7 +2,7 @@ import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import base_view
 from ePhone7.utils.get_softphone import softphone_manager
-from ePhone7.utils.vvm_microservice import *
+from ePhone7.utils.e7_microservices import get_e7_microservices
 from lib.user_exception import UserException as Ux
 import datetime
 
@@ -42,11 +42,11 @@ def before_feature(context, feature):
     logging.push_msg_src('feature')
     log.info('feature.name: %s' % feature.name)
     if feature.name.lower().find('voicemail') != -1:
-        context.vvm_microservice = VvmMicroservice('R2d2User')
+        e7_microservices = get_e7_microservices('R2d2User')
         context.existing_vm_metadata = {
-            'new': context.vvm_microservice.get_vm_metadata('new'),
-            'saved': context.vvm_microservice.get_vm_metadata('saved'),
-            'deleted': context.vvm_microservice.get_vm_metadata('deleted')
+            'new': e7_microservices.get_vm_metadata('new'),
+            'saved': e7_microservices.get_vm_metadata('saved'),
+            'deleted': e7_microservices.get_vm_metadata('deleted')
         }
 
 

@@ -15,10 +15,8 @@ import argparse
 from os import path, getenv, mkdir
 from ePhone7.utils.versions import *
 from shutil import copyfile
-from bson.binary import Binary, STANDARD
-from bson.codec_options import CodecOptions
+from bson.binary import Binary
 from cStringIO import StringIO
-from PIL import Image
 
 log = logging.get_logger('esi.run_features')
 

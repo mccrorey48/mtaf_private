@@ -29,15 +29,6 @@ def i_touch_the_ptextptail(context, text, tail):
         all_views.base.touch_element_with_text(text)
 
 
-@step('the "(?P<view>\S+)" view (?P<mode>dis)?appears')
-@fake
-def step_impl(context, view, mode):
-    if mode == 'dis':
-        context.run_substep('the "%s" view is not present' % view)
-    else:
-        context.run_substep('the "%s" view is present' % view)
-
-
 @step('the "(?P<view>\S+)" view is (?P<mode>\S*)\s?present')
 @fake
 def the_pviews_view_is_pmodesspresent(context, view, mode):
@@ -47,6 +38,15 @@ def the_pviews_view_is_pmodesspresent(context, view, mode):
         assert all_views[view].becomes_present(), "%s view is not present"
 
 
+@step('the "(?P<view>\S+)" view (?P<mode>dis)?appears')
+@fake
+def the_pviews_view_pmodedisappears(context, view, mode):
+    if mode == 'dis':
+        context.run_substep('the "%s" view is not present' % view)
+    else:
+        context.run_substep('the "%s" view is present' % view)
+
+
 @step("the (?P<view>\S+) view (?P<name>\S+) element is (?P<mode>\S*)\s?present")
 @fake
 def the_pviews_view_pnames_element_is_pmodesspresent(context, view, name, mode):
@@ -54,3 +54,5 @@ def the_pviews_view_pnames_element_is_pmodesspresent(context, view, name, mode):
         assert all_views[view][name] is None, '%s view element "%s" is present' % (view, name)
     else:
         assert all_views[view][name], '%s view element "%s" is not present' % (view, name)
+
+

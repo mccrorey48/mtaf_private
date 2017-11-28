@@ -6,7 +6,7 @@ from selenium.common.exceptions import WebDriverException
 
 import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
-from ePhone7.utils.vvm_microservice import *
+from ePhone7.utils.e7_microservices import *
 from ePhone7.views.user_view import UserView
 from lib.filters import get_filter
 from lib.user_exception import UserException as Ux
@@ -21,6 +21,7 @@ class VoicemailView(UserView):
         "CalledTime": {"by": "id", "value": "com.esi_estech.ditto:id/calledTime"},
         "CallerName": {"by": "id", "value": "com.esi_estech.ditto:id/callerName"},
         "CallerNumber": {"by": "id", "value": "com.esi_estech.ditto:id/callerNumber"},
+        "CancelForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_dialog_cancel_button"},
         "DeleteButton": {"by": "id", "value": "com.esi_estech.ditto:id/delete_voicemail"},
         "EndCall": {"by": "uia_text", "value": "END CALL"},
         "ForwardDialogTitle": {"by": "id", "value": "com.esi_estech.ditto:id/forward_dialog_title"},
@@ -33,7 +34,8 @@ class VoicemailView(UserView):
         "PlaybackStartStop": {"by": "id", "value": "com.esi_estech.ditto:id/playback_start_stop"},
         "SaveButton": {"by": "id", "value": "com.esi_estech.ditto:id/save_voicemail"},
         "Saved": {"by": "zpath", "value": "//ll/bt[@text='SAVED']"},
-        "SearchItem": {"by": "id", "value": "com.esi_estech.ditto:id/search_item_layout"},
+        "SearchItem": {"by": "id", "value": "com.esi_estech.ditto:id/contact_search_item_layout"},
+        "SearchNumber": {"by": "id", "value": "com.esi_estech.ditto:id/search_number"},
         "ShareButton": {"by": "id", "value": "com.esi_estech.ditto:id/share_voicemail"},
         "Trash": {"by": "zpath", "value": "//ll/bt[@text='TRASH']"},
         "VmButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_button"},
@@ -170,13 +172,13 @@ class VoicemailView(UserView):
             # to compare it to the md['duration'] value
             terms = vm_texts['VmDuration'].split()
             if len(terms) == 4 and terms[1] == 'min' and terms[3] == 'sec':
-                vm_text_duration = str(int(terms[0]) * 60 + int(terms[2]))
+                secs_displayed = int(terms[0]) * 60 + int(terms[2])
             elif len(terms) == 2 and terms[1] == 'sec':
-                vm_text_duration = terms[0]
+                secs_displayed = int(terms[0])
             else:
                 raise Ux('VM duration string "%s" has unknown format' % vm_texts['VmDuration'])
-            if md['duration'] != vm_text_duration:
-                log.debug("%s != %s; returning False" % (md['duration'] + ' sec', vm_texts['VmDuration']))
+            if md['duration'] != secs_displayed:
+                log.debug("%d sec != %s; returning False" % (md['duration'], vm_texts['VmDuration']))
                 return False
             # check the displayed age against the metadata timestamp by calculating the vm age in minutes from the
             # metadata timestamp, then comparing it to a calculated valid range of ages (in minutes) represented by the
