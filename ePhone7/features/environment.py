@@ -92,7 +92,7 @@ def before_step(context, step):
         substeps += "substep = %s" % step.name
     else:
         substeps += "step = %s\n" % step.name
-    logging.push_msg_src('    step: %s' % step.name[:30])
+    logging.push_msg_src('    step: %s' % step.name[:40])
     log.info('step.name: %s' % step.name)
 
 

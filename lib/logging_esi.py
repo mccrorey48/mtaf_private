@@ -27,11 +27,9 @@ from contextlib import contextmanager
 from time import sleep, strftime, localtime
 from pymongo import MongoClient
 import re
-import platform
-from os import link, remove
 from lib.prune_logs import prune_logs
 
-msg_len_max = 18
+msg_len_max = 30
 msg_src_stack = []
 msg_src = ''
 root_name = 'esi'
@@ -111,7 +109,7 @@ def set_msg_src(src='', set_linefeed=False):
     msg_fmt = "%%-%ds" % (msg_len_max + 1)
     msg_src = src
     msg_src_formatted = msg_fmt % src
-    format_str = '%%(asctime)s.%%(msecs)03d [%%(name)-25s] %%(levelname)-7s - [%s] %%(message)s' % msg_src_formatted
+    format_str = '%%(asctime)s.%%(msecs)03d [%%(name)-20s] %%(levelname)-5s - [%s] %%(message)s' % msg_src_formatted
     formatter = Formatter(format_str, datefmt='%m/%d/%y %H:%M:%S')
     update_handler_formatters(formatter)
     if set_linefeed:
