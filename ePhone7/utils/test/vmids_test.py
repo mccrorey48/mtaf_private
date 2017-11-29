@@ -35,4 +35,4 @@ def refresh_test():
 # get_all_metadata(e7_microservices)
 # print
 # get_all_metadata(fwd_microservices)
-print get_vmids('Auto TesterC', 'new')
+print get_vmids('R2d2User', 'saved')

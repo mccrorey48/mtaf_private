@@ -41,13 +41,6 @@ def before_feature(context, feature):
     substeps += "feature = %s\n" % feature.name
     logging.push_msg_src('feature')
     log.info('feature.name: %s' % feature.name)
-    if feature.name.lower().find('voicemail') != -1:
-        e7_microservices = get_e7_microservices('R2d2User')
-        context.existing_vm_metadata = {
-            'new': e7_microservices.get_vm_metadata('new'),
-            'saved': e7_microservices.get_vm_metadata('saved'),
-            'deleted': e7_microservices.get_vm_metadata('deleted')
-        }
 
 
 def after_feature(context, feature):
@@ -59,6 +52,13 @@ def before_scenario(context, scenario):
     substeps += "scenario = %s\n" % scenario.name
     logging.push_msg_src('  scenario')
     log.info('scenario.name: %s' % scenario.name)
+    if scenario.feature.name.lower().find('voicemail') != -1:
+        e7_microservices = get_e7_microservices('R2d2User')
+        context.existing_vm_metadata = {
+            'new': e7_microservices.get_vm_metadata('new'),
+            'saved': e7_microservices.get_vm_metadata('saved'),
+            'deleted': e7_microservices.get_vm_metadata('deleted')
+        }
 
 
 def after_scenario(context, scenario):

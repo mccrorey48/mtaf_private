@@ -154,6 +154,8 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def vm_match_all(self, displayed_vm_texts, vm_metadata_all):
+        if len(vm_metadata_all) < len(displayed_vm_texts):
+            raise Ux("VM metadata has fewer elements than displayed_vm_texts")
         for i in range(len(displayed_vm_texts)):
             md = vm_metadata_all[i]
             log.debug("(vvm api) %s  %s  %s  %s sec" % (md['callerName'], md['callerNumber'],
