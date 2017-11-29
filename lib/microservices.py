@@ -77,18 +77,28 @@ class Microservices(object):
             "Content-Type": "application/json"
         }
         path = self.vvm_url + 'vm/metadata/' + category
+        max_tries = 5
         tries = 5
         while tries > 0:
             tries -= 1
             req = requests.get(path, headers=vvm_headers)
-            log.debug("GET %s [%s]" % (path, req.status_code))
-            md_array = req.json()
+            if req.status_code != 200:
+                log.info("GET %s returned %s, %d retries left" % (path, req.status_code, tries))
+                log.info(", %d retries left" % tries)
+                continue
+            try:
+                md_array = req.json()
+            except ValueError as e:
+                log.info('GET %s got ValueError: "%s", %d retries left' % (path, e, tries))
+                continue
             if md_complete(md_array):
                 log.debug("VMID_DEBUG (%d %s vmids)" % (len(md_array), category))
                 for md in md_array:
                     log.debug("VMID_DEBUG %s" % md['vmid'][3:23])
                 return req.json()
-        raise Ux("get_vm_metadata returned incomplete data")
+            else:
+                log.info("get_vm_metadata returned incomplete data, %d retries left" % tries)
+        raise Ux('get_vm_metadata("%s") failed after %d tries' % (category, max_tries))
 
     @Trace(log)
     def get_vm_count(self, category):
