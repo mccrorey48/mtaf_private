@@ -84,6 +84,9 @@ class Microservices(object):
             log.debug("GET %s [%s]" % (path, req.status_code))
             md_array = req.json()
             if md_complete(md_array):
+                log.debug("VMID_DEBUG (%d %s vmids)" % (len(md_array), category))
+                for md in md_array:
+                    log.debug("VMID_DEBUG %s" % md['vmid'][3:23])
                 return req.json()
         raise Ux("get_vm_metadata returned incomplete data")
 
