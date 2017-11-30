@@ -346,7 +346,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
                                             scenario_has_skips, scenario_has_incompletes)
             if scenario['status'] == 'failed':
                 feature_has_fails = True
-                if 'known_bug' in scenario['tags']:
+                if 'known_bug' in scenario['tags'] + feature['tags']:
                     scenario['status'] = 'known_bug'
                     feature_has_known_bug = True
             elif scenario['status'] == 'skipped':
@@ -361,7 +361,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
         del feature['elements']
         feature['status'] = new_status(feature_has_passes, feature_has_fails, feature_has_fakes,
                                        feature_has_skips, feature_has_incompletes)
-        if feature['status'] == 'passed' and feature_has_known_bug:
+        if feature['status'] == 'failed' and feature_has_known_bug:
             feature['status'] = 'known_bug'
         db['features'].insert_one(feature)
         # del feature['start_id']
