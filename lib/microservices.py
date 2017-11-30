@@ -22,16 +22,17 @@ def md_complete(md_array):
 
 def get_microservices(login, password, url=default_url):
     if login not in ms_dict:
-        tries = 2
-        while tries > 0:
-            tries -= 1
+        max_tries = 2
+        tries = 0
+        while tries < max_tries:
+            tries += 1
             try:
                 ms_dict[login] = Microservices(login, password, url)
                 break
             except ValueError:
                 log.warn("ValueError instantiating Microservices - retrying")
         else:
-            raise
+            raise Ux('Microservices failed to start after %s tries' % tries)
     return ms_dict[login]
 
 

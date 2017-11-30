@@ -72,7 +72,7 @@ def activecall__i_see_the_keypad(context):
 def activecall__i_select_a_coworkers_mailbox(context):
     # before forwarding the call to the coworker, count the voicemails in that mailbox
     # so we can verify later that a new one has been added
-    context.vmid_count = len(get_vmids('DefaultForwardAccount', 'new'))
+    context.vmid_count = len(get_vmids(cfg.site['DefaultForwardAccount'], 'new'))
     active_call_view.touch_default_forward_account_name()
 
 
