@@ -2,26 +2,29 @@ import os
 from Tkinter import *
 from ttk import Combobox
 from time import sleep, time
-
+from lib.user_exception import UserException as Ux
 from pyand import ADB
 import lib.logging_esi as logging
-from ePhone7.config.configure import cfg
-from ePhone7.utils.spud_serial import SpudSerial
-from ePhone7.utils.get_softphone import get_softphone
-from ePhone7.utils.usb_enable import usb_enable
-from ePhone7.views import *
-from ePhone7.views.base_view import keycodes
-from lib.user_exception import UserException as Ux
-from ePhone7.utils.get_focused_app import get_focused_app
-from ePhone7.utils.versions import *
 from lib.android import expand_zpath
-from ePhone7.utils.csv.xml_to_csv import xml_to_csv
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
 import json
 from lib.filters import get_filter
 from PIL import Image, ImageTk
-from ePhone7.utils.csv.parse_ids import parse_ids, parse_zpaths
+
+uut = 'ePhone7'
+
+if uut == 'ePhone7':
+    from ePhone7.config.configure import cfg
+    from ePhone7.views import *
+    from ePhone7.utils.get_softphone import get_softphone
+    from ePhone7.views.base_view import keycodes
+    from ePhone7.utils.csv.xml_to_csv import xml_to_csv
+    from ePhone7.utils.csv.parse_ids import parse_ids, parse_zpaths
+    from ePhone7.utils.spud_serial import SpudSerial
+    from ePhone7.utils.usb_enable import usb_enable
+    from ePhone7.utils.get_focused_app import get_focused_app
+    from ePhone7.utils.versions import *
 
 log = logging.get_logger('esi.appium_gui')
 
