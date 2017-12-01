@@ -2,7 +2,7 @@ from lib.fake_detector import FakeDetector
 from glob import glob
 from lib.user_exception import UserException as Ux
 
-fake_detector = FakeDetector('ePhone7/features/steps', fake_tag=True)
+fake_detector = FakeDetector('ePhone7/features/steps', fake_tag=False)
 fake_count = 0
 real_count = 0
 for fname in glob('ePhone7/features/*.feature'):
