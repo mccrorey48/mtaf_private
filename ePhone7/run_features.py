@@ -422,12 +422,8 @@ if __name__ == '__main__':
         parser.add_argument("-s", "--server", type=str, default=mtaf_db_host,
                             help="(optional) specify mongodb server, default vqda1")
         parser.add_argument("-r", "--run_tags", type=str, default='', help="run tags (comma separated list)")
-        parser.add_argument("-o", "--downgrade_aosp", type=str, default='2.3.7',
-                            help="aosp downgrade version (default 2.3.7)")
         parser.add_argument("-O", "--ota_server", type=str, default='alpha',
                             choices=['alpha', 'beta', 'prod'], help="OTA server (default alpha")
-        parser.add_argument("-a", "--downgrade_app", type=str, default='1.3.6',
-                            help="apk downgrade version (default 1.3.6)")
         args = parser.parse_args()
         fake_tag = 'fake' in args.run_tags.split(',')
         fake_detector = FakeDetector(path.join(args.features_directory, "steps"),
@@ -447,15 +443,10 @@ if __name__ == '__main__':
                 'stop': args.stop
             }
             features = run_features(run_configuration)
-        if fake_tag or args.json_file:
-            now = datetime.now()
-            installed_aosp = now.strftime("%d")
-            installed_app = now.strftime("%H-%M-%S")
-        else:
-            installed_aosp, installed_app = get_current_versions(args.ota_server)
-        report_configuration = "site_tag:%s, run_tags:%s, installed_aosp:%s, installed_app:%s" % \
-                               (cfg.site_tag, args.run_tags, installed_aosp, installed_app)
+        installed_aosp, installed_app = get_current_versions(args.ota_server)
+        report_configuration = {'site_tag': cfg.site_tag, 'run_tags': args.run_tags, 'installed_aosp': installed_aosp,
+                                'installed_app': installed_app}
         write_result_to_db(args, report_configuration, fake_detector, features)
-        prune_db('e7_results', args.server, 'prune', 10, 30)
+        # prune_db('e7_results', args.server, 'prune', 10, 30)
     except Ux as e:
         print "User Exception: " + e.get_msg()
