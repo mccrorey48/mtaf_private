@@ -362,7 +362,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
         del feature['elements']
         feature['status'] = new_status(feature_has_passes, feature_has_fails, feature_has_fakes,
                                        feature_has_skips, feature_has_incompletes)
-        if feature['status'] == 'passed' and feature_has_known_bug:
+        if (feature['status'] == 'passed' or feature['status'] is None) and feature_has_known_bug:
             feature['status'] = 'known_bug'
         db['features'].insert_one(feature)
         # del feature['start_id']
