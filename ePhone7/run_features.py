@@ -345,10 +345,11 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
             scenario['status'] = new_status(scenario_has_passes, scenario_has_fails, scenario_has_fakes,
                                             scenario_has_skips, scenario_has_incompletes)
             if scenario['status'] == 'failed':
-                feature_has_fails = True
                 if 'known_bug' in scenario['tags'] + feature['tags']:
                     scenario['status'] = 'known_bug'
                     feature_has_known_bug = True
+                else:
+                    feature_has_fails = True
             elif scenario['status'] == 'skipped':
                 feature_has_skips = True
             elif scenario['status'] == 'fake':
@@ -361,7 +362,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
         del feature['elements']
         feature['status'] = new_status(feature_has_passes, feature_has_fails, feature_has_fakes,
                                        feature_has_skips, feature_has_incompletes)
-        if feature['status'] == 'failed' and feature_has_known_bug:
+        if feature['status'] == 'passed' and feature_has_known_bug:
             feature['status'] = 'known_bug'
         db['features'].insert_one(feature)
         # del feature['start_id']
@@ -388,10 +389,10 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
             start_has_incompletes = True
         elif feature['status'] == 'known_bug':
             fail_count += 1
-            start_has_fails = True
+            # start_has_fails = True
             start_has_known_bug = True
     start_result = new_status(start_has_passes, start_has_fails, start_has_fakes, start_has_skips, start_has_incompletes)
-    if start_result == 'failed' and start_has_known_bug:
+    if (start_result == 'passed' or start_result is None) and start_has_known_bug:
         start_result = 'known_bug'
     db['test_starts'].find_one_and_update({"_id": start_id}, {'$set': {'pass_count': pass_count,
                                                                        'fail_count': fail_count,
@@ -410,6 +411,7 @@ if __name__ == '__main__':
                                          description='  runs behave test on specified features directory and saves' +
                                                      '  the results on a mongodb running on a specified server\n')
         parser.add_argument("-x", "--stop", dest='stop', action='store_true')
+        parser.add_argument("-V", "--skip_version_check", dest='skip_version_check', action='store_true')
         parser.add_argument("-d", "--db_name", type=str, default='e7_results', help="name of db")
         parser.add_argument("-c", "--test_class", type=str, default='regression',
                             help="class of test, e.g. regression, smoke etc.")
@@ -443,7 +445,10 @@ if __name__ == '__main__':
                 'stop': args.stop
             }
             features = run_features(run_configuration)
-        installed_aosp, installed_app = get_current_versions(args.ota_server)
+        if args.skip_version_check:
+            installed_aosp, installed_app = 'unknown', 'unknown'
+        else:
+            installed_aosp, installed_app = get_current_versions(args.ota_server)
         report_configuration = {'site_tag': cfg.site_tag, 'run_tags': args.run_tags, 'installed_aosp': installed_aosp,
                                 'installed_app': installed_app}
         write_result_to_db(args, report_configuration, fake_detector, features)
