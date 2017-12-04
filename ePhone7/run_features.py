@@ -221,6 +221,8 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
         start_datetime = datetime.strptime("%s %s" % (_features[0]['start_date'], _features[0]['start_time']), '%x %X')
     else:
         start_datetime = datetime.now()
+    _time = start_datetime.strftime('%X')
+    _date = start_datetime.strftime('%x')
     test_start = {
         'app': 'ePhone7',
         'build': '',
@@ -231,20 +233,25 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
         'pass_count': 0,
         'status': '',
         'test_class': _args.test_class,
-        'time': start_datetime.strftime('%X'),
-        'date': start_datetime.strftime('%x'),
+        'time': _time,
+        'date': _date,
         'version': '1.x'
     }
-    start_id = db['test_starts'].insert_one(test_start).inserted_id
-    fail_count = 0
-    pass_count = 0
-    skip_count = 0
+    # in case we are redoing this test from a json file, delete the old data
     if _args.json_file:
+        for x in range(db['test_starts'].count({'time': _time, 'date': _date})):
+            old_start_id = db['test_starts'].find_one({'time': _time, 'date': _date})['_id']
+            db['test_starts'].delete_one({'_id': old_start_id})
+            db['features'].delete_many({'start_id': old_start_id})
         info_filename = 'log/esi_info_copy.log'
     else:
         info_filename = 'log/esi_info.log'
     stepinfo = StepInfo(info_filename)
     last_step_duration = 0
+    start_id = db['test_starts'].insert_one(test_start).inserted_id
+    fail_count = 0
+    pass_count = 0
+    skip_count = 0
     for iter_num, feature in enumerate(_features):
         feature_has_skips = False
         feature_has_fakes = False
