@@ -49,7 +49,10 @@ def activecall__i_see_a_green_banner_with_the_coworkers_name(context):
     assert active_call_view.vm_xfer_dest_banner_present(), "vm transfer destination banner not present"
     expect_name = cfg.site['DefaultForwardAccount']
     actual_name = active_call_view.vm_xfer_dest_name()
-    assert actual_name == expect_name, "expect vm transfer destination name = %s, got %s" % (expect_name, actual_name)
+    if actual_name != expect_name:
+        # close the in-call window because e7 ignores "home" key when this screen is open
+        active_call_view.touch_end_call_button()
+        assert False, "expect vm transfer destination name = %s, got %s" % (expect_name, actual_name)
 
 
 @step("[active_call] I see an orange banner with the caller's name")
