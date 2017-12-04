@@ -2,6 +2,7 @@ from behave import *
 from ePhone7.views import *
 from lib.wrappers import fake
 from lib.user_exception import UserException as Ux
+from time import sleep
 
 headset_icon_rgbs = {'blue': [99, 139, 237, 369], 'green': [79, 187, 110, 367]}
 
@@ -83,7 +84,9 @@ def user__i_touch_the_home_button(context):
 @step("[user] I touch the Preferences icon")
 @fake
 def user__i_touch_the_preferences_icon(context):
+    sleep(5)
     user_view.PrefsButton.click()
+    pass
     # user_view.tap([(559, 74)])
     # if not prefs_view.element_is_present('Preferences'):
     #     # one retry
