@@ -386,7 +386,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
             start_has_passes = True
         elif feature['status'] == 'skipped':
             skip_count += 1
-            start_has_skips = True
+        #     start_has_skips = True
         elif feature['status'] == 'failed':
             fail_count += 1
             start_has_fails = True
