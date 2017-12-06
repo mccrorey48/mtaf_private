@@ -32,12 +32,14 @@ class VoicemailView(UserView):
         "NoVoicemails": {"by": "id", "value": "com.esi_estech.ditto:id/call_log_empty"},
         "OkForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_dialog_ok_button"},
         "PlaybackStartStop": {"by": "id", "value": "com.esi_estech.ditto:id/playback_start_stop"},
+        "NewTab": {"by": "id", "value": "com.esi_estech.ditto:id/new_vm_btn"},
+        "SaveTab": {"by": "id", "value": "com.esi_estech.ditto:id/saved_vm_btn"},
         "SaveButton": {"by": "id", "value": "com.esi_estech.ditto:id/save_voicemail"},
         "Saved": {"by": "zpath", "value": "//ll/bt[@text='SAVED']"},
         "SearchItem": {"by": "id", "value": "com.esi_estech.ditto:id/contact_search_item_layout"},
         "SearchNumber": {"by": "id", "value": "com.esi_estech.ditto:id/search_number"},
         "ShareButton": {"by": "id", "value": "com.esi_estech.ditto:id/share_voicemail"},
-        "Trash": {"by": "zpath", "value": "//ll/bt[@text='TRASH']"},
+        "TrashTab": {"by": "id", "value": "com.esi_estech.ditto:id/deleted_vm_btn"},
         "VmButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_button"},
         "VmCallButton": {"by": "id", "value": "com.esi_estech.ditto:id/vm_call_button"},
         "VmDetailHeader": {"by": "id", "value": "com.esi_estech.ditto:id/vm_user_header_layout"},
@@ -55,7 +57,7 @@ class VoicemailView(UserView):
         self.elems = []
         self.saved_vals = {}
         self.new_vals = {}
-        self.presence_element_names = ['New', 'Saved', 'Trash']
+        self.presence_element_names = ['New', 'Saved', 'TrashTab']
 
     @Trace(log)
     def call_first_vm_caller(self):

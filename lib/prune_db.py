@@ -22,8 +22,8 @@ def prune_db(db_name, server, operation, number_to_keep, max_age):
         dt = datetime.datetime.strptime(timestamp, "%m/%d/%y-%H:%M:%S")
         age = now - dt
         days = age.total_seconds() / datetime.timedelta(1).total_seconds()
-        cfg = re_cfg.sub('', start['configuration'])
         _id = start['_id']
+        cfg = repr(start['configuration'])
         d = {'_id': _id, 'timestamp': timestamp, 'cfg': cfg, 'days': days}
         if cfg in starts_by_cfg:
             starts_by_cfg[cfg].append(d)

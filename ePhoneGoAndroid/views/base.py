@@ -10,7 +10,7 @@ from lib.android import expand_zpath
 
 from ePhoneGoAndroid.utils.configure import cfg
 from lib.android import MockDriver
-from lib.selenium_actions import SeleniumActions
+from lib.android_base_view import SeleniumActions
 from lib.user_exception import UserException as Ux
 
 log = logging_esi.get_logger('esi.base_view')

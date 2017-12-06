@@ -3,7 +3,7 @@ from Tkinter import *
 from ttk import Combobox
 from time import sleep, time
 from lib.user_exception import UserException as Ux
-from lib.selenium_actions import SeleniumActions
+from lib.android_base_view import AndroidBaseView
 from pyand import ADB
 import lib.logging_esi as logging
 from lib.android import expand_zpath
@@ -16,7 +16,7 @@ from xml_to_csv import xml_to_csv
 from parse_ids import parse_ids, parse_zpaths
 
 log = logging.get_logger('esi.appium_gui')
-actions = SeleniumActions()
+actions = AndroidBaseView()
 
 
 class Command(object):
@@ -827,16 +827,13 @@ class AppiumGui(Frame):
             return
         index = int(text_index)
         elem = self.elems[index]
-        base_view.get_screenshot_as_png('appium_gui', cfg.test_screenshot_folder)
-        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=0)
+        actions.get_screenshot_as_file('appium_gui.png')
+        color = actions.get_element_color_and_count('appium_gui', elem, color_list_index=0)
         print "first color and count: %s" % color
-        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=1)
+        color = actions.get_element_color_and_count('appium_gui', elem, color_list_index=1)
         print "second color and count: %s" % color
-        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=2)
+        color = actions.get_element_color_and_count('appium_gui', elem, color_list_index=2)
         print "third color and count: %s" % color
-        for color_name in ['favorite_on_color', 'favorite_off_color']:
-            if base_view.color_match(color, cfg.colors['ContactsView'][color_name]):
-                print color_name
 
     def click_element(self):
         text_index = self.elem_index.get()

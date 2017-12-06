@@ -54,9 +54,9 @@ def voicemail__i_see_my_existing_category_voicemails(context, category):
 @step("[voicemail] I see the New, Saved and Trash tabs at the top of the screen")
 @fake
 def voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(context):
-    assert voicemail_view.New, "voicemail_view.New element not present"
-    assert voicemail_view.Saved, "voicemail_view.Saved element not present"
-    assert voicemail_view.Trash, "voicemail_view.Trash element not present"
+    assert voicemail_view.NewTab, "voicemail_view.New element not present"
+    assert voicemail_view.SavedTab, "voicemail_view.Saved element not present"
+    assert voicemail_view.TrashTab, "voicemail_view.Trash element not present"
 
 
 @step("[voicemail] I touch a contact element")

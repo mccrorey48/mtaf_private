@@ -2,7 +2,6 @@ import inspect
 import sys
 import traceback
 from time import time, sleep
-import re
 import lib.logging_esi as logging_esi
 from appium import webdriver
 

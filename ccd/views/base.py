@@ -5,7 +5,7 @@ from selenium.webdriver import Chrome, Firefox
 from selenium.webdriver.common.keys import Keys
 
 from ccd.utils.configure import cfg
-from lib.selenium_actions import SeleniumActions
+from lib.android_base_view import SeleniumActions
 from lib.user_exception import UserException as Ux, UserFailException as Fx
 import re
 

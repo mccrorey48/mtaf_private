@@ -1,6 +1,5 @@
 import os
-from PIL import Image
-from time import sleep, time, strftime, localtime
+from time import sleep, time
 
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
@@ -14,7 +13,7 @@ import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
 from lib.android import MockDriver
 from lib.android import expand_zpath
-from lib.selenium_actions import SeleniumActions
+from lib.android_base_view import AndroidBaseView
 from lib.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
 from lib.wrappers import Trace
 from ePhone7.utils.spud_serial import SpudSerial
@@ -27,7 +26,7 @@ keycodes['KEYCODE_HOME'] = 188
 keycodes['KEYCODE_BACK'] = 4
 
 
-class BaseView(SeleniumActions):
+class BaseView(AndroidBaseView):
 
     current_activity = None
     caps_tag = None
@@ -47,7 +46,7 @@ class BaseView(SeleniumActions):
     }
 
     def __init__(self):
-        super(BaseView, self).__init__()
+        super(AndroidBaseView, self).__init__()
         self.cfg = cfg
         self.By = MobileBy
         self.locator_timeout = 10
@@ -73,7 +72,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def get_locator(self, name):
-        locator = SeleniumActions.get_locator(self, name)
+        locator = AndroidBaseView.get_locator(self, name)
         if locator["by"] == "zpath":
             locator["by"] = "xpath"
             locator["value"] = expand_zpath(locator["value"])
@@ -122,7 +121,7 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def send_keycode(self, keycode):
         log.debug("sending keyevent(%s)" % keycodes[keycode])
-        self.driver.keyevent(keycodes[keycode])
+        self.keyevent(keycodes[keycode])
 
     @Trace(log)
     def send_keycode_back(self):
@@ -151,30 +150,6 @@ class BaseView(SeleniumActions):
             elem.click()
 
     @Trace(log)
-    def hide_keyboard(self):
-        self.driver.hide_keyboard()
-
-    @Trace(log)
-    def long_press(self, element=None, x=None, y=None, duration=1000):
-        TouchAction(self.driver).long_press(element, x, y, duration).perform()
-
-    @Trace(log)
-    def long_press_scroll(self, origin_el, destination_el):
-        TouchAction(self.driver).long_press(origin_el).move_to(destination_el).release().perform()
-
-    @Trace(log)
-    def short_press_scroll(self, origin_el, destination_el):
-        TouchAction(self.driver).press(origin_el).move_to(destination_el).release().perform()
-
-    @Trace(log)
-    def swipe(self, origin_x, origin_y, destination_x, destination_y, duration_ms=500):
-        self.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration_ms)
-
-    @Trace(log)
-    def long_press_swipe(self, x1, y1, x2, y2, duration=500):
-        TouchAction(self.driver).long_press(x=x1, y=y1, duration=duration).move_to(x=x2, y=y2).release().perform()
-
-    @Trace(log)
     def swipe_named_element(self, name, direction):
         if direction not in ['left', 'right']:
             raise Ux('unknown direction %s' % direction)
@@ -191,21 +166,10 @@ class BaseView(SeleniumActions):
     def get_screenshot_as_png(self, filebase, screenshot_folder=None, scale=None):
         if screenshot_folder is None:
             screenshot_folder = cfg.test_screenshot_folder
-        sleep(5)
-        fullpath = os.path.join(screenshot_folder, filebase + '.png')
-        log.debug("saving screenshot to %s" % fullpath)
-        self.driver.get_screenshot_as_file(fullpath)
-        im = Image.open(fullpath)
-        if im.getbbox()[2] == 1024:
-            log.debug("rotating screenshot -90 degrees")
-            im = im.rotate(-90, expand=True)
-        if scale is not None:
-            bbox = im.getbbox()
-            log.debug("im.getbbox() = %s" % repr(bbox))
-            im.thumbnail((int(bbox[2] * scale), int(bbox[3] * scale)), Image.ANTIALIAS)
-        log.debug("saving rotated screenshot to %s" % fullpath)
-        im.save(fullpath)
-        return fullpath
+        img_path = os.path.join(screenshot_folder, filebase + '.png')
+        log.debug("saving screenshot to %s" % img_path)
+        self.get_screenshot_as_file(img_path, scale)
+        return img_path
 
     @staticmethod
     @Trace(log)
@@ -219,26 +183,14 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def get_tab_color(self, filebase, tab_name):
-        # now = time()
-        # timestamp = strftime('%H:%M:%S', localtime(now)) + '.%s' % int((now-int(now)) * 1000)
-        # suffix = "%s_%s_%s.png" % (filebase, tab_name, timestamp)
-        image_filename = os.path.join(self.cfg.test_screenshot_folder, filebase + '.png')
-        log.debug('getting tab color from file %s' % image_filename)
-        im = Image.open(image_filename)
+        img_path = os.path.join(self.cfg.test_screenshot_folder, filebase + '.png')
+        log.debug('getting tab color from file %s' % img_path)
         view_classname = self.__class__.__name__
         active_color = self.cfg.colors[view_classname]['active_color'][:-1]
         inactive_color = self.cfg.colors[view_classname]['inactive_color'][:-1]
-        # print "active_color: " + repr(active_color)
-        # print "inactive_color: " + repr(inactive_color)
         crop_points = tuple(self.cfg.colors[view_classname]['crop_points'][tab_name])
         log.debug("crop_points: %s" % repr(crop_points))
-        cropped = im.crop(crop_points)
-        # cropped.save(os.path.join(self.cfg.test_screenshot_folder, 'cropped_%s' % suffix))
-        (n, (r, g, b, depth)) = max(cropped.getcolors(1000), key=lambda x: x[0])
-        tab_color = [r, g, b]
-        # color_band = Image.new('RGBA', (crop_points[2] - crop_points[0], crop_points[3] - crop_points[1]), 'yellow')
-        # im.paste(color_band, crop_points, 0)
-        # im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after_%s.png' % suffix))
+        tab_color = self.get_cropped_color(img_path, crop_points)
         if self.color_match(tab_color, active_color):
             log.debug('tab_color is "active": %s' % repr(tab_color))
             return 'active_color'
@@ -253,105 +205,10 @@ class BaseView(SeleniumActions):
     def get_element_color(self, filebase, elem, cropped_suffix=''):
         return self.get_element_color_and_count(filebase, elem, cropped_suffix)[:3]
 
-    # @Trace(log)
-    # def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
-    #     im = Image.open(os.path.join(self.cfg.test_screenshot_folder, filebase + '.png'))
-    #     # calculate image crop points from element location['x'], location['y'], size['height'] and size['width']
-    #     location = elem.location
-    #     size = elem.size
-    #     min_x = location['x']
-    #     min_y = location['y']
-    #     lim_x = min_x + size['width']
-    #     lim_y = min_y + size['height']
-    #     # print "min_x = %s, min_y = %s, lim_x = %s, lim_y = %s" % (min_x, min_y, lim_x, lim_y)
-    #     # (x1, y1, x2, y2) = (min_y, 600-lim_x, lim_y, 600-min_x)
-    #     (x1, y1, x2, y2) = (min_x, min_y, lim_x, lim_y)
-    #     crop_points = [int(i) for i in (x1, y1, x2, y2)]
-    #     # print "crop_points: " + repr(crop_points)
-    #     cropped = im.crop(crop_points)
-    #     cropped.save(os.path.join(self.cfg.test_screenshot_folder, 'cropped%s.png' % cropped_suffix))
-    #     colors = cropped.getcolors(1000)
-    #     if len(colors) > color_list_index:
-    #         color_band = Image.new('RGBA', (crop_points[2] - crop_points[0], crop_points[3] - crop_points[1]), 'yellow')
-    #         im.paste(color_band, crop_points, 0)
-    #         im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after.png'))
-    #         current_color_and_count = sorted(colors, reverse=True, key=lambda x: x[0])[color_list_index]
-    #         current_color = list(current_color_and_count[1])[:-1]
-    #         current_count = current_color_and_count[0]
-    #         return current_color + [current_count]
-    #     else:
-    #         return None
-
-    @Trace(log)
-    def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
-        el_image = self.get_cropped_image(filebase, elem, cropped_suffix)
-        return self.get_image_color(el_image, color_list_index)
-
-    @Trace(log)
-    def get_cropped_image(self, filebase, elem, cropped_suffix=''):
-        im = Image.open(os.path.join(self.cfg.test_screenshot_folder, filebase + '.png'))
-        # calculate image crop points from element location['x'], location['y'], size['height'] and size['width']
-        location = elem.location
-        size = elem.size
-        min_x = location['x']
-        min_y = location['y']
-        lim_x = min_x + size['width']
-        lim_y = min_y + size['height']
-        # print "min_x = %s, min_y = %s, lim_x = %s, lim_y = %s" % (min_x, min_y, lim_x, lim_y)
-        # (x1, y1, x2, y2) = (min_y, 600-lim_x, lim_y, 600-min_x)
-        (x1, y1, x2, y2) = (min_x, min_y, lim_x, lim_y)
-        crop_points = [int(i) for i in (x1, y1, x2, y2)]
-        # print "crop_points: " + repr(crop_points)
-        cropped = im.crop(crop_points)
-        cropped.save(os.path.join(self.cfg.test_screenshot_folder, 'cropped%s.png' % cropped_suffix))
-        color_band = Image.new('RGBA', (crop_points[2] - crop_points[0], crop_points[3] - crop_points[1]), 'yellow')
-        im.paste(color_band, crop_points, 0)
-        im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after.png'))
-        return cropped
-
-    @Trace(log)
-    def get_image_color(self, image, color_list_index):
-        colors = image.getcolors(1000)
-        if len(colors) > color_list_index:
-            current_color_and_count = sorted(colors, reverse=True, key=lambda x: x[0])[color_list_index]
-            current_color = list(current_color_and_count[1])[:-1]
-            current_count = current_color_and_count[0]
-            return current_color + [current_count]
-        else:
-            return None
-
     @Trace(log)
     def tap_element(self, el, duration=200):
         center = (el.location['x'] + (el.size['width'] / 2), el.location['y'] + (el.size['height'] / 2))
         self.tap([center], duration)
-
-    def update_remote(self, caps_tag, force=False, timeout=30):
-        if force or caps_tag != self.caps_tag:
-            start_time = time()
-            while True:
-                try:
-                    driver = webdriver.Remote(cfg.site["SeleniumUrl"], cfg.caps[caps_tag])
-                    break
-                except WebDriverException:
-                    if time() - start_time < timeout:
-                        log.info("retrying webdriver.Remote(%s, %s)" % (cfg.site["SeleniumUrl"], cfg.caps[caps_tag]))
-                    else:
-                        log.info("timed out waiting to connect to webdriver")
-                        raise
-            self.caps_tag = caps_tag
-            driver.implicitly_wait(cfg.site['DefaultTimeout'])
-            return driver
-
-    @Trace(log)
-    def open_appium(self, caps_tag='nolaunch', force=False, timeout=30):
-        if cfg.site['Mock']:
-            SeleniumActions.driver = MockDriver()
-        else:
-            log.debug('opening appium')
-            try:
-                SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
-            except WebDriverException:
-                raise
 
     @Trace(log)
     def close_appium_until_reboot(self, timeout=600):
@@ -365,24 +222,6 @@ class BaseView(SeleniumActions):
 
 
     @Trace(log)
-    def close_appium(self):
-        if SeleniumActions.driver is None:
-            log.debug('appium is already closed')
-        else:
-            log.debug('closing appium')
-            try:
-                logcat = SeleniumActions.driver.get_log('logcat')
-                timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
-                with open('log/e7_logcat_%s.log' % timestamp, 'w') as f:
-                    for line in [item['message'] for item in logcat]:
-                        f.write(line.encode('utf-8') + '\n')
-                SeleniumActions.driver.quit()
-            except WebDriverException:
-                log.debug("got WebDriverException, assuming appium already closed")
-            SeleniumActions.driver = None
-            self.caps_tag = None
-
-    @Trace(log)
     def startup(self, timeout=600, allow_reg_retry=True, auto_login_timeout = 60):
         start_time = time()
         reg_retry_handled = False
@@ -391,7 +230,7 @@ class BaseView(SeleniumActions):
         while time() - start_time < timeout:
             try:
                 previous_activity = current_activity
-                current_activity = self.driver.current_activity
+                current_activity = self.get_current_activity
                 log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
                     # sleep(10)
@@ -448,7 +287,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def wait_for_activity(self, activity, timeout=30):
-        if not self.driver.wait_activity(activity, timeout):
+        if not self.wait_activity(activity, timeout):
             raise Ux('current activity is not %s' % activity)
 
 
