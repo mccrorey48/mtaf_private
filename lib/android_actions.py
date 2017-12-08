@@ -10,6 +10,8 @@ from lib.user_exception import UserException as Ux
 from time import strftime, localtime
 from PIL import Image
 import os
+from pyand import ADB
+import re
 
 log = logging.get_logger('esi.selenium_actions')
 
@@ -51,20 +53,41 @@ desired_capabilities = {
 connect_timeout = 30
 
 
-class AndroidBaseView(object):
+class AndroidActions(object):
+    driver = None
+    cfg = None
+    caps_tag = None
 
-    def __init__(self):
-        self.cfg = None
-        self.driver = None
-        self.caps_tag = None
-
-    def open_appium(self, caps_tag='nolaunch'):
+    def open_appium(self, caps_tag='nolaunch', caps_arg=None):
+        if caps_tag == 'query_device':
+            adb = ADB()
+            output = adb.run_cmd('shell dumpsys window windows')
+            # print 'APK Version: ' + re.match('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)', output).group(1)
+            package = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output).group(1)
+            activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/' + package + '([^}]+)', output).group(2)
+            device_name = adb.run_cmd('shell getprop ro.product.model').strip()
+            platform_version = adb.run_cmd('shell getprop ro.build.version.release').strip()
+            caps = {
+                    "appPackage": package,
+                    "appActivity": activity,
+                    "autoLaunch": False,
+                    "automationName": "Appium",
+                    "deviceName": device_name,
+                    "newCommandTimeout": 1200,
+                    "noReset": True,
+                    "platformName": "Android",
+                    "platformVersion": platform_version
+                }
+        elif caps_tag == 'caps_arg':
+            caps = caps_arg
+        else:
+            if caps_tag not in desired_capabilities:
+                raise Ux("unknown desired capabilities name %s" % caps_tag)
+            caps = desired_capabilities[caps_tag]
         start_time = time()
-        if caps_tag not in desired_capabilities:
-            raise Ux("unknown desired capabilities name %s" % caps_tag)
         while time() - start_time < connect_timeout:
             try:
-                AndroidBaseView.driver = webdriver.Remote(selenium_url, desired_capabilities[caps_tag])
+                AndroidActions.driver = webdriver.Remote(selenium_url, caps)
                 self.caps_tag = caps_tag
                 break
             except WebDriverException:
@@ -84,10 +107,10 @@ class AndroidBaseView(object):
                 with open('log/e7_logcat_%s.log' % timestamp, 'w') as f:
                     for line in [item['message'] for item in logcat]:
                         f.write(line.encode('utf-8') + '\n')
-                self.driver.quit()
+                # self.driver.quit()
             except WebDriverException:
                 log.debug("got WebDriverException, assuming appium already closed")
-            self.driver = None
+            AndroidActions.driver = None
             self.caps_tag = None
 
     class PresenceOfElementsByName(object):
@@ -98,13 +121,8 @@ class AndroidBaseView(object):
             return actions.find_named_elements(self.name)
 
     @Trace(log)
-    def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
-        el_image = self.get_cropped_image(filebase, elem, cropped_suffix)
-        return self.get_image_color(el_image, color_list_index)
-
-    @Trace(log)
-    def get_cropped_image(self, filebase, elem, cropped_suffix=''):
-        im = Image.open(os.path.join(self.cfg.test_screenshot_folder, filebase + '.png'))
+    def get_element_color_and_count(self, screenshot_dir, filebase, elem, cropped_suffix='', color_list_index=1):
+        im = Image.open(os.path.join(screenshot_dir, filebase + '.png'))
         # calculate image crop points from element location['x'], location['y'], size['height'] and size['width']
         location = elem.location
         size = elem.size
@@ -118,15 +136,16 @@ class AndroidBaseView(object):
         crop_points = [int(i) for i in (x1, y1, x2, y2)]
         # print "crop_points: " + repr(crop_points)
         cropped = im.crop(crop_points)
-        cropped.save(os.path.join(self.cfg.test_screenshot_folder, 'cropped%s.png' % cropped_suffix))
+        cropped.save(os.path.join(screenshot_dir, 'cropped%s.png' % cropped_suffix))
         color_band = Image.new('RGBA', (crop_points[2] - crop_points[0], crop_points[3] - crop_points[1]), 'yellow')
         im.paste(color_band, crop_points, 0)
-        im.save(os.path.join(self.cfg.test_screenshot_folder, filebase + '_after.png'))
-        return cropped
+        im.save(os.path.join(screenshot_dir, filebase + '_after.png'))
+        return self.get_image_color(cropped, color_list_index)
 
     @Trace(log)
     def get_image_color(self, image, color_list_index):
-        colors = image.getcolors(1000)
+        colors = image.getcolors(1000000)
+        # print "# of colors: %s" % len(colors)
         if len(colors) > color_list_index:
             current_color_and_count = sorted(colors, reverse=True, key=lambda x: x[0])[color_list_index]
             current_color = list(current_color_and_count[1])[:-1]
@@ -139,7 +158,6 @@ class AndroidBaseView(object):
     def get_cropped_color(self, img_path, crop_points):
         im = Image.open(img_path)
         cropped = im.crop(crop_points)
-        # cropped.save(os.path.join(self.cfg.test_screenshot_folder, 'cropped_%s' % suffix))
         (n, (r, g, b, depth)) = max(cropped.getcolors(1000), key=lambda x: x[0])
         return [r, g, b]
 
@@ -395,3 +413,4 @@ class AndroidBaseView(object):
                 return elems[0]
         return None
 
+android_actions = AndroidActions()

@@ -3,10 +3,10 @@ from Tkinter import *
 from ttk import Combobox
 from time import sleep, time
 from lib.user_exception import UserException as Ux
-from lib.android_base_view import AndroidBaseView
 from pyand import ADB
 import lib.logging_esi as logging
 from lib.android import expand_zpath
+from lib.android_actions import AndroidActions
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
 import json
@@ -14,9 +14,26 @@ from lib.filters import get_filter
 from PIL import Image, ImageTk
 from xml_to_csv import xml_to_csv
 from parse_ids import parse_ids, parse_zpaths
+import errno
 
 log = logging.get_logger('esi.appium_gui')
-actions = AndroidBaseView()
+android_actions = AndroidActions()
+adb = ADB()
+re_package = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)')
+re_activity = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
+xml_dir = os.path.join('appium_gui', 'xml')
+csv_dir = os.path.join('appium_gui', 'csv')
+screenshot_dir = os.path.join('appium_gui', 'screenshot')
+
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if e.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
 
 
 class Command(object):
@@ -122,52 +139,24 @@ class LogFrame(Frame):
         pass
 
 
-class AccountFrame(Frame):
-    def __init__(self, parent, user_name, *args, **kwargs):
-        Frame.__init__(self, parent, bg='tan', *args, **kwargs)
-        self.registered_var = IntVar()
-        self.registered_var.set(0)
-        self.old_reg_status = None
-        self.status_var = StringVar()
-        self.status_var.set('None')
-        self.remote_var = StringVar()
-        self.remote_var.set('')
-
-        self.label = Label(self, text=user_name)
-        self.label.grid(row=0, column=0, sticky='w', padx=2, pady=2, ipady=3)
-
-        self.cb = Checkbutton(self, text='Registered', variable=self.registered_var)
-        self.cb.grid(row=0, column=1, padx=2, ipady=1)
-
-        self.status = Frame(self)
-        self.status.label = Label(self.status, text='Status: ')
-        self.status.label.grid(row=0, column=0, padx=2, ipady=2)
-        self.status.value = Label(self.status, textvariable=self.status_var, width=10)
-        self.status.value.grid(row=0, column=1, padx=2, ipady=2)
-        self.status.grid(row=0, column=2, padx=5, pady=2)
-
-        self.answer = Button(self, text='Answer', command=lambda: self.softphone.send_response_code(200),
-                             state=DISABLED)
-        self.answer.grid(row=0, column=3, padx=5, pady=2)
-
-        self.hangup = Button(self, text='Hang Up', command=lambda: self.softphone.end_call(), state=DISABLED)
-        self.hangup.grid(row=0, column=4, padx=5, pady=2)
-
-        self.remote = Label(self, textvariable=self.remote_var, width=10)
-        self.remote.grid(row=0, column=5, padx=5, pady=2, ipady=3, sticky='ew')
-        self.columnconfigure(5, weight=1)
-
-        self.after(100, self.check_status)
-
-
 class MyMenu(Menu):
+    def __init__(self, parent):
+        Menu.__init__(self, parent)
+        self.submenus = {}
 
-    def __init__(self, parent, *args, **kwargs):
-        Menu.__init__(self, parent, *args, **kwargs)
-        self.appium_sub_menu = None
-        self.appium_sub_menu_max_index = None
-        self.other_sub_menu = None
-        self.other_sub_menu_max_index = None
+    def add_submenu(self, name, label):
+        self.submenus[name] = MySubmenu(self, label)
+        self.add_cascade(label=label, menu=self.submenus[name])
+
+
+class MySubmenu(Menu):
+    def __init__(self, parent, label=None):
+        Menu.__init__(self, parent)
+        self.commands = []
+        # parent.add_cascade(label=label, menu=self)
+
+    def add_submenu_command(self, command):
+        self.add_command(label=command.label, command=command.action)
 
 
 class AttrFrame(Frame):
@@ -190,6 +179,8 @@ class AppiumGui(Frame):
         self.attr_frame = None
         self.cwin = None
         self.drag_polygon = None
+        self.new_drag_polygon_x1 = None
+        self.new_drag_polygon_y1 = None
         self.drag_polygon_x1 = None
         self.drag_polygon_y1 = None
         self.drag_polygon_x2 = None
@@ -207,6 +198,7 @@ class AppiumGui(Frame):
         self.im_width = None
         self.im_height = None
         self.keycode_name = None
+        self.menu = None
         self.parent_element = None
         self.use_parent = None
         self.worker_thread = None
@@ -215,11 +207,9 @@ class AppiumGui(Frame):
         self.zpath_label = None
         self.zpaths = None
         self.appium_btns = []
-        self.appium_commands = []
+        self.commands = {}
         self.elem_indices = []
         self.elems = []
-        self.no_appium_btns = []
-        self.other_commands = []
         self.polygons = []
         self.locators = {"Coworkers": {"by": "uia_text", "use_parent": 0, "time": ""}}
         self.within_frame = IntVar()
@@ -237,10 +227,9 @@ class AppiumGui(Frame):
             pass
 
         self.create_commands()
-        self.menu = self.create_menus(parent)
+        self.create_menus(parent)
         self.top_frame_row = 0
         self.btn_frame = self.create_btn_frame()
-        self.softphone_frame = self.create_softphone_frame()
         self.exec_frame = self.create_exec_frame()
         self.log_frame = self.create_log_frame()
         self.bottom_frame = self.create_bottom_frame()
@@ -248,12 +237,10 @@ class AppiumGui(Frame):
         self.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
-        for i in range(self.menu.appium_sub_menu_max_index):
-            self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
-        for btn in self.no_appium_btns:
-            btn.configure(state=NORMAL)
-        for i in range(self.menu.other_sub_menu_max_index):
-            self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
+        # for i in range(self.menu.appium_sub_menu_max_index):
+        #     self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
+        # for i in range(self.menu.other_sub_menu_max_index):
+        #     self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
 
     def check_thread(self):
         if self.worker_thread is None:
@@ -267,32 +254,17 @@ class AppiumGui(Frame):
         else:
             log.debug("worker thread died")
             self.worker_thread = None
-            self.menu.entryconfig(3, state=NORMAL)
-            self.menu.entryconfig(4, state=NORMAL)
             if self.appium_is_open:
                 self.menu.entryconfig(1, state=NORMAL)
-                self.menu.entryconfig(2, state=DISABLED)
+                for btn in self.appium_btns:
+                    btn.configure(state=NORMAL)
                 self.menu.entryconfig(3, label='Stop Appium', command=lambda: self.do_cmd(self.close_appium))
-                for btn in self.appium_btns:
-                    btn.configure(state=NORMAL)
-                for i in range(self.menu.appium_sub_menu_max_index):
-                    self.menu.appium_sub_menu.entryconfig(i + 1, state=NORMAL)
-                for btn in self.no_appium_btns:
-                    btn.configure(state=DISABLED)
-                for i in range(self.menu.other_sub_menu_max_index):
-                    self.menu.other_sub_menu.entryconfig(i + 1, state=DISABLED)
             else:
-                self.menu.entryconfig(1, state=DISABLED)
-                self.menu.entryconfig(2, state=NORMAL)
                 self.menu.entryconfig(3, label='Start Appium', command=lambda: self.do_cmd(self.open_appium))
-                for btn in self.appium_btns:
-                    btn.configure(state=DISABLED)
-                for i in range(self.menu.appium_sub_menu_max_index):
-                    self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
-                for btn in self.no_appium_btns:
-                    btn.configure(state=NORMAL)
-                for i in range(self.menu.other_sub_menu_max_index):
-                    self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
+            self.menu.entryconfig(2, state=NORMAL)
+            self.menu.entryconfig(3, state=NORMAL)
+            # for i in range(self.menu.other_sub_menu_max_index):
+            #     self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
 
     def create_bottom_frame(self):
         bottom_frame = BottomFrame(self, bg="tan")
@@ -326,11 +298,15 @@ class AppiumGui(Frame):
     def show_zpaths(self):
         pass
 
-    def create_cwin(self):
+    def create_cwin(self, reuse_image=False):
         self.bottom_frame.mk_canvas.configure(state=DISABLED)
-        if self.appium_is_open:
-            self.get_screenshot()
-            self.get_xml()
+        if not reuse_image:
+            if self.appium_is_open:
+                self.get_screenshot_appium()
+                self.get_xml_appium()
+            else:
+                self.get_screenshot_adb()
+                self.get_xml_adb()
         x = self.winfo_rootx()
         y = self.winfo_rooty()
         w = self.winfo_width()
@@ -343,24 +319,25 @@ class AppiumGui(Frame):
         self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
         self.cwin.resizable(width=False, height=True)
         self.cwin.geometry("+%d+%d" % (x + w + 20, y - 70))
-        self.cwin.scale = 0.5
-        self.im_width = int(600 * self.cwin.scale)
-        self.im_height = int(1024 * self.cwin.scale)
+        image = Image.open(os.path.join(screenshot_dir, 'appium_gui.png'))
+        self.cwin.scale = 600.0 / max(image.height, image.width)
+        self.im_width = int(image.width * self.cwin.scale)
+        self.im_height = int(image.height * self.cwin.scale)
+        small = image.resize((self.im_width, self.im_height))
         self.cwin.minsize(width=self.im_width, height=self.im_height)
         self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='darkgray')
-        screenshot_folder = os.path.join('appium_gui', 'screenshots', 'appium_gui.png')
-        os.makedirs('screenshot_folder', exist_ok=True)
-        self.im_canvas.im = Image.open(os.path.join(screenshot_folder, 'appium_gui.png'))
-        small = self.im_canvas.im.resize((self.im_width, self.im_height))
         self.im_canvas.photo = ImageTk.PhotoImage(small)
         self.im_canvas.create_image(self.im_width/2, self.im_height/2, image=self.im_canvas.photo)
-        # self.im_canvas.grid(column=0, row=0, rowspan=2)
         self.im_canvas.grid(column=0, row=0)
         self.im_canvas.bind('<Button-1>', self.mouse_btn)
         self.im_canvas.bind('<Button-2>', self.mouse_btn)
         self.im_canvas.bind('<Button-3>', self.mouse_btn)
         self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
         self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
+        self.cwin.btn_frame = Frame(self.cwin)
+        self.cwin.btn_frame.rotate = Button(self.cwin.btn_frame, text="rotate image", command=self.rotate_image)
+        self.cwin.btn_frame.rotate.grid(row=0, column=0)
+        self.cwin.btn_frame.grid(row=1, column=0)
         self.cwin.rowconfigure(0, weight=1)
         self.create_loc_frames()
         self.bottom_frame.mk_canvas.configure(state=NORMAL)
@@ -392,7 +369,7 @@ class AppiumGui(Frame):
         self.zpath_frame_btns = {}
         self.zpath_frame.grid(column=2, row=0, sticky='n')
         csv_folder = os.path.join('appium_gui', 'csv')
-        os.makedirs(csv_folder, exist_ok=True)
+        mkdir_p(csv_folder)
         csv_fullpath = os.path.join(csv_folder, 'appium_gui.csv')
         row = 0
         self.ids = parse_ids(os.path.join(csv_folder, 'appium_gui.csv'))
@@ -423,15 +400,16 @@ class AppiumGui(Frame):
         self.cwin.update()
         self.cwin.geometry(
             '%dx%d' % (self.im_width + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth(),
-                       self.im_canvas.winfo_reqheight()))
+                       self.cwin.winfo_reqheight()))
 
     def mouse_btn(self, event):
-        # event.type values: 4=press, 6=motion, 5=release
-        # print "type = %s, type(type) = %s, x = %d, y = %d" % (event.type, type(event.type), event.x, event.y)
+        # (event.type, event.num) values: (4,1)=press, 6=motion, 5=release, (4,3)=right-press
+        # print "type,num = %s(%s),%s(%s)   x = %d,  y = %d" % (event.type, type(event.type),
+        #                                                       event.num, type(event.num), event.x, event.y)
         if event.type == '4':
             if event.num == 1:
-                self.drag_polygon_x1 = event.x
-                self.drag_polygon_y1 = event.y
+                self.new_drag_polygon_x1 = event.x
+                self.new_drag_polygon_y1 = event.y
             elif event.num == 3:
                 if self.drag_polygon is not None:
                     self.im_canvas.delete(self.drag_polygon)
@@ -442,13 +420,16 @@ class AppiumGui(Frame):
         elif event.type == '6':
             if self.drag_polygon is not None:
                 self.im_canvas.delete(self.drag_polygon)
-            x1 = self.drag_polygon_x1
-            y1 = self.drag_polygon_y1
+            x1 = self.new_drag_polygon_x1
+            y1 = self.new_drag_polygon_y1
             x2 = event.x
             y2 = event.y
-            self.drag_polygon = self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='blue', fill='')
-            self.drag_polygon_x2 = x2
-            self.drag_polygon_y2 = y2
+            if x2 != x1 and y2 != y1:
+                self.drag_polygon_x1 = self.new_drag_polygon_x1
+                self.drag_polygon_y1 = self.new_drag_polygon_y1
+                self.drag_polygon_x2 = x2
+                self.drag_polygon_y2 = y2
+                self.drag_polygon = self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='blue', fill='')
 
     def get_id_outline_fn(self, id_name):
         def f():
@@ -484,7 +465,6 @@ class AppiumGui(Frame):
         self.top_frame_row += 1
         return log_frame
 
-
     @staticmethod
     def defocus(event):
         event.widget.selection_clear()
@@ -493,7 +473,7 @@ class AppiumGui(Frame):
         exec_frame = Frame(self, bg="brown")
         exec_frame.btn = Button(exec_frame, text="exec:", command=lambda: self.do_cmd(self.exec_code), state=NORMAL)
         exec_frame.btn.grid(row=0, column=0)
-        exec_frame.entry = Entry(exec_frame, textvariable = self.exec_text)
+        exec_frame.entry = Entry(exec_frame, textvariable=self.exec_text)
         exec_frame.entry.grid(row=0, column=1, sticky='news')
         exec_frame.columnconfigure(1, weight=1)
         exec_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
@@ -628,38 +608,36 @@ class AppiumGui(Frame):
 
     def create_menus(self, parent):
         menu = MyMenu(parent)
-        menu.appium_sub_menu = MyMenu(menu)
-        menu.appium_sub_menu_max_index = 0
-        menu.add_cascade(label="Appium Actions", menu=menu.appium_sub_menu)
-        menu.other_sub_menu = MyMenu(menu)
-        menu.other_sub_menu_max_index = 0
-        menu.add_cascade(label="Other Actions", menu=menu.other_sub_menu)
-        for command in self.appium_commands:
-            menu.appium_sub_menu.add_command(label=command.label, command=command.action)
-            menu.appium_sub_menu_max_index += 1
-        for command in self.other_commands:
-            menu.other_sub_menu.add_command(label=command.label, command=command.action)
-            menu.other_sub_menu_max_index += 1
+        for prefix in "Appium", "ADB":
+            label = prefix + " Actions"
+            cmd_type = prefix.lower()
+            menu.add_submenu(label=label, name=cmd_type)
+            for command in self.commands[cmd_type]:
+                menu.submenus[cmd_type].add_submenu_command(command)
         menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
-        menu.add_command(label="Get Focused App", command=lambda: self.do_cmd(self.get_focused_app))
         parent.config(menu=menu)
-        return menu
+        self.menu = menu
 
     def create_commands(self):
-        self.appium_commands.append(Command("Get Current Activity", lambda: self.do_cmd(self.get_current_activity)))
-        self.appium_commands.append(Command("Get Screenshot", lambda: self.do_cmd(self.get_screenshot)))
-        self.appium_commands.append(Command("Get XML/CSV", lambda: self.do_cmd(self.get_xml)))
-        self.appium_commands.append(Command("Restart Appium", lambda: self.do_cmd(self.restart_appium)))
+        self.commands['appium'] = [
+            Command("Get Current Activity", lambda: self.do_cmd(self.get_current_activity)),
+            Command("Restart Appium", lambda: self.do_cmd(self.restart_appium)),
+        ]
+        self.commands['adb'] = [
+            Command("Get Screenshot", lambda: self.do_cmd(self.get_screenshot_adb())),
+            Command("Get Focused App", lambda: self.do_cmd(self.get_focused_app))
+        ]
 
     def do_cmd(self, cmd):
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
-        for btn in self.no_appium_btns:
-            btn.configure(state=DISABLED)
-        for i in range(self.menu.appium_sub_menu_max_index):
-            self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
-        for i in range(self.menu.other_sub_menu_max_index):
-            self.menu.other_sub_menu.entryconfig(i + 1, state=DISABLED)
+        self.menu.entryconfig(1, state=DISABLED)
+        self.menu.entryconfig(2, state=DISABLED)
+        self.menu.entryconfig(3, state=DISABLED)
+        # for i in range(self.menu.appium_sub_menu_max_index):
+        #     self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
+        # for i in range(self.menu.other_sub_menu_max_index):
+        #     self.menu.other_sub_menu.entryconfig(i + 1, state=DISABLED)
         for i in [3, 4]:
             self.menu.entryconfig(i, state=DISABLED)
         self.update_idletasks()
@@ -688,7 +666,7 @@ class AppiumGui(Frame):
             print "Can't execute tap with x='%s', y='%s'" % (self.tap_x_var.get(), self.tap_y_var.get())
         else:
             print "Executing tap([(%d, %d)])..." % (x, y),
-            actions.tap([(x, y)])
+            android_actions.tap([(x, y)])
             print "Done"
 
     def swipe(self):
@@ -700,7 +678,7 @@ class AppiumGui(Frame):
             print "Can't execute swipe with x='%s', y='%s'" % (self.tap_x_var.get(), self.tap_y_var.get())
         else:
             print "Executing swipe([(300, %d, 300, %d, %d)])..." % (y1, y2, ms),
-            actions.long_press_swipe(300, y1, 300, y2, duration=ms)
+            android_actions.long_press_swipe(300, y1, 300, y2, duration=ms)
             print "Done"
 
     def update_find_cbs(self, event):
@@ -742,7 +720,7 @@ class AppiumGui(Frame):
         if self.use_parent.get():
             return self.parent_element.find_elements(by, value)
         else:
-            return actions.driver.find_elements(by, value)
+            return android_actions.driver.find_elements(by, value)
 
     def find_elements(self):
         print "finding elements...",
@@ -827,12 +805,12 @@ class AppiumGui(Frame):
             return
         index = int(text_index)
         elem = self.elems[index]
-        actions.get_screenshot_as_file('appium_gui.png')
-        color = actions.get_element_color_and_count('appium_gui', elem, color_list_index=0)
+        android_actions.get_screenshot_as_file('appium_gui.png')
+        color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=0)
         print "first color and count: %s" % color
-        color = actions.get_element_color_and_count('appium_gui', elem, color_list_index=1)
+        color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=1)
         print "second color and count: %s" % color
-        color = actions.get_element_color_and_count('appium_gui', elem, color_list_index=2)
+        color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=2)
         print "third color and count: %s" % color
 
     def click_element(self):
@@ -874,7 +852,7 @@ class AppiumGui(Frame):
                 else:
                     print "Opening Appium...",
                 self.update_idletasks()
-                base_view.open_appium()
+                android_actions.open_appium('query_device')
                 break
             except Ux as e:
                 print "UserException in open_appium: %s" % e.msg
@@ -888,13 +866,13 @@ class AppiumGui(Frame):
 
     def close_appium(self):
         print "Closing Appium...",
-        base_view.close_appium()
+        android_actions.close_appium()
         self.appium_is_open = False
         print "Done"
 
     @staticmethod
     def get_current_activity():
-        print "current activity: " + base_view.driver.current_activity
+        print "current activity: " + android_actions.driver.current_activity
 
     @staticmethod
     def log_action(spud_serial, action):
@@ -914,219 +892,75 @@ class AppiumGui(Frame):
     @staticmethod
     def get_focused_app():
         print "Getting Focused App...",
-        app = get_focused_app()
+        output = adb.run_cmd('shell dumpsys window windows')
+        # print 'APK Version: ' + re.match('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)', output).group(1)
+        package = re_package.match(output).group(1)
+        activity = re_activity.match(output).group(2)
         print "Done"
-        print "Focused App: " + app
+        print "Focused App: " + activity
 
     @staticmethod
-    def usb_enable():
-        print "Enabling USB via spud port...",
-        usb_enable()
-        print "Done"
-
-    @staticmethod
-    def accept_tnc():
-        print "accepting terms and conditions...",
-        tnc_view.accept_tnc()
-        print "Done"
-
-    @staticmethod
-    def clear_favs():
-        print "clearing all favorite coworkers...",
-        contacts_view.clear_all_favorites()
-        print "Done"
-
-    @staticmethod
-    def set_favs():
-        print "setting all favorite coworkers...",
-        contacts_view.set_all_favorites()
-        print "Done"
-
-    @staticmethod
-    def startup():
-        print "running startup...",
-        base_view.startup()
-        print "Done"
-
-    @staticmethod
-    def set_alpha_ota_server():
-        print "Setting alpha OTA server...",
-        user_view.goto_tab('Dial')
-        user_view.set_ota_server('alpha')
-        print "Done"
-
-    def install_apk_1_0_10(self):
-        print "Installing APK 1.0.10 using adb...",
-        self.install_apk('1.0.10')
-        print "Done"
-
-    def install_apk_1_3_6(self):
-        print "Installing APK 1.3.6 using adb...",
-        self.install_apk('1.3.6')
-        print "Done"
-
-    @staticmethod
-    def skip_walkthrough():
-        print "skipping walkthrough"
-        app_intro_view.skip_intro()
-
-    def reboot(self):
-        print "rebooting...",
-        ss = SpudSerial(cfg.site['SerialDev'])
-        self.log_action(ss, {'cmd': 'cd\n', 'new_cwd': 'data'})
-        self.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'dead_air_timeout': 20,
-                             'timeout': 120})
-        print "Done"
-
-    @staticmethod
-    def get_installed_versions():
-        print "getting installed versions"
-        # self.update_idletasks()
-        aosp, app = get_installed_versions()
-        print "aosp: %s, app: %s" % (aosp, app)
-
-    @staticmethod
-    def get_alpha_current_versions():
-        print "getting current alpha versions"
-        aosp, app = get_current_versions('alpha')
-        print "aosp: %s, app: %s" % (aosp, app)
-
-    @staticmethod
-    def get_beta_current_versions():
-        print "getting current beta versions"
-        aosp, app = get_current_versions('beta')
-        print "aosp: %s, app: %s" % (aosp, app)
-
-    @staticmethod
-    def get_prod_current_versions():
-        print "getting current prod versions"
-        aosp, app = get_current_versions('prod')
-        print "aosp: %s, app: %s" % (aosp, app)
-
-    @staticmethod
-    def get_all_coworker_contacts():
-        print "getting coworker contacts"
-        contacts_group = cfg.site['Users']['R2d2User']['CoworkerContacts']
-        nums = contacts_view.get_all_group_contacts(contacts_group)
-        print repr(nums)
-
-    @staticmethod
-    def dial_advanced_settings():
-        print "dialing advanced settings code...",
-        user_view.goto_tab('Dial')
-        dial_view.dial_advanced_settings()
-        dial_view.touch_call_button()
-        print "Done"
-
-    @staticmethod
-    def dial_alpha_ota():
-        print "dialing alpha OTA code...",
-        # user_view.goto_tab('Dial')
-        aosp, app = get_installed_versions()
-        user_view.touch_element_with_text('Dial')
-        dial_view.dial_set_alpha_ota_server(aosp)
-        dial_view.touch_call_button()
-        print "Done"
-
-    @staticmethod
-    def dial_beta_ota():
-        print "dialing beta OTA code...",
-        user_view.goto_tab('Dial')
-        dial_view.dial_set_beta_ota_server()
-        dial_view.touch_call_button()
-        print "Done"
-
-    @staticmethod
-    def dial_prod_ota():
-        print "dialing prod OTA code...",
-        user_view.goto_tab('Dial')
-        dial_view.dial_set_production_ota_server()
-        dial_view.touch_call_button()
-        print "Done"
-
-    @staticmethod
-    def dial_show_ota():
-        print "dialing show OTA code...",
-        user_view.goto_tab('Dial')
-        dial_view.dial_show_ota_server()
-        dial_view.touch_call_button()
-        print "Done"
-
-    @staticmethod
-    def get_digit_centers():
-        print "Getting digit centers...",
-        user_view.goto_tab('Dial')
-        for btn in ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Star', '0', 'Pound']:
-            el = dial_view.find_named_element("NumKey" + btn)
-            x = int(el.location['x']) + (int(el.size['width']) / 2)
-            y = int(el.location['y']) + (int(el.size['height']) / 2)
-            print "%s: (%d, %d)" % (btn, x, y)
-        print "Done"
-
-    @staticmethod
-    def scroll_to_top_vm():
-        print "Scrolling to top of voicemail window...",
-        voicemail_view.get_top_vm_parents()
-        print "Done"
-
-    @staticmethod
-    def toggle_multi_edit():
-        print "Toggling Multi-Edit...",
-        contacts_view.toggle_multi_edit()
-        print "Done"
-
-    @staticmethod
-    def force_aosp_downgrade():
-        print "Forcing AOSP Downgrade...",
-        force_aosp_downgrade('2.3.12')
-        print "Done"
-
-    @staticmethod
-    def get_xml():
+    def get_xml_appium():
         print "Getting XML and CSV...",
-        xml = base_view.get_source()
-        xml_dir = os.path.join(cfg.xml_folder, 'xml_appium_gui')
-        csv_dir = os.path.join(cfg.csv_folder, 'csv_appium_gui')
-        try:
-            os.makedirs(xml_dir)
-        except OSError as e:
-            # ignore 'File exists' error but re-raise any others
-            if e.errno != 17:
-                raise e
-        try:
-            os.makedirs(csv_dir)
-        except OSError as e:
-            # ignore 'File exists' error but re-raise any others
-            if e.errno != 17:
-                raise e
+        mkdir_p(xml_dir)
+        mkdir_p(csv_dir)
+        xml = android_actions.driver.page_source
         xml_fullpath = os.path.join(xml_dir, 'appium_gui.xml')
         csv_fullpath = os.path.join(csv_dir, 'appium_gui.csv')
         log.info("saving xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
         xml_to_csv(xml_fullpath, csv_fullpath)
+        print "Done"
+
+    @staticmethod
+    def get_xml_adb():
+        print "Getting XML and CSV...",
+        mkdir_p(xml_dir)
+        mkdir_p(csv_dir)
+        xml_path = os.path.join(xml_dir, 'appium_gui.xml')
+        csv_path = os.path.join(csv_dir, 'appium_gui.csv')
+        log.info("saving xml %s" % xml_path)
+        adb.run_cmd('shell uiautomator dump')
+        adb.run_cmd('pull /sdcard/window_dump.xml')
+        os.rename('window_dump.xml', xml_path)
+        xml_to_csv(xml_path, csv_path)
 
         print "Done"
 
     @staticmethod
-    def get_screenshot():
-        print "Getting Screenshot...",
-        base_view.get_screenshot_as_png('appium_gui', cfg.test_screenshot_folder)
+    def get_screenshot_appium():
+        print "Getting Screenshot using Appium...",
+        mkdir_p(screenshot_dir)
+        img_path = os.path.join(screenshot_dir, 'appium_gui.png')
+        log.debug("saving screenshot to %s" % img_path)
+        android_actions.get_screenshot_as_file(img_path)
         print "Done"
 
     @staticmethod
-    def install_apk(version):
-        adb = ADB()
-        apk_path = os.path.join(cfg.site["ApksHome"], "%s.apk" % version)
-        print "Installing " + apk_path
-        output = adb.run_cmd("install -r -d %s" % apk_path)
-        for line in output.split('\n'):
-            log.debug(line.encode('string_escape'))
+    def get_screenshot_adb():
+        print "Getting Screenshot using ADB...",
+        mkdir_p(screenshot_dir)
+        img_path = os.path.join(screenshot_dir, 'appium_gui.png')
+        adb.run_cmd('shell screencap -p /sdcard/screencap.png')
+        adb.run_cmd('pull /sdcard/screencap.png')
+        log.debug("saving screenshot to %s" % img_path)
+        os.rename('screencap.png', img_path)
+        print "Done"
+
+    def rotate_image(self):
+        print "Rotating screenshot...",
+        img_path = os.path.join(screenshot_dir, 'appium_gui.png')
+        im = Image.open(img_path)
+        im = im.rotate(-90, expand=True)
+        im.save(img_path)
+        self.create_cwin(reuse_image=True)
+        print "Done"
 
     def __del__(self):
         print "Closing Appium...",
         self.update_idletasks()
-        self.after(500, base_view.close_appium)
+        self.after(500, android_actions.close_appium)
         sleep(1)
         print "Done"
 

@@ -203,11 +203,11 @@ class ContactsView(UserView):
             prev_numbers_len = len(checked_numbers)
             for item in displayed_items:
                 if item['number'] not in checked_numbers:
-                    color = self.get_element_color_and_count('multi_edit', item['icon'])
+                    color = self.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', item['icon'])
                     if self.color_match(color, wrong_color):
                         item['icon'].click()
                         self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
-                        color = self.get_element_color_and_count('multi_edit', item['icon'])
+                        color = self.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', item['icon'])
                         if not self.color_match(color, right_color):
                             raise Ux("Expected color %s to equal %s" % (color, right_color))
                     log.debug('adding %s to checked number list' % item['number'])
@@ -238,11 +238,11 @@ class ContactsView(UserView):
                     else:
                         right_color = cfg.colors['ContactsView']['multi_favorite_off_color']
                         wrong_color = cfg.colors['ContactsView']['multi_favorite_on_color']
-                    color = self.get_element_color_and_count('multi_edit', item['icon'])
+                    color = self.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', item['icon'])
                     if self.color_match(color, wrong_color):
                         item['icon'].click()
                         self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
-                        color = self.get_element_color_and_count('multi_edit', item['icon'])
+                        color = self.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', item['icon'])
                         if not self.color_match(color, right_color):
                             raise Ux("Expected color %s to equal %s" % (color, right_color))
                     if item['number'] in favorites:

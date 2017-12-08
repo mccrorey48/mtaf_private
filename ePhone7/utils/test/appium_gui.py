@@ -11,20 +11,16 @@ import threading
 import json
 from lib.filters import get_filter
 from PIL import Image, ImageTk
-
-uut = 'ePhone7'
-
-if uut == 'ePhone7':
-    from ePhone7.config.configure import cfg
-    from ePhone7.views import *
-    from ePhone7.utils.get_softphone import get_softphone
-    from ePhone7.views.base_view import keycodes
-    from ePhone7.utils.csv.xml_to_csv import xml_to_csv
-    from ePhone7.utils.csv.parse_ids import parse_ids, parse_zpaths
-    from ePhone7.utils.spud_serial import SpudSerial
-    from ePhone7.utils.usb_enable import usb_enable
-    from ePhone7.utils.get_focused_app import get_focused_app
-    from ePhone7.utils.versions import *
+from ePhone7.config.configure import cfg
+from ePhone7.views import *
+from ePhone7.utils.get_softphone import get_softphone
+from ePhone7.views.base_view import keycodes
+from ePhone7.utils.csv.xml_to_csv import xml_to_csv
+from ePhone7.utils.csv.parse_ids import parse_ids, parse_zpaths
+from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.utils.usb_enable import usb_enable
+from ePhone7.utils.get_focused_app import get_focused_app
+from ePhone7.utils.versions import *
 
 log = logging.get_logger('esi.appium_gui')
 
@@ -930,11 +926,11 @@ class TestGui(Frame):
         index = int(text_index)
         elem = self.elems[index]
         base_view.get_screenshot_as_png('appium_gui', cfg.test_screenshot_folder)
-        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=0)
+        color = base_view.get_element_color_and_count(cfg.screenshot_folder, 'appium_gui', elem, color_list_index=0)
         print "first color and count: %s" % color
-        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=1)
+        color = base_view.get_element_color_and_count(cfg.screenshot_folder, 'appium_gui', elem, color_list_index=1)
         print "second color and count: %s" % color
-        color = base_view.get_element_color_and_count('appium_gui', elem, color_list_index=2)
+        color = base_view.get_element_color_and_count(cfg.screenshot_folder, 'appium_gui', elem, color_list_index=2)
         print "third color and count: %s" % color
         for color_name in ['favorite_on_color', 'favorite_off_color']:
             if base_view.color_match(color, cfg.colors['ContactsView'][color_name]):

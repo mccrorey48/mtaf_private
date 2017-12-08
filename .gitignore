@@ -9,6 +9,7 @@ tmp/
 xml_not_retrieved
 exception.xml
 appium_gui.xml
+appium_gui.png
 steps.txt
 substeps.txt
 *.json

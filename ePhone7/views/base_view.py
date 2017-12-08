@@ -1,19 +1,14 @@
 import os
 from time import sleep, time
 
-from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
-from appium.webdriver.common.touch_action import TouchAction
 from selenium.common.exceptions import WebDriverException, TimeoutException, StaleElementReferenceException
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions
-import traceback
 
 import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
-from lib.android import MockDriver
 from lib.android import expand_zpath
-from lib.android_base_view import AndroidBaseView
+from lib.android_actions import AndroidActions
 from lib.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
 from lib.wrappers import Trace
 from ePhone7.utils.spud_serial import SpudSerial
@@ -26,7 +21,7 @@ keycodes['KEYCODE_HOME'] = 188
 keycodes['KEYCODE_BACK'] = 4
 
 
-class BaseView(AndroidBaseView):
+class BaseView(AndroidActions):
 
     current_activity = None
     caps_tag = None
@@ -46,7 +41,7 @@ class BaseView(AndroidBaseView):
     }
 
     def __init__(self):
-        super(AndroidBaseView, self).__init__()
+        super(AndroidActions, self).__init__()
         self.cfg = cfg
         self.By = MobileBy
         self.locator_timeout = 10
@@ -72,7 +67,7 @@ class BaseView(AndroidBaseView):
 
     @Trace(log)
     def get_locator(self, name):
-        locator = AndroidBaseView.get_locator(self, name)
+        locator = AndroidActions.get_locator(self, name)
         if locator["by"] == "zpath":
             locator["by"] = "xpath"
             locator["value"] = expand_zpath(locator["value"])
