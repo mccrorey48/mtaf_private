@@ -1,11 +1,13 @@
-from softphone_plugin import AccountFrame
+from softphone_plugin import create_softphone_frame
 from ePhone7.views import *
 from ePhone7.utils.usb_enable import usb_enable
 from ePhone7.utils.versions import get_installed_versions
 from ePhone7.config.configure import cfg
 from ePhone7.utils.spud_serial import SpudSerial
 from lib.user_exception import UserException as Ux
-from Tkinter import Frame, DISABLED
+from Tkinter import DISABLED
+from ePhone7.utils.get_softphone import get_softphone
+
 
 
 class E7Commands(object):
@@ -82,17 +84,15 @@ class E7Commands(object):
                                     'timeout': 120})
         print "Done"
 
-    def create_softphone_frame(self):
-        self.parent.softphone_frame = Frame(self.parent, bg='brown')
-        self.parent.softphone_frame.columnconfigure(0, weight=1)
+    def create_softphone_frames(self):
+        acct_specs = []
+        for username in [cfg.site['DefaultSoftphoneUser'], cfg.site['DefaultForwardAccount']]:
+            softphone = get_softphone(username)
+            softphone.set_incoming_response(180)
+            acct_specs.append({'label': username, 'softphone': softphone})
+        self.parent.softphone_frame = create_softphone_frame(self, acct_specs)
         self.parent.top_frames.insert(1, self.parent.softphone_frame)
         self.parent.populate_top_frames()
-        self.parent.softphone_frame.account1_frame = AccountFrame(self.parent.softphone_frame,
-                                                                  cfg.site['DefaultSoftphoneUser'])
-        self.parent.softphone_frame.account1_frame.grid(row=0, column=0, sticky='ew', padx=2, pady=2)
-        self.parent.softphone_frame.account2_frame = AccountFrame(self.parent.softphone_frame,
-                                                                  cfg.site['DefaultForwardAccount'])
-        self.parent.softphone_frame.account2_frame.grid(row=1, column=0, sticky='ew', padx=2, pady=2)
         label_position = 1
         last_label = None
         submenu = self.parent.menu.submenus['Other Actions']
@@ -126,7 +126,7 @@ def install(parent):
         ],
         'Other Actions': [
             {'label': 'Enable USB', 'command': e7_cmds.usb_enable},
-            {'label': 'Create Softphones', 'command': e7_cmds.create_softphone_frame},
+            {'label': 'Create Softphones', 'command': e7_cmds.create_softphone_frames},
             {'label': 'Reboot', 'command': e7_cmds.reboot}
         ]
     }
