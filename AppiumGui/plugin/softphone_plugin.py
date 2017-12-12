@@ -1,12 +1,21 @@
 from Tkconstants import DISABLED, NORMAL
 from Tkinter import Frame, IntVar, StringVar, Label, Checkbutton, Button
 
-from ePhone7.utils.get_softphone import get_softphone
+
+def create_softphone_frame(self, acct_specs):
+    frame = Frame(self.parent, bg='brown')
+    frame.columnconfigure(0, weight=1)
+    for row, acct_spec in enumerate(acct_specs):
+        frame.account1_frame = AccountFrame(frame, acct_spec['label'], acct_spec['softphone'])
+        frame.account1_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
+    return frame
 
 
 class AccountFrame(Frame):
-    def __init__(self, parent, user_name, *args, **kwargs):
+    def __init__(self, parent, user_name, softphone, *args, **kwargs):
         Frame.__init__(self, parent, bg='tan', *args, **kwargs)
+        self.softphone = softphone
+        self.softphone.set_incoming_response(180)
         self.registered_var = IntVar()
         self.registered_var.set(0)
         self.old_reg_status = None
@@ -39,8 +48,6 @@ class AccountFrame(Frame):
         self.remote.grid(row=0, column=5, padx=5, pady=2, ipady=3, sticky='ew')
         self.columnconfigure(5, weight=1)
 
-        self.softphone = get_softphone(user_name)
-        self.softphone.set_incoming_response(180)
         self.after(100, self.check_status)
 
     def check_status(self):
