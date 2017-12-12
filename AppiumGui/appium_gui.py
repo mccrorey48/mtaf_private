@@ -16,12 +16,15 @@ from xml_to_csv import xml_to_csv
 from parse_ids import parse_ids, parse_zpaths
 import errno
 import argparse
+import importlib
+from operator import xor
 
 log = logging.get_logger('esi.appium_gui')
 android_actions = AndroidActions()
 adb = ADB()
 re_package = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)')
 re_activity = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
+re_apk = re.compile('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)')
 xml_dir = os.path.join('AppiumGui', 'xml')
 csv_dir = os.path.join('AppiumGui', 'csv')
 screenshot_dir = os.path.join('AppiumGui', 'screenshot')
@@ -219,6 +222,7 @@ class AppiumGui(Frame):
         self.swipe_y2_var = StringVar()
         self.swipe_ms_var = StringVar()
         self.exec_text = StringVar()
+        self.package = None
 
         try:
             with open('tmp/appium_gui_locators.json', 'r') as f:
@@ -350,13 +354,19 @@ class AppiumGui(Frame):
         self.cwin.btn_frame.rotate = Button(self.cwin.btn_frame, text="rotate image", command=self.rotate_image)
         self.cwin.btn_frame.rotate.grid(row=0, column=0)
         self.cwin.btn_frame.grid(row=1, column=0)
+        self.cwin.invert_selection = IntVar()
+        self.cwin.invert_selection.set(0)
+        self.cwin.btn_frame.invert = Checkbutton(self.cwin.btn_frame, text='Invert Selection',
+                                                 variable=self.cwin.invert_selection,
+                                                 command=self.create_loc_frames)
+        self.cwin.btn_frame.invert.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
         self.cwin.rowconfigure(0, weight=1)
         self.create_loc_frames()
         self.bottom_frame.mk_canvas.configure(state=NORMAL)
 
-    def update_loc_frames(self):
-        self.destroy_loc_frames()
-        self.create_loc_frames()
+    # def update_loc_frames(self):
+    #     self.destroy_loc_frames()
+    #     self.create_loc_frames()
 
     def destroy_loc_frames(self):
         if self.id_frame is not None:
@@ -389,7 +399,7 @@ class AppiumGui(Frame):
         self.id_label.grid(column=0, row=0, stick='ew')
         row += 1
         for _id in self.ids:
-            if self.elem_selected(self.ids[_id]):
+            if xor(self.cwin.invert_selection.get(), self.elem_selected(self.ids[_id])):
                 # print "_id selected: %s" % _id
                 self.id_frame_btns[_id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id))
                 self.id_frame_btns[_id].grid(row=row, column=0, sticky='w')
@@ -401,7 +411,7 @@ class AppiumGui(Frame):
         row += 1
         zpath_keys = self.zpaths.keys()
         for zpath in sorted(zpath_keys):
-            if self.elem_selected(self.zpaths[zpath]):
+            if xor(self.cwin.invert_selection.get(), self.elem_selected(self.zpaths[zpath])):
                 # print "zpath selected: %s" % zpath
                 self.zpath_frame_btns[zpath] = Button(self.zpath_frame.interior, text=zpath,
                                                       command=self.get_zpath_outline_fn(zpath))
@@ -427,9 +437,9 @@ class AppiumGui(Frame):
                 if self.drag_polygon is not None:
                     self.im_canvas.delete(self.drag_polygon)
                     self.drag_polygon = None
-                    self.update_loc_frames()
+                    self.create_loc_frames()
         elif event.type == '5':
-            self.update_loc_frames()
+            self.create_loc_frames()
         elif event.type == '6':
             if self.drag_polygon is not None:
                 self.im_canvas.delete(self.drag_polygon)
@@ -890,15 +900,24 @@ class AppiumGui(Frame):
         self.open_appium()
         print "Done"
 
-    @staticmethod
-    def get_focused_app():
-        print "Getting Focused App...",
+    def get_focused_app(self, quiet=False):
+        if not quiet:
+            print "Getting Focused App...",
+        self.package = None
+        activity = None
+        apk = None
         output = adb.run_cmd('shell dumpsys window windows')
-        # print 'APK Version: ' + re.match('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)', output).group(1)
-        package = re_package.match(output).group(1)
-        activity = re_activity.match(output).group(2)
-        print "Done"
-        print "Focused App: " + activity
+        if re_package.match(output):
+            self.package = re_package.match(output).group(1)
+            if re_activity.match(output):
+                activity = re_activity.match(output).group(2)
+                output = adb.run_cmd('shell dumpsys package %s' % self.package)
+                apk = re_apk.match(output).group(1)
+        if not quiet:
+            print "Package: " + self.package
+            print 'APK Version: ' + apk
+            print "Focused App: " + activity
+            print "Done"
 
     @staticmethod
     def get_xml_appium():
@@ -988,9 +1007,16 @@ root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
 _app = AppiumGui(root)
-if args.plugin is not None:
-    import importlib
-    plugin = importlib.import_module('plugin.' + args.plugin + '_plugin')
+_app.get_focused_app(quiet=True)
+if args.plugin is None:
+    if _app.package[-5:] == 'ditto':
+        plugin = importlib.import_module('AppiumGui.plugin.ePhone7_plugin')
+        plugin.install(_app)
+    elif _app.package[-8:] == 'ephonego':
+        plugin = importlib.import_module('AppiumGui.plugin.ePhoneGo_plugin')
+        plugin.install(_app)
+else:
+    plugin = importlib.import_module('AppiumGui.plugin.' + args.plugin + '_plugin')
     plugin.install(_app)
 root.protocol("WM_DELETE_WINDOW", on_closing)
 _app.mainloop()
