@@ -5,7 +5,7 @@ from time import sleep, time
 from lib.user_exception import UserException as Ux
 from pyand import ADB
 import lib.logging_esi as logging
-from lib.android import expand_zpath
+from lib.android_zpath import expand_zpath
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
 import json

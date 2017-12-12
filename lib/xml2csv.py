@@ -1,7 +1,7 @@
 import re
 import xml.etree.ElementTree as ET
 
-import lib.android
+import lib.android_zpath
 
 tagre = re.compile('([^\[]+)(.*)')
 
@@ -11,7 +11,7 @@ def printall(output_lines, node, tag_index, pfx):
         tag = node.attrib['class']
     else:
         tag = node.tag
-    tag = lib.android.get_abbrev(tag)
+    tag = lib.android_zpath.get_abbrev(tag)
     if tag_index == 0:
         new_prefix = pfx + tag
     else:

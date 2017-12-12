@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
-from lib.android import expand_zpath
+from lib.android_zpath import expand_zpath
 from lib.android_actions import AndroidActions
 from lib.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
 from lib.wrappers import Trace

@@ -5,7 +5,7 @@ from time import sleep, time
 from lib.user_exception import UserException as Ux
 from pyand import ADB
 import lib.logging_esi as logging
-from lib.android import expand_zpath
+from lib.android_zpath import expand_zpath
 from lib.android_actions import AndroidActions
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
@@ -15,6 +15,7 @@ from PIL import Image, ImageTk
 from xml_to_csv import xml_to_csv
 from parse_ids import parse_ids, parse_zpaths
 import errno
+import argparse
 
 log = logging.get_logger('esi.appium_gui')
 android_actions = AndroidActions()
@@ -129,7 +130,7 @@ class LogFrame(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent, bg='brown')
         print "parent = " + repr(parent)
-        self.txt = ScrolledLogwin(self, width=80, height=20, name='cmd')
+        self.txt = ScrolledLogwin(self, width=80, height=20)
         self.txt.grid(row=0, column=0, sticky='news', padx=2, pady=2)
 
     def write(self, *args, **kwargs):
@@ -143,20 +144,19 @@ class MyMenu(Menu):
     def __init__(self, parent):
         Menu.__init__(self, parent)
         self.submenus = {}
+        self.submenu_count = 0
 
-    def add_submenu(self, name, label):
-        self.submenus[name] = MySubmenu(self, label)
-        self.add_cascade(label=label, menu=self.submenus[name])
-
-
-class MySubmenu(Menu):
-    def __init__(self, parent, label=None):
-        Menu.__init__(self, parent)
-        self.commands = []
-        # parent.add_cascade(label=label, menu=self)
-
-    def add_submenu_command(self, command):
-        self.add_command(label=command.label, command=command.action)
+    def add_submenu(self, cmd_type):
+        submenu = MyMenu(self)
+        self.submenu_count += 1
+        submenu.number = self.submenu_count
+        self.add_cascade(label=cmd_type, menu=submenu)
+        if cmd_type == 'Appium Actions':
+            submenu.appium_required = True
+            self.entryconfig(submenu.number, state=DISABLED)
+        else:
+            submenu.appium_required = False
+        self.submenus[cmd_type] = submenu
 
 
 class AttrFrame(Frame):
@@ -172,11 +172,12 @@ class ButtonFrame(Frame):
 
 
 class AppiumGui(Frame):
+    cmd_types = {}
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
         self.appium_is_open = False
-        self.attr_frame = None
+        self.top_frames = []
         self.cwin = None
         self.drag_polygon = None
         self.new_drag_polygon_x1 = None
@@ -207,7 +208,6 @@ class AppiumGui(Frame):
         self.zpath_label = None
         self.zpaths = None
         self.appium_btns = []
-        self.commands = {}
         self.elem_indices = []
         self.elems = []
         self.polygons = []
@@ -226,21 +226,27 @@ class AppiumGui(Frame):
         except IOError:
             pass
 
-        self.create_commands()
         self.create_menus(parent)
-        self.top_frame_row = 0
         self.btn_frame = self.create_btn_frame()
-        self.exec_frame = self.create_exec_frame()
-        self.log_frame = self.create_log_frame()
+        self.top_frames.append(self.btn_frame)
+        self.top_frames.append(self.create_exec_frame())
+        self.top_frames.append(self.create_log_frame())
         self.bottom_frame = self.create_bottom_frame()
+        self.top_frames.append(self.bottom_frame)
+        self.populate_top_frames()
+
         self.grid_columnconfigure(0, weight=1)
         self.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
-        # for i in range(self.menu.appium_sub_menu_max_index):
-        #     self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
-        # for i in range(self.menu.other_sub_menu_max_index):
-        #     self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
+
+    def populate_top_frames(self):
+        top_frame_row = 0
+        for top_frame in self.top_frames:
+            if hasattr(top_frame, 'expand_y') and top_frame.expand_y is True:
+                self.grid_rowconfigure(top_frame_row, weight=1)
+            top_frame.grid(row=top_frame_row, column=0, padx=4, pady=4, sticky='news')
+            top_frame_row += 1
 
     def check_thread(self):
         if self.worker_thread is None:
@@ -255,16 +261,21 @@ class AppiumGui(Frame):
             log.debug("worker thread died")
             self.worker_thread = None
             if self.appium_is_open:
-                self.menu.entryconfig(1, state=NORMAL)
+                for cmd_type in self.menu.submenus:
+                    self.menu.entryconfig(self.menu.submenus[cmd_type].number, state=NORMAL)
                 for btn in self.appium_btns:
                     btn.configure(state=NORMAL)
-                self.menu.entryconfig(3, label='Stop Appium', command=lambda: self.do_cmd(self.close_appium))
+                self.menu.entryconfig(self.menu.appium_btn_number, label='Stop Appium', state=NORMAL,
+                                      command=lambda: self.do_cmd(self.close_appium))
             else:
-                self.menu.entryconfig(3, label='Start Appium', command=lambda: self.do_cmd(self.open_appium))
-            self.menu.entryconfig(2, state=NORMAL)
-            self.menu.entryconfig(3, state=NORMAL)
-            # for i in range(self.menu.other_sub_menu_max_index):
-            #     self.menu.other_sub_menu.entryconfig(i + 1, state=NORMAL)
+                for cmd_type in self.menu.submenus:
+                    submenu = self.menu.submenus[cmd_type]
+                    if submenu.appium_required:
+                        self.menu.entryconfig(submenu.number, state=DISABLED)
+                    else:
+                        self.menu.entryconfig(submenu.number, state=NORMAL)
+                self.menu.entryconfig(self.menu.appium_btn_number, label='Start Appium', state=NORMAL,
+                                      command=lambda: self.do_cmd(self.open_appium))
 
     def create_bottom_frame(self):
         bottom_frame = BottomFrame(self, bg="tan")
@@ -274,8 +285,8 @@ class AppiumGui(Frame):
         # self.appium_btns.append(bottom_frame.mk_canvas)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", command=self.close_appium_and_quit)
         bottom_frame.Quit.grid(row=0, column=1, sticky='e', padx=2, pady=2)
-        bottom_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
-        self.top_frame_row += 1
+        # bottom_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
+        # self.top_frame_row += 1
         return bottom_frame
 
     def elem_selected(self, elems):
@@ -400,7 +411,8 @@ class AppiumGui(Frame):
         self.cwin.update()
         self.cwin.geometry(
             '%dx%d' % (self.im_width + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth(),
-                       self.cwin.winfo_reqheight()))
+                       self.im_height))
+                       # self.cwin.winfo_reqheight()))
 
     def mouse_btn(self, event):
         # (event.type, event.num) values: (4,1)=press, 6=motion, 5=release, (4,3)=right-press
@@ -460,9 +472,10 @@ class AppiumGui(Frame):
         sys.stdout = log_frame
         log_frame.grid_columnconfigure(0, weight=1)
         log_frame.grid_rowconfigure(0, weight=1)
-        log_frame.grid(row=self.top_frame_row, column=0, padx=2, pady=2, sticky='news')
-        self.grid_rowconfigure(self.top_frame_row, weight=1)
-        self.top_frame_row += 1
+        log_frame.expand_y = True
+        # log_frame.grid(row=self.top_frame_row, column=0, padx=2, pady=2, sticky='news')
+        # self.grid_rowconfigure(self.top_frame_row, weight=1)
+        # self.top_frame_row += 1
         return log_frame
 
     @staticmethod
@@ -476,8 +489,8 @@ class AppiumGui(Frame):
         exec_frame.entry = Entry(exec_frame, textvariable=self.exec_text)
         exec_frame.entry.grid(row=0, column=1, sticky='news')
         exec_frame.columnconfigure(1, weight=1)
-        exec_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
-        self.top_frame_row += 1
+        # exec_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
+        # self.top_frame_row += 1
         return exec_frame
 
     def exec_code(self):
@@ -497,12 +510,7 @@ class AppiumGui(Frame):
         self.find_by_var = StringVar()
         self.find_by_var.set('uia_text')
         btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16,
-                                           values=['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator',
-                                                   'contacts_locator', 'voicemail_locator', 'history_locator',
-                                                   'dial_locator', 'prefs_locator', 'contacts_locator_all',
-                                                   'voicemail_locator_all', 'history_locator_all', 'dial_locator_all',
-                                                   'prefs_locator_all'
-                                                   ],
+                                           values=['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator'],
                                            textvariable=self.find_by_var, state='readonly', takefocus=False)
         btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_find_cbs)
         btn_frame.find_frame.by.bind("<FocusIn>", self.defocus)
@@ -565,36 +573,36 @@ class AppiumGui(Frame):
         ms_entry.grid(row=0, column=14, padx=2, pady=2, sticky='w')
         btn_frame.xy_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
-        self.attr_frame = AttrFrame(btn_frame, bg='tan')
-        self.attr_frame.index_label = Label(self.attr_frame, text="select elem:", bg="tan")
-        self.attr_frame.index_label.grid(row=0, column=0, padx=2, pady=2, sticky='e')
+        btn_frame.attr_frame = AttrFrame(btn_frame, bg='tan')
+        btn_frame.attr_frame.index_label = Label(btn_frame.attr_frame, text="select elem:", bg="tan")
+        btn_frame.attr_frame.index_label.grid(row=0, column=0, padx=2, pady=2, sticky='e')
         self.elem_index = StringVar()
         self.elem_index.set('')
-        self.attr_frame.index = Combobox(self.attr_frame, width=6, values=[], textvariable=self.elem_index)
-        self.attr_frame.index.grid(row=0, column=1, padx=2, pady=2, sticky='e')
-        btn = Button(self.attr_frame, text="get elem attributes", command=self.get_elem_attrs, state=DISABLED, padx=1)
+        btn_frame.attr_frame.index = Combobox(btn_frame.attr_frame, width=6, values=[], textvariable=self.elem_index)
+        btn_frame.attr_frame.index.grid(row=0, column=1, padx=2, pady=2, sticky='e')
+        btn = Button(btn_frame.attr_frame, text="get elem attributes", command=self.get_elem_attrs, state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=2, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="get elem color", command=self.get_elem_color, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="get elem color", command=self.get_elem_color, state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=3, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="click elem", command=self.click_element, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="click elem", command=self.click_element, state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=4, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="clear elem", command=self.clear_element, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="clear elem", command=self.clear_element, state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=5, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="set parent", command=self.set_parent, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="set parent", command=self.set_parent, state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=6, padx=2, pady=2)
-        btn = Button(self.attr_frame, text="set frame", command=self.set_frame, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="set frame", command=self.set_frame, state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=7, padx=2, pady=2)
-        self.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        btn_frame.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.grid_columnconfigure(0, weight=1)
-        btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
-        btn_frame.row = self.top_frame_row
-        self.top_frame_row += 1
+        # btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
+        # btn_frame.row = self.top_frame_row
+        # self.top_frame_row += 1
         return btn_frame
 
     def update_find_frame(self, event):
@@ -606,40 +614,36 @@ class AppiumGui(Frame):
             else:
                 self.use_parent.set(0)
 
-    def create_menus(self, parent):
-        menu = MyMenu(parent)
-        for prefix in "Appium", "ADB":
-            label = prefix + " Actions"
-            cmd_type = prefix.lower()
-            menu.add_submenu(label=label, name=cmd_type)
-            for command in self.commands[cmd_type]:
-                menu.submenus[cmd_type].add_submenu_command(command)
-        menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
-        parent.config(menu=menu)
-        self.menu = menu
-
     def create_commands(self):
-        self.commands['appium'] = [
+        self.cmd_types['Appium Actions'] = [
             Command("Get Current Activity", lambda: self.do_cmd(self.get_current_activity)),
             Command("Restart Appium", lambda: self.do_cmd(self.restart_appium)),
         ]
-        self.commands['adb'] = [
+        self.cmd_types['ADB Actions'] = [
             Command("Get Screenshot", lambda: self.do_cmd(self.get_screenshot_adb())),
             Command("Get Focused App", lambda: self.do_cmd(self.get_focused_app))
         ]
 
+    def create_menus(self, parent):
+        self.create_commands()
+        menu = MyMenu(parent)
+        for cmd_type in self.cmd_types:
+            menu.add_submenu(cmd_type)
+            submenu = menu.submenus[cmd_type]
+            for command in self.cmd_types[cmd_type]:
+                submenu.add_command(label=command.label, command=command.action)
+        menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
+        menu.submenu_count += 1
+        menu.appium_btn_number = menu.submenu_count
+        parent.config(menu=menu)
+        self.menu = menu
+
     def do_cmd(self, cmd):
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
-        self.menu.entryconfig(1, state=DISABLED)
-        self.menu.entryconfig(2, state=DISABLED)
-        self.menu.entryconfig(3, state=DISABLED)
-        # for i in range(self.menu.appium_sub_menu_max_index):
-        #     self.menu.appium_sub_menu.entryconfig(i + 1, state=DISABLED)
-        # for i in range(self.menu.other_sub_menu_max_index):
-        #     self.menu.other_sub_menu.entryconfig(i + 1, state=DISABLED)
-        for i in [3, 4]:
-            self.menu.entryconfig(i, state=DISABLED)
+        for cmd_type in self.menu.submenus:
+                self.menu.entryconfig(self.menu.submenus[cmd_type].number, state=DISABLED)
+        self.menu.entryconfig(self.menu.appium_btn_number, state=DISABLED)
         self.update_idletasks()
         # sleep(5)
         self.worker_thread = threading.Thread(target=cmd, name=cmd)
@@ -749,7 +753,7 @@ class AppiumGui(Frame):
             self.within_frame.set(0)
         print "%s element%s found" % (len(self.elems), '' if len(self.elems) == 1 else 's')
         elem_indices = [str(i) for i in range(len(self.elems))]
-        self.attr_frame.index.configure(values=elem_indices)
+        self.btn_frame.attr_frame.index.configure(values=elem_indices)
         if len(elem_indices):
             self.elem_index.set('0')
         else:
@@ -871,10 +875,6 @@ class AppiumGui(Frame):
         print "Done"
 
     @staticmethod
-    def get_current_activity():
-        print "current activity: " + android_actions.driver.current_activity
-
-    @staticmethod
     def log_action(spud_serial, action):
         (reply, elapsed, groups) = spud_serial.do_action(action)
         lines = reply.split('\n')
@@ -964,12 +964,9 @@ class AppiumGui(Frame):
         sleep(1)
         print "Done"
 
-
-root = Tk()
-root.wm_title("Appium test utility")
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
-_app = AppiumGui(root)
+    @staticmethod
+    def get_current_activity():
+        print "current activity: " + android_actions.driver.current_activity
 
 
 def on_closing():
@@ -980,5 +977,19 @@ def on_closing():
     root.destroy()
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--plugin", type=str, help="device-specific plugin to load", default=None,
+                    choices=['ePhone7', 'ePhoneGo'])
+args = parser.parse_args()
+root = Tk()
+root.wm_title("Appium test utility")
+root.columnconfigure(0, weight=1)
+root.rowconfigure(0, weight=1)
+
+_app = AppiumGui(root)
+if args.plugin is not None:
+    import importlib
+    plugin = importlib.import_module(args.plugin + '_plugin')
+    plugin.install(_app)
 root.protocol("WM_DELETE_WINDOW", on_closing)
 _app.mainloop()

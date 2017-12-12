@@ -152,11 +152,11 @@ if __name__ == '__main__':
                              '  ccd_site: db name ccd_site; config directory ccd/config\n')
     args = parser.parse_args()
     db_names = targets[args.target]['db_names']
-    cfg_dir = targets[args.target]['cfg_dir']
+    _cfg_dir = targets[args.target]['cfg_dir']
     if args.output_file is None:
-        ops[args.operation](db_names, args.server, cfg_dir, None)
+        ops[args.operation](db_names, args.server, _cfg_dir, None)
     elif args.output_file == '-' or args.output_file == 'stdout':
-        ops[args.operation](db_names, args.server, cfg_dir, sys.stdout)
+        ops[args.operation](db_names, args.server, _cfg_dir, sys.stdout)
     else:
         with open(os.path.join(cfg_dir, args.output_file), 'w') as output_fd:
-            ops[args.operation](db_names, args.server, cfg_dir, output_fd)
+            ops[args.operation](db_names, args.server, _cfg_dir, output_fd)

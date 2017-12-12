@@ -1,4 +1,4 @@
-from lib.android import get_age_range_minutes
+from ePhone7.views.voicemail_view import get_age_range_minutes
 
 ages = [
     '0 minutes ago',

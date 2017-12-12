@@ -109,9 +109,9 @@ class DialView(UserView):
         self.touch_dial_button()
 
     @Trace(log)
-    def dial_set_alpha_ota_server(self, installed_aosp):
+    def dial_set_alpha_ota_server(self, installed_aosp=None):
         # if the normal downgrade version has the old keyboard layout, set old_keyboard to True
-        if int(installed_aosp.split('.')[1]) < 4:
+        if installed_aosp is not None and int(installed_aosp.split('.')[1]) < 4:
             has_old_keyboard = True
         else:
             has_old_keyboard = False
