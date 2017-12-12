@@ -245,6 +245,7 @@ class AppiumGui(Frame):
         for top_frame in self.top_frames:
             if hasattr(top_frame, 'expand_y') and top_frame.expand_y is True:
                 self.grid_rowconfigure(top_frame_row, weight=1)
+            top_frame.grid_forget()
             top_frame.grid(row=top_frame_row, column=0, padx=4, pady=4, sticky='news')
             top_frame_row += 1
 
@@ -989,7 +990,7 @@ root.rowconfigure(0, weight=1)
 _app = AppiumGui(root)
 if args.plugin is not None:
     import importlib
-    plugin = importlib.import_module(args.plugin + '_plugin')
+    plugin = importlib.import_module('plugin.' + args.plugin + '_plugin')
     plugin.install(_app)
 root.protocol("WM_DELETE_WINDOW", on_closing)
 _app.mainloop()

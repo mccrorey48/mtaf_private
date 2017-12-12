@@ -1,6 +1,6 @@
-from ePhone7.views import *
-from ePhone7.utils.usb_enable import usb_enable
-from ePhone7.utils.versions import get_installed_versions
+from ePhone7_plugin.views import *
+from ePhone7_plugin.utils.usb_enable import usb_enable
+from ePhone7_plugin.utils.versions import get_installed_versions
 
 
 class EGoCommands(object):
