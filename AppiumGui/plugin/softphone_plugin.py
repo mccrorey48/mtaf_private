@@ -1,5 +1,6 @@
 from Tkconstants import DISABLED, NORMAL
 from Tkinter import Frame, IntVar, StringVar, Label, Checkbutton, Button
+from lib.user_exception import UserException as Ux
 
 
 def create_softphone_frame(self, acct_specs):
@@ -8,7 +9,20 @@ def create_softphone_frame(self, acct_specs):
     for row, acct_spec in enumerate(acct_specs):
         frame.account1_frame = AccountFrame(frame, acct_spec['label'], acct_spec['softphone'])
         frame.account1_frame.grid(row=row, column=0, sticky='ew', padx=2, pady=2)
-    return frame
+    self.parent.top_frames.insert(1, frame)
+    self.parent.populate_top_frames()
+    label_position = 1
+    last_label = None
+    submenu = self.parent.menu.submenus['Other Actions']
+    while True:
+        current_label = submenu.entrycget(label_position, 'label')
+        if current_label == last_label:
+            raise Ux('attempting to disable Create Softphones menu item, label not found')
+        if current_label == 'Create Softphones':
+            submenu.entryconfigure(label_position, state=DISABLED)
+            break
+        last_label = current_label
+        label_position += 1
 
 
 class AccountFrame(Frame):

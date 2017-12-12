@@ -4,10 +4,7 @@ from ePhone7.utils.usb_enable import usb_enable
 from ePhone7.utils.versions import get_installed_versions
 from ePhone7.config.configure import cfg
 from ePhone7.utils.spud_serial import SpudSerial
-from lib.user_exception import UserException as Ux
-from Tkinter import DISABLED
 from ePhone7.utils.get_softphone import get_softphone
-
 
 
 class E7Commands(object):
@@ -91,20 +88,6 @@ class E7Commands(object):
             softphone.set_incoming_response(180)
             acct_specs.append({'label': username, 'softphone': softphone})
         self.parent.softphone_frame = create_softphone_frame(self, acct_specs)
-        self.parent.top_frames.insert(1, self.parent.softphone_frame)
-        self.parent.populate_top_frames()
-        label_position = 1
-        last_label = None
-        submenu = self.parent.menu.submenus['Other Actions']
-        while True:
-            current_label = submenu.entrycget(label_position, 'label')
-            if current_label == last_label:
-                raise Ux('attempting to disable Create Softphones menu item, label not found')
-            if current_label == 'Create Softphones':
-                submenu.entryconfigure(label_position, state=DISABLED)
-                break
-            last_label = current_label
-            label_position += 1
 
 
 # appium_gui.py instantiates the AppiumGui class, then calls install(), passing the AppiumGui instance as an argument
@@ -114,6 +97,7 @@ def install(parent):
     # - "cmd_types" key values are the labels for drop-down menus in AppiumGui
     # - new commands listed in "cmd_types[key]" are added to the menu labeled with that key
     # - if there is no drop-down menu labeled with a key, a new drop-down menu will be created
+
     e7_cmds = E7Commands(parent)
     cmd_types = {
         'Appium Actions': [

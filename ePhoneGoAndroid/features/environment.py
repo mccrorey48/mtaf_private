@@ -1,4 +1,4 @@
-from ePhoneGoAndroid.utils.configure import cfg
+from ePhoneGoAndroid.config.configure import cfg
 from ePhoneGoAndroid.views import *
 
 

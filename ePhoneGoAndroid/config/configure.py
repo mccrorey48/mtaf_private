@@ -16,6 +16,13 @@ class Cfg:
         self.exec_dir = os.getcwd()
         self.caps = {}
         self.colors = {}
+        self.site_tag = os.getenv('MTAF_SITE')
+        if not self.site_tag:
+            raise Ux('MTAF_SITE must be defined in the run-time environment')
+        self.db_host = os.getenv('MTAF_DB_HOST')
+        if not self.db_host:
+            raise Ux('MTAF_DB_HOST must be defined in the run-time environment')
+        self.set_site(self.db_host, self.site_tag)
 
     def set_site(self, cfg_server, site_tag):
         client = MongoClient(cfg_server)

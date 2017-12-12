@@ -44,6 +44,7 @@ class Cfg(object):
             self.csv_folder = os.path.join(self.exec_dir, self.site['CsvFolder'])
             self.colors_folder = os.path.join(self.exec_dir, self.site['ColorsFolder'])
 
+
 cfg = Cfg()
 
 if __name__ == '__main__':

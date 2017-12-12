@@ -8,7 +8,7 @@ from appium.webdriver.common.mobileby import MobileBy
 from lib.wrappers import Trace
 from lib.android_zpath import expand_zpath
 
-from ePhoneGoAndroid.utils.configure import cfg
+from ePhoneGoAndroid.config.configure import cfg
 from lib.android_zpath import MockDriver
 from lib.android_actions import SeleniumActions
 from lib.user_exception import UserException as Ux
