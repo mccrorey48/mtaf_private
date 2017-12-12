@@ -22,9 +22,9 @@ android_actions = AndroidActions()
 adb = ADB()
 re_package = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)')
 re_activity = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
-xml_dir = os.path.join('appium_gui', 'xml')
-csv_dir = os.path.join('appium_gui', 'csv')
-screenshot_dir = os.path.join('appium_gui', 'screenshot')
+xml_dir = os.path.join('AppiumGui', 'xml')
+csv_dir = os.path.join('AppiumGui', 'csv')
+screenshot_dir = os.path.join('AppiumGui', 'screenshot')
 
 
 def mkdir_p(path):
@@ -380,7 +380,7 @@ class AppiumGui(Frame):
         self.zpath_frame = VerticalScrolledFrame(self.cwin)
         self.zpath_frame_btns = {}
         self.zpath_frame.grid(column=2, row=0, sticky='n')
-        csv_folder = os.path.join('appium_gui', 'csv')
+        csv_folder = os.path.join('AppiumGui', 'csv')
         mkdir_p(csv_folder)
         csv_fullpath = os.path.join(csv_folder, 'appium_gui.csv')
         row = 0
