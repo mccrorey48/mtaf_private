@@ -7,9 +7,8 @@ tmp/
 *.html
 *.out
 xml_not_retrieved
-exception.xml
-appium_gui.xml
-appium_gui.png
+*.xml
+*.png
 steps.txt
 substeps.txt
 *.json

@@ -132,7 +132,6 @@ class ScrolledLogwin(Text):
 class LogFrame(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent, bg='brown')
-        print "parent = " + repr(parent)
         self.txt = ScrolledLogwin(self, width=80, height=20)
         self.txt.grid(row=0, column=0, sticky='news', padx=2, pady=2)
 
@@ -214,7 +213,7 @@ class AppiumGui(Frame):
         self.elem_indices = []
         self.elems = []
         self.polygons = []
-        self.locators = {"Coworkers": {"by": "uia_text", "use_parent": 0, "time": ""}}
+        self.locators = {}
         self.within_frame = IntVar()
         self.tap_y_var = StringVar()
         self.tap_x_var = StringVar()
@@ -223,6 +222,10 @@ class AppiumGui(Frame):
         self.swipe_ms_var = StringVar()
         self.exec_text = StringVar()
         self.package = None
+        self.rec_frame = None
+        self.views = []
+        self.locator_by_values = ['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator']
+        self.rec_file = 'tmp/appium_gui_recording.txt'
 
         try:
             with open('tmp/appium_gui_locators.json', 'r') as f:
@@ -252,6 +255,11 @@ class AppiumGui(Frame):
             top_frame.grid_forget()
             top_frame.grid(row=top_frame_row, column=0, padx=4, pady=4, sticky='news')
             top_frame_row += 1
+
+    def record(self, txt):
+        self.rec_frame.write(txt + '\n')
+        with open(self.rec_file, 'a') as f:
+            f.write(txt + '\n')
 
     def check_thread(self):
         if self.worker_thread is None:
@@ -479,15 +487,21 @@ class AppiumGui(Frame):
         # self.bottom_frame.mk_canvas.configure(state=NORMAL)
 
     def create_log_frame(self):
+        pw = PanedWindow(self, orient=VERTICAL, bg='brown')
+        pw.add(Label(pw, text="standard output"), sticky='ew')
         log_frame = LogFrame(self)
         sys.stdout = log_frame
         log_frame.grid_columnconfigure(0, weight=1)
         log_frame.grid_rowconfigure(0, weight=1)
-        log_frame.expand_y = True
-        # log_frame.grid(row=self.top_frame_row, column=0, padx=2, pady=2, sticky='news')
-        # self.grid_rowconfigure(self.top_frame_row, weight=1)
-        # self.top_frame_row += 1
-        return log_frame
+        pw.add(log_frame, stretch='always')
+        pw.add(Label(pw, text="recorded text"), sticky='ew')
+        rec_frame = LogFrame(self)
+        self.rec_frame = rec_frame
+        rec_frame.grid_columnconfigure(0, weight=1)
+        rec_frame.grid_rowconfigure(0, weight=1)
+        pw.add(rec_frame, stretch='always')
+        pw.expand_y = True
+        return pw
 
     @staticmethod
     def defocus(event):
@@ -519,10 +533,9 @@ class AppiumGui(Frame):
                      state=DISABLED)
         self.appium_btns.append(btn)
         self.find_by_var = StringVar()
-        self.find_by_var.set('uia_text')
-        btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16,
-                                           values=['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator'],
-                                           textvariable=self.find_by_var, state='readonly', takefocus=False)
+        self.find_by_var.set(self.locator_by_values[0])
+        btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16, state='readonly', takefocus=False,
+                                           values=self.locator_by_values, textvariable=self.find_by_var)
         btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_find_cbs)
         btn_frame.find_frame.by.bind("<FocusIn>", self.defocus)
         btn_frame.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
@@ -537,8 +550,7 @@ class AppiumGui(Frame):
         btn_frame.find_frame.within_frame.grid(row=1, column=2, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
         btn_frame.find_frame.value = Combobox(btn_frame.find_frame, width=60,
-                                              values=sorted(self.locators.keys(),
-                                                            key=lambda x: self.locators[x]['time'], reverse=True),
+                                              values=self.get_filtered_locator_keys(),
                                               textvariable=self.find_value_var)
         btn_frame.find_frame.value.bind('<<ComboboxSelected>>', self.update_find_frame)
         btn_frame.find_frame.value.bind("<FocusIn>", self.defocus)
@@ -617,8 +629,10 @@ class AppiumGui(Frame):
         return btn_frame
 
     def update_find_frame(self, event):
-        if self.find_value_var.get() in self.locators:
-            self.find_by_var.set(self.locators[self.find_value_var.get()]["by"])
+        value = self.find_value_var.get().split(':',1)[1]
+        self.find_value_var.set(value)
+        if value in self.locators:
+            self.find_by_var.set(self.locators[value]["by"])
             self.update_find_cbs(None)
             if self.parent_element is not None:
                 self.use_parent.set(self.locators[self.find_value_var.get()]["use_parent"])
@@ -708,13 +722,19 @@ class AppiumGui(Frame):
         else:
             self.btn_frame.find_frame.within_frame.configure(state=DISABLED)
 
-    def find_elements_by_locator_name(self, by, value):
+    def find_elements_by_locator_name(self, locator):
+        by = locator['by']
+        value = locator['value']
         elems = []
         try:
             if by[-3:] == 'all':
-                elems = getattr(self.views[by[:-12]].all, value)
+                view_name = by[:-12]
+                # self.record("finding elements in view %s using locator %s" % (view_name, value))
+                elems = getattr(self.views[view_name].all, value)
             else:
-                elems = [getattr(self.views[by[:-8]], value)]
+                view_name = by[:-8]
+                # self.record("finding elements in view %s using locator %s" % (view_name, value))
+                elems = [getattr(self.views[view_name], value)]
         except Ux as e:
             print e.message
         if self.within_frame.get():
@@ -724,7 +744,9 @@ class AppiumGui(Frame):
                 return []
             return elems
 
-    def find_elements_with_driver(self, by, value):
+    def find_elements_with_driver(self, locator):
+        by = locator['by']
+        value = locator['value']
         if by == 'zpath':
             value = expand_zpath(value)
             by = 'xpath'
@@ -737,32 +759,52 @@ class AppiumGui(Frame):
         else:
             return android_actions.driver.find_elements(by, value)
 
-    def find_elements(self):
-        print "finding elements...",
-        by = self.find_by_var.get()
-        value = self.find_value_var.get()
-        use_parent = self.use_parent.get()
-        if value in self.locators.keys():
-            self.locators[value]['time'] = time()
-        else:
-            self.locators[value] = {"by": by, "use_parent": use_parent, "time": time()}
+    def get_filtered_locator_keys(self):
         sorted_keys = sorted(self.locators.keys(), key=lambda x: self.locators[x]['time'], reverse=True)
+        filtered_keys = filter(lambda x: self.locators[x]['by'] in self.locator_by_values, sorted_keys)
+        return ["%s:%s" % (self.locators[key]['by'], key) for key  in filtered_keys]
+
+    def update_locator_list(self, locator=None):
+        self.btn_frame.find_frame.by.configure(values=self.locator_by_values)
+        # - find_elements passes in a locator value, which is added to self.locators
+        # - a plugin that adds values to self.locator_by_values will need to call this method with no locator argument
+        # - the find element "by" combobox will be updated and the "value" combobox locator list will be filtered,
+        #   according  to the current value of self.locator_by_values
+        if locator is not None:
+            if locator['value'] in self.locators.keys():
+                self.locators[locator['value']]['time'] = time()
+            else:
+                self.locators[locator['value']] = {"by": locator['by'], "use_parent": locator['use_parent'], "time": time()}
+        sorted_keys = sorted(self.locators.keys(), key=lambda x: self.locators[x]['time'], reverse=True)
+        # only keep 50 locators
         for key in sorted_keys[50:]:
             del self.locators[key]
             sorted_keys.pop()
-        self.btn_frame.find_frame.value.configure(value=sorted_keys)
-        if by[-7:] == 'locator' or by[-11:] == 'locator_all':
-            self.elems = self.find_elements_by_locator_name(by, value)
+        self.btn_frame.find_frame.value.configure(value=self.get_filtered_locator_keys())
+
+    def find_elements(self):
+        print "finding elements...",
+        locator = {
+            'by': self.find_by_var.get(),
+            'value': self.find_value_var.get(),
+            'use_parent': self.use_parent.get()
+        }
+        self.record("finding elements with locator %s" % locator)
+        self.update_locator_list(locator)
+        if locator['by'][-7:] == 'locator' or locator['by'][-11:] == 'locator_all':
+            self.elems = self.find_elements_by_locator_name(locator)
         else:
             try:
-                self.elems = self.find_elements_with_driver(by, value)
+                self.elems = self.find_elements_with_driver(locator)
             except InvalidSelectorException as e:
                 print str(e).strip()
                 return
             # keep frame element setting if using "by" value ending in '*_locator'
             self.frame_element = None
             self.within_frame.set(0)
-        print "%s element%s found" % (len(self.elems), '' if len(self.elems) == 1 else 's')
+        msg = "%s element%s found" % (len(self.elems), '' if len(self.elems) == 1 else 's')
+        print msg
+        self.record(msg)
         elem_indices = [str(i) for i in range(len(self.elems))]
         self.btn_frame.attr_frame.index.configure(values=elem_indices)
         if len(elem_indices):
@@ -780,18 +822,21 @@ class AppiumGui(Frame):
             return
         index = int(text_index)
         elem = self.elems[index]
+        self.record('getting element %d attributes' % index)
         print "\nattributes for element %d" % index
         print "  %10s: %s" % ("location_in_view", elem.location_in_view)
         print "  %10s: %s" % ("location", elem.location)
         print "  %10s: %s" % ("size", elem.size)
         for attr in ['name', 'contentDescription', 'text', 'className', 'resourceId', 'enabled', 'checkable', 'checked',
                      'clickable', 'focusable', 'focused', 'longClickable', 'scrollable', 'selected', 'displayed']:
-            print "  %10s:" % attr,
+            _msg = ''
             try:
-                print elem.get_attribute(attr)
+                _msg = "  %10s: %s" % (attr, elem.get_attribute(attr))
             except NoSuchElementException:
-                log.debug("NoSuchElementException running elem.get_attribute(%s)" % attr)
-                print
+                _msg = "NoSuchElementException running elem.get_attribute(%s)" % attr
+                log.debug(msg)
+            print _msg
+            self.record(_msg)
         self.outline_elems([{
             "x1": int(elem.location['x']),
             "y1": int(elem.location['y']),
@@ -823,16 +868,19 @@ class AppiumGui(Frame):
         android_actions.get_screenshot_as_file('appium_gui.png')
         color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=0)
         print "first color and count: %s" % color
+        self.record("first color and count: %s" % color)
         color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=1)
         print "second color and count: %s" % color
+        self.record("second color and count: %s" % color)
         color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=2)
-        print "third color and count: %s" % color
+        self.record("third color and count: %s" % color)
 
     def click_element(self):
         text_index = self.elem_index.get()
         if text_index == '':
             return
         index = int(text_index)
+        self.record('clicking element %d' % index)
         self.elems[index].click()
 
     def clear_element(self):
@@ -840,6 +888,7 @@ class AppiumGui(Frame):
         if text_index == '':
             return
         index = int(text_index)
+        self.record('clearing element %d' % index)
         self.elems[index].clear()
 
     def set_parent(self):
@@ -847,6 +896,7 @@ class AppiumGui(Frame):
         if text_index == '':
             return
         index = int(text_index)
+        self.record('setting element %d as parent' % index)
         self.parent_element = self.elems[index]
         self.update_find_cbs(None)
 
@@ -855,6 +905,7 @@ class AppiumGui(Frame):
         if text_index == '':
             return
         index = int(text_index)
+        self.record('setting element %d as frame' % index)
         self.frame_element = self.elems[index]
         self.update_find_cbs(None)
 
@@ -1007,14 +1058,15 @@ root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
 _app = AppiumGui(root)
-_app.get_focused_app(quiet=True)
 if args.plugin is None:
-    if _app.package[-5:] == 'ditto':
-        plugin = importlib.import_module('AppiumGui.plugin.ePhone7_plugin')
-        plugin.install(_app)
-    elif _app.package[-8:] == 'ephonego':
-        plugin = importlib.import_module('AppiumGui.plugin.ePhoneGo_plugin')
-        plugin.install(_app)
+    _app.get_focused_app(quiet=True)
+    if _app.package is not None:
+        if _app.package[-5:] == 'ditto':
+            plugin = importlib.import_module('AppiumGui.plugin.ePhone7_plugin')
+            plugin.install(_app)
+        elif _app.package[-8:] == 'ephonego':
+            plugin = importlib.import_module('AppiumGui.plugin.ePhoneGo_plugin')
+            plugin.install(_app)
 else:
     plugin = importlib.import_module('AppiumGui.plugin.' + args.plugin + '_plugin')
     plugin.install(_app)

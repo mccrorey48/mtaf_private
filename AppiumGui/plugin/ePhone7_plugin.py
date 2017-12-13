@@ -121,11 +121,12 @@ def install(parent):
             parent.menu.submenus[cmd_type].add_command(label=cmd_spec['label'], command=cmd_spec['command'])
 
     # add locator type options for variouis ePhone7 views
-    values = parent.btn_frame.find_frame.by.cget('values')
-    values += ('contacts_locator', 'voicemail_locator', 'history_locator',
+    parent.locator_by_values += ('contacts_locator', 'voicemail_locator', 'history_locator',
                'dial_locator', 'prefs_locator', 'contacts_locator_all',
                'voicemail_locator_all', 'history_locator_all', 'dial_locator_all',
                'prefs_locator_all')
-    parent.btn_frame.find_frame.by.configure(values=values)
+    parent.update_locator_list()
+    parent.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
+                    'prefs': prefs_view}
 
 
