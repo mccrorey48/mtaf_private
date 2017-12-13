@@ -89,6 +89,10 @@ class E7Commands(object):
             acct_specs.append({'label': username, 'softphone': softphone})
         self.parent.softphone_frame = create_softphone_frame(self, acct_specs)
 
+    def get_screenshot_adb_and_rotate(self):
+        self.parent.__class__.get_screenshot_adb()
+        self.parent.rotate_image(redraw_cwin=False)
+
 
 # appium_gui.py instantiates the AppiumGui class, then calls install(), passing the AppiumGui instance as an argument
 def install(parent):
@@ -120,13 +124,14 @@ def install(parent):
         for cmd_spec in cmd_types[cmd_type]:
             parent.menu.submenus[cmd_type].add_command(label=cmd_spec['label'], command=cmd_spec['command'])
 
-    # add locator type options for variouis ePhone7 views
+    # add locator type options for various ePhone7 views
     parent.locator_by_values += ('contacts_locator', 'voicemail_locator', 'history_locator',
-               'dial_locator', 'prefs_locator', 'contacts_locator_all',
-               'voicemail_locator_all', 'history_locator_all', 'dial_locator_all',
-               'prefs_locator_all')
+                                 'dial_locator', 'prefs_locator', 'contacts_locator_all',
+                                 'voicemail_locator_all', 'history_locator_all', 'dial_locator_all',
+                                 'prefs_locator_all')
     parent.update_locator_list()
     parent.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
                     'prefs': prefs_view}
+    parent.get_screenshot_adb = e7_cmds.get_screenshot_adb_and_rotate
 
 

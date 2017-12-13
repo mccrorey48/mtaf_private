@@ -178,6 +178,8 @@ class AppiumGui(Frame):
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
+        parent.bind_all("<Button-4>", self.mouse_btn)
+        parent.bind_all("<Button-5>", self.mouse_btn)
         self.appium_is_open = False
         self.top_frames = []
         self.cwin = None
@@ -349,13 +351,18 @@ class AppiumGui(Frame):
         self.im_height = int(image.height * self.cwin.scale)
         small = image.resize((self.im_width, self.im_height))
         self.cwin.minsize(width=self.im_width, height=self.im_height)
-        self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='darkgray')
+        canvas_borderwidth = 8
+        self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='brown',
+                                borderwidth=canvas_borderwidth)
         self.im_canvas.photo = ImageTk.PhotoImage(small)
-        self.im_canvas.create_image(self.im_width/2, self.im_height/2, image=self.im_canvas.photo)
+        self.im_canvas.create_image(self.im_width/2 + canvas_borderwidth, self.im_height/2 + canvas_borderwidth,
+                                    image=self.im_canvas.photo)
         self.im_canvas.grid(column=0, row=0)
         self.im_canvas.bind('<Button-1>', self.mouse_btn)
         self.im_canvas.bind('<Button-2>', self.mouse_btn)
         self.im_canvas.bind('<Button-3>', self.mouse_btn)
+        self.im_canvas.bind('<Button-4>', self.mouse_btn)
+        self.im_canvas.bind('<Button-5>', self.mouse_btn)
         self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
         self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
         self.cwin.btn_frame = Frame(self.cwin)
@@ -389,6 +396,7 @@ class AppiumGui(Frame):
             self.zpath_frame_btns = {}
             self.zpath_frame.grid_forget()
             self.zpath_frame = None
+
 
     def create_loc_frames(self):
         self.destroy_loc_frames()
@@ -429,9 +437,8 @@ class AppiumGui(Frame):
         self.zpath_frame.update()
         self.cwin.update()
         self.cwin.geometry(
-            '%dx%d' % (self.im_width + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth(),
-                       self.im_height))
-                       # self.cwin.winfo_reqheight()))
+            '%dx%d' % (self.im_canvas.winfo_reqwidth() + self.id_frame.winfo_reqwidth()
+                       + self.zpath_frame.winfo_reqwidth(), self.im_canvas.winfo_reqheight()))
 
     def mouse_btn(self, event):
         # (event.type, event.num) values: (4,1)=press, 6=motion, 5=release, (4,3)=right-press
@@ -446,6 +453,21 @@ class AppiumGui(Frame):
                     self.im_canvas.delete(self.drag_polygon)
                     self.drag_polygon = None
                     self.create_loc_frames()
+            elif event.num == 4 or event.num == 5:
+                w = event.widget
+                while True:
+                    if hasattr(w, 'yview_scroll'):
+                        if event.num == 4:
+                            w.yview_scroll(-1, UNITS)
+                            # print "yview_scroll(1)"
+                        else:
+                            w.yview_scroll(1, UNITS)
+                            # print "yview_scroll(-1)"
+                        break
+                    if hasattr(w, 'master'):
+                        w = w.master
+                    # else:
+                    #     print "widget does not have attribute yview_scroll"
         elif event.type == '5':
             self.create_loc_frames()
         elif event.type == '6':
@@ -461,6 +483,7 @@ class AppiumGui(Frame):
                 self.drag_polygon_x2 = x2
                 self.drag_polygon_y2 = y2
                 self.drag_polygon = self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='blue', fill='')
+        return 'break'
 
     def get_id_outline_fn(self, id_name):
         def f():
@@ -1019,13 +1042,14 @@ class AppiumGui(Frame):
         os.rename('screencap.png', img_path)
         print "Done"
 
-    def rotate_image(self):
+    def rotate_image(self, redraw_cwin=True):
         print "Rotating screenshot...",
         img_path = os.path.join(screenshot_dir, 'appium_gui.png')
         im = Image.open(img_path)
         im = im.rotate(-90, expand=True)
         im.save(img_path)
-        self.create_cwin(reuse_image=True)
+        if redraw_cwin:
+            self.create_cwin(reuse_image=True)
         print "Done"
 
     def __del__(self):
