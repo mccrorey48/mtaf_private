@@ -13,7 +13,7 @@ import json
 from lib.filters import get_filter
 from PIL import Image, ImageTk
 from xml_to_csv import xml_to_csv
-from parse_ids import parse_ids, parse_zpaths
+from parse_ids import parse_ids_with_zpaths, parse_zpaths
 import errno
 import argparse
 import importlib
@@ -28,7 +28,8 @@ re_apk = re.compile('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)')
 xml_dir = os.path.join('AppiumGui', 'xml')
 csv_dir = os.path.join('AppiumGui', 'csv')
 screenshot_dir = os.path.join('AppiumGui', 'screenshot')
-
+loc_btn_default_bg = '#d9d9d9'
+loc_btn_select_bg = '#d97979'
 
 def mkdir_p(path):
     try:
@@ -307,10 +308,11 @@ class AppiumGui(Frame):
     def elem_selected(self, elems):
         if self.drag_polygon is None:
             return True
-        dx1 = min(self.drag_polygon_x1, self.drag_polygon_x2)
-        dx2 = max(self.drag_polygon_x1, self.drag_polygon_x2)
-        dy1 = min(self.drag_polygon_y1, self.drag_polygon_y2)
-        dy2 = max(self.drag_polygon_y1, self.drag_polygon_y2)
+        bw = self.cwin.canvas_borderwidth
+        dx1 = min(self.drag_polygon_x1 - bw, self.drag_polygon_x2 - bw)
+        dx2 = max(self.drag_polygon_x1 - bw, self.drag_polygon_x2 - bw)
+        dy1 = min(self.drag_polygon_y1 - bw, self.drag_polygon_y2 - bw)
+        dy2 = max(self.drag_polygon_y1 - bw, self.drag_polygon_y2 - bw)
         for elem in elems:
             x1 = int(elem['x1']) * self.cwin.scale
             x2 = int(elem['x2']) * self.cwin.scale
@@ -351,11 +353,12 @@ class AppiumGui(Frame):
         self.im_height = int(image.height * self.cwin.scale)
         small = image.resize((self.im_width, self.im_height))
         self.cwin.minsize(width=self.im_width, height=self.im_height)
-        canvas_borderwidth = 8
+        self.cwin.canvas_borderwidth = 8
         self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='brown',
-                                borderwidth=canvas_borderwidth)
+                                borderwidth=self.cwin.canvas_borderwidth)
         self.im_canvas.photo = ImageTk.PhotoImage(small)
-        self.im_canvas.create_image(self.im_width/2 + canvas_borderwidth, self.im_height/2 + canvas_borderwidth,
+        self.im_canvas.create_image(self.im_width/2 + self.cwin.canvas_borderwidth,
+                                    self.im_height/2 + self.cwin.canvas_borderwidth,
                                     image=self.im_canvas.photo)
         self.im_canvas.grid(column=0, row=0)
         self.im_canvas.bind('<Button-1>', self.mouse_btn)
@@ -397,8 +400,9 @@ class AppiumGui(Frame):
             self.zpath_frame.grid_forget()
             self.zpath_frame = None
 
-
     def create_loc_frames(self):
+        while len(self.polygons):
+            self.im_canvas.delete(self.polygons.pop())
         self.destroy_loc_frames()
         self.id_frame = VerticalScrolledFrame(self.cwin)
         self.id_frame_btns = {}
@@ -410,14 +414,14 @@ class AppiumGui(Frame):
         mkdir_p(csv_folder)
         csv_fullpath = os.path.join(csv_folder, 'appium_gui.csv')
         row = 0
-        self.ids = parse_ids(os.path.join(csv_folder, 'appium_gui.csv'))
+        self.ids = parse_ids_with_zpaths(os.path.join(csv_folder, 'appium_gui.csv'))
         self.id_label = Label(self.id_frame.interior, text='IDs', width=30, bg='brown')
         self.id_label.grid(column=0, row=0, stick='ew')
         row += 1
         for _id in self.ids:
-            if xor(self.cwin.invert_selection.get(), self.elem_selected(self.ids[_id])):
-                # print "_id selected: %s" % _id
-                self.id_frame_btns[_id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id))
+            if xor(self.cwin.invert_selection.get(), self.elem_selected(self.ids[_id]['geoms'])):
+                self.id_frame_btns[_id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id),
+                                                 bg=loc_btn_default_bg, activebackground = loc_btn_default_bg)
                 self.id_frame_btns[_id].grid(row=row, column=0, sticky='w')
                 row += 1
         row = 0
@@ -426,12 +430,12 @@ class AppiumGui(Frame):
         self.zpath_label.grid(column=0, row=0, sticky='ew')
         row += 1
         zpath_keys = self.zpaths.keys()
-        for zpath in sorted(zpath_keys):
-            if xor(self.cwin.invert_selection.get(), self.elem_selected(self.zpaths[zpath])):
-                # print "zpath selected: %s" % zpath
-                self.zpath_frame_btns[zpath] = Button(self.zpath_frame.interior, text=zpath,
-                                                      command=self.get_zpath_outline_fn(zpath))
-                self.zpath_frame_btns[zpath].grid(row=row, column=0, sticky='w')
+        for zpath_key in sorted(zpath_keys):
+            if xor(self.cwin.invert_selection.get(), self.elem_selected(self.zpaths[zpath_key]['geoms'])):
+                self.zpath_frame_btns[zpath_key] = Button(self.zpath_frame.interior, text=zpath_key,
+                                                          command=self.get_zpath_outline_fn(zpath_key),
+                                                          bg=loc_btn_default_bg, activebackground = loc_btn_default_bg)
+                self.zpath_frame_btns[zpath_key].grid(row=row, column=0, sticky='w')
                 row += 1
         self.id_frame.update()
         self.zpath_frame.update()
@@ -487,14 +491,14 @@ class AppiumGui(Frame):
 
     def get_id_outline_fn(self, id_name):
         def f():
-            self.outline_elems(self.ids[id_name])
+            self.outline_elems(id_name, loc_type='id')
             self.find_by_var.set('id')
             self.find_value_var.set(id_name)
         return f
 
     def get_zpath_outline_fn(self, zpath):
         def f():
-            self.outline_elems(self.zpaths[zpath])
+            self.outline_elems(zpath, loc_type='zpath')
             self.find_by_var.set('zpath')
             self.find_value_var.set(zpath)
         return f
@@ -868,15 +872,47 @@ class AppiumGui(Frame):
         }])
         pass
 
-    def outline_elems(self, geoms):
+    def outline_elems(self, locator_name, loc_type=None):
         if hasattr(self, 'im_canvas') and self.im_canvas is not None:
             while len(self.polygons):
                 self.im_canvas.delete(self.polygons.pop())
+            if loc_type == 'zpath':
+                locator = self.zpaths[locator_name]
+                geoms = locator['geoms']
+                for _id in self.id_frame_btns:
+                    btn = self.id_frame_btns[_id]
+                    if locator['id'] == _id:
+                        btn.configure(bg=loc_btn_select_bg)
+                    else:
+                        btn.configure(bg=loc_btn_default_bg)
+                for zpath in self.zpath_frame_btns:
+                    btn = self.zpath_frame_btns[zpath]
+                    if zpath == locator_name:
+                        btn.configure(bg=loc_btn_select_bg)
+                    else:
+                        btn.configure(bg=loc_btn_default_bg)
+            else:
+                locator = self.ids[locator_name]
+                geoms = locator['geoms']
+                if len(locator['zpath']) > 1:
+                    print "id %s matched %d elements" % (locator_name, len(locator['zpath']))
+                for zpath in self.zpath_frame_btns:
+                    btn = self.zpath_frame_btns[zpath]
+                    if zpath in locator['zpath']:
+                        btn.configure(bg=loc_btn_select_bg, activebackground=loc_btn_select_bg)
+                    else:
+                        btn.configure(bg=loc_btn_default_bg, activebackground=loc_btn_default_bg)
+                for _id in self.id_frame_btns:
+                    btn = self.id_frame_btns[_id]
+                    if _id == locator_name:
+                        btn.configure(bg=loc_btn_select_bg, activebackground=loc_btn_select_bg)
+                    else:
+                        btn.configure(bg=loc_btn_default_bg, activebackground=loc_btn_default_bg)
             for geom in geoms:
-                x1 = int(geom["x1"] * self.cwin.scale)
-                y1 = int(geom["y1"] * self.cwin.scale)
-                y2 = int(geom["y2"] * self.cwin.scale)
-                x2 = int(geom["x2"] * self.cwin.scale)
+                x1 = int(geom["x1"] * self.cwin.scale) + self.cwin.canvas_borderwidth
+                y1 = int(geom["y1"] * self.cwin.scale) + self.cwin.canvas_borderwidth
+                y2 = int(geom["y2"] * self.cwin.scale) + self.cwin.canvas_borderwidth
+                x2 = int(geom["x2"] * self.cwin.scale) + self.cwin.canvas_borderwidth
                 # print "calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1)
                 self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
                                                                    fill=''))
