@@ -1,7 +1,6 @@
 import re
 
-path_by_abbrev = {
-    "": "",
+zpaths = {
     "bt": "android.widget.Button",
     "cb": "android.widget.CheckBox",
     "el": "android.widget.ExpandableListView",
@@ -28,12 +27,18 @@ path_by_abbrev = {
     "vp": "android.support.v4.view.ViewPager"
 }
 
-abbrev_by_path = dict((v, k) for k, v in path_by_abbrev.iteritems())
+zpath_tags = dict((v, k) for k, v in zpaths.iteritems())
 
 
-def get_abbrev(path):
-    if path in abbrev_by_path:
-        return abbrev_by_path[path]
+def set_zpath_tag(abbreviation, zpath):
+    global zpath_tags
+    zpaths[abbreviation] = zpath
+    zpath_tags = dict((v, k) for k, v in zpaths.iteritems())
+
+
+def get_zpath_tag(path):
+    if path in zpath_tags:
+        return zpath_tags[path]
     else:
         return path
 
@@ -52,8 +57,8 @@ def expand_zpath(zpath):
             new_zpath += other.pop(0)
         if len(tokens):
             abbrev = tokens.pop(0)
-            if abbrev in path_by_abbrev:
-                new_zpath += path_by_abbrev[abbrev]
+            if abbrev in zpaths:
+                new_zpath += zpaths[abbrev]
             else:
                 new_zpath += abbrev
     return new_zpath

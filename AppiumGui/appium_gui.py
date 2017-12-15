@@ -18,6 +18,7 @@ import errno
 import argparse
 import importlib
 from operator import xor
+from time import strftime, localtime
 
 log = logging.get_logger('esi.appium_gui')
 android_actions = AndroidActions()
@@ -28,8 +29,9 @@ re_apk = re.compile('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)')
 xml_dir = os.path.join('AppiumGui', 'xml')
 csv_dir = os.path.join('AppiumGui', 'csv')
 screenshot_dir = os.path.join('AppiumGui', 'screenshot')
-loc_btn_default_bg = '#d9d9d9'
-loc_btn_select_bg = '#d97979'
+btn_default_bg = '#d9d9d9'
+btn_select_bg = '#d97979'
+
 
 def mkdir_p(path):
     try:
@@ -193,6 +195,7 @@ class AppiumGui(Frame):
         self.drag_polygon_y2 = None
         self.elem_index = None
         self.find_by_var = None
+        self.find_button = None
         self.find_value_var = None
         self.frame_element = None
         self.id_frame = None
@@ -229,6 +232,8 @@ class AppiumGui(Frame):
         self.views = []
         self.locator_by_values = ['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator']
         self.rec_file = 'tmp/appium_gui_recording.txt'
+        self.cwin_x = None
+        self.cwin_y = None
 
         try:
             with open('tmp/appium_gui_locators.json', 'r') as f:
@@ -261,8 +266,9 @@ class AppiumGui(Frame):
 
     def record(self, txt):
         self.rec_frame.write(txt + '\n')
+        timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
         with open(self.rec_file, 'a') as f:
-            f.write(txt + '\n')
+            f.write('%s %s\n' % (timestamp, txt))
 
     def check_thread(self):
         if self.worker_thread is None:
@@ -296,10 +302,10 @@ class AppiumGui(Frame):
     def create_bottom_frame(self):
         bottom_frame = BottomFrame(self, bg="tan")
         bottom_frame.grid_columnconfigure(0, weight=1)
-        bottom_frame.mk_canvas = Button(bottom_frame, text="screenshot", command=self.create_cwin)
+        bottom_frame.mk_canvas = Button(bottom_frame, text="screenshot", bg=btn_default_bg, command=self.create_cwin)
         bottom_frame.mk_canvas.grid(row=0, column=0, sticky='e', padx=2, pady=2)
         # self.appium_btns.append(bottom_frame.mk_canvas)
-        bottom_frame.Quit = Button(bottom_frame, text="Quit", command=self.close_appium_and_quit)
+        bottom_frame.Quit = Button(bottom_frame, text="Quit", bg=btn_default_bg, command=self.close_appium_and_quit)
         bottom_frame.Quit.grid(row=0, column=1, sticky='e', padx=2, pady=2)
         # bottom_frame.grid(row=self.top_frame_row, column=0, padx=4, pady=4, sticky='news')
         # self.top_frame_row += 1
@@ -328,6 +334,9 @@ class AppiumGui(Frame):
 
     def create_cwin(self, reuse_image=False):
         self.bottom_frame.mk_canvas.configure(state=DISABLED)
+        if self.drag_polygon is not None:
+            self.im_canvas.delete(self.drag_polygon)
+            self.drag_polygon = None
         if not reuse_image:
             if self.appium_is_open:
                 self.get_screenshot_appium()
@@ -339,14 +348,14 @@ class AppiumGui(Frame):
         y = self.winfo_rooty()
         w = self.winfo_width()
         if self.cwin is not None:
+            self.cwin_x = self.cwin.winfo_x()
+            self.cwin_y = self.cwin.winfo_y()
             self.destroy_loc_frames()
             self.cwin.destroy()
             self.cwin = None
         self.update_idletasks()
         self.cwin = Toplevel(root, bg='cyan')
         self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
-        self.cwin.resizable(width=False, height=True)
-        self.cwin.geometry("+%d+%d" % (x + w + 20, y - 70))
         image = Image.open(os.path.join(screenshot_dir, 'appium_gui.png'))
         self.cwin.scale = 600.0 / max(image.height, image.width)
         self.im_width = int(image.width * self.cwin.scale)
@@ -369,7 +378,8 @@ class AppiumGui(Frame):
         self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
         self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
         self.cwin.btn_frame = Frame(self.cwin)
-        self.cwin.btn_frame.rotate = Button(self.cwin.btn_frame, text="rotate image", command=self.rotate_image)
+        self.cwin.btn_frame.rotate = Button(self.cwin.btn_frame, text="rotate image", bg=btn_default_bg,
+                                            command=self.rotate_image)
         self.cwin.btn_frame.rotate.grid(row=0, column=0)
         self.cwin.btn_frame.grid(row=1, column=0)
         self.cwin.invert_selection = IntVar()
@@ -381,6 +391,14 @@ class AppiumGui(Frame):
         self.cwin.rowconfigure(0, weight=1)
         self.create_loc_frames()
         self.bottom_frame.mk_canvas.configure(state=NORMAL)
+        if self.cwin_x is None:
+            self.cwin_x = root.winfo_x() + 20
+        if self.cwin_y is None:
+            self.cwin_y = root.winfo_y() + 20
+        width = self.im_canvas.winfo_reqwidth() + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth()
+        height = self.im_canvas.winfo_reqheight() + self.cwin.btn_frame.winfo_reqheight()
+        self.cwin.geometry('%dx%d+%d+%d' % (width, height, self.cwin_x, self.cwin_y - 28))
+        self.cwin.minsize(width=width, height=height)
 
     # def update_loc_frames(self):
     #     self.destroy_loc_frames()
@@ -421,7 +439,7 @@ class AppiumGui(Frame):
         for _id in self.ids:
             if xor(self.cwin.invert_selection.get(), self.elem_selected(self.ids[_id]['geoms'])):
                 self.id_frame_btns[_id] = Button(self.id_frame.interior, text=_id, command=self.get_id_outline_fn(_id),
-                                                 bg=loc_btn_default_bg, activebackground = loc_btn_default_bg)
+                                                 bg=btn_default_bg, activebackground=btn_default_bg)
                 self.id_frame_btns[_id].grid(row=row, column=0, sticky='w')
                 row += 1
         row = 0
@@ -434,15 +452,37 @@ class AppiumGui(Frame):
             if xor(self.cwin.invert_selection.get(), self.elem_selected(self.zpaths[zpath_key]['geoms'])):
                 self.zpath_frame_btns[zpath_key] = Button(self.zpath_frame.interior, text=zpath_key,
                                                           command=self.get_zpath_outline_fn(zpath_key),
-                                                          bg=loc_btn_default_bg, activebackground = loc_btn_default_bg)
+                                                          bg=btn_default_bg, activebackground=btn_default_bg)
                 self.zpath_frame_btns[zpath_key].grid(row=row, column=0, sticky='w')
                 row += 1
         self.id_frame.update()
         self.zpath_frame.update()
         self.cwin.update()
-        self.cwin.geometry(
-            '%dx%d' % (self.im_canvas.winfo_reqwidth() + self.id_frame.winfo_reqwidth()
-                       + self.zpath_frame.winfo_reqwidth(), self.im_canvas.winfo_reqheight()))
+
+    def xy_within_zpath(self, x, y, key):
+        geom = self.zpaths[key]['geoms'][0]
+        x1 = geom['x1'] * self.cwin.scale + self.cwin.canvas_borderwidth
+        x2 = geom['x2'] * self.cwin.scale + self.cwin.canvas_borderwidth
+        y1 = geom['y1'] * self.cwin.scale + self.cwin.canvas_borderwidth
+        y2 = geom['y2'] * self.cwin.scale + self.cwin.canvas_borderwidth
+        # print "%10s: x1 = %3d, y1 = %3d" % (key, x1, y1)
+        # print "%10s  x2 = %3d, y2 = %3d" % ('', x2, y2)
+        return x1 <= x <= x2 and y1 <= y <= y2
+
+    def zpath_area(self, key):
+        geom = self.zpaths[key]['geoms'][0]
+        return (geom['x2'] - geom['x1']) * (geom['y2'] - geom['y1'])
+
+    def select_smallest(self, x, y):
+        clicked_zpaths = []
+        for key in self.zpaths.keys():
+            geom = self.zpaths[key]['geoms'][0]
+            if self.xy_within_zpath(x, y, key):
+                clicked_zpaths.append(key)
+        if len(clicked_zpaths) == 0:
+            return None
+        else:
+            return min(clicked_zpaths, key=self.zpath_area)
 
     def mouse_btn(self, event):
         # (event.type, event.num) values: (4,1)=press, 6=motion, 5=release, (4,3)=right-press
@@ -458,35 +498,59 @@ class AppiumGui(Frame):
                     self.drag_polygon = None
                     self.create_loc_frames()
             elif event.num == 4 or event.num == 5:
+                locked = False
                 w = event.widget
                 while True:
-                    if hasattr(w, 'yview_scroll'):
-                        if event.num == 4:
-                            w.yview_scroll(-1, UNITS)
-                            # print "yview_scroll(1)"
-                        else:
-                            w.yview_scroll(1, UNITS)
-                            # print "yview_scroll(-1)"
+                    if w == self.im_canvas:
+                        locked = True
                         break
                     if hasattr(w, 'master'):
                         w = w.master
-                    # else:
-                    #     print "widget does not have attribute yview_scroll"
+                    if w == self or w == root:
+                        break
+                if not locked:
+                    w = event.widget
+                    while True:
+                        if hasattr(w, 'yview_scroll'):
+                            if event.num == 4:
+                                w.yview_scroll(-1, UNITS)
+                            else:
+                                w.yview_scroll(1, UNITS)
+                            break
+                        if hasattr(w, 'master'):
+                            w = w.master
+                        else:
+                            break
         elif event.type == '5':
-            self.create_loc_frames()
-        elif event.type == '6':
-            if self.drag_polygon is not None:
-                self.im_canvas.delete(self.drag_polygon)
             x1 = self.new_drag_polygon_x1
             y1 = self.new_drag_polygon_y1
             x2 = event.x
             y2 = event.y
             if x2 != x1 and y2 != y1:
+                self.create_loc_frames()
+            else:
+                # click/release with no drag, select and outline smallest element and put its zpath in the value
+                # combobox
+                zpath_key = self.select_smallest(x1, y1)
+                # print "(%d, %d) zpath_key = %s" % (x1, y1, zpath_key)
+                # print "zpath['geom'] = %s" % self.zpaths[zpath_key]['geoms']
+                self.get_zpath_outline_fn(zpath_key)()
+        elif event.type == '6':
+            x1 = self.new_drag_polygon_x1
+            y1 = self.new_drag_polygon_y1
+            x2 = event.x
+            y2 = event.y
+            if x2 != x1 and y2 != y1:
+                if self.drag_polygon is not None:
+                    self.im_canvas.delete(self.drag_polygon)
+                    self.drag_polygon = None
                 self.drag_polygon_x1 = self.new_drag_polygon_x1
                 self.drag_polygon_y1 = self.new_drag_polygon_y1
                 self.drag_polygon_x2 = x2
                 self.drag_polygon_y2 = y2
-                self.drag_polygon = self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='blue', fill='')
+                self.drag_polygon = self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='blue',
+                                                                  fill='')
+
         return 'break'
 
     def get_id_outline_fn(self, id_name):
@@ -536,7 +600,8 @@ class AppiumGui(Frame):
 
     def create_exec_frame(self):
         exec_frame = Frame(self, bg="brown")
-        exec_frame.btn = Button(exec_frame, text="exec:", command=lambda: self.do_cmd(self.exec_code), state=NORMAL)
+        exec_frame.btn = Button(exec_frame, text="exec:", command=lambda: self.do_cmd(self.exec_code),
+                                bg=btn_default_bg, state=NORMAL)
         exec_frame.btn.grid(row=0, column=0)
         exec_frame.entry = Entry(exec_frame, textvariable=self.exec_text)
         exec_frame.entry.grid(row=0, column=1, sticky='news')
@@ -552,18 +617,23 @@ class AppiumGui(Frame):
         except Exception as e:
             print "exec raised exception: %s" % e
 
+    def callback(self, *args):
+        self.find_button.configure(bg=btn_select_bg, activebackground=btn_select_bg)
+
     def create_btn_frame(self):
         btn_frame_row = 0
         btn_frame = ButtonFrame(self, bg="brown")
         btn_frame.find_frame = Frame(btn_frame, bg='tan')
-        btn = Button(btn_frame.find_frame, text="find elements:", command=lambda: self.do_cmd(self.find_elements),
-                     state=DISABLED)
+        btn = Button(btn_frame.find_frame, text="find elements:", bg=btn_default_bg,
+                     command=lambda: self.do_cmd(self.find_elements), state=DISABLED)
+        self.find_button = btn
         self.appium_btns.append(btn)
         self.find_by_var = StringVar()
         self.find_by_var.set(self.locator_by_values[0])
         btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16, state='readonly', takefocus=False,
                                            values=self.locator_by_values, textvariable=self.find_by_var)
-        btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_find_cbs)
+        self.appium_btns.append(btn_frame.find_frame.by)
+        btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_find_widgets)
         btn_frame.find_frame.by.bind("<FocusIn>", self.defocus)
         btn_frame.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
         self.use_parent = IntVar()
@@ -576,9 +646,11 @@ class AppiumGui(Frame):
                                                         variable=self.within_frame, state=DISABLED)
         btn_frame.find_frame.within_frame.grid(row=1, column=2, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
+        self.find_value_var.trace('w', self.callback)
         btn_frame.find_frame.value = Combobox(btn_frame.find_frame, width=60,
                                               values=self.get_filtered_locator_keys(),
                                               textvariable=self.find_value_var)
+        self.appium_btns.append(btn_frame.find_frame.value)
         btn_frame.find_frame.value.bind('<<ComboboxSelected>>', self.update_find_frame)
         btn_frame.find_frame.value.bind("<FocusIn>", self.defocus)
         btn_frame.find_frame.hsb = Scrollbar(btn_frame.find_frame, orient=HORIZONTAL,
@@ -596,7 +668,7 @@ class AppiumGui(Frame):
         self.appium_btns.append(y_entry)
         x_entry = Entry(btn_frame.xy_frame, width=4, textvariable=self.tap_x_var)
         self.appium_btns.append(x_entry)
-        btn = Button(btn_frame.xy_frame, text="tap:", command=self.tap_xy, state=DISABLED)
+        btn = Button(btn_frame.xy_frame, text="tap:", bg=btn_default_bg, command=self.tap_xy, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=1, padx=2, pady=2, sticky='w')
         Label(btn_frame.xy_frame, text=" x:").grid(row=0, column=2)
@@ -611,7 +683,7 @@ class AppiumGui(Frame):
         self.swipe_ms_var.set(100)
         self.appium_btns.append(ms_entry)
         Label(btn_frame.xy_frame, text="   ", bg='tan').grid(row=0, column=6)
-        btn = Button(btn_frame.xy_frame, text="swipe:", command=self.swipe, state=DISABLED)
+        btn = Button(btn_frame.xy_frame, text="swipe:", bg=btn_default_bg, command=self.swipe, state=DISABLED)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=7, padx=2, pady=2, sticky='w')
         Label(btn_frame.xy_frame, text=" y1:").grid(row=0, column=8)
@@ -625,27 +697,35 @@ class AppiumGui(Frame):
         btn_frame_row += 1
         btn_frame.attr_frame = AttrFrame(btn_frame, bg='tan')
         btn_frame.attr_frame.index_label = Label(btn_frame.attr_frame, text="select elem:", bg="tan")
+        self.appium_btns.append(btn_frame.attr_frame.index_label)
         btn_frame.attr_frame.index_label.grid(row=0, column=0, padx=2, pady=2, sticky='e')
         self.elem_index = StringVar()
         self.elem_index.set('')
         btn_frame.attr_frame.index = Combobox(btn_frame.attr_frame, width=6, values=[], textvariable=self.elem_index)
+        self.appium_btns.append(btn_frame.attr_frame.index)
         btn_frame.attr_frame.index.grid(row=0, column=1, padx=2, pady=2, sticky='e')
-        btn = Button(btn_frame.attr_frame, text="get elem attributes", command=self.get_elem_attrs, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="get elem attributes", bg=btn_default_bg, command=self.get_elem_attrs,
+                     state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=2, padx=2, pady=2)
-        btn = Button(btn_frame.attr_frame, text="get elem color", command=self.get_elem_color, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="get elem color", bg=btn_default_bg, command=self.get_elem_color,
+                     state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=3, padx=2, pady=2)
-        btn = Button(btn_frame.attr_frame, text="click elem", command=self.click_element, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="click elem", bg=btn_default_bg, command=self.click_element,
+                     state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=4, padx=2, pady=2)
-        btn = Button(btn_frame.attr_frame, text="clear elem", command=self.clear_element, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="clear elem", bg=btn_default_bg, command=self.clear_element,
+                     state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=5, padx=2, pady=2)
-        btn = Button(btn_frame.attr_frame, text="set parent", command=self.set_parent, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="set parent", bg=btn_default_bg, command=self.set_parent,
+                     state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=6, padx=2, pady=2)
-        btn = Button(btn_frame.attr_frame, text="set frame", command=self.set_frame, state=DISABLED, padx=1)
+        btn = Button(btn_frame.attr_frame, text="set frame", bg=btn_default_bg, command=self.set_frame,
+                     state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=7, padx=2, pady=2)
         btn_frame.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
@@ -656,11 +736,11 @@ class AppiumGui(Frame):
         return btn_frame
 
     def update_find_frame(self, event):
-        value = self.find_value_var.get().split(':',1)[1]
+        value = self.find_value_var.get().split(':', 1)[1]
         self.find_value_var.set(value)
         if value in self.locators:
             self.find_by_var.set(self.locators[value]["by"])
-            self.update_find_cbs(None)
+            self.update_find_widgets(None)
             if self.parent_element is not None:
                 self.use_parent.set(self.locators[self.find_value_var.get()]["use_parent"])
             else:
@@ -737,7 +817,7 @@ class AppiumGui(Frame):
             android_actions.long_press_swipe(300, y1, 300, y2, duration=ms)
             print "Done"
 
-    def update_find_cbs(self, event):
+    def update_find_widgets(self, event):
         find_by = self.find_by_var.get()
         if (find_by == 'id') and self.parent_element is not None:
             self.btn_frame.find_frame.use_parent.configure(state=NORMAL)
@@ -789,7 +869,7 @@ class AppiumGui(Frame):
     def get_filtered_locator_keys(self):
         sorted_keys = sorted(self.locators.keys(), key=lambda x: self.locators[x]['time'], reverse=True)
         filtered_keys = filter(lambda x: self.locators[x]['by'] in self.locator_by_values, sorted_keys)
-        return ["%s:%s" % (self.locators[key]['by'], key) for key  in filtered_keys]
+        return ["%s:%s" % (self.locators[key]['by'], key) for key in filtered_keys]
 
     def update_locator_list(self, locator=None):
         self.btn_frame.find_frame.by.configure(values=self.locator_by_values)
@@ -801,7 +881,8 @@ class AppiumGui(Frame):
             if locator['value'] in self.locators.keys():
                 self.locators[locator['value']]['time'] = time()
             else:
-                self.locators[locator['value']] = {"by": locator['by'], "use_parent": locator['use_parent'], "time": time()}
+                self.locators[locator['value']] = {"by": locator['by'], "use_parent": locator['use_parent'],
+                                                   "time": time()}
         sorted_keys = sorted(self.locators.keys(), key=lambda x: self.locators[x]['time'], reverse=True)
         # only keep 50 locators
         for key in sorted_keys[50:]:
@@ -811,6 +892,7 @@ class AppiumGui(Frame):
 
     def find_elements(self):
         print "finding elements...",
+        self.find_button.configure(bg=btn_default_bg)
         locator = {
             'by': self.find_by_var.get(),
             'value': self.find_value_var.get(),
@@ -841,7 +923,7 @@ class AppiumGui(Frame):
         self.parent_element = None
         self.btn_frame.find_frame.use_parent.configure(state=DISABLED)
         self.use_parent.set(0)
-        self.update_find_cbs(None)
+        self.update_find_widgets(None)
 
     def get_elem_attrs(self):
         text_index = self.elem_index.get()
@@ -864,33 +946,30 @@ class AppiumGui(Frame):
                 log.debug(msg)
             print _msg
             self.record(_msg)
-        self.outline_elems([{
+        self.draw_outlines([{
             "x1": int(elem.location['x']),
             "y1": int(elem.location['y']),
             "x2": int(elem.location['x']) + int(elem.size['width']),
             "y2": int(elem.location['y']) + int(elem.size['height'])
         }])
-        pass
 
     def outline_elems(self, locator_name, loc_type=None):
         if hasattr(self, 'im_canvas') and self.im_canvas is not None:
-            while len(self.polygons):
-                self.im_canvas.delete(self.polygons.pop())
             if loc_type == 'zpath':
                 locator = self.zpaths[locator_name]
                 geoms = locator['geoms']
                 for _id in self.id_frame_btns:
                     btn = self.id_frame_btns[_id]
                     if locator['id'] == _id:
-                        btn.configure(bg=loc_btn_select_bg)
+                        btn.configure(bg=btn_select_bg, activebackground=btn_select_bg)
                     else:
-                        btn.configure(bg=loc_btn_default_bg)
+                        btn.configure(bg=btn_default_bg, activebackground=btn_default_bg)
                 for zpath in self.zpath_frame_btns:
                     btn = self.zpath_frame_btns[zpath]
                     if zpath == locator_name:
-                        btn.configure(bg=loc_btn_select_bg)
+                        btn.configure(bg=btn_select_bg, activebackground=btn_select_bg)
                     else:
-                        btn.configure(bg=loc_btn_default_bg)
+                        btn.configure(bg=btn_default_bg, activebackground=btn_default_bg)
             else:
                 locator = self.ids[locator_name]
                 geoms = locator['geoms']
@@ -899,24 +978,28 @@ class AppiumGui(Frame):
                 for zpath in self.zpath_frame_btns:
                     btn = self.zpath_frame_btns[zpath]
                     if zpath in locator['zpath']:
-                        btn.configure(bg=loc_btn_select_bg, activebackground=loc_btn_select_bg)
+                        btn.configure(bg=btn_select_bg, activebackground=btn_select_bg)
                     else:
-                        btn.configure(bg=loc_btn_default_bg, activebackground=loc_btn_default_bg)
+                        btn.configure(bg=btn_default_bg, activebackground=btn_default_bg)
                 for _id in self.id_frame_btns:
                     btn = self.id_frame_btns[_id]
                     if _id == locator_name:
-                        btn.configure(bg=loc_btn_select_bg, activebackground=loc_btn_select_bg)
+                        btn.configure(bg=btn_select_bg, activebackground=btn_select_bg)
                     else:
-                        btn.configure(bg=loc_btn_default_bg, activebackground=loc_btn_default_bg)
-            for geom in geoms:
-                x1 = int(geom["x1"] * self.cwin.scale) + self.cwin.canvas_borderwidth
-                y1 = int(geom["y1"] * self.cwin.scale) + self.cwin.canvas_borderwidth
-                y2 = int(geom["y2"] * self.cwin.scale) + self.cwin.canvas_borderwidth
-                x2 = int(geom["x2"] * self.cwin.scale) + self.cwin.canvas_borderwidth
-                # print "calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1)
-                self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
-                                                                   fill=''))
-                pass
+                        btn.configure(bg=btn_default_bg, activebackground=btn_default_bg)
+            self.draw_outlines(geoms)
+
+    def draw_outlines(self, geoms):
+        while len(self.polygons):
+            self.im_canvas.delete(self.polygons.pop())
+        for geom in geoms:
+            x1 = geom["x1"] * self.cwin.scale + self.cwin.canvas_borderwidth
+            y1 = geom["y1"] * self.cwin.scale + self.cwin.canvas_borderwidth
+            y2 = geom["y2"] * self.cwin.scale + self.cwin.canvas_borderwidth
+            x2 = geom["x2"] * self.cwin.scale + self.cwin.canvas_borderwidth
+            # print "calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1)
+            self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
+                                                               fill=''))
 
     def get_elem_color(self):
         text_index = self.elem_index.get()
@@ -957,7 +1040,7 @@ class AppiumGui(Frame):
         index = int(text_index)
         self.record('setting element %d as parent' % index)
         self.parent_element = self.elems[index]
-        self.update_find_cbs(None)
+        self.update_find_widgets(None)
 
     def set_frame(self):
         text_index = self.elem_index.get()
@@ -966,7 +1049,7 @@ class AppiumGui(Frame):
         index = int(text_index)
         self.record('setting element %d as frame' % index)
         self.frame_element = self.elems[index]
-        self.update_find_cbs(None)
+        self.update_find_widgets(None)
 
     def open_appium(self, max_attempts=10, retry_seconds=5):
         attempts = 0
@@ -986,7 +1069,7 @@ class AppiumGui(Frame):
         else:
             raise Ux("max attempts reached in open_appium")
         self.appium_is_open = True
-        self.update_find_cbs(None)
+        self.update_find_widgets(None)
         print "Done"
 
     def close_appium(self):

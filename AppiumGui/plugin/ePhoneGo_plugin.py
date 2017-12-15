@@ -1,6 +1,7 @@
 from softphone_plugin import create_softphone_frame
 from ePhoneGoAndroid.config.configure import cfg
 from ePhoneGoAndroid.utils.get_softphone import get_softphone
+from lib.android_zpath import set_zpath_tag
 
 
 class EGoCommands(object):
@@ -48,5 +49,6 @@ def install(parent):
     #            'voicemail_locator_all', 'history_locator_all', 'dial_locator_all',
     #            'prefs_locator_all')
     # parent.btn_frame.find_frame.by.configure(values=values)
+    set_zpath_tag('llc', 'android.support.v7.widget.LinearLayoutCompat')
 
 

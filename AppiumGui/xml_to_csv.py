@@ -13,7 +13,7 @@ def printall(ofile, node, tag_index, pfx):
         tag = node.attrib['class']
     else:
         tag = node.tag
-    tag = lib.android_zpath.get_abbrev(tag)
+    tag = lib.android_zpath.get_zpath_tag(tag)
     if tag_index == 0:
         new_prefix = pfx + tag
     else:
@@ -98,6 +98,7 @@ def visit(arg, dirname, names):
 def xml_folder_to_csv():
     os.path.walk(cfg.xml_folder, visit, '')
 
+
 if __name__ == '__main__':
-    # xml_folder_to_csv()
-    os.path.walk('ePhone7/utils/xml/xml_appium_gui/', visit, '')
+    lib.android_zpath.set_zpath_tag('llc', 'android.support.v7.widget.LinearLayoutCompat')
+    os.path.walk('AppiumGui/xml/', visit, '')

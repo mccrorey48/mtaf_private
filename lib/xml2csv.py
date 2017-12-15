@@ -11,7 +11,7 @@ def printall(output_lines, node, tag_index, pfx):
         tag = node.attrib['class']
     else:
         tag = node.tag
-    tag = lib.android_zpath.get_abbrev(tag)
+    tag = lib.android_zpath.get_zpath_tag(tag)
     if tag_index == 0:
         new_prefix = pfx + tag
     else:
