@@ -644,7 +644,7 @@ class AppiumGui(Frame):
         self.within_frame.set(0)
         btn_frame.find_frame.within_frame = Checkbutton(btn_frame.find_frame, text='within frame',
                                                         variable=self.within_frame, state=DISABLED)
-        btn_frame.find_frame.within_frame.grid(row=1, column=2, padx=2, pady=2, sticky='ew')
+        btn_frame.find_frame.within_frame.grid(row=2, column=2, padx=2, pady=2, sticky='ew')
         self.find_value_var = StringVar()
         self.find_value_var.trace('w', self.callback)
         btn_frame.find_frame.value = Combobox(btn_frame.find_frame, width=60,
@@ -658,7 +658,7 @@ class AppiumGui(Frame):
         btn_frame.find_frame.value["xscrollcommand"] = btn_frame.find_frame.hsb.set
         btn.grid(row=0, column=0, padx=2, pady=2)
         btn_frame.find_frame.grid_columnconfigure(3, weight=1)
-        btn_frame.find_frame.value.grid(row=0, column=3, padx=2, pady=2, sticky='ew')
+        btn_frame.find_frame.value.grid(row=0, column=3, padx=2, pady=0, sticky='ew')
         btn_frame.find_frame.hsb.grid(row=1, column=3, sticky='ew')
         btn_frame.find_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame_row += 1
@@ -727,7 +727,14 @@ class AppiumGui(Frame):
         btn = Button(btn_frame.attr_frame, text="set frame", bg=btn_default_bg, command=self.set_frame,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=0, column=7, padx=2, pady=2)
+        btn = Button(btn_frame.attr_frame, text="input text", bg=btn_default_bg, command=self.input_text,
+                     state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        self.text_to_send = StringVar
+        btn.grid(row=1, column=0, padx=2, pady=2)
+        entry = Entry(btn_frame.attr_frame, textvariable=self.text_to_send, state=DISABLED)
+        self.appium_btns.append(entry)
+        entry.grid(row=1, column=1, padx=2, pady=2, columnspan=6, sticky='ew')
         btn_frame.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.grid_columnconfigure(0, weight=1)
         # btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
@@ -1051,7 +1058,20 @@ class AppiumGui(Frame):
         self.frame_element = self.elems[index]
         self.update_find_widgets(None)
 
-    def open_appium(self, max_attempts=10, retry_seconds=5):
+    def input_text(self):
+        text_index = self.elem_index.get()
+        if text_index == '':
+            return
+        index = int(text_index)
+        text = self.text_to_send.get()
+        self.record('sending "%s" to element %d' % (text, index))
+        try:
+            self.elems[index].set_text(text)
+        except BaseException as e:
+            print "got exception %s" % e
+        self.update_find_widgets(None)
+
+    def open_appium(self, max_attempts=5, retry_seconds=5):
         attempts = 0
         while attempts < max_attempts:
             try:
@@ -1061,16 +1081,16 @@ class AppiumGui(Frame):
                     print "Opening Appium...",
                 self.update_idletasks()
                 android_actions.open_appium('query_device')
+                self.appium_is_open = True
+                self.update_find_widgets(None)
+                print "Done"
                 break
             except Ux as e:
                 print "UserException in open_appium: %s" % e.msg
                 print "retrying:",
                 sleep(retry_seconds)
         else:
-            raise Ux("max attempts reached in open_appium")
-        self.appium_is_open = True
-        self.update_find_widgets(None)
-        print "Done"
+            print "max attempts reached in open_appium"
 
     def close_appium(self):
         print "Closing Appium...",

@@ -12,6 +12,7 @@ from PIL import Image
 import os
 from pyand import ADB
 import re
+from urllib2 import URLError
 
 log = logging.get_logger('esi.selenium_actions')
 
@@ -50,7 +51,6 @@ desired_capabilities = {
         "platformVersion": "4.4"
     }
 }
-connect_timeout = 30
 
 
 class AndroidActions(object):
@@ -58,7 +58,7 @@ class AndroidActions(object):
     cfg = None
     caps_tag = None
 
-    def open_appium(self, caps_tag='nolaunch', caps_arg=None):
+    def open_appium(self, caps_tag='nolaunch', caps_arg=None, connect_timeout=10):
         if caps_tag == 'query_device':
             adb = ADB()
             output = adb.run_cmd('shell dumpsys window windows')
@@ -92,6 +92,9 @@ class AndroidActions(object):
                 break
             except WebDriverException:
                 log.info("retrying webdriver.Remote(%s, %s)" % (selenium_url, desired_capabilities[caps_tag]))
+            except URLError as e:
+                print "URLError attempting to connect to appium server: %s" % e
+                raise Ux("URLError attempting to connect to appium server")
         else:
             raise Ux("failed to connect webdriver.Remote within %s seconds" % connect_timeout)
 
