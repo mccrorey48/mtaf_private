@@ -94,11 +94,11 @@ class E7Commands(object):
         self.parent.rotate_image(redraw_cwin=False)
 
 
-# appium_gui.py instantiates the AppiumGui class, then calls install(), passing the AppiumGui instance as an argument
+# inspector.py instantiates the Inspector class, then calls install(), passing the Inspector instance as an argument
 def install(parent):
 
     # - install drop-down menu items appropriate for ePhone7
-    # - "cmd_types" key values are the labels for drop-down menus in AppiumGui
+    # - "cmd_types" key values are the labels for drop-down menus in Inspector
     # - new commands listed in "cmd_types[key]" are added to the menu labeled with that key
     # - if there is no drop-down menu labeled with a key, a new drop-down menu will be created
 

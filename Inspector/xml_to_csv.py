@@ -1,9 +1,7 @@
-import os
 import re
 import xml.etree.ElementTree as ET
 
 import lib.android_zpath
-from ePhone7.config.configure import cfg
 
 tagre = re.compile('([^\[]+)(.*)')
 
@@ -67,38 +65,3 @@ def xml_to_csv(xml_file_path, csv_file_path):
         output_file.write('zpath,resource-id,text,min_x,min_y,lim_x,lim_y\n')
         printall(output_file, root, 0, prefix)
 
-
-def visit(arg, dirname, names):
-    # print "dirname = %s" % dirname
-    # for name in names:
-    #     print "  name = %s" % name
-    # csv_dir = cfg.csv_folder + '/csv' + re.sub(cfg.xml_folder + '/xml', '', dirname)
-    # print '"%s"' % cfg.csv_folder + '/csv' + re.sub(cfg.xml_folder + '/xml', '', dirname)
-    subdir = re.sub(cfg.xml_folder, '', dirname)
-    print "    subdir = %s" % subdir
-    sp = subdir.split('/xml')
-    if len(sp) == 1:
-        csv_dir = cfg.csv_folder
-    else:
-        csv_dir = cfg.csv_folder + '/csv' + sp[1]
-    try:
-        os.makedirs(csv_dir)
-    except OSError as e:
-        # ignore 'File exists' error but re-raise any others
-        if e.errno != 17:
-            raise e
-    for name in names:
-        if name[-4:] == '.xml':
-            _xml_file_path = os.path.join(dirname, name)
-            _csv_file_path = "csv".join(_xml_file_path.rsplit('xml', 3))
-            # print "calling xml_to_csv(%s, %s)" % (_xml_file_path, _csv_file_path)
-            xml_to_csv(_xml_file_path, _csv_file_path)
-
-
-def xml_folder_to_csv():
-    os.path.walk(cfg.xml_folder, visit, '')
-
-
-if __name__ == '__main__':
-    lib.android_zpath.set_zpath_tag('llc', 'android.support.v7.widget.LinearLayoutCompat')
-    os.path.walk('AppiumGui/xml/', visit, '')

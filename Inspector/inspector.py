@@ -12,23 +12,23 @@ import threading
 import json
 from lib.filters import get_filter
 from PIL import Image, ImageTk
-from xml_to_csv import xml_to_csv
-from parse_ids import parse_ids_with_zpaths, parse_zpaths
+from Inspector.xml_to_csv import xml_to_csv
+from Inspector.parse_ids import parse_ids_with_zpaths, parse_zpaths
 import errno
 import argparse
 import importlib
 from operator import xor
 from time import strftime, localtime
 
-log = logging.get_logger('esi.appium_gui')
+log = logging.get_logger('esi.inspector')
 android_actions = AndroidActions()
 adb = ADB()
 re_package = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)')
 re_activity = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
 re_apk = re.compile('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)')
-xml_dir = os.path.join('AppiumGui', 'xml')
-csv_dir = os.path.join('AppiumGui', 'csv')
-screenshot_dir = os.path.join('AppiumGui', 'screenshot')
+xml_dir = os.path.join('Inspector', 'xml')
+csv_dir = os.path.join('Inspector', 'csv')
+screenshot_dir = os.path.join('Inspector', 'screenshot')
 btn_default_bg = '#d9d9d9'
 btn_select_bg = '#d97979'
 
@@ -176,67 +176,68 @@ class ButtonFrame(Frame):
     find_frame = None
 
 
-class AppiumGui(Frame):
+class Inspector(Frame):
     cmd_types = {}
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
         parent.bind_all("<Button-4>", self.mouse_btn)
         parent.bind_all("<Button-5>", self.mouse_btn)
+        self.appium_btns = []
         self.appium_is_open = False
-        self.top_frames = []
+        self.clickable_element = None
         self.cwin = None
+        self.cwin_x = None
+        self.cwin_y = None
         self.drag_polygon = None
-        self.new_drag_polygon_x1 = None
-        self.new_drag_polygon_y1 = None
         self.drag_polygon_x1 = None
-        self.drag_polygon_y1 = None
         self.drag_polygon_x2 = None
+        self.drag_polygon_y1 = None
         self.drag_polygon_y2 = None
         self.elem_index = None
-        self.find_by_var = None
+        self.elem_indices = []
+        self.elems = []
+        self.exec_text = StringVar()
         self.find_button = None
+        self.find_by_var = None
         self.find_value_var = None
         self.frame_element = None
-        self.id_frame = None
         self.id_frame_btns = {}
+        self.id_frame = None
         self.id_label = None
         self.ids = None
         self.ids = None
         self.im_canvas = None
-        self.im_width = None
         self.im_height = None
+        self.im_width = None
         self.keycode_name = None
-        self.menu = None
-        self.parent_element = None
-        self.use_parent = None
-        self.worker_thread = None
-        self.zpath_frame = None
-        self.zpath_frame_btns = {}
-        self.zpath_label = None
-        self.zpaths = None
-        self.appium_btns = []
-        self.elem_indices = []
-        self.elems = []
-        self.polygons = []
+        self.locator_by_values = ['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator']
         self.locators = {}
-        self.within_frame = IntVar()
-        self.tap_y_var = StringVar()
-        self.tap_x_var = StringVar()
+        self.menu = None
+        self.new_drag_polygon_x1 = None
+        self.new_drag_polygon_y1 = None
+        self.package = None
+        self.parent_element = None
+        self.polygons = []
+        self.rec_file = 'tmp/inspector_recording.txt'
+        self.rec_frame = None
+        self.swipe_ms_var = StringVar()
         self.swipe_y1_var = StringVar()
         self.swipe_y2_var = StringVar()
-        self.swipe_ms_var = StringVar()
-        self.exec_text = StringVar()
-        self.package = None
-        self.rec_frame = None
+        self.tap_x_var = StringVar()
+        self.tap_y_var = StringVar()
+        self.top_frames = []
+        self.use_parent = None
         self.views = []
-        self.locator_by_values = ['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator']
-        self.rec_file = 'tmp/appium_gui_recording.txt'
-        self.cwin_x = None
-        self.cwin_y = None
+        self.within_frame = IntVar()
+        self.worker_thread = None
+        self.zpath_frame_btns = {}
+        self.zpath_frame = None
+        self.zpath_label = None
+        self.zpaths = None
 
         try:
-            with open('tmp/appium_gui_locators.json', 'r') as f:
+            with open('tmp/inspector_locators.json', 'r') as f:
                 self.locators = json.loads(f.read())
         except IOError:
             pass
@@ -356,7 +357,7 @@ class AppiumGui(Frame):
         self.update_idletasks()
         self.cwin = Toplevel(root, bg='cyan')
         self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
-        image = Image.open(os.path.join(screenshot_dir, 'appium_gui.png'))
+        image = Image.open(os.path.join(screenshot_dir, 'inspector.png'))
         self.cwin.scale = 600.0 / max(image.height, image.width)
         self.im_width = int(image.width * self.cwin.scale)
         self.im_height = int(image.height * self.cwin.scale)
@@ -428,11 +429,11 @@ class AppiumGui(Frame):
         self.zpath_frame = VerticalScrolledFrame(self.cwin)
         self.zpath_frame_btns = {}
         self.zpath_frame.grid(column=2, row=0, sticky='n')
-        csv_folder = os.path.join('AppiumGui', 'csv')
+        csv_folder = os.path.join('Inspector', 'csv')
         mkdir_p(csv_folder)
-        csv_fullpath = os.path.join(csv_folder, 'appium_gui.csv')
+        csv_fullpath = os.path.join(csv_folder, 'inspector.csv')
         row = 0
-        self.ids = parse_ids_with_zpaths(os.path.join(csv_folder, 'appium_gui.csv'))
+        self.ids = parse_ids_with_zpaths(os.path.join(csv_folder, 'inspector.csv'))
         self.id_label = Label(self.id_frame.interior, text='IDs', width=30, bg='brown')
         self.id_label.grid(column=0, row=0, stick='ew')
         row += 1
@@ -797,7 +798,7 @@ class AppiumGui(Frame):
             os.mkdir('tmp')
         except OSError:
             pass
-        with open('tmp/appium_gui_locators.json', 'w') as f:
+        with open('tmp/inspector_locators.json', 'w') as f:
             f.write(json.dumps(self.locators, sort_keys=True, indent=4, separators=(',', ': ')))
         root.destroy()
 
@@ -1014,14 +1015,14 @@ class AppiumGui(Frame):
             return
         index = int(text_index)
         elem = self.elems[index]
-        android_actions.get_screenshot_as_file('appium_gui.png')
-        color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=0)
+        android_actions.get_screenshot_as_file('inspector.png')
+        color = android_actions.get_element_color_and_count(screenshot_dir, 'inspector', elem, color_list_index=0)
         print "first color and count: %s" % color
         self.record("first color and count: %s" % color)
-        color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=1)
+        color = android_actions.get_element_color_and_count(screenshot_dir, 'inspector', elem, color_list_index=1)
         print "second color and count: %s" % color
         self.record("second color and count: %s" % color)
-        color = android_actions.get_element_color_and_count(screenshot_dir, 'appium_gui', elem, color_list_index=2)
+        color = android_actions.get_element_color_and_count(screenshot_dir, 'inspector', elem, color_list_index=2)
         self.record("third color and count: %s" % color)
 
     def click_element(self):
@@ -1138,8 +1139,8 @@ class AppiumGui(Frame):
         mkdir_p(xml_dir)
         mkdir_p(csv_dir)
         xml = android_actions.driver.page_source
-        xml_fullpath = os.path.join(xml_dir, 'appium_gui.xml')
-        csv_fullpath = os.path.join(csv_dir, 'appium_gui.csv')
+        xml_fullpath = os.path.join(xml_dir, 'inspector.xml')
+        csv_fullpath = os.path.join(csv_dir, 'inspector.csv')
         log.info("saving xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
@@ -1151,8 +1152,8 @@ class AppiumGui(Frame):
         print "Getting XML and CSV...",
         mkdir_p(xml_dir)
         mkdir_p(csv_dir)
-        xml_path = os.path.join(xml_dir, 'appium_gui.xml')
-        csv_path = os.path.join(csv_dir, 'appium_gui.csv')
+        xml_path = os.path.join(xml_dir, 'inspector.xml')
+        csv_path = os.path.join(csv_dir, 'inspector.csv')
         log.info("saving xml %s" % xml_path)
         adb.run_cmd('shell uiautomator dump')
         adb.run_cmd('pull /sdcard/window_dump.xml')
@@ -1165,7 +1166,7 @@ class AppiumGui(Frame):
     def get_screenshot_appium():
         print "Getting Screenshot using Appium...",
         mkdir_p(screenshot_dir)
-        img_path = os.path.join(screenshot_dir, 'appium_gui.png')
+        img_path = os.path.join(screenshot_dir, 'inspector.png')
         log.debug("saving screenshot to %s" % img_path)
         android_actions.get_screenshot_as_file(img_path)
         print "Done"
@@ -1174,7 +1175,7 @@ class AppiumGui(Frame):
     def get_screenshot_adb():
         print "Getting Screenshot using ADB...",
         mkdir_p(screenshot_dir)
-        img_path = os.path.join(screenshot_dir, 'appium_gui.png')
+        img_path = os.path.join(screenshot_dir, 'inspector.png')
         adb.run_cmd('shell screencap -p /sdcard/screencap.png')
         adb.run_cmd('pull /sdcard/screencap.png')
         log.debug("saving screenshot to %s" % img_path)
@@ -1183,7 +1184,7 @@ class AppiumGui(Frame):
 
     def rotate_image(self, redraw_cwin=True):
         print "Rotating screenshot...",
-        img_path = os.path.join(screenshot_dir, 'appium_gui.png')
+        img_path = os.path.join(screenshot_dir, 'inspector.png')
         im = Image.open(img_path)
         im = im.rotate(-90, expand=True)
         im.save(img_path)
@@ -1220,18 +1221,18 @@ root.wm_title("Appium test utility")
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
-_app = AppiumGui(root)
+_app = Inspector(root)
 if args.plugin is None:
     _app.get_focused_app(quiet=True)
     if _app.package is not None:
         if _app.package[-5:] == 'ditto':
-            plugin = importlib.import_module('AppiumGui.plugin.ePhone7_plugin')
+            plugin = importlib.import_module('Inspector.plugin.ePhone7_plugin')
             plugin.install(_app)
         elif _app.package[-8:] == 'ephonego':
-            plugin = importlib.import_module('AppiumGui.plugin.ePhoneGo_plugin')
+            plugin = importlib.import_module('Inspector.plugin.ePhoneGo_plugin')
             plugin.install(_app)
 else:
-    plugin = importlib.import_module('AppiumGui.plugin.' + args.plugin + '_plugin')
+    plugin = importlib.import_module('Inspector.plugin.' + args.plugin + '_plugin')
     plugin.install(_app)
 root.protocol("WM_DELETE_WINDOW", on_closing)
 _app.mainloop()
