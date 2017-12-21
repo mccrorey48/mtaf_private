@@ -61,6 +61,8 @@ class AndroidActions(object):
     def open_appium(self, caps_tag='nolaunch', caps_arg=None, connect_timeout=10):
         if caps_tag == 'query_device':
             adb = ADB()
+            if len(adb.get_devices()) == 0:
+                raise Ux("no ADB device")
             output = adb.run_cmd('shell dumpsys window windows')
             # print 'APK Version: ' + re.match('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)', output).group(1)
             package = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output).group(1)

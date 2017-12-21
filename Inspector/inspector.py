@@ -334,72 +334,93 @@ class Inspector(Frame):
         pass
 
     def create_cwin(self, reuse_image=False):
+        # handle problem with unwanted call when button is apparently disabled but still bound to the command.
+        # just doing the cget synchronizes the "set disabled" action so the "if" statement returns false;
+        # without this a double click on the button causes an exception in "self.cwin_x = self.cwin.winfo_x()"
+        # because create_cwin() is called again before the first cwin is rendered
+        if self.bottom_frame.mk_canvas.cget('state') == DISABLED:
+            print "bogus double call to create_cwin()"
+            return
+        # disable the button
+        self.bottom_frame.mk_canvas.configure(command=None)
         self.bottom_frame.mk_canvas.configure(state=DISABLED)
+        got_screenshot = False
         if self.drag_polygon is not None:
             self.im_canvas.delete(self.drag_polygon)
             self.drag_polygon = None
-        if not reuse_image:
-            if self.appium_is_open:
-                self.get_screenshot_appium()
-                self.get_xml_appium()
+        if reuse_image:
+            got_screenshot = True
+        else:
+            try:
+                if self.appium_is_open:
+                        self.get_screenshot_appium()
+                        self.get_xml_appium()
+                else:
+                    self.get_screenshot_adb()
+                    self.get_xml_adb()
+            except BaseException as e:
+                # print "exception trying to get screenshot: %s" % e
+                print e
             else:
-                self.get_screenshot_adb()
-                self.get_xml_adb()
-        x = self.winfo_rootx()
-        y = self.winfo_rooty()
-        w = self.winfo_width()
-        if self.cwin is not None:
-            self.cwin_x = self.cwin.winfo_x()
-            self.cwin_y = self.cwin.winfo_y()
-            self.destroy_loc_frames()
-            self.cwin.destroy()
-            self.cwin = None
-        self.update_idletasks()
-        self.cwin = Toplevel(root, bg='cyan')
-        self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
-        image = Image.open(os.path.join(screenshot_dir, 'inspector.png'))
-        self.cwin.scale = 600.0 / max(image.height, image.width)
-        self.im_width = int(image.width * self.cwin.scale)
-        self.im_height = int(image.height * self.cwin.scale)
-        small = image.resize((self.im_width, self.im_height))
-        self.cwin.minsize(width=self.im_width, height=self.im_height)
-        self.cwin.canvas_borderwidth = 8
-        self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='brown',
-                                borderwidth=self.cwin.canvas_borderwidth)
-        self.im_canvas.photo = ImageTk.PhotoImage(small)
-        self.im_canvas.create_image(self.im_width/2 + self.cwin.canvas_borderwidth,
-                                    self.im_height/2 + self.cwin.canvas_borderwidth,
-                                    image=self.im_canvas.photo)
-        self.im_canvas.grid(column=0, row=0)
-        self.im_canvas.bind('<Button-1>', self.mouse_btn)
-        self.im_canvas.bind('<Button-2>', self.mouse_btn)
-        self.im_canvas.bind('<Button-3>', self.mouse_btn)
-        self.im_canvas.bind('<Button-4>', self.mouse_btn)
-        self.im_canvas.bind('<Button-5>', self.mouse_btn)
-        self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
-        self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
-        self.cwin.btn_frame = Frame(self.cwin)
-        self.cwin.btn_frame.rotate = Button(self.cwin.btn_frame, text="rotate image", bg=btn_default_bg,
-                                            command=self.rotate_image)
-        self.cwin.btn_frame.rotate.grid(row=0, column=0)
-        self.cwin.btn_frame.grid(row=1, column=0)
-        self.cwin.invert_selection = IntVar()
-        self.cwin.invert_selection.set(0)
-        self.cwin.btn_frame.invert = Checkbutton(self.cwin.btn_frame, text='Invert Selection',
-                                                 variable=self.cwin.invert_selection,
-                                                 command=self.create_loc_frames)
-        self.cwin.btn_frame.invert.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
-        self.cwin.rowconfigure(0, weight=1)
-        self.create_loc_frames()
-        self.bottom_frame.mk_canvas.configure(state=NORMAL)
-        if self.cwin_x is None:
-            self.cwin_x = root.winfo_x() + 20
-        if self.cwin_y is None:
-            self.cwin_y = root.winfo_y() + 20
-        width = self.im_canvas.winfo_reqwidth() + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth()
-        height = self.im_canvas.winfo_reqheight() + self.cwin.btn_frame.winfo_reqheight()
-        self.cwin.geometry('%dx%d+%d+%d' % (width, height, self.cwin_x, self.cwin_y - 28))
-        self.cwin.minsize(width=width, height=height)
+                got_screenshot = True
+        if not got_screenshot:
+            self.bottom_frame.mk_canvas.configure(state=NORMAL, command=self.create_cwin)
+        else:
+            x = self.winfo_rootx()
+            y = self.winfo_rooty()
+            w = self.winfo_width()
+            if self.cwin is not None:
+                self.cwin_x = self.cwin.winfo_x()
+                self.cwin_y = self.cwin.winfo_y()
+                self.destroy_loc_frames()
+                self.cwin.destroy()
+                self.cwin = None
+            self.update_idletasks()
+            self.cwin = Toplevel(root, bg='cyan')
+            self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
+            image = Image.open(os.path.join(screenshot_dir, 'inspector.png'))
+            self.cwin.scale = 600.0 / max(image.height, image.width)
+            self.im_width = int(image.width * self.cwin.scale)
+            self.im_height = int(image.height * self.cwin.scale)
+            small = image.resize((self.im_width, self.im_height))
+            self.cwin.minsize(width=self.im_width, height=self.im_height)
+            self.cwin.canvas_borderwidth = 8
+            self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='brown',
+                                    borderwidth=self.cwin.canvas_borderwidth)
+            self.im_canvas.photo = ImageTk.PhotoImage(small)
+            self.im_canvas.create_image(self.im_width/2 + self.cwin.canvas_borderwidth,
+                                        self.im_height/2 + self.cwin.canvas_borderwidth,
+                                        image=self.im_canvas.photo)
+            self.im_canvas.grid(column=0, row=0)
+            self.im_canvas.bind('<Button-1>', self.mouse_btn)
+            self.im_canvas.bind('<Button-2>', self.mouse_btn)
+            self.im_canvas.bind('<Button-3>', self.mouse_btn)
+            self.im_canvas.bind('<Button-4>', self.mouse_btn)
+            self.im_canvas.bind('<Button-5>', self.mouse_btn)
+            self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
+            self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
+            self.cwin.btn_frame = Frame(self.cwin)
+            self.cwin.btn_frame.rotate = Button(self.cwin.btn_frame, text="rotate image", bg=btn_default_bg,
+                                                command=self.rotate_image)
+            self.cwin.btn_frame.rotate.grid(row=0, column=0)
+            self.cwin.btn_frame.grid(row=1, column=0)
+            self.cwin.invert_selection = IntVar()
+            self.cwin.invert_selection.set(0)
+            self.cwin.btn_frame.invert = Checkbutton(self.cwin.btn_frame, text='Invert Selection',
+                                                     variable=self.cwin.invert_selection,
+                                                     command=self.create_loc_frames)
+            self.cwin.btn_frame.invert.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
+            self.cwin.rowconfigure(0, weight=1)
+            self.create_loc_frames()
+            self.bottom_frame.mk_canvas.configure(state=NORMAL, command=self.create_cwin)
+            if self.cwin_x is None:
+                self.cwin_x = root.winfo_x() + 20
+            if self.cwin_y is None:
+                self.cwin_y = root.winfo_y() + 20
+            width = self.im_canvas.winfo_reqwidth() + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth()
+            height = self.im_canvas.winfo_reqheight() + self.cwin.btn_frame.winfo_reqheight()
+            self.cwin.geometry('%dx%d+%d+%d' % (width, height, self.cwin_x, self.cwin_y - 28))
+            self.cwin.minsize(width=width, height=height)
 
     # def update_loc_frames(self):
     #     self.destroy_loc_frames()
@@ -1072,14 +1093,13 @@ class Inspector(Frame):
             print "got exception %s" % e
         self.update_find_widgets(None)
 
-    def open_appium(self, max_attempts=5, retry_seconds=5):
+    def open_appium(self, max_attempts=1, retry_seconds=5):
         attempts = 0
+        print "Opening Appium...",
         while attempts < max_attempts:
             try:
                 if attempts > 0:
                     print "\n(retrying) Opening Appium...",
-                else:
-                    print "Opening Appium...",
                 self.update_idletasks()
                 android_actions.open_appium('query_device')
                 self.appium_is_open = True
@@ -1087,11 +1107,13 @@ class Inspector(Frame):
                 print "Done"
                 break
             except Ux as e:
-                print "UserException in open_appium: %s" % e.msg
-                print "retrying:",
+                print "Error\nUserException in open_appium: %s" % e.msg
+            finally:
+                attempts += 1
+            if attempts < max_attempts:
                 sleep(retry_seconds)
         else:
-            print "max attempts reached in open_appium"
+            print "attempted to open_appium %d time(s)\n" % attempts
 
     def close_appium(self):
         print "Closing Appium...",
@@ -1179,7 +1201,14 @@ class Inspector(Frame):
         adb.run_cmd('shell screencap -p /sdcard/screencap.png')
         adb.run_cmd('pull /sdcard/screencap.png')
         log.debug("saving screenshot to %s" % img_path)
-        os.rename('screencap.png', img_path)
+        try:
+            os.rename('screencap.png', img_path)
+        except OSError as e:
+            print "Error"
+            if e.errno == errno.ENOENT:
+                raise Ux("ADB did not supply screenshot image")
+            else:
+                raise Ux("could not rename 'screencap.png': %s" % e)
         print "Done"
 
     def rotate_image(self, redraw_cwin=True):
