@@ -1,18 +1,18 @@
 import re
 import threading
 import random
-from lib.wrappers import Trace
+from lib.trace import Trace
 from lib.user_exception import UserException as Ux, UserTimeoutException as Tx
 import pjsua as pj
 from lib.softphone.wav_audio import create_wav_file
-import lib.logging_esi as logging_esi
+import lib.mtaf_logging as mtaf_logging
 from time import time, sleep
 import os
 import struct
 
-log = logging_esi.get_logger('esi.simple_pj')
+log = mtaf_logging.get_logger('mtaf.simple_pj')
 # set console log level
-logging_esi.console_handler.setLevel(logging_esi.INFO)
+mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
 wav_dir = 'wav'
 
 account_infos = {}
@@ -362,11 +362,11 @@ class MyCallCallback(pj.CallCallback):
             media_ops[action]()
 
     def on_state(self):
-        with logging_esi.msg_src_cm('on_state'):
+        with mtaf_logging.msg_src_cm('on_state'):
             self._on_state()
 
     def on_media_state(self):
-        with logging_esi.msg_src_cm('on_media_state'):
+        with mtaf_logging.msg_src_cm('on_media_state'):
             self._on_state()
 
     @Trace(log)

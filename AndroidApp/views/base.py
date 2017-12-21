@@ -1,24 +1,23 @@
 import os
 from time import sleep
 
-import lib.logging_esi as logging_esi
+from lib import mtaf_logging
 from PIL import Image
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
-from lib.wrappers import Trace
+from lib.trace import Trace
 from lib.android_zpath import expand_zpath
 
 from AndroidApp.config.configure import cfg
-from lib.android_zpath import MockDriver
-from lib.android_actions import SeleniumActions
+from lib.android_actions import AndroidActions
 from lib.user_exception import UserException as Ux
 
-log = logging_esi.get_logger('esi.base_view')
+log = mtaf_logging.get_logger('mtaf.base_view')
 
 keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
 
 
-class BaseView(SeleniumActions):
+class BaseView(AndroidActions):
 
     current_activity = None
     caps_tag = None
@@ -29,7 +28,7 @@ class BaseView(SeleniumActions):
         self.By = MobileBy
 
     def get_locator(self, name):
-        locator = SeleniumActions.get_locator(self, name)
+        locator = AndroidActions.get_locator(self, name)
         if locator["by"] == "zpath":
             locator["by"] = "xpath"
             locator["value"] = expand_zpath(locator["value"])
@@ -41,26 +40,26 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def send_keycode(self, keycode):
-        SeleniumActions.driver.keyevent(keycodes[keycode])
+        AndroidActions.driver.keyevent(keycodes[keycode])
 
     @Trace(log)
     def hide_keyboard(self):
-        SeleniumActions.driver.hide_keyboard()
+        AndroidActions.driver.hide_keyboard()
 
     @Trace(log)
     def scroll(self, origin_el, destination_el):
-        SeleniumActions.driver.scroll(origin_el, destination_el)
+        AndroidActions.driver.scroll(origin_el, destination_el)
 
     @Trace(log)
     def swipe(self, origin_x, origin_y, destination_x, destination_y, duration):
-        SeleniumActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration)
+        AndroidActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration)
 
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder):
         sleep(5)
         fullpath = os.path.join(screenshot_folder, filebase + '.png')
         log.debug("saving screenshot to %s" % fullpath)
-        SeleniumActions.driver.get_screenshot_as_file(fullpath)
+        AndroidActions.driver.get_screenshot_as_file(fullpath)
         im = Image.open(fullpath)
         if im.getbbox()[2] == 1024:
             log.debug("rotating screenshot -90 degrees")
@@ -145,21 +144,17 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def open_appium(self, caps_tag='nolaunch'):
-        if cfg.site['Mock']:
-            SeleniumActions.driver = MockDriver()
-        else:
-            log.debug('opening appium')
-            SeleniumActions.driver = self.update_remote(caps_tag)
-        pass
+        log.debug('opening appium')
+        AndroidActions.driver = self.update_remote(caps_tag)
 
     @Trace(log)
     def close_appium(self):
-        if SeleniumActions.driver is None:
+        if AndroidActions.driver is None:
             log.debug('appium is already closed')
         else:
             log.debug('closing appium')
-            SeleniumActions.driver.quit()
-            SeleniumActions.driver = None
+            AndroidActions.driver.quit()
+            AndroidActions.driver = None
             self.caps_tag = None
         pass
 

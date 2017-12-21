@@ -1,5 +1,5 @@
 from behave import *
-from lib.wrappers import fake
+from lib.trace import fake
 
 
 @step('A fake step')

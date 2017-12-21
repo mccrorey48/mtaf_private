@@ -13,7 +13,7 @@ args = parser.parse_args()
 cfg.set_site(args.cfg_host, args.site_tag)
 cfg.site['Mock'] = True
 
-from ccd.views import *
+from WebApp.views import *
 
 try:
     # print cfg.get_locator('DomainQuickLaunch', reseller_home_view)

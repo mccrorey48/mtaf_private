@@ -1,7 +1,0 @@
-/.idea/
-*.log
-/failed_scenarios_screenshots/*
-/*.zip
-*.html
-*.pyc
-*.exe

@@ -1,6 +1,6 @@
 from time import time, sleep
-import lib.logging_esi as logging
-from lib.wrappers import Trace
+import lib.mtaf_logging as logging
+from lib.trace import Trace
 from appium import webdriver
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.common.exceptions import WebDriverException
@@ -17,40 +17,6 @@ from urllib2 import URLError
 log = logging.get_logger('esi.selenium_actions')
 
 selenium_url = "http://localhost:4723/wd/hub"
-desired_capabilities = {
-    "nolaunch": {
-        "appPackage": "com.esi_estech.ditto",
-        "autoLaunch": False,
-        "automationName": "Appium",
-        "deviceName": "r2d2",
-        "newCommandTimeout": 1200,
-        "noReset": True,
-        "platformName": "Android",
-        "platformVersion": "4.4"
-    },
-    "main": {
-        "appActivity": ".activities.MainViewActivity",
-        "appPackage": "com.esi_estech.ditto",
-        # "appWaitActivity": "activities.MainViewActivity",
-        "appWaitPackage": "com.esi_estech.ditto",
-        "automationName": "Appium",
-        "deviceName": "r2d2",
-        "dontStopAppOnReset": True,
-        "newCommandTimeout": 1200,
-        "noReset": True,
-        "platformName": "Android",
-        "platformVersion": "4.4"
-    },
-    "settings": {
-        "appPackage": "com.esi_estech.ditto",
-        "appium-version": "1.3.7",
-        "autoLaunch": False,
-        "deviceName": "r2d2",
-        "newCommandTimeout": 1200,
-        "platformName": "Android",
-        "platformVersion": "4.4"
-    }
-}
 
 
 class AndroidActions(object):

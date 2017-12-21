@@ -1,5 +1,5 @@
-import lib.logging_esi as logging
-log = logging.get_logger('esi.log_test')
+import lib.mtaf_logging as logging
+log = logging.get_logger('mtaf.log_test')
 logging.console_handler.setLevel(logging.INFO)
 log.debug("debug message")
 log.trace("trace message")

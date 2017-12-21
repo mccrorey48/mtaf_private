@@ -1,7 +1,7 @@
-import lib.logging_esi as logging
+import lib.mtaf_logging as logging
 
 from AndroidApp.views.base import BaseView
-from lib.wrappers import Trace
+from lib.trace import Trace
 
 log = logging.get_logger('esi.login_view')
 
