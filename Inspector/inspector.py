@@ -269,7 +269,7 @@ class Inspector(Frame):
         self.rec_frame.write(txt + '\n')
         timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
         with open(self.rec_file, 'a') as f:
-            f.write('%s %s\n' % (timestamp, txt))
+            f.write('%s %s\n' % (timestamp, txt.encode('utf-8')))
 
     def check_thread(self):
         if self.worker_thread is None:
