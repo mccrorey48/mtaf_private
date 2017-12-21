@@ -11,6 +11,5 @@ xml_not_retrieved
 *.png
 steps.txt
 substeps.txt
-*.json
 *.log
 *.cap
