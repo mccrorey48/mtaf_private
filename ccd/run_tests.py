@@ -3,7 +3,7 @@ import time
 
 import lib.logging_esi as logging_esi
 
-from lib.esi_result import EsiResult
+from lib.mtaf_result import MtafResult
 
 log = logging_esi.get_logger('esi.run_tests')
 
@@ -27,4 +27,4 @@ with logging_esi.msg_src_cm('run_tests'):
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.LoginTests))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.ResellerTests))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.DomainTests))
-    unittest.TextTestRunner(verbosity=0, resultclass=EsiResult, failfast=args.failfast).run(suite)
+    unittest.TextTestRunner(verbosity=0, resultclass=MtafResult, failfast=args.failfast).run(suite)

@@ -2,7 +2,7 @@
 import lib.logging_esi as logging_esi
 from lib.user_exception import UserException as Ux, UserFailException as Fx
 from lib.wrappers import Trace, TestCase, SkipTrace
-from lib.esi_result import EsiResult
+from lib.mtaf_result import MtafResult
 log = logging_esi.get_logger('esi.wrapper_test')
 logging_esi.console_handler.setLevel(logging_esi.INFO)
 # Trace = SkipTrace

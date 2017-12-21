@@ -125,8 +125,8 @@ if __name__ == '__main__':
     import argparse
     ops = {'dump': dump_dbs, 'restore': restore_dbs}
     targets = {
-        'ego_android_site': {"cfg_dir": os.path.join('ePhoneGoAndroid', 'config'), "db_names": ['ego_android_site']},
-        'ego_android_all': {"cfg_dir": os.path.join('ePhoneGoAndroid', 'config'),
+        'ego_android_site': {"cfg_dir": os.path.join('AndroidApp', 'config'), "db_names": ['ego_android_site']},
+        'ego_android_all': {"cfg_dir": os.path.join('AndroidApp', 'config'),
                             "db_names": ['ego_android_site', 'ego_android_caps']},
         'e7_site': {"cfg_dir": os.path.join('ePhone7', 'config'), "db_names": ['e7_site']},
         'e7_all': {"cfg_dir": os.path.join('ePhone7', 'config'), "db_names": ['e7_site', 'e7_caps', 'e7_colors']},

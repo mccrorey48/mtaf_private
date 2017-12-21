@@ -1,6 +1,6 @@
 from softphone_plugin import create_softphone_frame
-from ePhoneGoAndroid.config.configure import cfg
-from ePhoneGoAndroid.utils.get_softphone import get_softphone
+from AndroidApp.config.configure import cfg
+from AndroidApp.utils.get_softphone import get_softphone
 from lib.android_zpath import set_zpath_tag
 
 

@@ -3,7 +3,7 @@ import lib.logging_esi as logging
 from lib.wrappers import Trace
 from appium import webdriver
 from appium.webdriver.common.touch_action import TouchAction
-from selenium.common.exceptions import WebDriverException, TimeoutException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from lib.user_exception import UserException as Ux
@@ -58,40 +58,33 @@ class AndroidActions(object):
     cfg = None
     caps_tag = None
 
-    def open_appium(self, caps_tag='nolaunch', caps_arg=None, connect_timeout=10):
-        if caps_tag == 'query_device':
-            adb = ADB()
-            output = adb.run_cmd('shell dumpsys window windows')
-            # print 'APK Version: ' + re.match('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)', output).group(1)
-            package = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output).group(1)
-            activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/' + package + '([^}]+)', output).group(2)
-            device_name = adb.run_cmd('shell getprop ro.product.model').strip()
-            platform_version = adb.run_cmd('shell getprop ro.build.version.release').strip()
-            caps = {
-                    "appPackage": package,
-                    "appActivity": activity,
-                    "autoLaunch": False,
-                    "automationName": "Appium",
-                    "deviceName": device_name,
-                    "newCommandTimeout": 1200,
-                    "noReset": True,
-                    "platformName": "Android",
-                    "platformVersion": platform_version
-                }
-        elif caps_tag == 'caps_arg':
-            caps = caps_arg
-        else:
-            if caps_tag not in desired_capabilities:
-                raise Ux("unknown desired capabilities name %s" % caps_tag)
-            caps = desired_capabilities[caps_tag]
+    def open_appium(self, connect_timeout=10):
+        adb = ADB()
+        if len(adb.get_devices()) == 0:
+            raise Ux("no ADB device")
+        output = adb.run_cmd('shell dumpsys window windows')
+        package = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output).group(1)
+        activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/' + package + '([^}]+)', output).group(2)
+        device_name = adb.run_cmd('shell getprop ro.product.model').strip()
+        platform_version = adb.run_cmd('shell getprop ro.build.version.release').strip()
+        caps = {
+                "appPackage": package,
+                "appActivity": activity,
+                "autoLaunch": False,
+                "automationName": "Appium",
+                "deviceName": device_name,
+                "newCommandTimeout": 1200,
+                "noReset": True,
+                "platformName": "Android",
+                "platformVersion": platform_version
+            }
         start_time = time()
         while time() - start_time < connect_timeout:
             try:
                 AndroidActions.driver = webdriver.Remote(selenium_url, caps)
-                self.caps_tag = caps_tag
                 break
             except WebDriverException:
-                log.info("retrying webdriver.Remote(%s, %s)" % (selenium_url, desired_capabilities[caps_tag]))
+                log.info("retrying webdriver.Remote(%s, %s)" % (selenium_url, caps))
             except URLError as e:
                 print "URLError attempting to connect to appium server: %s" % e
                 raise Ux("URLError attempting to connect to appium server")
