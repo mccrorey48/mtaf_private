@@ -338,44 +338,38 @@ class Inspector(Frame):
         # just doing the cget synchronizes the "set disabled" action so the "if" statement returns false;
         # without this a double click on the button causes an exception in "self.cwin_x = self.cwin.winfo_x()"
         # because create_cwin() is called again before the first cwin is rendered
-        if self.bottom_frame.mk_canvas.cget('state') == DISABLED:
-            print "bogus double call to create_cwin()"
-            return
-        # disable the button
-        self.bottom_frame.mk_canvas.configure(command=None)
-        self.bottom_frame.mk_canvas.configure(state=DISABLED)
-        got_screenshot = False
-        if self.drag_polygon is not None:
-            self.im_canvas.delete(self.drag_polygon)
-            self.drag_polygon = None
-        if reuse_image:
-            got_screenshot = True
-        else:
-            try:
-                if self.appium_is_open:
-                        self.get_screenshot_appium()
-                        self.get_xml_appium()
-                else:
-                    self.get_screenshot_adb()
-                    self.get_xml_adb()
-            except BaseException as e:
-                # print "exception trying to get screenshot: %s" % e
-                print e
+        #
+        def disable_screenshot_button():
+            if self.bottom_frame.mk_canvas.cget('state') == DISABLED:
+                raise Ux("bogus double call to create_cwin()")
+            self.bottom_frame.mk_canvas.configure(command=None)
+            self.bottom_frame.mk_canvas.configure(state=DISABLED)
+
+        def remove_drag_polygon():
+            if self.drag_polygon is not None:
+                self.im_canvas.delete(self.drag_polygon)
+                self.drag_polygon = None
+
+        def get_screenshot():
+            if self.appium_is_open:
+                self.get_screenshot_appium()
+                self.get_xml_appium()
             else:
-                got_screenshot = True
-        if not got_screenshot:
+                self.get_screenshot_adb()
+                self.get_xml_adb()
+
+        def enable_screenshot_button():
             self.bottom_frame.mk_canvas.configure(state=NORMAL, command=self.create_cwin)
-        else:
-            x = self.winfo_rootx()
-            y = self.winfo_rooty()
-            w = self.winfo_width()
+
+        def destroy_existing_cwin():
             if self.cwin is not None:
                 self.cwin_x = self.cwin.winfo_x()
                 self.cwin_y = self.cwin.winfo_y()
                 self.destroy_loc_frames()
                 self.cwin.destroy()
                 self.cwin = None
-            self.update_idletasks()
+
+        def create_new_cwin():
             self.cwin = Toplevel(root, bg='cyan')
             self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
             image = Image.open(os.path.join(screenshot_dir, 'inspector.png'))
@@ -412,7 +406,6 @@ class Inspector(Frame):
             self.cwin.btn_frame.invert.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
             self.cwin.rowconfigure(0, weight=1)
             self.create_loc_frames()
-            self.bottom_frame.mk_canvas.configure(state=NORMAL, command=self.create_cwin)
             if self.cwin_x is None:
                 self.cwin_x = root.winfo_x() + 20
             if self.cwin_y is None:
@@ -422,9 +415,18 @@ class Inspector(Frame):
             self.cwin.geometry('%dx%d+%d+%d' % (width, height, self.cwin_x, self.cwin_y - 28))
             self.cwin.minsize(width=width, height=height)
 
-    # def update_loc_frames(self):
-    #     self.destroy_loc_frames()
-    #     self.create_loc_frames()
+        try:
+            disable_screenshot_button()
+            if reuse_image:
+                enable_screenshot_button()
+            else:
+                get_screenshot()
+            destroy_existing_cwin()
+            create_new_cwin()
+        except BaseException as e:
+            print "error creating screenshot window: %s" % e
+        finally:
+            enable_screenshot_button()
 
     def destroy_loc_frames(self):
         if self.id_frame is not None:
