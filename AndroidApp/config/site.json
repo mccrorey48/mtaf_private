@@ -1,4 +1,5 @@
 {
-            "username": "jblow",
-            "password": "foobar"
+    "username": "jblow",
+    "password": "foobar",
+    "selenium_url": "http://localhost:4723/wd/hub"
 }

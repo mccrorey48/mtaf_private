@@ -28,7 +28,7 @@ class BaseView(AndroidActions):
         self.By = MobileBy
 
     def get_locator(self, name):
-        locator = AndroidActions.get_locator(self, name)
+        locator = AndroidActions.get_short_locator(self, name)
         if locator["by"] == "zpath":
             locator["by"] = "xpath"
             locator["value"] = expand_zpath(locator["value"])
@@ -36,7 +36,6 @@ class BaseView(AndroidActions):
             locator["by"] = "-android uiautomator"
             locator["value"] = "new UiSelector()." + locator["value"]
         return locator
-
 
     @Trace(log)
     def send_keycode(self, keycode):
@@ -51,8 +50,8 @@ class BaseView(AndroidActions):
         AndroidActions.driver.scroll(origin_el, destination_el)
 
     @Trace(log)
-    def swipe(self, origin_x, origin_y, destination_x, destination_y, duration):
-        AndroidActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration)
+    def swipe(self, origin_x, origin_y, destination_x, destination_y, duration_ms=500):
+        AndroidActions.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration_ms)
 
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder):

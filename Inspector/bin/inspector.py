@@ -20,7 +20,7 @@ import importlib
 from operator import xor
 from time import strftime, localtime
 
-log = logging.get_logger('esi.inspector')
+log = logging.get_logger('mtaf.inspector')
 android_actions = AndroidActions()
 adb = ADB()
 re_package = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)')

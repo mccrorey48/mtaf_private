@@ -1,13 +1,14 @@
 Feature: Log in only allowed with valid user ID and password
 
   Background: Attempted login scenarios
-    Given I go to the portal login page
+    Given I go to the start page
+    Then I go to the login page
 
   Scenario: Log in with valid user ID and password
     When I enter a valid user ID
     And I enter a valid password
     And I click the Login button
-    Then the Manager Home page will load
+    Then the User Home page will load
 
   Scenario: Log in with valid user ID and invalid password
     When I enter a valid user ID

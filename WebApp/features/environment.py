@@ -1,9 +1,9 @@
-from WebApp.utils.configure import cfg
+from WebApp.config.configure import cfg
 import WebApp.views
 from mock import Mock, patch
 from lib import mtaf_logging
 mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
-log = mtaf_logging.get_logger('esi.reseller')
+log = mtaf_logging.get_logger('mtaf.environment')
 
 
 def make_mock(name):
@@ -117,7 +117,6 @@ def before_feature(context, feature):
         cfg_server = context.config.userdata.get('cfg_server')
     else:
         cfg_server = 'vqda'
-    cfg.set_site(cfg_server, ccd_server)
     WebApp.views.base_view.open_browser()
 
 

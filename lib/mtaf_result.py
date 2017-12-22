@@ -2,7 +2,7 @@ import unittest
 
 from lib import mtaf_logging
 
-log = mtaf_logging.get_logger('esi.result')
+log = mtaf_logging.get_logger('mtaf.result')
 
 
 class MtafResult(unittest.TextTestResult):

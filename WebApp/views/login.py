@@ -1,6 +1,6 @@
 import lib.mtaf_logging as logging
 
-from WebApp.utils.configure import cfg
+from WebApp.config.configure import cfg
 from WebApp.views.base import BaseView
 from lib.trace import Trace
 
@@ -10,85 +10,74 @@ log = logging.get_logger('mtaf.login_view')
 class LoginView(BaseView):
 
     locators = {
-        "LoginButton": {"by": "xpath", "value": "//input[@value='Log In']"},
-        "Password": {"by": "id", "value": "LoginPassword"},
-        "PasswordAlert": {"by": "css selector", "value": ".alert"},
-        "UserName": {"by": "id", "value": "LoginUsername"}
+        "InvalidLoginAlert": {"by": "class name", "value": "alert-danger",
+                              "partial text": "There is 1 error"},
+        "LoginButton": {"by": "id", "value": "SubmitLogin"},
+        "Password": {"by": "id", "value": "passwd"},
+        "UserName": {"by": "id", "value": "email"}
     }
 
     def __init__(self):
         super(LoginView, self).__init__()
         self.view_name = "login"
-        self.page_title = "Manager Portal"
-
-    @Trace(log)
-    def input_bad_username(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        username = '%s@%s' % (user_cfg['BadUserId'], user_cfg['DomainName'])
-        self.find_named_element('UserName').send_keys(username)
-
-    @Trace(log)
-    def input_reseller_username(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
-        self.find_named_element('UserName').send_keys(username)
-
-    @Trace(log)
-    def input_reseller_password(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        password = user_cfg['Password']
-        self.find_named_element('Password').send_keys(password)
+        self.page_title = "Login - My Store"
 
     @Trace(log)
     def input_bad_password(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        password = user_cfg['BadPassword']
-        self.find_named_element('Password').send_keys(password)
+        el = self.find_named_element('Password')
+        el.clear()
+        el.send_keys(cfg.site.password)
+
+    @Trace(log)
+    def input_bad_username(self):
+        el = self.find_named_element('UserName')
+        el.clear()
+        el.send_keys(cfg.site.bad_username)
+
+    @Trace(log)
+    def input_password(self):
+        el = self.find_named_element('Password')
+        el.clear()
+        el.send_keys(cfg.site.password)
+
+    @Trace(log)
+    def input_username(self):
+        el = self.find_named_element('UserName')
+        el.clear()
+        el.send_keys(cfg.site.username)
 
     @Trace(log)
     def click_login(self):
         self.click_named_element('LoginButton')
 
     def login_with_good_credentials(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
-        password = user_cfg['Password']
-        self.login(username, password)
-
-    def login_bad_password(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
-        password = user_cfg['BadPassword']
-        self.login(username, password)
-
-    def login_no_password(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        username = '%s@%s' % (user_cfg['UserId'], user_cfg['DomainName'])
-        password = ''
-        self.login(username, password)
-
-    def login_bad_username(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        username = '%s@%s' % (user_cfg['BadUserId'], user_cfg['DomainName'])
-        password = user_cfg['Password']
-        self.login(username, password)
+        self.login(username=cfg.site.username, password=cfg.site.password)
 
     def login_no_username(self):
-        user_cfg = cfg.site['Users']['ResellerUser']
-        username = ''
-        password = user_cfg['Password']
-        self.login(username, password)
+        self.login(password=cfg.site.password)
 
-    def login(self, username, password):
-        if len(username):
-            self.find_named_element('UserName').send_keys(username)
-        if len(password):
-            self.find_named_element('Password').send_keys(password)
+    def login_bad_username(self):
+        self.login(username=cfg.site.bad_username, password=cfg.site.password)
+
+    def login_no_password(self):
+        self.login(username=cfg.site.username)
+
+    def login_bad_password(self):
+        self.login(username=cfg.site.username, password=cfg.site.bad_password)
+
+    def login(self, username=None, password=None):
+        if username is not None:
+            el = self.find_named_element('UserName')
+            el.clear()
+            el.send_keys(username)
+        if password is not None:
+            el = self.find_named_element('Password')
+            el.clear()
+            el.send_keys(password)
         self.click_named_element('LoginButton')
 
-    def wait_for_invalid_login_alert(self, timeout=10):
-        el = self.find_named_element("PasswordAlert", timeout)
-        self.assert_element_text(elem=el, expected="Username or password is invalid. Please try again.",
-                                 elem_name="alert")
+    def wait_for_invalid_login_alert(self):
+        assert self.element_is_present('InvalidLoginAlert')
+
 
 login_view = LoginView()
