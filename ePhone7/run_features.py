@@ -453,8 +453,8 @@ if __name__ == '__main__':
             installed_app = now.strftime("%H-%M-%S")
         else:
             installed_aosp, installed_app = get_current_versions(args.ota_server)
-        report_configuration = "site_tag:%s, run_tags:%s, installed_aosp:%s, installed_app:%s" % \
-                               (cfg.site_tag, args.run_tags, installed_aosp, installed_app)
+        report_configuration = {"site_tag":cfg.site_tag, "run_tags": args.run_tags, "installed_aosp": installed_aosp,
+                                "installed_app": installed_app}
         write_result_to_db(args, report_configuration, fake_detector, features)
         prune_db('e7_results', args.server, 'prune', 10, 30)
     except Ux as e:
