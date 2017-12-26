@@ -225,7 +225,7 @@ class BaseView(AndroidActions):
         while time() - start_time < timeout:
             try:
                 previous_activity = current_activity
-                current_activity = self.get_current_activity
+                current_activity = self.get_current_activity()
                 log.debug("startup: current_activity = " + repr(current_activity))
                 if current_activity == '.activities.MainViewActivity':
                     # sleep(10)

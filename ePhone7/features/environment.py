@@ -32,7 +32,7 @@ def before_all(context):
     context.make_assertion = make_assertion(context)
     tags = str(context.config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
-        base_view.open_appium('nolaunch', force=True, timeout=60)
+        base_view.open_appium(caps_tag='query_device')
         base_view.startup()
 
 
