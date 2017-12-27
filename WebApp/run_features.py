@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import re
 import sys
+import os
 import json
 from behave.__main__ import main
 import contextlib
@@ -23,23 +24,17 @@ def capture():
         out[1] = out[1].getvalue()
 
 
-def run_features(features_dir, ccd_server):
+def run_features(features_dir):
     sys.argv = [re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])]
-    sys.argv.append('-D')
-    sys.argv.append('ccd_server=%s' % ccd_server)
-    # sys.argv.append('-D')
-    # sys.argv.append('mock')
     sys.argv.append('-f')
     sys.argv.append('json.pretty')
     sys.argv.append(features_dir)
     with capture() as out:
         main()
-    # with open('output.json', 'w') as f:
-    #     f.write('\n'.join(out[0].split('\n')[:-5]))
     return json.loads('\n'.join(out[0][:out[0].rindex(']') + 1].split('\n')))
 
 
-def write_result_to_db(server, db_name, test_class, ccd_server, features):
+def write_result_to_db(server, db_name, test_class, features):
     print "writing to db_name %s, server %s:" % (db_name, server)
     client = MongoClient(server)
     db = client[db_name]
@@ -48,20 +43,16 @@ def write_result_to_db(server, db_name, test_class, ccd_server, features):
     start_date = time.strftime("%x", tm)
     fail_count = 0
     pass_count = 0
-    if ccd_server == "test":
-        environment = "svlab"
-    else:
-        environment = "production"
     for result in features:
         if result["status"] == "passed":
             pass_count += 1
         elif result["status"] == "failed":
             fail_count += 1
     test_start = {
-        "app": "CCD",
+        "app": "example",
         "build": "",
-        "configuration": ccd_server,
-        "environment": environment,
+        "configuration": {"site_tag": os.getenv("MTAF_SITE")},
+        "environment": 'devel',
         "fail_count": fail_count,
         "pass_count": pass_count,
         "status": features[0]["status"],
@@ -101,24 +92,22 @@ def write_result_to_db(server, db_name, test_class, ccd_server, features):
                     step["status"] = "passed"
                     step["duration"] = ""
         db["features"].insert_one(feature)
-        # del feature['_id']
-        # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))
+
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description='  runs behave test on specified features directory and saves' +
                                                  '  the results on a mongodb running on a specified server\n')
-    parser.add_argument("-d", "--db_name", type=str, default='ccd1_results', help="name of db")
+    parser.add_argument("-d", "--db_name", type=str, default='webapp_results', help="name of db")
     parser.add_argument("-c", "--test_class", type=str, default='regression',
                         help="class of test, e.g. regression, smoke etc.")
-    parser.add_argument("-t", "--ccd_server", type=str, default='test', help="WebApp server tag")
     parser.add_argument("-f", "--features_directory", type=str, default='WebApp/features',
                         help="operation to perform")
     parser.add_argument("-s", "--server", type=str, default='localhost',
                         help="(optional) specify mongodb server, default 'localhost'")
     args = parser.parse_args()
-    features = run_features(args.features_directory, args.ccd_server)
-    write_result_to_db(args.server, args.db_name, args.test_class, args.ccd_server, features)
+    features = run_features(args.features_directory)
+    write_result_to_db(args.server, args.db_name, args.test_class, features)
 
 

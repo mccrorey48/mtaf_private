@@ -3,7 +3,8 @@ import sys
 import traceback
 from time import time, sleep
 import lib.mtaf_logging as mtaf_logging
-from appium import webdriver
+from appium import webdriver as appium_webdriver
+from selenium import webdriver as selenium_webdriver
 
 from lib.user_exception import UserException as Ux, UserFailException as Fx, UserTimeoutException as Tx, \
     stat_prefix as sp
@@ -74,16 +75,20 @@ class Trace(object):
             }[self.log_level]
             arg_reprs = []
             for arg in args:
-                if type(arg) == webdriver.webelement.WebElement:
-                    arg_reprs.append('<%s>' % arg._id)
+                if type(arg) == appium_webdriver.webelement.WebElement:
+                    arg_reprs.append('WebElement<%s>' % arg._id)
+                elif type(arg) == selenium_webdriver.remote.webdriver.WebElement:
+                    arg_reprs.append('remote WebElement<%s>' % arg._id)
                 elif arg.__class__.__name__[-4:] == 'View':
                     arg_reprs.append(arg.__class__.__name__)
                 else:
                     arg_reprs.append(repr(arg))
             for key in kwargs:
                 arg = kwargs[key]
-                if type(arg) == webdriver.webelement.WebElement:
-                    arg_reprs.append('%s=<%s>' % (key, arg._id))
+                if type(arg) == appium_webdriver.webelement.WebElement:
+                    arg_reprs.append('%s=WebElement<%s>' % (key, arg._id))
+                elif type(arg) == selenium_webdriver.remote.webelement.WebElement:
+                    arg_reprs.append('%s=remote WebElement<%s>' % (key, arg._id))
                 elif arg.__class__.__name__[-4:] == 'View':
                     arg_reprs.append('%s=%s' % (key, arg.__class__.__name__))
                 else:
@@ -141,14 +146,18 @@ class Trace(object):
                 else:
                     if type(retval) == list:
                         for val in retval:
-                            if type(val) == webdriver.webelement.WebElement:
-                                val_reprs.append('<%s>' % val._id)
+                            if type(val) == appium_webdriver.webelement.WebElement:
+                                val_reprs.append('WebElement<%s>' % val._id)
+                            elif type(val) == selenium_webdriver.remote.webdriver.WebElement:
+                                arg_reprs.append('remote WebElement<%s>' % val._id)
                             else:
                                 val_reprs.append(repr(val))
                         returned = '[%s]' % ','.join(val_reprs)
                     else:
-                        if type(retval) == webdriver.webelement.WebElement:
-                            returned = '<%s>' % retval._id
+                        if type(retval) == appium_webdriver.webelement.WebElement:
+                            returned = 'WebElement<%s>' % retval._id
+                        elif type(retval) == selenium_webdriver.remote.webdriver.WebElement:
+                            returned = 'remote WebElement<%s>' % retval._id
                         else:
                             returned = repr(retval)
                     if len(returned) > 160:

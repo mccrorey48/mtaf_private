@@ -14,7 +14,7 @@ class MtafResult(unittest.TextTestResult):
     def startTest(self, test):
         super(MtafResult, self).startTest(test)
         with mtaf_logging.msg_src_cm(test.id().split('.')[-1]):
-            log.info("TEST CASE: %-35s start" % test.id().split('.')[-1])
+            log.trace("TEST CASE: %-35s start" % test.id().split('.')[-1])
 
     def addSuccess(self, test):
         super(MtafResult, self).addSuccess(test)

@@ -19,7 +19,8 @@ class StartView(BaseView):
 
     @Trace(log)
     def goto_login(self):
-        self.find_named_element('SignInButton').click()
+        elem = self.find_named_element('SignInButton')
+        elem.click()
 
 
 start_view = StartView()

@@ -26,25 +26,25 @@ class LoginView(BaseView):
     def input_bad_password(self):
         el = self.find_named_element('Password')
         el.clear()
-        el.send_keys(cfg.site.password)
+        self.send_keys(el, cfg.site.bad_password)
 
     @Trace(log)
     def input_bad_username(self):
         el = self.find_named_element('UserName')
         el.clear()
-        el.send_keys(cfg.site.bad_username)
+        self.send_keys(el, cfg.site.bad_username)
 
     @Trace(log)
     def input_password(self):
         el = self.find_named_element('Password')
         el.clear()
-        el.send_keys(cfg.site.password)
+        self.send_keys(el, cfg.site.password)
 
     @Trace(log)
     def input_username(self):
         el = self.find_named_element('UserName')
         el.clear()
-        el.send_keys(cfg.site.username)
+        self.send_keys(el, cfg.site.username)
 
     @Trace(log)
     def click_login(self):
@@ -69,11 +69,11 @@ class LoginView(BaseView):
         if username is not None:
             el = self.find_named_element('UserName')
             el.clear()
-            el.send_keys(username)
+            self.send_keys(el, username)
         if password is not None:
             el = self.find_named_element('Password')
             el.clear()
-            el.send_keys(password)
+            self.send_keys(el, password)
         self.click_named_element('LoginButton')
 
     def wait_for_invalid_login_alert(self):

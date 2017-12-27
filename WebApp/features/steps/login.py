@@ -22,7 +22,7 @@ def step_impl(context):
 
 @step('I enter a valid password')
 def step_impl(context):
-    login_view.input_reseller_password()
+    login_view.input_password()
 
 
 @step('I click the Login button')

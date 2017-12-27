@@ -16,26 +16,26 @@ Feature: Log in only allowed with valid user ID and password
     And I click the Login button
     Then the invalid alert will appear
 
-  Scenario: Log in with valid user ID and no password
-    When I enter a valid user ID
-    And I enter no password
-    And I click the Login button
-    Then the invalid alert will appear
-
-  Scenario: Log in with bad user ID and valid password
-    When I enter a bad user ID
-    And I enter a valid password
-    And I click the Login button
-    Then the invalid alert will appear
-
-  Scenario: Log in with no user ID and valid password
-    When I enter no user ID
-    And I enter a valid password
-    And I click the Login button
-    Then the invalid alert will appear
-
-  Scenario: Log in with no user ID and no password
-    When I enter no user ID
-    And I enter a valid password
-    And I click the Login button
-    Then the invalid alert will appear
+#  Scenario: Log in with valid user ID and no password
+#    When I enter a valid user ID
+#    And I enter no password
+#    And I click the Login button
+#    Then the invalid alert will appear
+#
+#  Scenario: Log in with bad user ID and valid password
+#    When I enter a bad user ID
+#    And I enter a valid password
+#    And I click the Login button
+#    Then the invalid alert will appear
+#
+#  Scenario: Log in with no user ID and valid password
+#    When I enter no user ID
+#    And I enter a valid password
+#    And I click the Login button
+#    Then the invalid alert will appear
+#
+#  Scenario: Log in with no user ID and no password
+#    When I enter no user ID
+#    And I enter a valid password
+#    And I click the Login button
+#    Then the invalid alert will appear

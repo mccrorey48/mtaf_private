@@ -112,18 +112,17 @@ def before_all(context):
 def before_feature(context, feature):
     if context.use_mocks and feature.name in mock_features:
         patches_start(context)
-    ccd_server = context.config.userdata.get('ccd_server')
     if 'cfg_server' in context.config.userdata:
         cfg_server = context.config.userdata.get('cfg_server')
     else:
         cfg_server = 'vqda'
-    WebApp.views.base_view.open_browser()
 
 
 def before_scenario(context, scenario):
     context.scenario_name = scenario.name
     if context.mocks_started:
         mock_reset_all(context)
+    WebApp.views.base_view.open_browser()
 
 
 def before_step(context, step):
@@ -135,11 +134,12 @@ def after_step(context, step):
 
 
 def after_scenario(context, scenario):
+    WebApp.views.base_view.close_browser()
+    # print("ran scenario %s" % scenario.name)
     if context.mocks_started:
         mock_assertions(context, scenario)
 
 
 def after_feature(context, feature):
-    WebApp.views.base_view.close_browser()
     if context.mocks_started:
             patches_stop(context)

@@ -80,6 +80,10 @@ class SeleniumActions(object):
         elem.click()
 
     @Trace(log)
+    def send_keys(self, elem, val ):
+        elem.send_keys(val)
+
+    @Trace(log)
     def click_named_element(self, name):
         elem = self.find_named_element(name)
         text = elem.text
