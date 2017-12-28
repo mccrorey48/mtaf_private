@@ -26,7 +26,9 @@ from logging import Formatter, FileHandler, getLogger, StreamHandler
 from contextlib import contextmanager
 from time import sleep, strftime, localtime
 import re
-from lib.prune_logs import prune_logs
+from mtaf.lib.prune_logs import prune_logs
+import os
+import errno
 
 msg_len_max = 30
 msg_src_stack = []
@@ -101,77 +103,25 @@ def get_logger(name):
     return getLogger(name)
 
 
-re_common = re.compile(
-    '(?P<date>\S+)\s+'
-    + '(?P<time>\S+)\s+\['
-    + '(?P<src>[^\s\]]+)[\s\]]+'
-    + '(?P<level>\S+)[\s\-\]\[]+'
-    + '(?P<tc>\S[^\]]+\S)\s*\]\s+'
-    + '((?P<type>[A-Z ^:]+):\s+)?'
-    + '(?P<tail>.*)'
-)
-
-re_tc = re.compile(
-    '(?P<tc>\S+)\s+'
-    + '(?P<status>\S+)\s*'
-    + '([- ]+)?(?P<msg>.+)?'
-)
-
-re_trace = re.compile(
-    '(?P<func>[^(\s]+)'
-    + '((?P<arglist>\((?P<args>.*)\))?\s*|\s*)'
-    + '((?P<event>returned|EXCEPTION)?:?\s+|)(?P<msg>.+)?'
-)
-
-
-def parse_msg_to_dict(msg):
-    m = re_common.match(msg)
-    if not m:
-        print 'Unknown log message format:\n%s' % msg
-        return None
-    names = ['date', 'time', 'src', 'level', 'tc', 'type']
-    # names = ['date', 'time', 'src', 'level', 'tc', 'type', 'tail']
-    values = [m.group(name) for name in names]
-    # # print "tail = " + m.group('tail')
-    if m.group('type') == 'TEST CASE':
-        mt = re_tc.match(m.group('tail'))
-        if not mt:
-            print 'Unknown log message tail format: "%s"' % m.group('tail')
-            return None
-        for name in ['tc', 'status', 'msg']:
-            names.append(name)
-            values.append(mt.group(name))
-    elif m.group('type') == 'TRACE':
-        mt = re_trace.match(m.group('tail'))
-        if not mt:
-            print 'Unknown log message tail format: "%s"' % m.group('tail')
-            return None
-        for name in ('func', 'args', 'event', 'msg'):
-            names.append(name)
-            if name == 'event' and mt.group('arglist') is not None:
-                values.append('call')
-            else:
-                values.append(mt.group(name))
-    else:
-        names.append('msg')
-        values.append(m.group('tail'))
-    all_values = dict(zip(names, values))
-    all_values['trace_indent'] = trace_indent
-    # print '  ' + ', '.join(['%s: %s' % (name, all_values[name]) for name in names])
-    return all_values
-
-
 _log = getLogger(root_name)
 _log.setLevel(DEBUG)
-prune_logs('log/%s_debug_*.log' % root_name, 5)
-prune_logs('log/*logcat_*.log', 5)
+log_dir = 'log'
+prune_logs(os.path.join(log_dir, '%s_debug_*.log' % root_name), 5)
+prune_logs(os.path.join(log_dir, '*logcat_*.log'), 5)
 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
 # file logging for info, debug, trace and warn levels, each with its own output file
-base_warn_fname = 'log/%s_warn.log' % root_name
-base_info_fname = 'log/%s_info.log' % root_name
-base_trace_fname = 'log/%s_trace.log' % root_name
-base_debug_fname = 'log/%s_debug.log' % root_name
-extended_debug_fname = 'log/%s_debug_%s.log' % (root_name, timestamp)
+base_warn_fname = os.path.join(log_dir, '%s_warn.log' % root_name)
+base_info_fname = os.path.join(log_dir, '%s_info.log' % root_name)
+base_trace_fname = os.path.join(log_dir, '%s_trace.log' % root_name)
+base_debug_fname = os.path.join(log_dir, '%s_debug.log' % root_name)
+extended_debug_fname = os.path.join(log_dir, '%s_debug_%s.log' % (root_name, timestamp))
+try:
+    os.makedirs(log_dir)
+except OSError as e:
+    if e.errno == errno.EEXIST and os.path.isdir(log_dir):
+        pass
+    else:
+        raise
 fh = FileHandler(base_warn_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(WARN)
 _log.addHandler(fh)

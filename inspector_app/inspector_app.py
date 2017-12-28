@@ -1,0 +1,1 @@
+from mtaf.inspector import inspector
