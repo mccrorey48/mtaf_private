@@ -26,17 +26,6 @@ adb = ADB()
 re_package = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)')
 re_activity = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
 re_apk = re.compile('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)')
-xml_dir = 'xml'
-csv_dir = 'csv'
-screenshot_dir = 'screenshot'
-for _dir in xml_dir, csv_dir, screenshot_dir:
-    try:
-        os.makedirs(_dir)
-    except OSError as e:
-        if e.errno == errno.EEXIST and os.path.isdir(_dir):
-            pass
-        else:
-            raise
 btn_default_bg = '#d9d9d9'
 btn_select_bg = '#d97979'
 
@@ -187,9 +176,21 @@ class ButtonFrame(Frame):
 class Inspector(Frame):
     cmd_types = {}
 
-    def __init__(self, parent):
+    def __init__(self, parent, cfg):
         Frame.__init__(self, parent, bg="brown")
         self.parent = parent
+        self.cfg = cfg
+        for _dir in 'xml_dir', 'csv_dir', 'screenshot_dir', 'log_dir', 'tmp_dir':
+            if _dir not in self.cfg:
+                self.cfg[_dir] = '.'
+            if self.cfg[_dir] != '.':
+                try:
+                    os.makedirs(self.cfg[_dir])
+                except OSError as e:
+                    if e.errno == errno.EEXIST and os.path.isdir(self.cfg[_dir]):
+                        pass
+                    else:
+                        raise
         parent.bind_all("<Button-4>", self.mouse_btn)
         parent.bind_all("<Button-5>", self.mouse_btn)
         self.appium_btns = []
@@ -381,9 +382,9 @@ class Inspector(Frame):
                 self.cwin = None
 
         def create_new_cwin():
-            self.cwin = Toplevel(root, bg='cyan')
+            self.cwin = Toplevel(self.parent, bg='cyan')
             self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
-            image = Image.open(os.path.join(screenshot_dir, 'inspector.png'))
+            image = Image.open(os.path.join(self.cfg['screenshot_dir'], 'inspector.png'))
             self.cwin.scale = 600.0 / max(image.height, image.width)
             self.im_width = int(image.width * self.cwin.scale)
             self.im_height = int(image.height * self.cwin.scale)
@@ -418,9 +419,9 @@ class Inspector(Frame):
             self.cwin.rowconfigure(0, weight=1)
             self.create_loc_frames()
             if self.cwin_x is None:
-                self.cwin_x = root.winfo_x() + 20
+                self.cwin_x = self.parent.winfo_x() + 20
             if self.cwin_y is None:
-                self.cwin_y = root.winfo_y() + 20
+                self.cwin_y = self.parent.winfo_y() + 20
             width = self.im_canvas.winfo_reqwidth() + self.id_frame.winfo_reqwidth() + self.zpath_frame.winfo_reqwidth()
             height = self.im_canvas.winfo_reqheight() + self.cwin.btn_frame.winfo_reqheight()
             self.cwin.geometry('%dx%d+%d+%d' % (width, height, self.cwin_x, self.cwin_y - 28))
@@ -463,9 +464,7 @@ class Inspector(Frame):
         self.zpath_frame = VerticalScrolledFrame(self.cwin)
         self.zpath_frame_btns = {}
         self.zpath_frame.grid(column=2, row=0, sticky='n')
-        csv_folder = 'csv'
-        mkdir_p(csv_folder)
-        csv_fullpath = os.path.join(csv_folder, 'inspector.csv')
+        csv_fullpath = os.path.join(self.cfg['csv_dir'], 'inspector.csv')
         row = 0
         self.ids = parse_ids_with_zpaths(csv_fullpath)
         self.id_label = Label(self.id_frame.interior, text='IDs', width=30, bg='brown')
@@ -541,7 +540,7 @@ class Inspector(Frame):
                         break
                     if hasattr(w, 'master'):
                         w = w.master
-                    if w == self or w == root:
+                    if w == self or w == self.parent:
                         break
                 if not locked:
                     w = event.widget
@@ -1052,13 +1051,16 @@ class Inspector(Frame):
         index = int(text_index)
         elem = self.elems[index]
         android_actions.get_screenshot_as_file('inspector.png')
-        color = android_actions.get_element_color_and_count(screenshot_dir, 'inspector', elem, color_list_index=0)
+        color = android_actions.get_element_color_and_count(self.cfg['screenshot_dir'], 'inspector', elem,
+                                                            color_list_index=0)
         print "first color and count: %s" % color
         self.record("first color and count: %s" % color)
-        color = android_actions.get_element_color_and_count(screenshot_dir, 'inspector', elem, color_list_index=1)
+        color = android_actions.get_element_color_and_count(self.cfg['screenshot_dir'], 'inspector', elem,
+                                                            color_list_index=1)
         print "second color and count: %s" % color
         self.record("second color and count: %s" % color)
-        color = android_actions.get_element_color_and_count(screenshot_dir, 'inspector', elem, color_list_index=2)
+        color = android_actions.get_element_color_and_count(self.cfg['screenshot_dir'], 'inspector', elem,
+                                                            color_list_index=2)
         self.record("third color and count: %s" % color)
 
     def click_element(self):
@@ -1170,27 +1172,21 @@ class Inspector(Frame):
             print "Focused App: " + activity
             print "Done"
 
-    @staticmethod
-    def get_xml_appium():
+    def get_xml_appium(self):
         print "Getting XML and CSV...",
-        mkdir_p(xml_dir)
-        mkdir_p(csv_dir)
         xml = android_actions.driver.page_source
-        xml_fullpath = os.path.join(xml_dir, 'inspector.xml')
-        csv_fullpath = os.path.join(csv_dir, 'inspector.csv')
+        xml_fullpath = os.path.join(self.cfg['xml_dir'], 'inspector.xml')
+        csv_fullpath = os.path.join(self.cfg['csv_dir'], 'inspector.csv')
         log.info("saving xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
         xml_to_csv(xml_fullpath, csv_fullpath)
         print "Done"
 
-    @staticmethod
-    def get_xml_adb():
+    def get_xml_adb(self):
         print "Getting XML and CSV...",
-        mkdir_p(xml_dir)
-        mkdir_p(csv_dir)
-        xml_path = os.path.join(xml_dir, 'inspector.xml')
-        csv_path = os.path.join(csv_dir, 'inspector.csv')
+        xml_path = os.path.join(self.cfg['xml_dir'], 'inspector.xml')
+        csv_path = os.path.join(self.cfg['csv_dir'], 'inspector.csv')
         log.info("saving xml %s" % xml_path)
         adb.run_cmd('shell uiautomator dump')
         adb.run_cmd('pull /sdcard/window_dump.xml')
@@ -1199,20 +1195,16 @@ class Inspector(Frame):
 
         print "Done"
 
-    @staticmethod
-    def get_screenshot_appium():
+    def get_screenshot_appium(self):
         print "Getting Screenshot using Appium...",
-        mkdir_p(screenshot_dir)
-        img_path = os.path.join(screenshot_dir, 'inspector.png')
+        img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
         log.debug("saving screenshot to %s" % img_path)
         android_actions.get_screenshot_as_file(img_path)
         print "Done"
 
-    @staticmethod
-    def get_screenshot_adb():
+    def get_screenshot_adb(self):
         print "Getting Screenshot using ADB...",
-        mkdir_p(screenshot_dir)
-        img_path = os.path.join(screenshot_dir, 'inspector.png')
+        img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
         adb.run_cmd('shell screencap -p /sdcard/screencap.png')
         adb.run_cmd('pull /sdcard/screencap.png')
         log.debug("saving screenshot to %s" % img_path)
@@ -1228,7 +1220,7 @@ class Inspector(Frame):
 
     def rotate_image(self, redraw_cwin=True):
         print "Rotating screenshot...",
-        img_path = os.path.join(screenshot_dir, 'inspector.png')
+        img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
         im = Image.open(img_path)
         im = im.rotate(-90, expand=True)
         im.save(img_path)
@@ -1248,7 +1240,7 @@ class Inspector(Frame):
         print "current activity: " + android_actions.driver.current_activity
 
 
-def run_inspector():
+def run_inspector(cfg):
     parser = argparse.ArgumentParser()
     parser.add_argument("--plugin", type=str, help="device-specific plugin to load", default=None,
                         choices=['AndroidApp'])
@@ -1258,7 +1250,7 @@ def run_inspector():
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
-    _app = Inspector(root)
+    _app = Inspector(root, cfg)
     if args.plugin is None:
         _app.get_focused_app(quiet=True)
         # can load a plugin here based on the Inspector app's "package" attribute, set during the call to get_focused_app()
