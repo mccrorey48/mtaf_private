@@ -189,6 +189,7 @@ class Inspector(Frame):
 
     def __init__(self, parent):
         Frame.__init__(self, parent, bg="brown")
+        self.parent = parent
         parent.bind_all("<Button-4>", self.mouse_btn)
         parent.bind_all("<Button-5>", self.mouse_btn)
         self.appium_btns = []
@@ -224,6 +225,7 @@ class Inspector(Frame):
         self.menu = None
         self.new_drag_polygon_x1 = None
         self.new_drag_polygon_y1 = None
+        self.old_stdout = sys.stdout
         self.package = None
         self.parent_element = None
         self.polygons = []
@@ -825,6 +827,7 @@ class Inspector(Frame):
 
     def close_appium_and_quit(self):
         if self.appium_is_open:
+            print "trying to close appium"
             self.close_appium()
         try:
             os.mkdir('tmp')
@@ -832,7 +835,8 @@ class Inspector(Frame):
             pass
         with open('tmp/inspector_locators.json', 'w') as f:
             f.write(json.dumps(self.locators, sort_keys=True, indent=4, separators=(',', ': ')))
-        root.destroy()
+        sys.stdout = self.old_stdout
+        self.parent.destroy()
 
     def tap_xy(self):
         try:
@@ -1244,33 +1248,26 @@ class Inspector(Frame):
         print "current activity: " + android_actions.driver.current_activity
 
 
-def on_closing():
-    if _app.appium_is_open:
-        print "trying to close appium"
-        _app.close_appium()
-    sleep(5)
-    root.destroy()
+def run_inspector():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--plugin", type=str, help="device-specific plugin to load", default=None,
+                        choices=['AndroidApp'])
+    args = parser.parse_args()
+    root = Tk()
+    root.wm_title("Appium test utility")
+    root.columnconfigure(0, weight=1)
+    root.rowconfigure(0, weight=1)
 
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--plugin", type=str, help="device-specific plugin to load", default=None,
-                    choices=['AndroidApp'])
-args = parser.parse_args()
-root = Tk()
-root.wm_title("Appium test utility")
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
-
-_app = Inspector(root)
-if args.plugin is None:
-    _app.get_focused_app(quiet=True)
-    # can load a plugin here based on the Inspector app's "package" attribute, set during the call to get_focused_app()
-    # if _app.package is not None:
-    #     if _app.package[-5:] == 'some_app':
-    #         plugin = importlib.import_module('inspector.plugin.someApp_plugin')
-    #         plugin.install(_app)
-else:
-    plugin = importlib.import_module('inspector.plugin.' + args.plugin + '_plugin')
-    plugin.install(_app)
-root.protocol("WM_DELETE_WINDOW", on_closing)
-_app.mainloop()
+    _app = Inspector(root)
+    if args.plugin is None:
+        _app.get_focused_app(quiet=True)
+        # can load a plugin here based on the Inspector app's "package" attribute, set during the call to get_focused_app()
+        # if _app.package is not None:
+        #     if _app.package[-5:] == 'some_app':
+        #         plugin = importlib.import_module('inspector.plugin.someApp_plugin')
+        #         plugin.install(_app)
+    else:
+        plugin = importlib.import_module('inspector.plugin.' + args.plugin + '_plugin')
+        plugin.install(_app)
+    root.protocol("WM_DELETE_WINDOW", _app.close_appium_and_quit)
+    _app.mainloop()

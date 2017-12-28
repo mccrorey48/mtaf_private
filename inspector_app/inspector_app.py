@@ -1,1 +1,2 @@
-from mtaf.inspector import inspector
+from mtaf import inspector
+inspector.start()
