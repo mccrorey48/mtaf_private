@@ -19,6 +19,7 @@ import argparse
 import importlib
 from operator import xor
 from time import strftime, localtime
+import tk_simple_dialog
 
 log = logging.get_logger('mtaf.inspector')
 android_actions = AndroidActions()
@@ -38,6 +39,27 @@ def mkdir_p(path):
             pass
         else:
             raise
+
+
+class MyDialog(tk_simple_dialog.Dialog):
+
+    list = None
+    devices = None
+
+    def body(self, master):
+
+        Label(master, text="Select Device:").grid(row=0)
+
+        self.devices = master.master.master.devices
+        self.list = Listbox(master, height=len(self.devices))
+        for key in self.devices:
+            self.list.insert(END, "%s: %s" % (key, self.devices[key]))
+        self.list.grid(row=1)
+        return self.list  # initial focus
+
+    def apply(self):
+        key = self.list.curselection()[0]
+        self.devices = {0: self.devices[key]}
 
 
 class Command(object):
@@ -199,6 +221,7 @@ class Inspector(Frame):
         self.cwin = None
         self.cwin_x = None
         self.cwin_y = None
+        self.devices = []
         self.drag_polygon = None
         self.drag_polygon_x1 = None
         self.drag_polygon_x2 = None
@@ -375,10 +398,13 @@ class Inspector(Frame):
 
         def destroy_existing_cwin():
             if self.cwin is not None:
-                self.cwin_x = self.cwin.winfo_x()
-                self.cwin_y = self.cwin.winfo_y()
-                self.destroy_loc_frames()
-                self.cwin.destroy()
+                try:
+                    self.cwin_x = self.cwin.winfo_x()
+                    self.cwin_y = self.cwin.winfo_y()
+                    self.destroy_loc_frames()
+                    self.cwin.destroy()
+                except TclError as e:
+                    pass
                 self.cwin = None
 
         def create_new_cwin():
@@ -1159,13 +1185,19 @@ class Inspector(Frame):
         self.package = None
         activity = None
         apk = None
-        output = adb.run_cmd('shell dumpsys window windows')
-        if re_package.match(output):
-            self.package = re_package.match(output).group(1)
-            if re_activity.match(output):
-                activity = re_activity.match(output).group(2)
-                output = adb.run_cmd('shell dumpsys package %s' % self.package)
-                apk = re_apk.match(output).group(1)
+        self.devices = adb.get_devices()
+        if len(self.devices) > 0:
+            if len(self.devices) > 1:
+                id = MyDialog(self)
+                print "MyDialog returned %s" % id
+                adb.set_target_by_id(id)
+            output = adb.run_cmd('shell dumpsys window windows')
+            if re_package.match(output):
+                self.package = re_package.match(output).group(1)
+                if re_activity.match(output):
+                    activity = re_activity.match(output).group(2)
+                    output = adb.run_cmd('shell dumpsys package %s' % self.package)
+                    apk = re_apk.match(output).group(1)
         if not quiet:
             print "Package: " + self.package
             print 'APK Version: ' + apk
@@ -1204,19 +1236,24 @@ class Inspector(Frame):
 
     def get_screenshot_adb(self):
         print "Getting Screenshot using ADB...",
-        img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
-        adb.run_cmd('shell screencap -p /sdcard/screencap.png')
-        adb.run_cmd('pull /sdcard/screencap.png')
-        log.debug("saving screenshot to %s" % img_path)
-        try:
-            os.rename('screencap.png', img_path)
-        except OSError as _e:
-            print "Error"
-            if _e.errno == errno.ENOENT:
-                raise Ux("ADB did not supply screenshot image")
-            else:
-                raise Ux("could not rename 'screencap.png': %s" % _e)
-        print "Done"
+        devices = adb.get_devices()
+        if len(devices) == 0:
+            print "no device found"
+        else:
+            print "%d devices found" % len(devices)
+            img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
+            adb.run_cmd('shell screencap -p /sdcard/screencap.png')
+            adb.run_cmd('pull /sdcard/screencap.png')
+            log.debug("saving screenshot to %s" % img_path)
+            try:
+                os.rename('screencap.png', img_path)
+            except OSError as _e:
+                print "Error"
+                if _e.errno == errno.ENOENT:
+                    raise Ux("ADB did not supply screenshot image")
+                else:
+                    raise Ux("could not rename 'screencap.png': %s" % _e)
+            print "Done"
 
     def rotate_image(self, redraw_cwin=True):
         print "Rotating screenshot...",

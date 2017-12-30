@@ -1,12 +1,13 @@
 import re
 import xml.etree.ElementTree as ET
+import csv
 
 import mtaf.lib.android_zpath
 
 tagre = re.compile('([^\[]+)(.*)')
 
 
-def printall(ofile, node, tag_index, pfx):
+def printall(writer, node, tag_index, pfx):
     if node.tag == 'node':
         tag = node.attrib['class']
     else:
@@ -24,16 +25,16 @@ def printall(ofile, node, tag_index, pfx):
                 if key == 'bounds':
                     m = re.match('\[(\d+),(\d+)\]\[(\d+),(\d+)\]', _str)
                     if m:
-                        items.append(','.join(m.groups()))
+                        items += m.groups()
                     else:
-                        items.append(',,,')
+                        items += ['', '', '', '']
                 else:
                     items.append(repr(_str))
             except UnicodeEncodeError as e:
                 print e.message
         else:
             items.append('')
-    ofile.write('%s\n' % ','.join(items))
+    writer.writerow(items)
     tag_total = {}
     for child in node:
         child_tag = child.attrib['class']
@@ -51,9 +52,9 @@ def printall(ofile, node, tag_index, pfx):
             child_tag = child.tag
         if tag_total[child_tag] > 1:
             tag_indices[child_tag] += 1
-            printall(ofile, child, tag_indices[child_tag], new_prefix + '/')
+            printall(writer, child, tag_indices[child_tag], new_prefix + '/')
         else:
-            printall(ofile, child, 0, new_prefix + '/')
+            printall(writer, child, 0, new_prefix + '/')
 
 
 def xml_to_csv(xml_file_path, csv_file_path):
@@ -62,6 +63,20 @@ def xml_to_csv(xml_file_path, csv_file_path):
     prefix = ''
     with open(csv_file_path, 'w') as output_file:
         # header line helps vim display csv (with csv plugin) and used by python cvs.DictReader()
-        output_file.write('zpath,resource-id,text,min_x,min_y,lim_x,lim_y\n')
-        printall(output_file, root, 0, prefix)
+        writer = csv.writer(output_file, quotechar="'")
+        writer.writerow(['zpath', 'resource-id', 'text', 'min_x', 'min_y', 'lim_x', 'lim_y'])
+        printall(writer, root, 0, prefix)
 
+
+# run this file from mtaf top level (repo) directory
+if __name__ == "__main__":
+    import csv
+    xml_file = 'inspector_app/xml/inspector.xml'
+    csv_file = 'inspector_app/csv/inspector.csv'
+    xml_to_csv(xml_file, csv_file)
+    with open(csv_file) as f:
+        reader = csv.DictReader(f, quotechar="'")
+        for i, row in enumerate(reader):
+            print "row %d" % i
+            for key in row:
+                print "  %s: %s" % (key, row[key])
