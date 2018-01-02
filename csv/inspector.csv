@@ -1,0 +1,17 @@
+zpath,resource-id,text,min_x,min_y,lim_x,lim_y
+h,,,
+h/fl,,,10,118,590,858
+h/fl/ll,,,10,118,590,858
+h/fl/ll/fl,,,10,118,590,858
+h/fl/ll/fl/ll,'''com.esi_estech.ditto:id/action_bar_root''',,10,118,590,858
+h/fl/ll/fl/ll/fl,'''android:id/content''',,10,118,590,858
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat,'''com.esi_estech.ditto:id/parentPanel''',,10,118,590,858
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl,'''com.esi_estech.ditto:id/customPanel''',,10,118,590,858
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl/fl,'''com.esi_estech.ditto:id/custom''',,10,118,590,858
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl/fl/sv,,,10,118,590,858
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl/fl/sv/rl,,,10,118,590,858
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl/fl/sv/rl/tv[1],'''com.esi_estech.ditto:id/e7_new_features_title''','''ePhone7 has Updated''',28,136,572,187
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl/fl/sv/rl/tv[2],'''com.esi_estech.ditto:id/e7_new_features_sub_title''','"See what''s changed"',28,203,572,236
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl/fl/sv/rl/tv[3],'''com.esi_estech.ditto:id/new_apk_version''','''App Version : 1.5.1''',28,252,572,280
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl/fl/sv/rl/tv[4],'''com.esi_estech.ditto:id/release_notes''','"New Features \n\xe2\x80\xa2 We now proudly support using the ePhone7 over VLANs. Using VLANs can greatly improve the call performance for your device. \n\nImprovements \n\xe2\x80\xa2 We resolved an issue with some phones where going to the Voicemail or Voicemail details would cause the phone to crash. \n\xe2\x80\xa2 Sometimes the ePhone7 would lose connection and display a pop-up that your phone is offline. Instead of displaying a pop-up, we''ll now show it in the status bar. \n\xe2\x80\xa2 Fixed an issue where the screen dimming would cause the phone to crash. This would sometimes happen overnight or when trying to use the phone after it dimmed. \n\nIf you experience any issues please open a ticket via the ESI Support site at http://support.esi-estech.com or contact ESI Technical Support at 800-850-2151. \nSincerely, \n\n\xe2\x80\x93 ESI Product Management \n\n"',28,296,572,772
+h/fl/ll/fl/ll/fl/android.support.v7.widget.LinearLayoutCompat/fl/fl/sv/rl/bt,'''com.esi_estech.ditto:id/close_new_features_dialog''','''OK''',482,790,570,838

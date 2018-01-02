@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="mtaf_in_use" pattern="((file[mtaf]:*||file[mtaf]:WebApp//*||file[mtaf]:cli//*||file[mtaf]:drs/python/*||file[mtaf]:ePhone7/config//*||file[mtaf]:ePhone7/features//*||file[mtaf]:ePhone7//*)&amp;&amp;!file[mtaf]:ePhone7/screenshots/*&amp;&amp;!file[mtaf]:ePhone7/keys/*&amp;&amp;!file[mtaf]:ePhone7/features_dev//*&amp;&amp;!file[mtaf]:ePhone7/utils/screenshots//*&amp;&amp;!file[mtaf]:ePhone7/utils/xml//*||file:ePhone7/utils/xml/get_xml.py||file[mtaf]:AndroidApp//*||file[mtaf]:lib//*)&amp;&amp;!file[mtaf]:lib/deprecated//*&amp;&amp;!file[mtaf]:lib/softphone/wav//*&amp;&amp;!file[mtaf]:drs/*&amp;&amp;!file[mtaf]:drs//*||file[mtaf]:ePhone7/utils//*" />
+</component>

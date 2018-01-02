@@ -1,0 +1,16 @@
+01/02/18 12:42:03.075 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['Getting Screenshot using ADB...'], len=31
+01/02/18 12:42:03.085 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = [' '], len=1
+01/02/18 12:42:03.086 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['1 devices found'], len=15
+01/02/18 12:42:03.088 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['\n'], len=1
+01/02/18 12:42:03.946 [mtaf.inspector      ] DEBUG - [logging_init                   ] saving screenshot to screenshot/inspector.png
+01/02/18 12:42:03.946 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['Done'], len=4
+01/02/18 12:42:03.948 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['\n'], len=1
+01/02/18 12:42:03.950 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['Getting XML and CSV...'], len=22
+01/02/18 12:42:03.952 [mtaf.inspector      ] INFO  - [logging_init                   ] saving xml xml/inspector.xml
+01/02/18 12:42:06.014 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = [' '], len=1
+01/02/18 12:42:06.016 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['Done'], len=4
+01/02/18 12:42:06.018 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['\n'], len=1
+01/02/18 12:42:08.235 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['Rotating screenshot...'], len=22
+01/02/18 12:42:08.397 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = [' '], len=1
+01/02/18 12:42:08.399 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['Done'], len=4
+01/02/18 12:42:08.400 [mtaf.inspector      ] DEBUG - [logging_init                   ] write: _txt = ['\n'], len=1

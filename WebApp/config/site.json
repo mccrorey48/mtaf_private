@@ -1,8 +1,0 @@
-{
-    "app_url": "http://automationpractice.com",
-    "bad_password": "abc123",
-    "bad_username": "not_mtaf",
-    "password": "xyz123",
-    "selenium_url": "localhost",
-    "username": "mtaf@xyz.com"
-}

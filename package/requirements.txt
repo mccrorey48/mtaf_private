@@ -1,5 +1,0 @@
-Appium-Python-Client==0.25
-olefile==0.44
-Pillow==4.3.0
-git+https://github.com/ardevd/pyand
-selenium==3.8.0
