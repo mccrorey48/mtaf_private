@@ -4,6 +4,7 @@ setup(
     packages=find_packages(),
     author='Martin McCrorey',
     version='1.0.2',
+    url='https://github.com/mccrorey48/mtaf',
     description='Mobile Test Automation Framework',
     author_email = 'martin.mccrorey@verizon.net',
     keywords=['python', 'android', 'appium', 'selenium', 'adb', 'uiautomator', 'viewer', 'inspector', 'gui', 'locator', 'screenshot',
@@ -11,8 +12,8 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 2.7',
         'Natural Language :: English',
-        'Development Status :: Alpha',
-        'Intended Audience:: Developers',
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Testing',
