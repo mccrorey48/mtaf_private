@@ -9,7 +9,7 @@ from mtaf.lib.user_exception import UserException as Ux
 from time import strftime, localtime
 from PIL import Image
 import os
-from pyand import ADB
+from mtaf.lib.ADB import ADB
 import re
 from urllib2 import URLError
 
@@ -20,6 +20,7 @@ selenium_url = "http://localhost:4723/wd/hub"
 
 class AndroidActions(SeleniumActions):
     driver = None
+    adb = ADB()
 
     def open_browser(self, browser=None):
         raise Ux('open_browser method not available using Appium')
@@ -28,14 +29,13 @@ class AndroidActions(SeleniumActions):
         raise Ux('close_browser method not available using Appium')
 
     def open_appium(self, connect_timeout=10):
-        adb = ADB()
-        if len(adb.get_devices()) == 0:
+        if len(self.adb.get_devices()) == 0:
             raise Ux("no ADB device")
-        output = adb.run_cmd('shell dumpsys window windows')
+        output = self.adb.run_cmd('shell dumpsys window windows')
         package = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output).group(1)
         activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/' + package + '([^}]+)', output).group(2)
-        device_name = adb.run_cmd('shell getprop ro.product.model').strip()
-        platform_version = adb.run_cmd('shell getprop ro.build.version.release').strip()
+        device_name = self.adb.run_cmd('shell getprop ro.product.model').strip()
+        platform_version = self.adb.run_cmd('shell getprop ro.build.version.release').strip()
         caps = {
                 "appPackage": package,
                 "appActivity": activity,
