@@ -1,3 +1,8 @@
 mtaf.egg-info/
 build/
 dist/
+log/
+.idea/
+*.pyc
+*.csv
+*.png
