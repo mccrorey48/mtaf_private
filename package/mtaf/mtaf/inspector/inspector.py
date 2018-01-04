@@ -3,7 +3,7 @@ from Tkinter import *
 from ttk import Combobox
 from time import sleep, time
 from mtaf.lib.user_exception import UserException as Ux
-from pyand import ADB
+from mtaf.lib.ADB import ADB
 import mtaf.lib.mtaf_logging as logging
 from mtaf.lib.android_zpath import expand_zpath
 from mtaf.lib.android_actions import AndroidActions
@@ -23,7 +23,6 @@ import tk_simple_dialog
 
 log = logging.get_logger('mtaf.inspector')
 android_actions = AndroidActions()
-adb = ADB()
 re_package = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)')
 re_activity = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
 re_apk = re.compile('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)')
@@ -1185,18 +1184,18 @@ class Inspector(Frame):
         self.package = None
         activity = None
         apk = None
-        self.devices = adb.get_devices()
+        self.devices = android_actions.adb.get_devices()
         if len(self.devices) > 0:
             if len(self.devices) > 1:
                 id = MyDialog(self)
                 print "MyDialog returned %s" % id
-                adb.set_target_by_id(id)
-            output = adb.run_cmd('shell dumpsys window windows')
+                android_actions.adb.set_target_by_id(id)
+            output = android_actions.adb.run_cmd('shell dumpsys window windows')
             if re_package.match(output):
                 self.package = re_package.match(output).group(1)
                 if re_activity.match(output):
                     activity = re_activity.match(output).group(2)
-                    output = adb.run_cmd('shell dumpsys package %s' % self.package)
+                    output = android_actions.adb.run_cmd('shell dumpsys package %s' % self.package)
                     apk = re_apk.match(output).group(1)
         if not quiet:
             print "Package: " + self.package
@@ -1220,8 +1219,8 @@ class Inspector(Frame):
         xml_path = os.path.join(self.cfg['xml_dir'], 'inspector.xml')
         csv_path = os.path.join(self.cfg['csv_dir'], 'inspector.csv')
         log.info("saving xml %s" % xml_path)
-        adb.run_cmd('shell uiautomator dump')
-        adb.run_cmd('pull /sdcard/window_dump.xml')
+        android_actions.adb.run_cmd('shell uiautomator dump')
+        android_actions.adb.run_cmd('pull /sdcard/window_dump.xml')
         os.rename('window_dump.xml', xml_path)
         xml_to_csv(xml_path, csv_path)
 
@@ -1236,14 +1235,14 @@ class Inspector(Frame):
 
     def get_screenshot_adb(self):
         print "Getting Screenshot using ADB...",
-        devices = adb.get_devices()
+        devices = android_actions.adb.get_devices()
         if len(devices) == 0:
             print "no device found"
         else:
             print "%d devices found" % len(devices)
             img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
-            adb.run_cmd('shell screencap -p /sdcard/screencap.png')
-            adb.run_cmd('pull /sdcard/screencap.png')
+            android_actions.adb.run_cmd('shell screencap -p /sdcard/screencap.png')
+            android_actions.adb.run_cmd('pull /sdcard/screencap.png')
             log.debug("saving screenshot to %s" % img_path)
             try:
                 os.rename('screencap.png', img_path)

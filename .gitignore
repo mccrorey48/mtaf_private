@@ -13,3 +13,4 @@ steps.txt
 substeps.txt
 *.log
 *.cap
+*.egg-info
