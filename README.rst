@@ -5,10 +5,10 @@ The first release of the Mobile Test Automation Framework (MTAF) includes
 the MTAF Inspector, a tool to help write automated tests that use Appium
 to communicate with Android applications.
 
-Inspector written in Python, and creates a graphical user interface (GUI) to
-capture application screenshots and calculate unique partial xpaths for
-displayed elements. The resulting xpaths are converted to an abbreviated format
-called "zpath" to make them shorter (Android xpaths can be quite long).
+Inspector creates a graphical user interface (GUI) to capture application
+screenshots and calculate unique partial xpaths for displayed elements. The
+resulting xpaths are converted to an abbreviated format called "zpath" to
+make them shorter (Android xpaths can be quite long).
 
 The user can select elements individually with a mouse click, or click and drag
 rectangles on the displayed screenshot to narrow down the list of partial zpaths

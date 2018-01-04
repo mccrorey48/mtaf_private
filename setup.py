@@ -1,15 +1,19 @@
 from setuptools import setup, find_packages
+from docutils.core import publish_cmdline
 
 
 def readme():
     with open('README.rst') as f:
         return f.read()
 
+
+publish_cmdline(writer_name='html', argv=['README.rst', 'README.html'])
+
 setup(
     name='mtaf',
     packages=find_packages(),
     author='Martin McCrorey',
-    version='1.0.4',
+    version='1.0.5',
     url='https://github.com/mccrorey48/mtaf',
     description='Mobile Test Automation Framework',
     author_email = 'martin.mccrorey@verizon.net',
