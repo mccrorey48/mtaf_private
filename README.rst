@@ -133,9 +133,9 @@ Inspector will create several subdirectories in the current working directory:
 Inspector presents a GUI with these components (from top to bottom):
 - a menu bar with drop-down menus for both Appium and ADB operations
 - buttons and other controls for performing various operations that
-  require Appium
+require Appium
 - a input field for entering arbitrary Python commands that will be run in
-  the global context when the "exec" button is clicked
+the global context when the "exec" button is clicked
 - a scrolling text window that displays captured standard output
 - a scrolling text window that displays recorded commands
 - a bar with "screenshot" and "quit" buttons
