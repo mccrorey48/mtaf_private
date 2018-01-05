@@ -13,3 +13,6 @@ steps.txt
 substeps.txt
 *.log
 *.cap
+build/
+dist/
+mtaf.egg-info/
