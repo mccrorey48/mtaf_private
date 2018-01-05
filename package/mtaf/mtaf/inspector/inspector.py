@@ -201,17 +201,15 @@ class Inspector(Frame):
         Frame.__init__(self, parent, bg="brown")
         self.parent = parent
         self.cfg = cfg
-        for _dir in 'xml_dir', 'csv_dir', 'screenshot_dir', 'log_dir', 'tmp_dir':
-            if _dir not in self.cfg:
-                self.cfg[_dir] = '.'
-            if self.cfg[_dir] != '.':
-                try:
-                    os.makedirs(self.cfg[_dir])
-                except OSError as e:
-                    if e.errno == errno.EEXIST and os.path.isdir(self.cfg[_dir]):
-                        pass
-                    else:
-                        raise
+        if 'tmp_dir' not in self.cfg:
+            self.cfg['tmp_dir'] = os.path.join(os.getenv('HOME'), '.MtafInspector')
+            try:
+                os.makedirs(self.cfg['tmp_dir'])
+            except OSError as e:
+                if e.errno == errno.EEXIST and os.path.isdir(self.cfg['tmp_dir']):
+                    pass
+                else:
+                    raise
         parent.bind_all("<Button-4>", self.mouse_btn)
         parent.bind_all("<Button-5>", self.mouse_btn)
         self.appium_btns = []
@@ -409,7 +407,7 @@ class Inspector(Frame):
         def create_new_cwin():
             self.cwin = Toplevel(self.parent, bg='cyan')
             self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
-            image = Image.open(os.path.join(self.cfg['screenshot_dir'], 'inspector.png'))
+            image = Image.open(os.path.join(self.cfg['tmp_dir'], 'inspector.png'))
             self.cwin.scale = 600.0 / max(image.height, image.width)
             self.im_width = int(image.width * self.cwin.scale)
             self.im_height = int(image.height * self.cwin.scale)
@@ -489,7 +487,7 @@ class Inspector(Frame):
         self.zpath_frame = VerticalScrolledFrame(self.cwin)
         self.zpath_frame_btns = {}
         self.zpath_frame.grid(column=2, row=0, sticky='n')
-        csv_fullpath = os.path.join(self.cfg['csv_dir'], 'inspector.csv')
+        csv_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.csv')
         row = 0
         self.ids = parse_ids_with_zpaths(csv_fullpath)
         self.id_label = Label(self.id_frame.interior, text='IDs', width=30, bg='brown')
@@ -1076,15 +1074,15 @@ class Inspector(Frame):
         index = int(text_index)
         elem = self.elems[index]
         android_actions.get_screenshot_as_file('inspector.png')
-        color = android_actions.get_element_color_and_count(self.cfg['screenshot_dir'], 'inspector', elem,
+        color = android_actions.get_element_color_and_count(self.cfg['tmp_dir'], 'inspector', elem,
                                                             color_list_index=0)
         print "first color and count: %s" % color
         self.record("first color and count: %s" % color)
-        color = android_actions.get_element_color_and_count(self.cfg['screenshot_dir'], 'inspector', elem,
+        color = android_actions.get_element_color_and_count(self.cfg['tmp_dir'], 'inspector', elem,
                                                             color_list_index=1)
         print "second color and count: %s" % color
         self.record("second color and count: %s" % color)
-        color = android_actions.get_element_color_and_count(self.cfg['screenshot_dir'], 'inspector', elem,
+        color = android_actions.get_element_color_and_count(self.cfg['tmp_dir'], 'inspector', elem,
                                                             color_list_index=2)
         self.record("third color and count: %s" % color)
 
@@ -1206,8 +1204,8 @@ class Inspector(Frame):
     def get_xml_appium(self):
         print "Getting XML and CSV...",
         xml = android_actions.driver.page_source
-        xml_fullpath = os.path.join(self.cfg['xml_dir'], 'inspector.xml')
-        csv_fullpath = os.path.join(self.cfg['csv_dir'], 'inspector.csv')
+        xml_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.xml')
+        csv_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.csv')
         log.info("saving xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
@@ -1216,8 +1214,8 @@ class Inspector(Frame):
 
     def get_xml_adb(self):
         print "Getting XML and CSV...",
-        xml_path = os.path.join(self.cfg['xml_dir'], 'inspector.xml')
-        csv_path = os.path.join(self.cfg['csv_dir'], 'inspector.csv')
+        xml_path = os.path.join(self.cfg['tmp_dir'], 'inspector.xml')
+        csv_path = os.path.join(self.cfg['tmp_dir'], 'inspector.csv')
         log.info("saving xml %s" % xml_path)
         android_actions.adb.run_cmd('shell uiautomator dump')
         android_actions.adb.run_cmd('pull /sdcard/window_dump.xml')
@@ -1228,7 +1226,7 @@ class Inspector(Frame):
 
     def get_screenshot_appium(self):
         print "Getting Screenshot using Appium...",
-        img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
+        img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
         log.debug("saving screenshot to %s" % img_path)
         android_actions.get_screenshot_as_file(img_path)
         print "Done"
@@ -1240,7 +1238,7 @@ class Inspector(Frame):
             print "no device found"
         else:
             print "%d devices found" % len(devices)
-            img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
+            img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
             android_actions.adb.run_cmd('shell screencap -p /sdcard/screencap.png')
             android_actions.adb.run_cmd('pull /sdcard/screencap.png')
             log.debug("saving screenshot to %s" % img_path)
@@ -1256,7 +1254,7 @@ class Inspector(Frame):
 
     def rotate_image(self, redraw_cwin=True):
         print "Rotating screenshot...",
-        img_path = os.path.join(self.cfg['screenshot_dir'], 'inspector.png')
+        img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
         im = Image.open(img_path)
         im = im.rotate(-90, expand=True)
         im.save(img_path)
