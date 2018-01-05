@@ -15,4 +15,4 @@ substeps.txt
 *.cap
 build/
 dist/
-mtaf.egg-info/
+*.egg-info/
