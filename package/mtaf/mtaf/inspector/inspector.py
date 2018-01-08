@@ -3,7 +3,6 @@ from Tkinter import *
 from ttk import Combobox
 from time import sleep, time
 from mtaf.lib.user_exception import UserException as Ux
-from mtaf.lib.ADB import ADB
 import mtaf.lib.mtaf_logging as logging
 from mtaf.lib.android_zpath import expand_zpath
 from mtaf.lib.android_actions import AndroidActions
@@ -250,7 +249,8 @@ class Inspector(Frame):
         self.package = None
         self.parent_element = None
         self.polygons = []
-        self.rec_file = 'tmp/inspector_recording.txt'
+        self.rec_file = os.path.join(self.cfg['tmp_dir'], 'inspector_recording.txt')
+        self.loc_file = os.path.join(self.cfg['tmp_dir'], 'locators.json')
         self.rec_frame = None
         self.swipe_ms_var = StringVar()
         self.swipe_y1_var = StringVar()
@@ -269,7 +269,7 @@ class Inspector(Frame):
         self.zpaths = None
 
         try:
-            with open('tmp/inspector_locators.json', 'r') as f:
+            with open(self.loc_file, 'r') as f:
                 self.locators = json.loads(f.read())
         except IOError:
             pass
@@ -852,10 +852,10 @@ class Inspector(Frame):
             print "trying to close appium"
             self.close_appium()
         try:
-            os.mkdir('tmp')
+            os.mkdir(os.path.dirname(self.loc_file))
         except OSError:
             pass
-        with open('tmp/inspector_locators.json', 'w') as f:
+        with open(self.loc_file, 'w') as f:
             f.write(json.dumps(self.locators, sort_keys=True, indent=4, separators=(',', ': ')))
         sys.stdout = self.old_stdout
         self.parent.destroy()
