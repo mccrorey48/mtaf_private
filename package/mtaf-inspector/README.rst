@@ -41,8 +41,8 @@ Features
 
 ----
 
-Running Inspector
-=================
+Running MTAF Inspector
+======================
 
 After running "pip install mtaf-inspector", the mtaf-inspector executable
 Python script will be on the current path.
@@ -52,20 +52,11 @@ Before running mtaf-inspector, verify that these requirements have been met:
 - adb can be found on the current path
 - an Appium server is running on the local machine
 - an Android device or emulator is listed in the output of "adb devices"
-- the current directory is suitable for the mtaf-inspector to create folders
-
-and write temporary files
 
 From the command prompt, just run "mtaf-inspector". MTAF Inspector will create
-several subdirectories in the current working directory:
+a directory for temporary files (default is '~/.MtafInspector')
 
-- "xml" (for the xml file captured from the device)
-- "csv" (for the csv file generated from the xml)
-- "log" (for general logging)
-- "tmp" (for recorded commands and a history of locators used)
-- "screenshot" (for the screenshot file captured from the device)
-
-Inspector presents a GUI with these components (from top to bottom):
+MTAF Inspector presents a GUI with these components (from top to bottom):
 
 - a menu bar with drop-down menus for both Appium and ADB operations
 - buttons and other controls for performing various operations that require Appium
