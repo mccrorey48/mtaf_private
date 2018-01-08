@@ -69,7 +69,8 @@ class AndroidActions(SeleniumActions):
             try:
                 logcat = self.driver.get_log('logcat')
                 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
-                with open('log/e7_logcat_%s.log' % timestamp, 'w') as f:
+                logdir = os.getenv('MTAF_LOG_DIR', 'log')
+                with open('%s/logcat_%s.log' % (logdir, timestamp), 'w') as f:
                     for line in [item['message'] for item in logcat]:
                         f.write(line.encode('utf-8') + '\n')
                 # self.driver.quit()
