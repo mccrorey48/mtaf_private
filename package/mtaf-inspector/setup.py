@@ -12,7 +12,7 @@ publish_cmdline(writer_name='html', argv=['README.rst', 'README.html'])
 setup(
     name='mtaf-inspector',
     author='Martin McCrorey',
-    version='0.1.9',
+    version='0.1.10',
     url='https://github.com/mccrorey48/mtaf-inspector',
     description='Appium Uiautomator Xpath ResourceId Mobile Automation Tool',
     author_email = 'martin.mccrorey@verizon.net',
@@ -34,7 +34,7 @@ setup(
         'Topic :: Software Development :: Quality Assurance',
     ],
     install_requires=[
-        'mtaf=1.0.9'
+        'mtaf==1.0.10'
     ],
     long_description=readme(),
     zip_safe=False,

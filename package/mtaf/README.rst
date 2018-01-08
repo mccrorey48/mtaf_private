@@ -116,9 +116,9 @@ Running Inspector
 Once mtaf has been installed, Inspector can be run from a script if the
 following requirements are met:
 
-    - adb can be found on the current path
-    - an Appium server is running on the local machine (optional)
-    - the script has permission to write in the temporary files directory (default value is '.MtafInspector' in the user's home directory)
+- adb can be found on the current path
+- an Appium server is running on the local machine (optional)
+- the script has permission to write in the temporary files directory (default value is '.MtafInspector' in the user's home directory)
 
 Inspector can be started with these two Python script lines::
 
@@ -128,12 +128,12 @@ Inspector can be started with these two Python script lines::
 
 Inspector presents a GUI with these components (from top to bottom):
 
-    - a menu bar with drop-down menus for both Appium and ADB operations
-    - buttons and other controls for performing various operations that require Appium
-    - a input field for entering arbitrary Python commands that will be run in the global context when the "exec" button is clicked
-    - a scrolling text window that displays captured standard output
-    - a scrolling text window that displays recorded commands
-    - a bar with "screenshot" and "quit" buttons
+- a menu bar with drop-down menus for both Appium and ADB operations
+- buttons and other controls for performing various operations that require Appium
+- a input field for entering arbitrary Python commands that will be run in the global context when the "exec" button is clicked
+- a scrolling text window that displays captured standard output
+- a scrolling text window that displays recorded commands
+- a bar with "screenshot" and "quit" buttons
 
 The buttons and controls requiring Appium, along with the Appium drop-down menu,
 are disabled until Appium is started. To start Appium, run an Appium server
