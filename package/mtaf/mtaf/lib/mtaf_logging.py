@@ -25,7 +25,6 @@ from logging import getLoggerClass, addLevelName, setLoggerClass, NOTSET, DEBUG,
 from logging import Formatter, FileHandler, getLogger, StreamHandler
 from contextlib import contextmanager
 from time import sleep, strftime, localtime
-import re
 from mtaf.lib.prune_logs import prune_logs
 import os
 import errno
@@ -105,7 +104,7 @@ def get_logger(name):
 
 _log = getLogger(root_name)
 _log.setLevel(DEBUG)
-log_dir = 'log'
+log_dir = os.getenv('MTAF_LOG_DIR', 'log')
 prune_logs(os.path.join(log_dir, '%s_debug_*.log' % root_name), 5)
 prune_logs(os.path.join(log_dir, '*logcat_*.log'), 5)
 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
