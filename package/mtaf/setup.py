@@ -13,7 +13,7 @@ setup(
     name='mtaf',
     packages=find_packages(),
     author='Martin McCrorey',
-    version='1.0.5',
+    version='1.0.6',
     url='https://github.com/mccrorey48/mtaf',
     description='Mobile Test Automation Framework',
     author_email = 'martin.mccrorey@verizon.net',
