@@ -4,7 +4,7 @@ from ttk import Combobox
 from time import sleep, time
 from mtaf.lib.user_exception import UserException as Ux
 import mtaf.lib.mtaf_logging as logging
-from mtaf.lib.android_zpath import expand_zpath
+from mtaf.lib.android_zpath import set_zpath_tag, expand_zpath
 from mtaf.lib.android_actions import AndroidActions
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
@@ -14,7 +14,6 @@ from PIL import Image, ImageTk
 from xml_to_csv import xml_to_csv
 from parse_ids import parse_ids_with_zpaths, parse_zpaths
 import errno
-import argparse
 import importlib
 from operator import xor
 from time import strftime, localtime
@@ -22,9 +21,8 @@ import tk_simple_dialog
 
 log = logging.get_logger('mtaf.inspector')
 android_actions = AndroidActions()
-re_package = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)')
-re_activity = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
-re_apk = re.compile('(?ms).*Packages:.*?versionName=(\d+\.\d+\.\d+)')
+re_dumpsys = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
+re_apk = re.compile('(?ms).*Packages:.*?versionName=([^\n]+)')
 btn_default_bg = '#d9d9d9'
 btn_select_bg = '#d97979'
 
@@ -246,11 +244,10 @@ class Inspector(Frame):
         self.new_drag_polygon_x1 = None
         self.new_drag_polygon_y1 = None
         self.old_stdout = sys.stdout
-        self.package = None
         self.parent_element = None
         self.polygons = []
         self.rec_file = os.path.join(self.cfg['tmp_dir'], 'inspector_recording.txt')
-        self.loc_file = os.path.join(self.cfg['tmp_dir'], 'locators.json')
+        self.loc_file = os.path.join(self.cfg['tmp_dir'], 'inspector_locators.json')
         self.rec_frame = None
         self.swipe_ms_var = StringVar()
         self.swipe_y1_var = StringVar()
@@ -361,9 +358,6 @@ class Inspector(Frame):
                 return True
         # print "(%s,%s) -> (%s,%s) not in (%s,%s) -> (%s,%s)" % (x1, y1, x2, y2, dx1, dy1, dx2, dy2)
         return False
-
-    def show_zpaths(self):
-        pass
 
     def create_cwin(self, reuse_image=False):
         # handle problem with unwanted call when button is apparently disabled but still bound to the command.
@@ -1179,9 +1173,9 @@ class Inspector(Frame):
     def get_focused_app(self, quiet=False):
         if not quiet:
             print "Getting Focused App...",
-        self.package = None
-        activity = None
-        apk = None
+        package = 'Unknown'
+        activity = 'Unknown'
+        apk = 'Unknown'
         self.devices = android_actions.adb.get_devices()
         if len(self.devices) > 0:
             if len(self.devices) > 1:
@@ -1189,17 +1183,19 @@ class Inspector(Frame):
                 print "MyDialog returned %s" % id
                 android_actions.adb.set_target_by_id(id)
             output = android_actions.adb.run_cmd('shell dumpsys window windows')
-            if re_package.match(output):
-                self.package = re_package.match(output).group(1)
-                if re_activity.match(output):
-                    activity = re_activity.match(output).group(2)
-                    output = android_actions.adb.run_cmd('shell dumpsys package %s' % self.package)
+            if re_dumpsys.match(output):
+                (package, rest) = re_dumpsys.match(output).groups()
+                activity = rest[(len(package) + 1):]
+                output = android_actions.adb.run_cmd('shell dumpsys package %s' % package)
+                if re_apk.match(output):
                     apk = re_apk.match(output).group(1)
         if not quiet:
-            print "Package: " + self.package
-            print 'APK Version: ' + apk
-            print "Focused App: " + activity
+            print
+            print "Package: " + package
+            print "Activity: " + activity
+            print "apk: " + apk
             print "Done"
+        return package
 
     def get_xml_appium(self):
         print "Getting XML and CSV...",
@@ -1273,27 +1269,31 @@ class Inspector(Frame):
     def get_current_activity():
         print "current activity: " + android_actions.driver.current_activity
 
+    def set_zpath_tag(self, abbrev, zpath):
+        set_zpath_tag(abbrev, zpath)
+
 
 def run_inspector(cfg):
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--plugin", type=str, help="device-specific plugin to load", default=None,
-                        choices=['AndroidApp'])
-    args = parser.parse_args()
     root = Tk()
     root.wm_title("Appium test utility")
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
     _app = Inspector(root, cfg)
-    if args.plugin is None:
-        _app.get_focused_app(quiet=True)
-        # can load a plugin here based on the Inspector app's "package" attribute, set during the call to get_focused_app()
-        # if _app.package is not None:
-        #     if _app.package[-5:] == 'some_app':
-        #         plugin = importlib.import_module('inspector.plugin.someApp_plugin')
-        #         plugin.install(_app)
-    else:
-        plugin = importlib.import_module('inspector.plugin.' + args.plugin + '_plugin')
-        plugin.install(_app)
+    package = _app.get_focused_app(quiet=True)
+    # can load a plugin here based on the Inspector app's "package" attribute, set during the call to get_focused_app()
+    if package != 'Unknown':
+        try:
+            import inspector_plugins
+            module_name = '.' + '_'.join(package.split('.'))
+            module = importlib.import_module(module_name, 'inspector_plugins')
+            module_class = getattr(module, 'Plugin')
+            instance = module_class()
+            instance.install_plugin(_app)
+        except ImportError as e:
+            print e
+            print "no plugin found for package %s" % package
+        else:
+            print "loaded plugin for package %s" % package
     root.protocol("WM_DELETE_WINDOW", _app.close_appium_and_quit)
     _app.mainloop()
