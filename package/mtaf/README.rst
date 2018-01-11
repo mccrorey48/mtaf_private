@@ -117,6 +117,7 @@ Once mtaf has been installed, Inspector can be run from a script if the
 following requirements are met:
 
 - adb can be found on the current path
+- Python and Tkinter are installed on the local machine
 - an Appium server is running on the local machine (optional)
 - the script has permission to write in the temporary files directory (default value is '.MtafInspector' in the user's home directory)
 

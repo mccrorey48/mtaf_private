@@ -33,7 +33,7 @@ class AndroidActions(SeleniumActions):
             raise Ux("no ADB device")
         output = self.adb.run_cmd('shell dumpsys window windows')
         package = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output).group(1)
-        activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/' + package + '([^}]+)', output).group(2)
+        activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)', output).group(2)
         device_name = self.adb.run_cmd('shell getprop ro.product.model').strip()
         platform_version = self.adb.run_cmd('shell getprop ro.build.version.release').strip()
         caps = {
