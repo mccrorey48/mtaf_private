@@ -14,6 +14,7 @@ setup(
     packages=find_packages(),
     author='Martin McCrorey',
     version='1.0.10',
+    license='MIT',
     url='https://github.com/mccrorey48/mtaf',
     description='Mobile Test Automation Framework',
     author_email = 'martin.mccrorey@verizon.net',
@@ -38,7 +39,8 @@ setup(
         'Appium-Python-Client==0.25',
         'olefile==0.44',
         'Pillow==4.3.0',
-        'selenium==3.8.0'
+        'selenium==3.8.0',
+        'PyYAML==3.12'
     ],
     long_description=readme(),
     zip_safe=False,

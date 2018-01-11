@@ -2,6 +2,7 @@ from mtaf.inspector.inspector import run_inspector
 import sys
 from os import getenv, path
 from mtaf.lib.user_exception import UserException as Ux
+from yaml import load, Loader
 
 
 def start():
@@ -17,6 +18,12 @@ def start():
     cfg = {
         'tmp_dir': getenv('MTAF_TMP_DIR', path.join(getenv('HOME'), '.MtafInspector'))
     }
+    try:
+        with open(path.join(cfg['tmp_dir'], 'config.yml')) as f:
+            cfg2 = load(f, Loader=Loader)
+        cfg.update(cfg2)
+    except IOError:
+        pass
     args = sys.argv[1:]
     for arg in args:
         terms = arg.split('=')
