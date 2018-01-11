@@ -30,6 +30,12 @@ zpaths = {
 zpath_tags = dict((v, k) for k, v in zpaths.iteritems())
 
 
+def replace_zpaths(new_zpaths):
+    global zpaths, zpath_tags
+    zpaths = new_zpaths
+    zpath_tags = dict((v, k) for k, v in zpath_tags.iteritems())
+
+
 def set_zpath_tag(abbreviation, zpath):
     global zpath_tags
     zpaths[abbreviation] = zpath

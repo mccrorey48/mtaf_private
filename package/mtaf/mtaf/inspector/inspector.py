@@ -4,9 +4,10 @@ from ttk import Combobox
 from time import sleep, time
 from mtaf.lib.user_exception import UserException as Ux
 import mtaf.lib.mtaf_logging as logging
-from mtaf.lib.android_zpath import set_zpath_tag, expand_zpath
+from mtaf.lib.android_zpath import set_zpath_tag, expand_zpath, replace_zpaths
 from mtaf.lib.android_actions import AndroidActions
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
+from selenium.webdriver.common.keys import Keys
 import threading
 import json
 from mtaf.lib.filters import get_filter
@@ -18,6 +19,7 @@ import importlib
 from operator import xor
 from time import strftime, localtime
 import tk_simple_dialog
+import traceback
 
 log = logging.get_logger('mtaf.inspector')
 android_actions = AndroidActions()
@@ -128,7 +130,7 @@ class ScrolledLogwin(Text):
         self.print_buf = ''
 
     def write(self, _txt):
-        log.debug("write: _txt = [%s], len=%d" % (repr(_txt), len(_txt)))
+        # log.debug("write: _txt = [%s], len=%d" % (repr(_txt), len(_txt)))
         if len(_txt) > 0 and _txt[-1] == '\n':
             eol = True
         else:
@@ -454,6 +456,7 @@ class Inspector(Frame):
             create_new_cwin()
         except BaseException as _e:
             print "error creating screenshot window: %s" % _e
+            traceback.print_exc()
         finally:
             enable_screenshot_button()
 
@@ -781,8 +784,8 @@ class Inspector(Frame):
         btn = Button(btn_frame.attr_frame, text="input text", bg=btn_default_bg, command=self.input_text,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        self.text_to_send = StringVar
         btn.grid(row=1, column=0, padx=2, pady=2)
+        self.text_to_send = StringVar()
         entry = Entry(btn_frame.attr_frame, textvariable=self.text_to_send, state=DISABLED)
         self.appium_btns.append(entry)
         entry.grid(row=1, column=1, padx=2, pady=2, columnspan=6, sticky='ew')
@@ -1122,7 +1125,9 @@ class Inspector(Frame):
         text = self.text_to_send.get()
         self.record('sending "%s" to element %d' % (text, index))
         try:
-            self.elems[index].set_text(text)
+            self.elems[index].clear()
+            self.elems[index].send_keys(text)
+            self.elems[index].send_keys(Keys.ENTER)
         except BaseException as _e:
             print "got exception %s" % _e
         self.update_find_widgets(None)
@@ -1278,12 +1283,20 @@ def run_inspector(cfg):
     root.wm_title("Appium test utility")
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
+    if 'zpath_tags_all' in cfg:
+        replace_zpaths(cfg['zpath_tags_all'])
+    if 'zpath_tags_new' in cfg:
+        for tag in cfg['zpath_tags_new']:
+            set_zpath_tag(tag, cfg['zpath_tags_new'][tag])
 
     _app = Inspector(root, cfg)
     package = _app.get_focused_app(quiet=True)
     # can load a plugin here based on the Inspector app's "package" attribute, set during the call to get_focused_app()
     if package != 'Unknown':
         try:
+            if 'plugin_dir' in cfg:
+                path = cfg['plugin_dir'].rsplit('/', 1)[0]
+                sys.path.insert(0, path)
             import inspector_plugins
             module_name = '.' + '_'.join(package.split('.'))
             module = importlib.import_module(module_name, 'inspector_plugins')

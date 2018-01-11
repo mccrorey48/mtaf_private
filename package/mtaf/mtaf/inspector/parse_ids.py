@@ -77,14 +77,17 @@ def parse_ids(csv_fullpath):
         for row in reader:
             _id = row['resource-id']
             if _id != '':
-                x1 = int(row['min_x'])
-                y1 = int(row['min_y'])
-                x2 = int(row['lim_x'])
-                y2 = int(row['lim_y'])
-                if _id in ids:
-                    ids[_id].append({"x1": x1, "y1": y1, "x2": x2, "y2": y2})
-                else:
-                    ids[_id] = [{"x1": x1, "y1": y1, "x2": x2, "y2": y2}]
+                try:
+                    x1 = int(row['min_x'])
+                    y1 = int(row['min_y'])
+                    x2 = int(row['lim_x'])
+                    y2 = int(row['lim_y'])
+                    if _id in ids:
+                        ids[_id].append({"x1": x1, "y1": y1, "x2": x2, "y2": y2})
+                    else:
+                        ids[_id] = [{"x1": x1, "y1": y1, "x2": x2, "y2": y2}]
+                except ValueError:
+                    print "ValueError parsing row: %s" % row
     return ids
 
 def parse_ids_with_zpaths(csv_fullpath):

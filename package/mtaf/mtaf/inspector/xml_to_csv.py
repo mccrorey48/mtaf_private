@@ -6,6 +6,7 @@ import mtaf.lib.android_zpath
 
 tagre = re.compile('([^\[]+)(.*)')
 
+re_bounds = re.compile('\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]')
 
 def printall(writer, node, tag_index, pfx):
     if node.tag == 'node':
@@ -23,11 +24,11 @@ def printall(writer, node, tag_index, pfx):
             try:
                 _str = node.attrib[key].encode('utf-8')
                 if key == 'bounds':
-                    m = re.match('\[(\d+),(\d+)\]\[(\d+),(\d+)\]', _str)
+                    m = re_bounds.match(_str)
                     if m:
                         items += m.groups()
                     else:
-                        items += ['', '', '', '']
+                        items += ['0', '0', '0', '0']
                 else:
                     items.append(repr(_str))
             except UnicodeEncodeError as e:
