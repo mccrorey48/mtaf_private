@@ -1,5 +1,6 @@
 import re
 import xml.etree.ElementTree as ET
+from StringIO import StringIO
 import csv
 
 import mtaf.lib.android_zpath
@@ -30,7 +31,7 @@ def printall(writer, node, tag_index, pfx):
                     else:
                         items += ['0', '0', '0', '0']
                 else:
-                    items.append(repr(_str))
+                    items.append(_str)
             except UnicodeEncodeError as e:
                 print e.message
         else:
@@ -59,21 +60,26 @@ def printall(writer, node, tag_index, pfx):
 
 
 def xml_to_csv(xml_file_path, csv_file_path):
-    tree = ET.parse(xml_file_path)
-    root = tree.getroot()
-    prefix = ''
-    with open(csv_file_path, 'w') as output_file:
-        # header line helps vim display csv (with csv plugin) and used by python cvs.DictReader()
-        writer = csv.writer(output_file, quotechar="'")
-        writer.writerow(['zpath', 'resource-id', 'text', 'min_x', 'min_y', 'lim_x', 'lim_y'])
-        printall(writer, root, 0, prefix)
+    re_uc = re.compile(r"&#\d+")
+    with open (xml_file_path) as input_file:
+        xml_text = re_uc.sub('', input_file.read())
+        xml_stringio = StringIO(xml_text)
+        tree = ET.parse(xml_stringio)
+        root = tree.getroot()
+        prefix = ''
+        with open(csv_file_path, 'w') as output_file:
+            # header line helps vim display csv (with csv plugin) and used by python cvs.DictReader()
+            writer = csv.writer(output_file, quotechar="'")
+            writer.writerow(['zpath', 'resource-id', 'text', 'min_x', 'min_y', 'lim_x', 'lim_y'])
+            printall(writer, root, 0, prefix)
 
 
 # run this file from mtaf top level (repo) directory
 if __name__ == "__main__":
-    import csv
-    xml_file = 'inspector_app/xml/inspector.xml'
-    csv_file = 'inspector_app/csv/inspector.csv'
+    import os
+    tmp_dir = '/home/mmccrorey/.MtafInspector'
+    xml_file = os.path.join(tmp_dir, 'inspector.xml')
+    csv_file = os.path.join(tmp_dir, 'inspector.csv')
     xml_to_csv(xml_file, csv_file)
     with open(csv_file) as f:
         reader = csv.DictReader(f, quotechar="'")
