@@ -7,7 +7,6 @@ import mtaf.lib.mtaf_logging as logging
 from mtaf.lib.android_zpath import set_zpath_tag, expand_zpath, replace_zpaths
 from mtaf.lib.android_actions import AndroidActions
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
-from selenium.webdriver.common.keys import Keys
 import threading
 import json
 from mtaf.lib.filters import get_filter
@@ -1153,7 +1152,7 @@ class Inspector(Frame):
         if text_index == '':
             return
         index = int(text_index)
-        self.record('sending \n to element %d' % index)
+        self.record('sending \\n to element %d' % index)
         try:
             self.elems[index].send_keys('\n')
         except BaseException as _e:
