@@ -770,10 +770,6 @@ class Inspector(Frame):
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=0, column=4, padx=2, pady=2)
-        btn = Button(btn_frame.attr_frame, text="clear elem", bg=btn_default_bg, command=self.clear_element,
-                     state=DISABLED, padx=1)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=5, padx=2, pady=2)
         btn = Button(btn_frame.attr_frame, text="set parent", bg=btn_default_bg, command=self.set_parent,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
@@ -781,20 +777,35 @@ class Inspector(Frame):
         btn = Button(btn_frame.attr_frame, text="set frame", bg=btn_default_bg, command=self.set_frame,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn = Button(btn_frame.attr_frame, text="input text", bg=btn_default_bg, command=self.input_text,
+        btn.grid(row=0, column=7, padx=2, pady=2)
+        btn = Button(btn_frame.attr_frame, text="clear elem", bg=btn_default_bg, command=self.clear_element,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=1, column=0, padx=2, pady=2)
+        btn = Button(btn_frame.attr_frame, text="input text", bg=btn_default_bg, command=self.input_text,
+                     state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        btn.grid(row=1, column=1, padx=2, pady=2)
+        frame = Frame(btn_frame.attr_frame, bg='cyan')
+        frame.columnconfigure(0, weight=1)
         self.text_to_send = StringVar()
-        entry = Entry(btn_frame.attr_frame, textvariable=self.text_to_send, state=DISABLED)
+        entry = Entry(frame, textvariable=self.text_to_send, state=DISABLED)
         self.appium_btns.append(entry)
-        entry.grid(row=1, column=1, padx=2, pady=2, columnspan=6, sticky='ew')
+        entry.grid(row=0, column=0, sticky='ew')
+        btn = Button(frame, text='X', command=self.clear_text_to_send, padx=0, pady=0)
+        btn.grid(row=0, column=1)
+        self.appium_btns.append(btn)
+        frame.grid(row=1, column=2, padx=2, pady=2, columnspan=4, sticky='ew')
+        btn = Button(btn_frame.attr_frame, text="input ENTER", bg=btn_default_bg, command=self.input_enter,
+                     state=DISABLED, padx=1)
+        self.appium_btns.append(btn)
+        btn.grid(row=1, column=6, padx=2, pady=2)
         btn_frame.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.grid_columnconfigure(0, weight=1)
-        # btn_frame.grid(row=self.top_frame_row, column=0, sticky='news', padx=2, pady=2)
-        # btn_frame.row = self.top_frame_row
-        # self.top_frame_row += 1
         return btn_frame
+
+    def clear_text_to_send(self):
+        self.text_to_send.set('')
 
     def update_find_frame(self, event):
         value = self.find_value_var.get().split(':', 1)[1]
@@ -1125,9 +1136,26 @@ class Inspector(Frame):
         text = self.text_to_send.get()
         self.record('sending "%s" to element %d' % (text, index))
         try:
-            self.elems[index].clear()
-            self.elems[index].send_keys(text)
-            self.elems[index].send_keys(Keys.ENTER)
+            elem = self.elems[index].clear()
+            terms = text.split('\\n')
+            while len(terms):
+                value = terms.pop(0)
+                if len(value):
+                    elem.set_value(value)
+                if len(terms):
+                    elem.send_keys('\n')
+        except BaseException as _e:
+            print "got exception %s" % _e
+        self.update_find_widgets(None)
+
+    def input_enter(self):
+        text_index = self.elem_index.get()
+        if text_index == '':
+            return
+        index = int(text_index)
+        self.record('sending \n to element %d' % index)
+        try:
+            self.elems[index].send_keys('\n')
         except BaseException as _e:
             print "got exception %s" % _e
         self.update_find_widgets(None)
