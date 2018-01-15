@@ -45,7 +45,7 @@ Features
       elements
     - Records Appium interactions in a log file
     - Loads plugins to extend menus, zpaths and GUI elements for specific
-      applications
+      applications (see github.com/mccrorey48/mtaf_plugins for examples)
 
 **MTAF Library Modules (Python):**
     - ADB
