@@ -1,0 +1,82 @@
+Before packaging mtaf for release on PyPi, verify that everything works
+as expected in the local environment (running from the source tree).
+
+To run inspector from the local enviroment, first create a new virtualenv
+named "clean" with the command
+
+    "mkvirtualenv clean"
+
+This will create the new virtualenv named "clean" and activate it.  The only
+package installed will be pkgutils.
+
+From the working directory mtaf/package, install required packages for MTAF
+Inspector with this command:
+
+    "pip install -r packaging_requirements.txt"
+
+From the working directory mtaf/run_inspector, run the command:
+
+    "PYTHONPATH=python run_local_inspector.py"
+
+After verifying that inspector and any other generic mtaf modules are ready
+to release, perform these steps to upload to PyPi:
+
+1. Bump the release number in mtaf/package/mtaf/setup.py (the upload to PyPi
+will be rejected if the release number does not change).
+
+2. Remove any files from mtaf/package/mtaf/dist
+
+3. From the working directory mtaf/package/mtaf, build the "wheel" file in the
+"dist" directory with the command:
+
+    "python setup.py bdist_wheel --universal"
+
+4. upload to test.pypi.org with the command:
+
+    "twine upload --repository testpypi dist/*"
+
+    A username and password for a test.pypi.org user account will be required.
+    This info can be placed in ~.pypi (in clear text!) to make the twine command
+    run without asking for a username and password.
+
+4. To test the uploaded code, install mtaf from test.pypi.org:
+
+    run "deactivate" to get out of the "clean" virtualenv
+
+    run "rmvirtualenv clean"
+
+    run "mkvirtualenv clean"
+
+    cd to your home directory to get out of the mtaf source tree
+
+    run "pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ mtaf"
+
+    run "mtaf-inspector"
+
+5. If everything ran OK from test.pypi.org, upload to pypi.org. From the working
+ directory mtaf/package/mtaf, run the commands:
+
+    "twine upload dist/*"
+
+    This requires a username and password for pypi.org. The account setup
+    is distinct from the one used for test.pypi.org.
+
+6. Test the uploaded code by installing mtaf from pypi.org:
+
+    run "deactivate" to get out of the "clean" virtualenv
+
+    run "rmvirtualenv clean"
+
+    run "mkvirtualenv clean"
+
+    cd to your home directory to get out of the mtaf source tree
+
+    run "pip install mtaf"
+
+    run "mtaf-inspector"
+
+
+
+
+
+
