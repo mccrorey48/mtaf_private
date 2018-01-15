@@ -115,17 +115,22 @@ class VerticalScrolledFrame(Frame):
         canvas.bind('<Configure>', _configure_canvas)
 
 
-class ScrolledLogwin(Text):
-    def __init__(self, parent, **kwargs):
-        Text.__init__(self, parent, **kwargs)
+class ScrolledLogwin(Frame):
+    def __init__(self, parent, height=20, label=None):
+        Frame.__init__(self, parent)
+        row = 0
+        if label is not None:
+            self.label = Label(self, text=label)
+            self.label.grid(row=row, column=0, columnspan=2, sticky='ew')
+            row += 1
+        self.txt = Text(self, height=height)
         self.scrollback = 5000
-        self.configure(state=DISABLED)
-        self.sb = Scrollbar(self.master, command=self.yview)
-        self["yscrollcommand"] = self.sb.set
-        # self.hsb = Scrollbar(self.master, command=self.xview, orient=HORIZONTAL)
-        # self["xscrollcommand"] = self.hsb.set
-        self.sb.grid(row=0, column=1, sticky='ns', padx=2, pady=2)
-        # self.hsb.grid(row=1, column=0, sticky='ew')
+        self.txt.configure(state=DISABLED)
+        self.sb = Scrollbar(self, command=self.txt.yview)
+        self.txt["yscrollcommand"] = self.sb.set
+        self.txt.grid(row=row, column=0, sticky='nsew', padx=2, pady=2)
+        self.sb.grid(row=row, column=1, sticky='ns', padx=2, pady=2)
+        self.rowconfigure(row, weight=1)
         self.print_buf = ''
 
     def write(self, _txt):
@@ -135,30 +140,17 @@ class ScrolledLogwin(Text):
         else:
             eol = False
         lines = _txt.strip().split('\n')
-        self.configure(state=NORMAL)
+        self.txt.configure(state=NORMAL)
         for line in lines[:-1]:
-            self.insert('end', line + '\n')
+            self.txt.insert('end', line + '\n')
         if len(lines):
-            self.insert('end', lines[-1])
+            self.txt.insert('end', lines[-1])
         if eol:
-            self.insert('end', '\n')
+            self.txt.insert('end', '\n')
         # self.delete('0.0', 'end - %d lines' % self.scrollback)
-        self.see('end')
+        self.txt.see('end')
         self.update_idletasks()
-        self.configure(state=DISABLED)
-
-
-class LogFrame(Frame):
-    def __init__(self, parent):
-        Frame.__init__(self, parent, bg='brown')
-        self.txt = ScrolledLogwin(self, width=80, height=20)
-        self.txt.grid(row=0, column=0, sticky='news', padx=2, pady=2)
-
-    def write(self, *_args, **kwargs):
-        self.txt.write(*_args, **kwargs)
-
-    def flush(self, *_args, **kwargs):
-        pass
+        self.txt.configure(state=DISABLED)
 
 
 class MyMenu(Menu):
@@ -195,19 +187,10 @@ class ButtonFrame(Frame):
 class Inspector(Frame):
     cmd_types = {}
 
-    def __init__(self, parent, cfg):
+    def __init__(self, parent, gui_cfg):
         Frame.__init__(self, parent, bg="brown")
         self.parent = parent
-        self.cfg = cfg
-        if 'tmp_dir' not in self.cfg:
-            self.cfg['tmp_dir'] = os.path.join(os.getenv('HOME'), '.MtafInspector')
-            try:
-                os.makedirs(self.cfg['tmp_dir'])
-            except OSError as e:
-                if e.errno == errno.EEXIST and os.path.isdir(self.cfg['tmp_dir']):
-                    pass
-                else:
-                    raise
+        self.cfg = gui_cfg
         parent.bind_all("<Button-4>", self.mouse_btn)
         parent.bind_all("<Button-5>", self.mouse_btn)
         self.appium_btns = []
@@ -632,17 +615,13 @@ class Inspector(Frame):
 
     def create_log_frame(self):
         pw = PanedWindow(self, orient=VERTICAL, bg='brown')
-        pw.add(Label(pw, text="standard output"), sticky='ew')
-        log_frame = LogFrame(self)
+        log_frame = ScrolledLogwin(pw, height=self.cfg['log_window_height'], label='standard output')
         sys.stdout = log_frame
         log_frame.grid_columnconfigure(0, weight=1)
-        log_frame.grid_rowconfigure(0, weight=1)
         pw.add(log_frame, stretch='always')
-        pw.add(Label(pw, text="recorded text"), sticky='ew')
-        rec_frame = LogFrame(self)
+        rec_frame = ScrolledLogwin(pw, height=self.cfg['log_window_height'], label='recorded text')
         self.rec_frame = rec_frame
         rec_frame.grid_columnconfigure(0, weight=1)
-        rec_frame.grid_rowconfigure(0, weight=1)
         pw.add(rec_frame, stretch='always')
         pw.expand_y = True
         return pw
@@ -1315,8 +1294,19 @@ def run_inspector(cfg):
     if 'zpath_tags_new' in cfg:
         for tag in cfg['zpath_tags_new']:
             set_zpath_tag(tag, cfg['zpath_tags_new'][tag])
+    gui_cfg = {
+        'tmp_dir': cfg.get('tmp_dir', os.path.join(os.getenv('HOME'), '.MtafInspector')),
+        'log_window_height': cfg.get('log_window_height', 20)
+    }
+    try:
+        os.makedirs(gui_cfg['tmp_dir'])
+    except OSError as e:
+        if e.errno == errno.EEXIST and os.path.isdir(cfg['tmp_dir']):
+            pass
+        else:
+            raise
 
-    _app = Inspector(root, cfg)
+    _app = Inspector(root, gui_cfg)
     package = _app.get_focused_app(quiet=True)
     # can load a plugin here based on the Inspector app's "package" attribute, set during the call to get_focused_app()
     if package != 'Unknown':
