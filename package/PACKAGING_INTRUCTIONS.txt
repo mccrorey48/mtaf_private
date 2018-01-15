@@ -16,7 +16,7 @@ Inspector with this command:
 
 From the working directory mtaf/run_inspector, run the command:
 
-    "PYTHONPATH=python run_local_inspector.py"
+    "PYTHONPATH=<absolute path to mtaf/package/mtaf> python run_local_inspector .py"
 
 After verifying that inspector and any other generic mtaf modules are ready
 to release, perform these steps to upload to PyPi:
