@@ -1,6 +1,7 @@
 from glob import glob
 from os import lstat, remove
 from datetime import datetime
+import six
 
 
 def prune_logs(pattern, max_kept=10, verbose=False):
@@ -9,10 +10,10 @@ def prune_logs(pattern, max_kept=10, verbose=False):
     for i, fname in enumerate(sorted(fnames, key=lambda x: ctimes[x], reverse=True)):
         if not i < max_kept:
             if verbose:
-                print i, fname, '(removing)'
+                six.print_(i, fname, '(removing)')
             remove(fname)
         elif verbose:
-                print i, fname
+                six.print_(i, fname)
 
 
 if __name__ == "__main__":

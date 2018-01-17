@@ -13,7 +13,7 @@ setup(
     name='mtaf',
     packages=find_packages(),
     author='Martin McCrorey',
-    version='1.0.17',
+    version='1.0.18',
     license='MIT',
     url='https://github.com/mccrorey48/mtaf',
     description='Mobile Test Automation Framework',
@@ -40,7 +40,9 @@ setup(
         'olefile==0.44',
         'Pillow==4.3.0',
         'selenium==3.8.0',
-        'PyYAML==3.12'
+        'PyYAML==3.12',
+        'six==1.11.0',
+        'requests==2.18.4'
     ],
     long_description=readme(),
     zip_safe=False,

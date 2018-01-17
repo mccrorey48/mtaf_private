@@ -24,10 +24,11 @@ def start():
         cfg.update(cfg2)
     except IOError:
         pass
+    progname = path.basename(sys.argv[0])
     args = sys.argv[1:]
     for arg in args:
         terms = arg.split('=')
         if len(terms) != 2:
-            raise Ux("arguments to start() must be of the form <key>=<value>, with no spaces")
+            raise Ux("arguments to %s must be of the form <key>=<value>, with no spaces" % progname)
         cfg[terms[0]] = terms[1]
     run_inspector(cfg)

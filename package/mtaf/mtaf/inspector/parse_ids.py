@@ -1,6 +1,7 @@
 import csv
 import re
 from mtaf.lib.user_exception import UserException as Ux
+import six
 
 
 re_id = re.compile('.*,([^,]*:id/[^,]*),[^,]*,(\d+),(\d+),(\d+),(\d+)')
@@ -28,7 +29,7 @@ def parse_zpaths(csv_fullpath):
             except ValueError:
                 pass
             except TypeError:
-                print "TypeError processing %s" % repr(row)
+                six.print_("TypeError processing %s" % repr(row))
 
     for zpath in zpaths:
         short_zpath = get_relative_zpath(zpath, zpaths)
@@ -87,7 +88,7 @@ def parse_ids(csv_fullpath):
                     else:
                         ids[_id] = [{"x1": x1, "y1": y1, "x2": x2, "y2": y2}]
                 except ValueError:
-                    print "ValueError parsing row: %s" % row
+                    six.print_("ValueError parsing row: %s" % row)
     return ids
 
 def parse_ids_with_zpaths(csv_fullpath):
@@ -126,17 +127,17 @@ if __name__ == "__main__":
         fmt = "%%-%ds %%s" % max_len
         for loc in sorted(locs):
             if args.zpath:
-                print fmt1 % (loc, locs[loc]['id'], locs[loc]['geoms'][0])
+                six.print_(fmt1 % (loc, locs[loc]['id'], locs[loc]['geoms'][0]))
                 for geom in locs[loc]['geoms'][1:]:
-                    print fmt1 % ("", "", geom)
+                    six.print_(fmt1 % ("", "", geom))
             else:
                 for i, zpath in enumerate(locs[loc]['zpath']):
                     if i == 0:
-                        print fmt1 % (loc, locs[loc]['zpath'][i], locs[loc]['geoms'][0])
+                        six.print_(fmt1 % (loc, locs[loc]['zpath'][i], locs[loc]['geoms'][0]))
                     else:
-                        print fmt1 % ('', locs[loc]['zpath'][i], '')
+                        six.print_(fmt1 % ('', locs[loc]['zpath'][i], ''))
                 for geom in locs[loc]['geoms'][1:]:
-                    print fmt1 % ("", "", geom)
+                    six.print_(fmt1 % ("", "", geom))
             # else:
             #     print fmt1 % (loc, "", locs[loc][0])
             #     for geom in locs[loc][1:]:

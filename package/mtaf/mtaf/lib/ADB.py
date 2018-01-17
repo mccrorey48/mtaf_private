@@ -7,14 +7,9 @@
 # Version: 0.9.1.3
 ###
 
-try:
-    import sys
-    import subprocess
-    import re
-    from os import popen3 as pipe
-except ImportError as e:
-    print "[!] Required module missing. %s" % e.args[0]
-    sys.exit(-1)
+import six
+import subprocess
+import re
 
 
 class ADB(object):
@@ -36,7 +31,7 @@ class ADB(object):
     DEFAULT_TCP_HOST = "localhost"
 
     def __init__(self, adb_path="adb"):
-        #By default we assume adb is in $PATH
+        # By default we assume adb is in $PATH
         self.__adb_path = adb_path
         if not self.check_path():
             self.__error = "[!] adb path not valid"
@@ -96,13 +91,13 @@ class ADB(object):
             args = self.__build_command__(cmd)
             if args is None:
                 return
-            #Print out args for debug purposes
-            #print 'args>', args
+            # Print out args for debug purposes
+            # print 'args>', args
             cmdp = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             self.__output, self.__error = cmdp.communicate()
             retcode = cmdp.wait()
-            return self.__output.rstrip('\n')
-        except OSError, e:
+            return self.__output.rstrip(six.b('\n'))
+        except OSError as e:
             self.__error = str(e)
 
         return
@@ -115,7 +110,7 @@ class ADB(object):
         ret = self.run_cmd("version")
         try:
             pattern = re.compile(r"version\s(.+)")
-            version = pattern.findall(ret)[0]
+            version = pattern.findall(str(ret))[0]
         except:
             version = None
         return version
@@ -126,7 +121,7 @@ class ADB(object):
         """
 
         if self.get_version() is None:
-            print "[-] adb executable not found"
+            six.print_("[-] adb executable not found")
             return False
         return True
 
@@ -224,7 +219,7 @@ class ADB(object):
         if device is None or not device in self.__devices.values():
 
             self.__error = 'Must get device list first'
-            print "[!] Device not found in device list"
+            six.print_("[!] Device not found in device list")
             return False
         self.__target = device
         return "[+] Target device set: %s" % self.get_target_device()
@@ -236,7 +231,7 @@ class ADB(object):
         """
         if device is None or not device in self.__devices:
             self.__error = 'Must get device list first'
-            print "[!] Device not found in device list"
+            six.print_("[!] Device not found in device list")
             return False
         self.__target = self.__devices[device]
         return "[+] Target device set: %s" % self.get_target_device()
@@ -246,7 +241,7 @@ class ADB(object):
         Returns the selected device to work with
         """
         if self.__target == None:
-            print "[*] No device target set"
+            six.print_("[*] No device target set")
 
         return self.__target
 

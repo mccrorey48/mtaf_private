@@ -11,7 +11,8 @@ from PIL import Image
 import os
 from mtaf.lib.ADB import ADB
 import re
-from urllib2 import URLError
+from requests import ConnectionError
+import six
 
 log = logging.get_logger('mtaf.selenium_actions')
 
@@ -54,9 +55,9 @@ class AndroidActions(SeleniumActions):
                 break
             except WebDriverException:
                 log.info("retrying webdriver.Remote(%s, %s)" % (selenium_url, caps))
-            except URLError as e:
-                print "URLError attempting to connect to appium server: %s" % e
-                raise Ux("URLError attempting to connect to appium server")
+            except ConnectionError as e:
+                six.print_("ConnectionError attempting to connect to appium server: %s" % e)
+                raise Ux("ConnectionError attempting to connect to appium server")
         else:
             raise Ux("failed to connect webdriver.Remote within %s seconds" % connect_timeout)
 

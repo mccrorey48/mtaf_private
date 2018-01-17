@@ -34,7 +34,7 @@ msg_src_stack = []
 msg_src = ''
 root_name = 'mtaf'
 
-TRACE = (DEBUG + INFO) / 2
+TRACE = int((DEBUG + INFO) / 2)
 
 current_formatter = None
 trace_indent = 0

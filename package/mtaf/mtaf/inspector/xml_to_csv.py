@@ -1,8 +1,12 @@
 import re
 import xml.etree.ElementTree as ET
-from StringIO import StringIO
+import six
+if six.PY3:
+    from io import StringIO
+else:
+    from StringIO import StringIO
 import csv
-
+import six
 import mtaf.lib.android_zpath
 
 tagre = re.compile('([^\[]+)(.*)')
@@ -25,7 +29,7 @@ def printall(writer, node, tag_index, pfx):
             try:
                 _str = node.attrib[key].encode('utf-8')
                 if key == 'bounds':
-                    m = re_bounds.match(_str)
+                    m = re_bounds.match(str(_str))
                     if m:
                         items += m.groups()
                     else:
@@ -33,7 +37,7 @@ def printall(writer, node, tag_index, pfx):
                 else:
                     items.append(_str)
             except UnicodeEncodeError as e:
-                print e.message
+                six.print_(e.message)
         else:
             items.append('')
     writer.writerow(items)
@@ -84,6 +88,6 @@ if __name__ == "__main__":
     with open(csv_file) as f:
         reader = csv.DictReader(f, quotechar="'")
         for i, row in enumerate(reader):
-            print "row %d" % i
+            six.print_("row %d" % i)
             for key in row:
-                print "  %s: %s" % (key, row[key])
+                six.print_("  %s: %s" % (key, row[key]))
