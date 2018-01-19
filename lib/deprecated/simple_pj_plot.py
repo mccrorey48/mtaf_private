@@ -106,7 +106,7 @@ max_ms = 20000
 max_secs = max_ms/1000
 x = [float(ms)/1000 for ms in range(max_ms)]
 inv_offsets = {'CAN': 0.7, '487': 0.6, 'INV': 0.5, '407': 0.4, '100': 0.3, '180': 0.2, '200': 0.1, 'ACK': 0.0}
-bye_offsets = {'BYE': 0.5, '200': 0.0}
+bye_offsets = {'BYE': 0.5, '200': 0.0, '481': 1.0}
 # print start_timestamp
 base_y = 0
 for cseq in cseqs:

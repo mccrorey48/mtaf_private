@@ -1,0 +1,357 @@
+01/18/18 15:16:25.165 [esi.simple_pj       ] DEBUG - [logging_init                   ] log_cb(4): 15:16:25.165          pjlib  ..select() I/O Queue created (0x219d918)
+01/18/18 15:16:25.169 [esi.simple_pj       ] DEBUG - [logging_init                   ] log_cb(4): 15:16:25.169   pjsua_core.c  .No SIP worker threads created
+01/18/18 15:16:51.341 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.341   wav_player.c  ......File player 'wav/1000.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=57KB
+01/18/18 15:16:51.341 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.341    pjsua_aud.c  ......Player created, id=0, slot=3
+01/18/18 15:16:51.341 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1000@SVAutoDRS: created player 0 at slot 3
+01/18/18 15:16:51.342 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.342   wav_writer.c  ......File writer 'wav/rec_1000.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:51.342 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.342    pjsua_aud.c  ......Recorder created, id=0, slot=4
+01/18/18 15:16:51.343 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1000@SVAutoDRS: created recorder 0 at slot 4
+01/18/18 15:16:51.343 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6a5f0>)
+01/18/18 15:16:51.343 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1000@SVAutoDRS: connecting call slot 2 to recorder 0 at slot 4
+01/18/18 15:16:51.344 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.344    pjsua_aud.c  .....Conf connect: 2 --> 4
+01/18/18 15:16:51.344 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1000@SVAutoDRS: connecting player 0 at slot 3 to call slot 2
+01/18/18 15:16:51.344 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.344    pjsua_aud.c  .....Conf connect: 3 --> 2
+01/18/18 15:16:51.344 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:51.398 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.398   wav_player.c  ....File player 'wav/1001.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=54KB
+01/18/18 15:16:51.398 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.398    pjsua_aud.c  ....Player created, id=1, slot=5
+01/18/18 15:16:51.399 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1001@SVAutoDRS: created player 1 at slot 5
+01/18/18 15:16:51.399 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.399   wav_writer.c  ....File writer 'wav/rec_1001.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:51.399 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.399    pjsua_aud.c  ....Recorder created, id=1, slot=6
+01/18/18 15:16:51.399 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1001@SVAutoDRS: created recorder 1 at slot 6
+01/18/18 15:16:51.400 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6abd8>)
+01/18/18 15:16:51.400 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1001@SVAutoDRS: connecting call slot 1 to recorder 1 at slot 6
+01/18/18 15:16:51.400 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.400    pjsua_aud.c  ...Conf connect: 1 --> 6
+01/18/18 15:16:51.400 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1001@SVAutoDRS: connecting player 1 at slot 5 to call slot 1
+01/18/18 15:16:51.401 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.401    pjsua_aud.c  ...Conf connect: 5 --> 1
+01/18/18 15:16:51.401 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:51.745 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.745   wav_player.c  ......File player 'wav/1002.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=53KB
+01/18/18 15:16:51.745 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.745    pjsua_aud.c  ......Player created, id=2, slot=9
+01/18/18 15:16:51.745 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1002@SVAutoDRS: created player 2 at slot 9
+01/18/18 15:16:51.746 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.746   wav_writer.c  ......File writer 'wav/rec_1002.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:51.746 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.746    pjsua_aud.c  ......Recorder created, id=2, slot=10
+01/18/18 15:16:51.746 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1002@SVAutoDRS: created recorder 2 at slot 10
+01/18/18 15:16:51.747 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6a680>)
+01/18/18 15:16:51.747 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1002@SVAutoDRS: connecting call slot 8 to recorder 2 at slot 10
+01/18/18 15:16:51.747 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.747    pjsua_aud.c  .....Conf connect: 8 --> 10
+01/18/18 15:16:51.747 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1002@SVAutoDRS: connecting player 2 at slot 9 to call slot 8
+01/18/18 15:16:51.748 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.747    pjsua_aud.c  .....Conf connect: 9 --> 8
+01/18/18 15:16:51.748 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:51.853 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.853   wav_player.c  ....File player 'wav/1003.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=54KB
+01/18/18 15:16:51.855 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.855    pjsua_aud.c  ....Player created, id=3, slot=11
+01/18/18 15:16:51.855 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1003@SVAutoDRS: created player 3 at slot 11
+01/18/18 15:16:51.856 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.856   wav_writer.c  ....File writer 'wav/rec_1003.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:51.856 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.856    pjsua_aud.c  ....Recorder created, id=3, slot=12
+01/18/18 15:16:51.856 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1003@SVAutoDRS: created recorder 3 at slot 12
+01/18/18 15:16:51.856 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6add0>)
+01/18/18 15:16:51.857 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1003@SVAutoDRS: connecting call slot 7 to recorder 3 at slot 12
+01/18/18 15:16:51.857 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.857    pjsua_aud.c !...Conf connect: 7 --> 12
+01/18/18 15:16:51.857 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1003@SVAutoDRS: connecting player 3 at slot 11 to call slot 7
+01/18/18 15:16:51.857 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:51.857    pjsua_aud.c  ...Conf connect: 11 --> 7
+01/18/18 15:16:51.858 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:52.298 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.298   wav_player.c  ......File player 'wav/1004.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=54KB
+01/18/18 15:16:52.298 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.298    pjsua_aud.c  ......Player created, id=4, slot=15
+01/18/18 15:16:52.298 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1004@SVAutoDRS: created player 4 at slot 15
+01/18/18 15:16:52.299 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.299   wav_writer.c  ......File writer 'wav/rec_1004.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:52.299 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.299    pjsua_aud.c  ......Recorder created, id=4, slot=16
+01/18/18 15:16:52.299 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1004@SVAutoDRS: created recorder 4 at slot 16
+01/18/18 15:16:52.299 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6a710>)
+01/18/18 15:16:52.300 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1004@SVAutoDRS: connecting call slot 14 to recorder 4 at slot 16
+01/18/18 15:16:52.300 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.300    pjsua_aud.c  .....Conf connect: 14 --> 16
+01/18/18 15:16:52.300 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1004@SVAutoDRS: connecting player 4 at slot 15 to call slot 14
+01/18/18 15:16:52.300 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.300    pjsua_aud.c  .....Conf connect: 15 --> 14
+01/18/18 15:16:52.300 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:52.405 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.405   wav_player.c  ....File player 'wav/1005.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=55KB
+01/18/18 15:16:52.405 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.405    pjsua_aud.c  ....Player created, id=5, slot=17
+01/18/18 15:16:52.405 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1005@SVAutoDRS: created player 5 at slot 17
+01/18/18 15:16:52.406 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.406   wav_writer.c  ....File writer 'wav/rec_1005.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:52.406 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.406    pjsua_aud.c  ....Recorder created, id=5, slot=18
+01/18/18 15:16:52.406 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1005@SVAutoDRS: created recorder 5 at slot 18
+01/18/18 15:16:52.407 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6aef0>)
+01/18/18 15:16:52.407 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1005@SVAutoDRS: connecting call slot 13 to recorder 5 at slot 18
+01/18/18 15:16:52.407 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.407    pjsua_aud.c  ...Conf connect: 13 --> 18
+01/18/18 15:16:52.407 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1005@SVAutoDRS: connecting player 5 at slot 17 to call slot 13
+01/18/18 15:16:52.407 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.407    pjsua_aud.c  ...Conf connect: 17 --> 13
+01/18/18 15:16:52.408 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:52.690 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.690   wav_player.c  ......File player 'wav/1006.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=55KB
+01/18/18 15:16:52.691 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.691    pjsua_aud.c  ......Player created, id=6, slot=21
+01/18/18 15:16:52.691 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1006@SVAutoDRS: created player 6 at slot 21
+01/18/18 15:16:52.691 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.691   wav_writer.c  ......File writer 'wav/rec_1006.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:52.696 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.696    pjsua_aud.c !......Recorder created, id=6, slot=22
+01/18/18 15:16:52.696 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1006@SVAutoDRS: created recorder 6 at slot 22
+01/18/18 15:16:52.696 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6ac20>)
+01/18/18 15:16:52.696 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1006@SVAutoDRS: connecting call slot 20 to recorder 6 at slot 22
+01/18/18 15:16:52.697 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.697    pjsua_aud.c  .....Conf connect: 20 --> 22
+01/18/18 15:16:52.697 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1006@SVAutoDRS: connecting player 6 at slot 21 to call slot 20
+01/18/18 15:16:52.697 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.697    pjsua_aud.c  .....Conf connect: 21 --> 20
+01/18/18 15:16:52.697 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:52.750 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.750   wav_player.c  ....File player 'wav/1007.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=57KB
+01/18/18 15:16:52.750 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.750    pjsua_aud.c  ....Player created, id=7, slot=23
+01/18/18 15:16:52.750 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1007@SVAutoDRS: created player 7 at slot 23
+01/18/18 15:16:52.751 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.751   wav_writer.c  ....File writer 'wav/rec_1007.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:52.756 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.756    pjsua_aud.c  ....Recorder created, id=7, slot=24
+01/18/18 15:16:52.756 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1007@SVAutoDRS: created recorder 7 at slot 24
+01/18/18 15:16:52.757 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE0: connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6a8c0>)
+01/18/18 15:16:52.757 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1007@SVAutoDRS: connecting call slot 19 to recorder 7 at slot 24
+01/18/18 15:16:52.758 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.757    pjsua_aud.c  ...Conf connect: 19 --> 24
+01/18/18 15:16:52.758 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1007@SVAutoDRS: connecting player 7 at slot 23 to call slot 19
+01/18/18 15:16:52.758 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:52.758    pjsua_aud.c  ...Conf connect: 23 --> 19
+01/18/18 15:16:52.759 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE0: connect_media returned [0.001s]
+01/18/18 15:16:53.039 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.039   wav_player.c  ......File player 'wav/1008.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=52KB
+01/18/18 15:16:53.039 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.039    pjsua_aud.c  ......Player created, id=8, slot=27
+01/18/18 15:16:53.040 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1008@SVAutoDRS: created player 8 at slot 27
+01/18/18 15:16:53.040 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.040   wav_writer.c  ......File writer 'wav/rec_1008.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:53.040 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.040    pjsua_aud.c  ......Recorder created, id=8, slot=28
+01/18/18 15:16:53.040 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1008@SVAutoDRS: created recorder 8 at slot 28
+01/18/18 15:16:53.040 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6ae18>)
+01/18/18 15:16:53.040 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1008@SVAutoDRS: connecting call slot 26 to recorder 8 at slot 28
+01/18/18 15:16:53.040 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.040    pjsua_aud.c  .....Conf connect: 26 --> 28
+01/18/18 15:16:53.041 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1008@SVAutoDRS: connecting player 8 at slot 27 to call slot 26
+01/18/18 15:16:53.041 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.041    pjsua_aud.c  .....Conf connect: 27 --> 26
+01/18/18 15:16:53.041 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:53.093 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.093   wav_player.c  ....File player 'wav/1009.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=56KB
+01/18/18 15:16:53.097 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.097    pjsua_aud.c  ....Player created, id=9, slot=29
+01/18/18 15:16:53.098 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1009@SVAutoDRS: created player 9 at slot 29
+01/18/18 15:16:53.098 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.098   wav_writer.c  ....File writer 'wav/rec_1009.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:53.099 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.099    pjsua_aud.c  ....Recorder created, id=9, slot=30
+01/18/18 15:16:53.099 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1009@SVAutoDRS: created recorder 9 at slot 30
+01/18/18 15:16:53.099 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6a6c8>)
+01/18/18 15:16:53.100 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1009@SVAutoDRS: connecting call slot 25 to recorder 9 at slot 30
+01/18/18 15:16:53.100 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.100    pjsua_aud.c  ...Conf connect: 25 --> 30
+01/18/18 15:16:53.100 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1009@SVAutoDRS: connecting player 9 at slot 29 to call slot 25
+01/18/18 15:16:53.100 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.100    pjsua_aud.c  ...Conf connect: 29 --> 25
+01/18/18 15:16:53.101 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:53.446 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.446   wav_player.c  ......File player 'wav/1010.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=54KB
+01/18/18 15:16:53.446 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.446    pjsua_aud.c  ......Player created, id=10, slot=33
+01/18/18 15:16:53.446 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1010@SVAutoDRS: created player 10 at slot 33
+01/18/18 15:16:53.447 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.447   wav_writer.c  ......File writer 'wav/rec_1010.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:53.447 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.447    pjsua_aud.c  ......Recorder created, id=10, slot=34
+01/18/18 15:16:53.447 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1010@SVAutoDRS: created recorder 10 at slot 34
+01/18/18 15:16:53.448 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6a830>)
+01/18/18 15:16:53.448 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1010@SVAutoDRS: connecting call slot 32 to recorder 10 at slot 34
+01/18/18 15:16:53.448 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.448    pjsua_aud.c  .....Conf connect: 32 --> 34
+01/18/18 15:16:53.448 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1010@SVAutoDRS: connecting player 10 at slot 33 to call slot 32
+01/18/18 15:16:53.448 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.448    pjsua_aud.c  .....Conf connect: 33 --> 32
+01/18/18 15:16:53.449 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:53.552 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.552   wav_player.c  ....File player 'wav/1011.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=52KB
+01/18/18 15:16:53.559 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.559    pjsua_aud.c  ....Player created, id=11, slot=35
+01/18/18 15:16:53.559 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1011@SVAutoDRS: created player 11 at slot 35
+01/18/18 15:16:53.559 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.559   wav_writer.c  ....File writer 'wav/rec_1011.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:53.559 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.559    pjsua_aud.c  ....Recorder created, id=11, slot=36
+01/18/18 15:16:53.559 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1011@SVAutoDRS: created recorder 11 at slot 36
+01/18/18 15:16:53.560 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6ac68>)
+01/18/18 15:16:53.560 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1011@SVAutoDRS: connecting call slot 31 to recorder 11 at slot 36
+01/18/18 15:16:53.560 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.560    pjsua_aud.c  ...Conf connect: 31 --> 36
+01/18/18 15:16:53.560 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1011@SVAutoDRS: connecting player 11 at slot 35 to call slot 31
+01/18/18 15:16:53.560 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.560    pjsua_aud.c  ...Conf connect: 35 --> 31
+01/18/18 15:16:53.560 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:53.854 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.854   wav_player.c  ......File player 'wav/1012.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=51KB
+01/18/18 15:16:53.868 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.868    pjsua_aud.c  ......Player created, id=12, slot=39
+01/18/18 15:16:53.869 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1012@SVAutoDRS: created player 12 at slot 39
+01/18/18 15:16:53.869 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.869   wav_writer.c  ......File writer 'wav/rec_1012.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:53.869 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.869    pjsua_aud.c  ......Recorder created, id=12, slot=40
+01/18/18 15:16:53.870 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1012@SVAutoDRS: created recorder 12 at slot 40
+01/18/18 15:16:53.870 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6a878>)
+01/18/18 15:16:53.870 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1012@SVAutoDRS: connecting call slot 38 to recorder 12 at slot 40
+01/18/18 15:16:53.870 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.870    pjsua_aud.c  .....Conf connect: 38 --> 40
+01/18/18 15:16:53.887 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1012@SVAutoDRS: connecting player 12 at slot 39 to call slot 38
+01/18/18 15:16:53.887 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.887    pjsua_aud.c  .....Conf connect: 39 --> 38
+01/18/18 15:16:53.888 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE0: connect_media returned [0.018s]
+01/18/18 15:16:53.941 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.941   wav_player.c  ....File player 'wav/1013.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=51KB
+01/18/18 15:16:53.944 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.944    pjsua_aud.c  ....Player created, id=13, slot=41
+01/18/18 15:16:53.944 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1013@SVAutoDRS: created player 13 at slot 41
+01/18/18 15:16:53.945 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.945   wav_writer.c  ....File writer 'wav/rec_1013.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:53.945 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.945    pjsua_aud.c  ....Recorder created, id=13, slot=42
+01/18/18 15:16:53.945 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1013@SVAutoDRS: created recorder 13 at slot 42
+01/18/18 15:16:53.946 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6aea8>)
+01/18/18 15:16:53.946 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1013@SVAutoDRS: connecting call slot 37 to recorder 13 at slot 42
+01/18/18 15:16:53.946 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.946    pjsua_aud.c  ...Conf connect: 37 --> 42
+01/18/18 15:16:53.947 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1013@SVAutoDRS: connecting player 13 at slot 41 to call slot 37
+01/18/18 15:16:53.947 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:53.947    pjsua_aud.c  ...Conf connect: 41 --> 37
+01/18/18 15:16:53.947 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:54.245 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.245   wav_player.c  ......File player 'wav/1014.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=52KB
+01/18/18 15:16:54.245 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.245    pjsua_aud.c  ......Player created, id=14, slot=45
+01/18/18 15:16:54.245 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1014@SVAutoDRS: created player 14 at slot 45
+01/18/18 15:16:54.246 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.246   wav_writer.c  ......File writer 'wav/rec_1014.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:54.246 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.246    pjsua_aud.c  ......Recorder created, id=14, slot=46
+01/18/18 15:16:54.246 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1014@SVAutoDRS: created recorder 14 at slot 46
+01/18/18 15:16:54.246 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6af38>)
+01/18/18 15:16:54.247 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1014@SVAutoDRS: connecting call slot 44 to recorder 14 at slot 46
+01/18/18 15:16:54.247 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.247    pjsua_aud.c  .....Conf connect: 44 --> 46
+01/18/18 15:16:54.247 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1014@SVAutoDRS: connecting player 14 at slot 45 to call slot 44
+01/18/18 15:16:54.247 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.247    pjsua_aud.c  .....Conf connect: 45 --> 44
+01/18/18 15:16:54.248 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:54.300 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.300   wav_player.c  ....File player 'wav/1015.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=52KB
+01/18/18 15:16:54.302 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.302    pjsua_aud.c  ....Player created, id=15, slot=47
+01/18/18 15:16:54.302 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1015@SVAutoDRS: created player 15 at slot 47
+01/18/18 15:16:54.303 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.303   wav_writer.c  ....File writer 'wav/rec_1015.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:54.303 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.303    pjsua_aud.c  ....Recorder created, id=15, slot=48
+01/18/18 15:16:54.303 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1015@SVAutoDRS: created recorder 15 at slot 48
+01/18/18 15:16:54.304 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78050>)
+01/18/18 15:16:54.304 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1015@SVAutoDRS: connecting call slot 43 to recorder 15 at slot 48
+01/18/18 15:16:54.304 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.304    pjsua_aud.c  ...Conf connect: 43 --> 48
+01/18/18 15:16:54.304 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1015@SVAutoDRS: connecting player 15 at slot 47 to call slot 43
+01/18/18 15:16:54.305 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.305    pjsua_aud.c  ...Conf connect: 47 --> 43
+01/18/18 15:16:54.305 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:54.646 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.646   wav_player.c  ......File player 'wav/1016.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=52KB
+01/18/18 15:16:54.646 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.646    pjsua_aud.c  ......Player created, id=16, slot=51
+01/18/18 15:16:54.647 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1016@SVAutoDRS: created player 16 at slot 51
+01/18/18 15:16:54.647 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.647   wav_writer.c  ......File writer 'wav/rec_1016.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:54.647 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.647    pjsua_aud.c  ......Recorder created, id=16, slot=52
+01/18/18 15:16:54.648 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1016@SVAutoDRS: created recorder 16 at slot 52
+01/18/18 15:16:54.648 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b6ab00>)
+01/18/18 15:16:54.648 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1016@SVAutoDRS: connecting call slot 50 to recorder 16 at slot 52
+01/18/18 15:16:54.648 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.648    pjsua_aud.c  .....Conf connect: 50 --> 52
+01/18/18 15:16:54.648 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1016@SVAutoDRS: connecting player 16 at slot 51 to call slot 50
+01/18/18 15:16:54.648 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.648    pjsua_aud.c  .....Conf connect: 51 --> 50
+01/18/18 15:16:54.648 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:54.701 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.701   wav_player.c  ....File player 'wav/1017.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=54KB
+01/18/18 15:16:54.703 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.703    pjsua_aud.c  ....Player created, id=17, slot=53
+01/18/18 15:16:54.703 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1017@SVAutoDRS: created player 17 at slot 53
+01/18/18 15:16:54.705 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.705   wav_writer.c  ....File writer 'wav/rec_1017.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:54.706 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.706    pjsua_aud.c !....Recorder created, id=17, slot=54
+01/18/18 15:16:54.706 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1017@SVAutoDRS: created recorder 17 at slot 54
+01/18/18 15:16:54.707 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE0: connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b785f0>)
+01/18/18 15:16:54.708 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1017@SVAutoDRS: connecting call slot 49 to recorder 17 at slot 54
+01/18/18 15:16:54.709 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.708    pjsua_aud.c  ...Conf connect: 49 --> 54
+01/18/18 15:16:54.709 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1017@SVAutoDRS: connecting player 17 at slot 53 to call slot 49
+01/18/18 15:16:54.709 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.709    pjsua_aud.c  ...Conf connect: 53 --> 49
+01/18/18 15:16:54.709 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:54.990 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.990   wav_player.c  ......File player 'wav/1018.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=50KB
+01/18/18 15:16:54.991 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.991    pjsua_aud.c  ......Player created, id=18, slot=57
+01/18/18 15:16:54.991 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1018@SVAutoDRS: created player 18 at slot 57
+01/18/18 15:16:54.991 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:54.991   wav_writer.c  ......File writer 'wav/rec_1018.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:55.004 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.003    pjsua_aud.c !......Recorder created, id=18, slot=58
+01/18/18 15:16:55.004 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1018@SVAutoDRS: created recorder 18 at slot 58
+01/18/18 15:16:55.004 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78098>)
+01/18/18 15:16:55.004 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1018@SVAutoDRS: connecting call slot 56 to recorder 18 at slot 58
+01/18/18 15:16:55.004 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.004    pjsua_aud.c  .....Conf connect: 56 --> 58
+01/18/18 15:16:55.004 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1018@SVAutoDRS: connecting player 18 at slot 57 to call slot 56
+01/18/18 15:16:55.004 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.004    pjsua_aud.c  .....Conf connect: 57 --> 56
+01/18/18 15:16:55.004 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:55.057 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.057   wav_player.c  ....File player 'wav/1019.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=53KB
+01/18/18 15:16:55.064 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.064    pjsua_aud.c  ....Player created, id=19, slot=59
+01/18/18 15:16:55.065 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1019@SVAutoDRS: created player 19 at slot 59
+01/18/18 15:16:55.065 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.065   wav_writer.c  ....File writer 'wav/rec_1019.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:55.065 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.065    pjsua_aud.c  ....Recorder created, id=19, slot=60
+01/18/18 15:16:55.065 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1019@SVAutoDRS: created recorder 19 at slot 60
+01/18/18 15:16:55.065 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78710>)
+01/18/18 15:16:55.065 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1019@SVAutoDRS: connecting call slot 55 to recorder 19 at slot 60
+01/18/18 15:16:55.066 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.066    pjsua_aud.c  ...Conf connect: 55 --> 60
+01/18/18 15:16:55.066 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1019@SVAutoDRS: connecting player 19 at slot 59 to call slot 55
+01/18/18 15:16:55.066 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.066    pjsua_aud.c  ...Conf connect: 59 --> 55
+01/18/18 15:16:55.066 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:55.409 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.409   wav_player.c  ......File player 'wav/1020.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=53KB
+01/18/18 15:16:55.409 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.409    pjsua_aud.c  ......Player created, id=20, slot=63
+01/18/18 15:16:55.409 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1020@SVAutoDRS: created player 20 at slot 63
+01/18/18 15:16:55.410 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.410   wav_writer.c  ......File writer 'wav/rec_1020.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:55.410 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.410    pjsua_aud.c  ......Recorder created, id=20, slot=64
+01/18/18 15:16:55.411 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1020@SVAutoDRS: created recorder 20 at slot 64
+01/18/18 15:16:55.411 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78248>)
+01/18/18 15:16:55.411 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1020@SVAutoDRS: connecting call slot 62 to recorder 20 at slot 64
+01/18/18 15:16:55.411 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.411    pjsua_aud.c  .....Conf connect: 62 --> 64
+01/18/18 15:16:55.425 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1020@SVAutoDRS: connecting player 20 at slot 63 to call slot 62
+01/18/18 15:16:55.425 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.425    pjsua_aud.c  .....Conf connect: 63 --> 62
+01/18/18 15:16:55.426 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE0: connect_media returned [0.015s]
+01/18/18 15:16:55.532 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.532   wav_player.c  ....File player 'wav/1021.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=51KB
+01/18/18 15:16:55.546 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.546    pjsua_aud.c  ....Player created, id=21, slot=65
+01/18/18 15:16:55.547 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1021@SVAutoDRS: created player 21 at slot 65
+01/18/18 15:16:55.547 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.547   wav_writer.c  ....File writer 'wav/rec_1021.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:55.547 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.547    pjsua_aud.c  ....Recorder created, id=21, slot=66
+01/18/18 15:16:55.547 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1021@SVAutoDRS: created recorder 21 at slot 66
+01/18/18 15:16:55.548 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78830>)
+01/18/18 15:16:55.548 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1021@SVAutoDRS: connecting call slot 61 to recorder 21 at slot 66
+01/18/18 15:16:55.548 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.548    pjsua_aud.c  ...Conf connect: 61 --> 66
+01/18/18 15:16:55.548 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1021@SVAutoDRS: connecting player 21 at slot 65 to call slot 61
+01/18/18 15:16:55.548 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.548    pjsua_aud.c  ...Conf connect: 65 --> 61
+01/18/18 15:16:55.549 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:55.889 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.889   wav_player.c  ......File player 'wav/1022.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=50KB
+01/18/18 15:16:55.889 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.889    pjsua_aud.c  ......Player created, id=22, slot=69
+01/18/18 15:16:55.889 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1022@SVAutoDRS: created player 22 at slot 69
+01/18/18 15:16:55.889 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.889   wav_writer.c  ......File writer 'wav/rec_1022.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:55.889 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.889    pjsua_aud.c  ......Recorder created, id=22, slot=70
+01/18/18 15:16:55.889 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1022@SVAutoDRS: created recorder 22 at slot 70
+01/18/18 15:16:55.889 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78128>)
+01/18/18 15:16:55.890 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1022@SVAutoDRS: connecting call slot 68 to recorder 22 at slot 70
+01/18/18 15:16:55.890 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.890    pjsua_aud.c  .....Conf connect: 68 --> 70
+01/18/18 15:16:55.890 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1022@SVAutoDRS: connecting player 22 at slot 69 to call slot 68
+01/18/18 15:16:55.890 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.890    pjsua_aud.c  .....Conf connect: 69 --> 68
+01/18/18 15:16:55.890 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:55.993 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:55.993   wav_player.c  ....File player 'wav/1023.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=50KB
+01/18/18 15:16:56.008 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.007    pjsua_aud.c  ....Player created, id=23, slot=71
+01/18/18 15:16:56.008 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1023@SVAutoDRS: created player 23 at slot 71
+01/18/18 15:16:56.008 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.008   wav_writer.c  ....File writer 'wav/rec_1023.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:56.008 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.008    pjsua_aud.c  ....Recorder created, id=23, slot=72
+01/18/18 15:16:56.008 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1023@SVAutoDRS: created recorder 23 at slot 72
+01/18/18 15:16:56.008 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78950>)
+01/18/18 15:16:56.009 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1023@SVAutoDRS: connecting call slot 67 to recorder 23 at slot 72
+01/18/18 15:16:56.009 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.009    pjsua_aud.c  ...Conf connect: 67 --> 72
+01/18/18 15:16:56.009 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1023@SVAutoDRS: connecting player 23 at slot 71 to call slot 67
+01/18/18 15:16:56.009 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.009    pjsua_aud.c  ...Conf connect: 71 --> 67
+01/18/18 15:16:56.009 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:56.411 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.411   wav_player.c  ......File player 'wav/1024.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=51KB
+01/18/18 15:16:56.427 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.427    pjsua_aud.c  ......Player created, id=24, slot=75
+01/18/18 15:16:56.428 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1024@SVAutoDRS: created player 24 at slot 75
+01/18/18 15:16:56.428 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.428   wav_writer.c  ......File writer 'wav/rec_1024.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:56.428 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.428    pjsua_aud.c  ......Recorder created, id=24, slot=76
+01/18/18 15:16:56.429 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1024@SVAutoDRS: created recorder 24 at slot 76
+01/18/18 15:16:56.429 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78758>)
+01/18/18 15:16:56.429 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1024@SVAutoDRS: connecting call slot 74 to recorder 24 at slot 76
+01/18/18 15:16:56.430 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.430    pjsua_aud.c  .....Conf connect: 74 --> 76
+01/18/18 15:16:56.430 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1024@SVAutoDRS: connecting player 24 at slot 75 to call slot 74
+01/18/18 15:16:56.430 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.430    pjsua_aud.c  .....Conf connect: 75 --> 74
+01/18/18 15:16:56.447 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.018s]
+01/18/18 15:16:56.450 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.450   wav_player.c  ....File player 'wav/1025.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=51KB
+01/18/18 15:16:56.450 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.450    pjsua_aud.c  ....Player created, id=25, slot=77
+01/18/18 15:16:56.450 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1025@SVAutoDRS: created player 25 at slot 77
+01/18/18 15:16:56.450 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.450   wav_writer.c  ....File writer 'wav/rec_1025.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:56.450 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.450    pjsua_aud.c  ....Recorder created, id=25, slot=78
+01/18/18 15:16:56.450 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1025@SVAutoDRS: created recorder 25 at slot 78
+01/18/18 15:16:56.450 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78a70>)
+01/18/18 15:16:56.451 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1025@SVAutoDRS: connecting call slot 73 to recorder 25 at slot 78
+01/18/18 15:16:56.451 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.451    pjsua_aud.c  ...Conf connect: 73 --> 78
+01/18/18 15:16:56.468 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1025@SVAutoDRS: connecting player 25 at slot 77 to call slot 73
+01/18/18 15:16:56.468 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:56.468    pjsua_aud.c  ...Conf connect: 77 --> 73
+01/18/18 15:16:56.468 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.018s]
+01/18/18 15:16:57.591 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.591   wav_player.c  ......File player 'wav/1026.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=51KB
+01/18/18 15:16:57.609 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.609    pjsua_aud.c  ......Player created, id=26, slot=81
+01/18/18 15:16:57.609 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1026@SVAutoDRS: created player 26 at slot 81
+01/18/18 15:16:57.609 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.609   wav_writer.c  ......File writer 'wav/rec_1026.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:57.609 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.609    pjsua_aud.c  ......Recorder created, id=26, slot=82
+01/18/18 15:16:57.609 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1026@SVAutoDRS: created recorder 26 at slot 82
+01/18/18 15:16:57.610 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78878>)
+01/18/18 15:16:57.610 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1026@SVAutoDRS: connecting call slot 80 to recorder 26 at slot 82
+01/18/18 15:16:57.610 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.610    pjsua_aud.c  .....Conf connect: 80 --> 82
+01/18/18 15:16:57.610 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1026@SVAutoDRS: connecting player 26 at slot 81 to call slot 80
+01/18/18 15:16:57.610 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.610    pjsua_aud.c  .....Conf connect: 81 --> 80
+01/18/18 15:16:57.610 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.001s]
+01/18/18 15:16:57.714 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.713   wav_player.c  ....File player 'wav/1027.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=53KB
+01/18/18 15:16:57.810 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.810    pjsua_aud.c  ....Player created, id=27, slot=83
+01/18/18 15:16:57.811 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1027@SVAutoDRS: created player 27 at slot 83
+01/18/18 15:16:57.811 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.811   wav_writer.c  ....File writer 'wav/rec_1027.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:57.831 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.830    pjsua_aud.c  ....Recorder created, id=27, slot=84
+01/18/18 15:16:57.831 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1027@SVAutoDRS: created recorder 27 at slot 84
+01/18/18 15:16:57.831 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78b90>)
+01/18/18 15:16:57.832 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1027@SVAutoDRS: connecting call slot 79 to recorder 27 at slot 84
+01/18/18 15:16:57.832 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.832    pjsua_aud.c  ...Conf connect: 79 --> 84
+01/18/18 15:16:57.850 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1027@SVAutoDRS: connecting player 27 at slot 83 to call slot 79
+01/18/18 15:16:57.850 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:57.850    pjsua_aud.c  ...Conf connect: 83 --> 79
+01/18/18 15:16:57.850 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.019s]
+01/18/18 15:16:58.174 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:58.174   wav_player.c  ......File player 'wav/1028.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=49KB
+01/18/18 15:16:58.291 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:58.290    pjsua_aud.c  ......Player created, id=28, slot=87
+01/18/18 15:16:58.291 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1028@SVAutoDRS: created player 28 at slot 87
+01/18/18 15:16:58.292 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:58.292   wav_writer.c  ......File writer 'wav/rec_1028.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:16:58.310 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:58.310    pjsua_aud.c  ......Recorder created, id=28, slot=88
+01/18/18 15:16:58.311 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1028@SVAutoDRS: created recorder 28 at slot 88
+01/18/18 15:16:58.311 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78320>)
+01/18/18 15:16:58.311 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1028@SVAutoDRS: connecting call slot 86 to recorder 28 at slot 88
+01/18/18 15:16:58.311 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:58.311    pjsua_aud.c  .....Conf connect: 86 --> 88
+01/18/18 15:16:58.330 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1028@SVAutoDRS: connecting player 28 at slot 87 to call slot 86
+01/18/18 15:16:58.330 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:58.330    pjsua_aud.c  .....Conf connect: 87 --> 86
+01/18/18 15:16:58.330 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE1:  connect_media returned [0.020s]
+01/18/18 15:16:58.332 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:16:58.332   wav_player.c  ....File player 'wav/1029.wav' created: samp.rate=8000, ch=1, bufsize=4KB, filesize=52KB
+01/18/18 15:17:18.638 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:17:18.638    pjsua_aud.c  ....Player created, id=29, slot=89
+01/18/18 15:17:18.639 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1029@SVAutoDRS: created player 29 at slot 89
+01/18/18 15:17:18.639 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:17:18.639   wav_writer.c  ....File writer 'wav/rec_1029.wav' created: samp.rate=16000, bufsize=4KB
+01/18/18 15:17:18.659 [esi.simple_pj       ] DEBUG - [on_state                       ] log_cb(4): 15:17:18.659    pjsua_aud.c  ....Recorder created, id=29, slot=90
+01/18/18 15:17:18.659 [esi.simple_pj       ] DEBUG - [on_state                       ] sip:1029@SVAutoDRS: created recorder 29 at slot 90
+01/18/18 15:17:18.660 [esi.simple_pj       ] TRACE - [on_state                       ] TRACE0: connect_media(<lib.softphone.simple_pj.MyCallCallback instance at 0x7f3100b78cb0>)

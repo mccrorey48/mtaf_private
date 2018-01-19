@@ -1,4 +1,7 @@
 .idea/
+package/mtaf/build/
+package/mtaf/dist/
+package/mtaf/mtaf.egg-info/
 wav/
 tmp/
 *.swp

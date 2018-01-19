@@ -14,6 +14,7 @@ log = logging_esi.get_logger('esi.simple_pj')
 # set console log level
 logging_esi.console_handler.setLevel(logging_esi.INFO)
 wav_dir = 'wav'
+recorder_call_cbs = {}
 
 account_infos = {}
 
@@ -90,6 +91,7 @@ class Softphone:
     lib = None
     dst_uri = None
     rec_id = None
+    rec_slot = None
     last_msg_length = 0
 
     @Trace(log)
@@ -117,6 +119,8 @@ class Softphone:
                 self.account_info.account_cb.wait()
             self.account_info.record = record
             self.account_info.lib = self.lib
+        else:
+            raise Ux('badly formed URI "%s"' % self.uri)
 
     # def __del__(self):
     #     if self.account_info.call:
@@ -145,9 +149,9 @@ class Softphone:
                 raise Ux('wait for call status "early" terminated call because status was "call"')
         else:
             if warn_only:
-                log.warn('wait for call status "%s" timed out after %s seconds' % (desired_status, timeout))
+                log.warn('%s: wait for call status "%s" timed out after %s seconds' % (self.uri, desired_status, timeout))
             else:
-                raise Tx('wait for call status "%s" timed out after %s seconds' % (desired_status, timeout))
+                raise Tx('%s: wait for call status "%s" timed out after %s seconds' % (self.uri, desired_status, timeout))
 
     @Trace(log)
     def make_call_to_softphone(self, dst_uri, dst_response=None):
@@ -437,6 +441,7 @@ class MyCallCallback(pj.CallCallback):
 
     @Trace(log)
     def connect_media(self):
+        global recorder_call_cbs
         if self.rec_id is None:
             raise Ux("connect_media: no recorder exists, not connecting")
         if self.pb_id is None:
@@ -460,10 +465,10 @@ class MyCallCallback(pj.CallCallback):
                 log.debug("%s: disconnecting player %s at slot %d to call slot %d"
                           % (uri, self.pb_id, self.pb_slot, self.media_call_slot))
                 lib.conf_disconnect(self.pb_slot, self.media_call_slot)
-        if self.rec_id is not None:
-            log.debug("%s: connecting call slot %d to recorder %s at slot %d"
-                      % (uri, conf_slot, self.rec_id, rec_slot))
-            lib.conf_connect(conf_slot, rec_slot)
+        log.debug("%s: connecting call slot %d to recorder %s at slot %d"
+                  % (uri, conf_slot, self.rec_id, rec_slot))
+        lib.conf_connect(conf_slot, rec_slot)
+        recorder_call_cbs[uri] = self
         if self.pb_id is not None:
             self.pb_slot = lib.player_get_slot(self.pb_id)
             log.debug("%s: connecting player %s at slot %d to call slot %d"
@@ -503,6 +508,41 @@ class MyCallCallback(pj.CallCallback):
     #         lib.conf_disconnect(self.pb_slot, self.media_call_slot)
     #     self.media_call_slot = None
 
+    @Trace(log)
+    def restart_recorder(self, save_filename):
+        """
+        restarts the audio recorder for the parent uri;
+        if save_filename is None, discards the recording made to this point;
+        if save_filename is not None, saves the recording made to this point using that filename
+        """
+        lib = self.account_info.lib
+        if self.rec_id is None:
+            raise Ux("restart_recorder: no recorder exists")
+        my_uri = self.call.info().account.info().uri
+        if self.media_call_slot is not None:
+            self.rec_slot = lib.recorder_get_slot(self.rec_id)
+            log.debug("%s: disconnecting recorder %s at slot %d from call slot %d"
+                      % (my_uri, self.rec_id, self.rec_slot, self.media_call_slot))
+            lib.conf_disconnect(self.media_call_slot, self.rec_slot)
+        lib.recorder_destroy(self.rec_id)
+        rec_file_name = "%srec_%s.wav" % (wav_dir, lib.uri_number(my_uri))
+        self.patch_recfile(rec_file_name)
+        if save_filename is not None:
+            save_filepath = wav_dir + save_filename
+            log.debug("%s: saving filename at %s" % (my_uri, save_filepath))
+            try:
+                os.remove(save_filepath)
+            except OSError:
+                pass
+            os.rename(rec_file_name, save_filepath)
+        self.rec_id = lib.create_recorder(rec_file_name)
+        self.rec_slot = lib.recorder_get_slot(self.rec_id)
+        log.debug("%s: created recorder %s at slot %d" % (my_uri, self.rec_id, self.rec_slot))
+        if self.media_call_slot is not None:
+            log.debug("%s: connecting call slot %d to recorder %s at slot %d"
+                      % (my_uri, self.media_call_slot, self.rec_id, self.rec_slot))
+            lib.conf_connect(self.media_call_slot, self.rec_slot)
+
 
 class MyAccountInfo:
 
@@ -538,8 +578,8 @@ class PjsuaLib(pj.Lib):
 
         # set these maximum values to accommodate the number of softphones that will be created;
         # a call from one softphone to another requires 4 distinct call IDs and uses 6 media slots
-        my_ua_cfg.max_calls = 200
-        my_media_cfg.max_media_ports = 302
+        my_ua_cfg.max_calls = 300
+        my_media_cfg.max_media_ports = 452
 
         my_media_cfg.tx_drop_pct = self.tx_drop_pct
         my_media_cfg.rx_drop_pct = self.rx_drop_pct
@@ -548,7 +588,7 @@ class PjsuaLib(pj.Lib):
         my_media_cfg.no_vad = self.no_vad
         if dns_list:
             my_ua_cfg.nameserver = dns_list
-        self.init(log_cfg=pj.LogConfig(level=4, callback=log_cb), ua_cfg=my_ua_cfg, media_cfg=my_media_cfg)
+        self.init(log_cfg=pj.LogConfig(level=5, callback=log_cb), ua_cfg=my_ua_cfg, media_cfg=my_media_cfg)
         if self.tcp:
             transport = self.create_transport(pj.TransportType.TCP, pj.TransportConfig())
         else:
