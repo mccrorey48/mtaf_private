@@ -5,20 +5,23 @@ from ePhone7.config.configure import cfg
 
 log = logging_esi.get_logger('esi.softphone_test')
 
-max_user_count = 120
+first_user = 60
+max_user_count = 58
+call_length = 600
+recording_length = 60
 
 # production_proxy_override = 'nms-21.hs.cs.jfk01.esihs.net'
 # production_proxy_override = None
 
 # if cfg.site_tag == 'mm':
-#     proxy_ovekkrride = production_proxy_override
+#     proxy_override = production_proxy_override
 # else:
 proxy_override = None
 phones = {}
 logging_esi.console_handler.setLevel(logging_esi.TRACE)
 # users = sorted(cfg.site["DrsTestUsers"].keys())
 users = []
-for i in range(max_user_count):
+for i in range(first_user, first_user + max_user_count):
     users.append('DRS tester%03d' % i)
 softphone_pairs = []
 # for index in range(0, len(users), 2):
@@ -37,7 +40,18 @@ for pair in softphone_pairs:
     pair["called"].set_incoming_response(200)
     pair["caller"].make_call(pair["called"].uri)
     sleep(0.2)
-sleep(600)
+call_time_left = call_length
+rec_save_index = 0
+while call_time_left > 0:
+    sleep_time = min(recording_length, call_time_left)
+    sleep(sleep_time)
+    call_time_left -= sleep_time
+    if call_time_left > 0:
+        rec_save_index += 1
+        for pair in softphone_pairs:
+            pair['caller'].restart_recorder('rec_%s_%d.wav' % (pair['caller'].account_info.number, rec_save_index))
+            pair['called'].restart_recorder('rec_%s_%d.wav' % (pair['caller'].account_info.number, rec_save_index))
+
 for pair in softphone_pairs:
     log.warn("caller %s call time: %s" % (pair["caller"].account_info.uri,
                                           time() - pair["caller"].account_info.call_start_time))

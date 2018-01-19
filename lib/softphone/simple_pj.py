@@ -91,7 +91,6 @@ class Softphone:
     lib = None
     dst_uri = None
     rec_id = None
-    rec_slot = None
     last_msg_length = 0
 
     @Trace(log)
@@ -251,6 +250,9 @@ class Softphone:
     def unregister(self):
         self.account_info.account.set_registration(False)
 
+    def restart_recorder(self, save_filename=None):
+        self.lib.restart_recorder(self.uri, save_filename)
+
 
 class MyAccountCallback(pj.AccountCallback):
 
@@ -324,6 +326,7 @@ class MyCallCallback(pj.CallCallback):
         pj.CallCallback.__init__(self, account_info.call)
         self.account_info = account_info
         self.rec_id = None
+        self.rec_slot = None
         self.pb_id = None
         self.pb_slot = None
         self.account_info.state = pj.CallState.NULL
@@ -525,10 +528,10 @@ class MyCallCallback(pj.CallCallback):
                       % (my_uri, self.rec_id, self.rec_slot, self.media_call_slot))
             lib.conf_disconnect(self.media_call_slot, self.rec_slot)
         lib.recorder_destroy(self.rec_id)
-        rec_file_name = "%srec_%s.wav" % (wav_dir, lib.uri_number(my_uri))
+        rec_file_name = os.path.join(wav_dir, "rec_%s.wav" % self.account_info.number)
         self.patch_recfile(rec_file_name)
         if save_filename is not None:
-            save_filepath = wav_dir + save_filename
+            save_filepath = os.path.join(wav_dir, save_filename)
             log.debug("%s: saving filename at %s" % (my_uri, save_filepath))
             try:
                 os.remove(save_filepath)
@@ -628,3 +631,14 @@ class PjsuaLib(pj.Lib):
         account_infos[uri].account.delete()
         del account_infos[uri]
 
+    @Trace(log)
+    def restart_recorder(self, uri, save_filename=None):
+        """ look up the call callback for uri and call the restart_recorder member function;
+
+        uri -- the recorder for this account will be restarted
+        save_filename -- the recording to this point will be saved with this name
+            if save_filename is None, discards the recording made to this point;
+            if save_filename is not None, saves the recording made to this point using that filename
+        """
+        if uri in recorder_call_cbs:
+            recorder_call_cbs[uri].restart_recorder(save_filename)
