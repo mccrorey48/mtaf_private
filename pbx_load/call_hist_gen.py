@@ -5,10 +5,12 @@ from ePhone7.config.configure import cfg
 
 log = logging_esi.get_logger('esi.softphone_test')
 
-first_user = 60
-max_user_count = 58
-call_length = 600
-recording_length = 60
+first_user = 0
+max_user_count = 118
+# max_user_count = 8
+# call_length = 300
+call_length = 0
+recording_length = 30
 
 # production_proxy_override = 'nms-21.hs.cs.jfk01.esihs.net'
 # production_proxy_override = None
@@ -35,7 +37,7 @@ for index in range(0, max_user_count, 2):
     called = get_softphone(called_name, user_group="DrsTestUsers", reg_wait=False, proxy_override=proxy_override)
     sleep(0.2)
     softphone_pairs.append({"caller": caller, "called": called})
-sleep(10)
+sleep(5)
 for pair in softphone_pairs:
     pair["called"].set_incoming_response(200)
     pair["caller"].make_call(pair["called"].uri)
