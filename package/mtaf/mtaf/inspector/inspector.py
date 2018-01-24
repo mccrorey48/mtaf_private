@@ -440,7 +440,7 @@ class Inspector(Frame):
                 get_screenshot()
             destroy_existing_cwin()
             create_new_cwin()
-        except BaseException as _e:
+        except Ux as _e:
             six.print_("error creating screenshot window: %s" % _e)
             traceback.print_exc()
         finally:
@@ -1225,8 +1225,12 @@ class Inspector(Frame):
         log.info("saving xml %s" % xml_path)
         android_actions.adb.run_cmd('shell uiautomator dump')
         android_actions.adb.run_cmd('pull /sdcard/window_dump.xml')
-        os.rename('window_dump.xml', xml_path)
-        xml_to_csv(xml_path, csv_path)
+        try:
+            os.rename('window_dump.xml', xml_path)
+        except OSError as e:
+            raise Ux("No xml file found, is Android device connected?")
+        else:
+            xml_to_csv(xml_path, csv_path)
 
         six.print_("Done")
 

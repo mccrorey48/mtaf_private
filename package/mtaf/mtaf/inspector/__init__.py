@@ -3,6 +3,7 @@ import sys
 from os import getenv, path
 from mtaf.lib.user_exception import UserException as Ux
 from yaml import load, Loader
+import platform
 
 
 def start():
@@ -13,13 +14,23 @@ def start():
     #   inspector_locators.json - history of locators used to find elements from inspector
     # temporary directory is set by mtaf-inspector command line argument "tmp_dir=<path>", if it exists;
     # else, the value of environment variable "MTAF_TMP_DIR", if it exists;
-    # else, "~/.MtafInspector"
+    # else, platform-dependent temporary directory is used:
+    #    Linux - /tmp
+    #    Windows - os.getenv('TMP')
+    #    Darwin - /tmp
+    #
     # note: log directory is set in mtaf_logging module from MTAF_LOG_DIR environment variable, defaults to ./log
-    cfg = {
-        'tmp_dir': getenv('MTAF_TMP_DIR', path.join(getenv('HOME'), '.MtafInspector'))
-    }
+    system = platform.system()
+    if system in ['Darwin', 'Linux']:
+        tmp_dir = path.join('/tmp', 'MtafInspector')
+    elif system == 'Windows':
+        tmp_dir = path.join(getenv('TMP'), 'MtafInspector')
+    else:
+        raise Ux('Unknown system type %s' % system)
+    cfg = {'tmp_dir': tmp_dir}
+    # if there is a file "config.yml" in tmp_dir, add its settings to cfg
     try:
-        with open(path.join(cfg['tmp_dir'], 'config.yml')) as f:
+        with open(path.join(tmp_dir, 'config.yml')) as f:
             cfg2 = load(f, Loader=Loader)
         cfg.update(cfg2)
     except IOError:
