@@ -387,7 +387,7 @@ class Inspector(Frame):
                 self.cwin = None
 
         def create_new_cwin():
-            self.cwin = Toplevel(self.parent, bg='cyan')
+            self.cwin = Toplevel(self.parent, bg='tan')
             self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
             image = PIL_Image.open(os.path.join(self.cfg['tmp_dir'], 'inspector.png'))
             self.cwin.scale = 600.0 / max(image.height, image.width)
@@ -1226,6 +1226,10 @@ class Inspector(Frame):
         android_actions.adb.run_cmd('shell uiautomator dump')
         android_actions.adb.run_cmd('pull /sdcard/window_dump.xml')
         try:
+            os.remove(xml_path)
+        except:
+            pass
+        try:
             os.rename('window_dump.xml', xml_path)
         except OSError as e:
             raise Ux("No xml file found, is Android device connected?")
@@ -1252,6 +1256,10 @@ class Inspector(Frame):
             android_actions.adb.run_cmd('shell screencap -p /sdcard/screencap.png')
             android_actions.adb.run_cmd('pull /sdcard/screencap.png')
             log.debug("saving screenshot to %s" % img_path)
+            try:
+                os.remove(img_path)
+            except:
+                pass
             try:
                 os.rename('screencap.png', img_path)
             except OSError as _e:
