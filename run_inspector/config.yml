@@ -1,0 +1,36 @@
+plugin_dir: /home/mmccrorey/mtaf_plugins/inspector_plugins
+# zpath_tags_all replaces the default zpath list
+#zpath_tags_all:
+#    bt: android.widget.Button
+#    cb: android.widget.CheckBox
+#    el: android.widget.ExpandableListView
+#    et: android.widget.EditText
+#    fl: android.widget.FrameLayout
+#    gl: android.widget.GridLayout
+#    gv: android.widget.GridView
+#    h:  hierarchy
+#    ib: android.widget.ImageButton
+#    iv: android.widget.ImageView
+#    ll: android.widget.LinearLayout
+#    lv: android.widget.ListView
+#    rl: android.widget.RelativeLayout
+#    rv: android.support.v7.widget.RecyclerView
+#    sp: android.support.v4.widget.SlidingPaneLayout
+#    sv: android.widget.ScrollView
+#    th: android.widget.TabHost
+#    tl: android.widget.TableLayout
+#    tr: android.widget.TableRow
+#    tv: android.widget.TextView
+#    tw: android.widget.TabWidget
+#
+# zpath_tags_new adds zpaths to the default list
+#zpath_tags_new:
+#    v:  android.view.View
+#    vg: android.view.ViewGroup
+#    vp: android.support.v4.view.ViewPager
+zpath_tags_new:
+    dl: android.app.Dialog
+    i: android.widget.Image
+    sn: android.widget.Spinner
+    wv: android.webkit.WebView
+log_window_height: 15
