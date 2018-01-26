@@ -200,7 +200,7 @@ class ADB(object):
             n = 0
             output_list = self.__output.split("\n")
             for line in output_list:
-                pattern = re.compile(r"([^\s]+)\s+device\n")
+                pattern = re.compile(r"([^\s]+)\s+device\b")
                 device = pattern.findall(line)
                 if device:
                     device_dict[n] = device[0]
