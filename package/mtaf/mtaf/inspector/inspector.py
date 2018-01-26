@@ -764,7 +764,7 @@ class Inspector(Frame):
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
         btn.grid(row=1, column=1, padx=2, pady=2)
-        frame = Frame(btn_frame.attr_frame, bg='cyan')
+        frame = Frame(btn_frame.attr_frame, bg='tan')
         frame.columnconfigure(0, weight=1)
         self.text_to_send = StringVar()
         entry = Entry(frame, textvariable=self.text_to_send, state=DISABLED)
@@ -1306,7 +1306,7 @@ def run_inspector(cfg):
         for tag in cfg['zpath_tags_new']:
             set_zpath_tag(tag, cfg['zpath_tags_new'][tag])
     gui_cfg = {
-        'tmp_dir': cfg.get('tmp_dir', os.path.join(os.getenv('HOME'), '.MtafInspector')),
+        'tmp_dir': cfg.get('tmp_dir', './tmp'),
         'log_window_height': cfg.get('log_window_height', 20)
     }
     try:
@@ -1332,9 +1332,10 @@ def run_inspector(cfg):
             instance = module_class()
             instance.install_plugin(_app)
         except ImportError as e:
-            six.print_(e)
-            six.print_("no plugin found for package %s" % package)
+            tb = sys.exc_info()[2]
+            path, line_no = traceback.extract_tb(tb)[-1][:2]
+            six.print_("no plugin loaded for package %s\n  -->[%s:%s] %s" % (package, path, line_no, e))
         else:
-            six.print_("loaded plugin for package %s" % package)
+            six.print_("plugin loaded for package %s" % package)
     root.protocol("WM_DELETE_WINDOW", _app.close_appium_and_quit)
     _app.mainloop()
