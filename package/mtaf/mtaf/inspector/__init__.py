@@ -4,6 +4,10 @@ from os import getenv, path
 from mtaf.lib.user_exception import UserException as Ux
 from yaml import load, Loader
 import platform
+import argparse
+import six
+parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+                                 description='  helper for writing Appium locators to test Android applications')
 
 
 def start():
@@ -20,26 +24,43 @@ def start():
     #    Darwin - /tmp
     #
     # note: log directory is set in mtaf_logging module from MTAF_LOG_DIR environment variable, defaults to ./log
+    parser.add_argument('-c', '--config_file', type=str, default='./config.yml',
+                        help='YAML configuration file (default "./config.yml")')
+    parser.add_argument('-p', '--plugin_dir', type=str, default='.',
+                        help='plugin directory (default="." or set in configuration file)')
+    parser.add_argument('opts', type=str, nargs='*', metavar='key=value',
+                        help='key=value pairs will be added to configuration')
+    parser.add_argument('-s', '--show_config_only', action='store_true',
+                        help='show configuration without calling run_inspector')
+    parser.add_argument('-d', '--debug', action='store_true',
+                        help='print debug messages')
+    args = parser.parse_args()
+    if args.debug:
+        six.print_("config_file = %s" % args.config_file)
     system = platform.system()
     if system in ['Darwin', 'Linux']:
-        tmp_dir = path.join('/tmp', 'MtafInspector')
+        default_tmp_dir = path.join('/tmp', 'MtafInspector')
     elif system == 'Windows':
-        tmp_dir = path.join(getenv('TMP'), 'MtafInspector')
+        default_tmp_dir = path.join(getenv('TMP'), 'MtafInspector')
     else:
         raise Ux('Unknown system type %s' % system)
-    cfg = {'tmp_dir': tmp_dir}
+    if args.debug:
+        six.print_("tmp_dir = %s" % default_tmp_dir)
+    cfg = {'tmp_dir': default_tmp_dir}
     # if there is a file "config.yml" in tmp_dir, add its settings to cfg
     try:
-        with open(path.join(tmp_dir, 'config.yml')) as f:
+        with open(args.config_file) as f:
             cfg2 = load(f, Loader=Loader)
         cfg.update(cfg2)
     except IOError:
         pass
     progname = path.basename(sys.argv[0])
-    args = sys.argv[1:]
-    for arg in args:
+    for arg in args.opts:
         terms = arg.split('=')
         if len(terms) != 2:
             raise Ux("arguments to %s must be of the form <key>=<value>, with no spaces" % progname)
         cfg[terms[0]] = terms[1]
-    run_inspector(cfg)
+    if args.debug or args.show_config_only:
+            six.print_(repr(cfg))
+    if not args.show_config_only:
+        run_inspector(cfg)
