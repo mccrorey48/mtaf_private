@@ -13,10 +13,10 @@ setup(
     name='mtaf',
     packages=find_packages(),
     author='Martin McCrorey',
-    version='1.0.19',
+    version='1.0.27',
     license='MIT',
     url='https://github.com/mccrorey48/mtaf',
-    description='Mobile Test Automation Framework',
+    description='Mobile Test Automation Framework with Appium Inspector GUI for Android Applications',
     author_email = 'martin.mccrorey@verizon.net',
     entry_points={
         'console_scripts': [
