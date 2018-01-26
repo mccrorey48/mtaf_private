@@ -45,7 +45,7 @@ Features
       elements
     - Records Appium interactions in a log file
     - Loads plugins to extend menus, zpaths and GUI elements for specific
-      applications (see github.com/mccrorey48/mtaf_plugins for examples)
+      applications (see https://github.com/mccrorey48/mtaf_plugins for examples)
 
 **MTAF Library Modules (Python):**
     - ADB
@@ -113,21 +113,29 @@ Features
 Running Inspector
 =================
 
-Once mtaf has been installed, Inspector can be run from a script if the
-following requirements are met:
+When running "pip install mtaf", a command-line executable named "mtaf-inspector" is installed in a directory
+that depends on the system configuration:
+- (Darwin) /usr/local/bin
+- (Linux) /usr/local/bin
+- (Linux with virtualenv) <virtualenv directory>/<virtualenv name>/bin
+- (Windows) C:\Python<version>\Scripts
+- (Windows with virtualenv) C:\Users\<user name>\Envs\<virtualenv name>\Scripts
+
+
+The mtaf-inspector executable can be run if the following requirements are met:
 
 - adb can be found on the current path
 - Python and Tkinter are installed on the local machine
 - an Appium server is running on the local machine (optional)
-- the script has permission to write in the temporary files directory (default value is '.MtafInspector' in the user's home directory)
+- the script has permission to write in the temporary files directory (default value is 'MtafInspector' in /tmp
+  (Linux or Darwin) or %TEMP% (Windows)
 
-Inspector can be started with these two Python script lines::
+- Alternatively, inspector can be run from a Python script with these two lines::
 
     from mtaf.inspector import start
     start()
 
-
-Inspector presents a GUI with these components (from top to bottom):
+MTAF Inspector presents a GUI with these components (from top to bottom):
 
 - a menu bar with drop-down menus for both Appium and ADB operations
 - buttons and other controls for performing various operations that require Appium
@@ -153,3 +161,51 @@ more elements on the screenshot (preloading the "find element" locator field in
 the main GUI), and corresponding zpaths will be highlighted. Clicking a zpath
 will highlight one element (highlighting the corresponding resource ID if the
 element has one) and preload the zpath into the "find element" locator field.
+
+----
+
+Configuration
+=============
+
+Options settings can be placed in a YAML configuration file or included on the command line.
+
+The YAML format for options with string values is::
+
+    <option name>: <option value>
+
+without quotes.
+
+For options with dictionary values (see "zpath_tags_new" and "zpath_tags_all", below) the format is::
+
+    <option name>:
+        <attribute name>: <value>
+        <attribute name>: <value>
+        etc.
+
+String-valued configuration options can be set on the command line using this format::
+
+    <option name>=<option value>
+
+without quotes or spaces. An option set on the command line will override an option
+with the same name in the configuration file.
+
+This is the list of possible command-line options::
+
+    option                long format                description
+    -------------------   -------------------------  -------------------------------------------------------
+    -h                    --help                     print usage and exit
+    -c <file path>        --config_file              configuration file path (default: ./config.yml)
+    -p <directory path>   --plugin_dir               prepended to sys.path for locating inspector_plugins module
+    -d                    --debug                    print configuration
+    -s                    --show_configuration_only  print configuration and exit
+    <option>=<value>                                 set configuration options with string values
+
+Possible configuration options include::
+
+    option             format      description
+    -----------------  ----------  ------------------------------------------------------------
+    tmp_dir                        directory for saving temporary files
+    log_window_height              text height of "standard output" and "recorded text" windows
+    plugin_dir                     path to directory containing "inspector_plugins" directory
+    zpath_tags_new     dictionary  zpaths (abbreviated minimal xpaths) to be added to the built-in list
+    zpath_tags_all     dictionary  zpaths to replace the built-in list
