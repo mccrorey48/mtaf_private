@@ -1,9 +1,9 @@
 import argparse
 import time
-import lib.logging_esi as logging_esi
-from lib.esi_result import EsiResult
+from mtaf import mtaf_logging
+from mtaf.esi_result import EsiResult
 
-log = logging_esi.get_logger('esi.run_tests')
+log = mtaf_logging.get_logger('esi.run_tests')
 
 
 parser = argparse.ArgumentParser()

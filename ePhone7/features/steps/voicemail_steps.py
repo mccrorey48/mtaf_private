@@ -1,14 +1,14 @@
 from behave import *
 from ePhone7.views import *
 from ePhone7.config.configure import cfg
-from lib.wrappers import fake
+from mtaf.trace import fake
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.utils.e7_microservices import *
 from time import time
-import lib.logging_esi
-from lib.filters import get_filter
-from lib.user_exception import UserException as Ux
-log = lib.logging_esi.get_logger('esi.vm_steps')
+from mtaf import mtaf_logging
+from mtaf.filters import get_filter
+from mtaf.user_exception import UserException as Ux
+log = mtaf.mtaf_logging.get_logger('esi.vm_steps')
 
 
 @step("[voicemail] a keypad appears")

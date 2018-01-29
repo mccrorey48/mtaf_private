@@ -1,9 +1,9 @@
-from lib.wrappers import Trace
+from mtaf.trace import Trace
 from ePhone7.config.configure import cfg
-from lib.microservices import get_microservices
-import lib.logging_esi as logging
+from ePhone7.lib.microservices import get_microservices
+from mtaf import mtaf_logging
 
-log = logging.get_logger('esi.vvm_usvc')
+log = mtaf_logging.get_logger('esi.vvm_usvc')
 __all__ = ['get_e7_microservices', 'get_vmids']
 
 @Trace(log)

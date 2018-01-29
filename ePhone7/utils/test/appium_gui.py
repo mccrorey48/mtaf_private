@@ -2,14 +2,14 @@ import os
 from Tkinter import *
 from ttk import Combobox
 from time import sleep, time
-from lib.user_exception import UserException as Ux
+from mtaf.user_exception import UserException as Ux
 from pyand import ADB
-import lib.logging_esi as logging
-from lib.android_zpath import expand_zpath
+from mtaf import mtaf_logging
+from mtaf.android_zpath import expand_zpath
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 import threading
 import json
-from lib.filters import get_filter
+from mtaf.filters import get_filter
 from PIL import Image, ImageTk
 from ePhone7.config.configure import cfg
 from ePhone7.views import *
@@ -22,7 +22,7 @@ from ePhone7.utils.usb_enable import usb_enable
 from ePhone7.utils.get_focused_app import get_focused_app
 from ePhone7.utils.versions import *
 
-log = logging.get_logger('esi.appium_gui')
+log = mtaf_logging.get_logger('esi.appium_gui')
 
 
 class Command(object):

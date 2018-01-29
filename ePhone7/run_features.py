@@ -5,12 +5,12 @@ import sys
 from datetime import datetime, timedelta
 from behave.__main__ import main
 from pymongo import MongoClient
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 from ePhone7.config.configure import cfg
-from lib.fake_detector import FakeDetector
-from lib.user_exception import UserException as Ux
-from lib.wrappers import Trace
-from lib.prune_db import prune_db
+from mtaf.fake_detector import FakeDetector
+from mtaf.user_exception import UserException as Ux
+from mtaf.trace import Trace
+from mtaf.prune_db import prune_db
 import argparse
 from os import path, getenv, mkdir
 from ePhone7.utils.versions import *
@@ -18,7 +18,7 @@ from shutil import copyfile
 from bson.binary import Binary
 from cStringIO import StringIO
 
-log = logging.get_logger('esi.run_features')
+log = mtaf_logging.get_logger('esi.run_features')
 
 
 @contextlib.contextmanager

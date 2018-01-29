@@ -1,8 +1,8 @@
 from ePhone7.views import *
-from lib.wrappers import Trace
-import lib.logging_esi as logger
+from mtaf.trace import Trace
+from mtaf import mtaf_logging
 log = logger.get_logger('esi.ota')
-from lib.user_exception import UserException as Ux
+from mtaf.user_exception import UserException as Ux
 
 
 @Trace(log)

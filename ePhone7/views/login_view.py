@@ -1,10 +1,10 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
 
 from ePhone7.config.configure import cfg
 from ePhone7.views.base_view import BaseView
-from lib.wrappers import Trace
 
-log = logging.get_logger('esi.login_view')
+log = mtaf_logging.get_logger('esi.login_view')
 
 
 class LoginView(BaseView):

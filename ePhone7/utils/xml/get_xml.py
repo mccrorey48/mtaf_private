@@ -8,10 +8,10 @@ from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views import *
 from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 from time import sleep
-import lib.logging_esi as logging_esi
-from lib.wrappers import Trace
-from lib.user_exception import UserException as Ux
-log = logging_esi.get_logger('esi.get_xml')
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
+from mtaf.user_exception import UserException as Ux
+log = mtaf_logging.get_logger('esi.get_xml')
 logging_esi.console_handler.setLevel(logging_esi.TRACE)
 
 

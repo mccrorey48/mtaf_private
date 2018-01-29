@@ -1,13 +1,14 @@
-from time import sleep
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
 
-import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.user_view import UserView
-from lib.wrappers import Trace
-from appium.webdriver.common.touch_action import TouchAction
 
-log = logging.get_logger('esi.keypad_view')
+from appium.webdriver.common.touch_action import TouchAction
+from time import sleep
+
+log = mtaf_logging.get_logger('esi.keypad_view')
 
 
 class DialView(UserView):

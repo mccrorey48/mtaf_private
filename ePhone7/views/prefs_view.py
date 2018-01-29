@@ -1,12 +1,12 @@
 import re
 
-import lib.logging_esi as logging
-from lib.wrappers import Trace
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
+from mtaf.user_exception import UserException as Ux
 
 from ePhone7.views.base_view import BaseView
-from lib.user_exception import UserException as Ux
 
-log = logging.get_logger('esi.prefs_view')
+log = mtaf_logging.get_logger('esi.prefs_view')
 
 list_items = {
     'NeedHelp': ['eHelp', 'Walkthrough'],

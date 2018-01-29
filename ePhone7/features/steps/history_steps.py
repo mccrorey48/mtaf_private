@@ -1,6 +1,6 @@
 from behave import *
 from ePhone7.views import *
-from lib.wrappers import fake
+from mtaf.trace import fake
 
 
 @step("[history] I see the All and Missed tabs at the top of the screen")

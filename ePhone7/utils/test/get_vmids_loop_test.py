@@ -1,13 +1,13 @@
 import sys
 sys.path = sys.path[1:]
-from lib.wrappers import Trace
-import lib.logging_esi as logging
-from lib.user_exception import UserException as Ux
+from mtaf.trace import Trace
+from mtaf import mtaf_logging
+from mtaf.user_exception import UserException as Ux
 import requests
 from ePhone7.config.configure import cfg
 from time import time, sleep
 
-log = logging.get_logger('esi.get_vmids')
+log = mtaf_logging.get_logger('esi.get_vmids')
 
 
 # @Trace(log)

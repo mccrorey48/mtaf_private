@@ -1,6 +1,6 @@
 from behave import *
 from ePhone7.views import all_views
-from lib.wrappers import fake
+from mtaf.trace import fake
 from ePhone7.utils.e7_microservices import *
 
 use_step_matcher("re")

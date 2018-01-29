@@ -1,11 +1,11 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import base_view
 from ePhone7.utils.get_softphone import softphone_manager
-from lib.user_exception import UserException as Ux
+from mtaf.user_exception import UserException as Ux
 import datetime
 
-log = logging.get_logger('esi.environment')
+log = mtaf_logging.get_logger('esi.environment')
 substeps = ''
 
 

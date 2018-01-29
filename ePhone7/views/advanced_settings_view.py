@@ -1,12 +1,12 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
+from mtaf.user_exception import UserException as Ux
 
 from ePhone7.views.base_view import BaseView
 from ePhone7.config.configure import cfg
-from lib.wrappers import Trace
 from time import sleep
-from lib.user_exception import UserException as Ux
 
-log = logging.get_logger('esi.settings_view')
+log = mtaf_logging.get_logger('esi.settings_view')
 
 
 class AdvancedSettingsView(BaseView):

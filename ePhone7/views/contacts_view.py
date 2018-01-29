@@ -1,14 +1,15 @@
-from time import time, sleep
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
+from mtaf.user_exception import UserException as Ux
+from mtaf.filters import get_filter
 
-import lib.logging_esi as logging
 from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.user_view import UserView
-from lib.user_exception import UserException as Ux
-from lib.wrappers import Trace
-from lib.filters import get_filter
 
-log = logging.get_logger('esi.contacts_view')
+from time import time, sleep
+
+log = mtaf_logging.get_logger('esi.contacts_view')
 
 
 class ContactsView(UserView):

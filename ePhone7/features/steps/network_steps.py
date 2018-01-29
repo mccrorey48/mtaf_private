@@ -1,6 +1,6 @@
 from behave import *
 from ePhone7.views import *
-from lib.wrappers import fake
+from mtaf.trace import fake
 
 
 @step("[network] I enter a valid VLAN identifier")

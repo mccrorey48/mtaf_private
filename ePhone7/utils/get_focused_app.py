@@ -1,9 +1,9 @@
 from ePhone7.utils.spud_serial import SpudSerial
 from ePhone7.config.configure import cfg
-import lib.logging_esi as logging
-from lib.user_exception import UserException as Ux
-from lib.wrappers import Trace
-log = logging.get_logger('esi.get_focused_app')
+from mtaf import mtaf_logging
+from mtaf.user_exception import UserException as Ux
+from mtaf.trace import Trace
+log = mtaf_logging.get_logger('esi.get_focused_app')
 
 
 @Trace(log)

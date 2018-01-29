@@ -1,15 +1,15 @@
 from os import path, makedirs
 
-import lib.logging_esi as logging_esi
+from mtaf import mtaf_logging
 from ePhone7.utils.e7_microservices import get_vmids
 
 logging_esi.console_handler.setLevel(logging_esi.INFO)
-log = logging_esi.get_logger('esi.smoke')
+log = mtaf_logging.get_logger('esi.smoke')
 with logging_esi.msg_src_cm('importing modules'):
     import unittest
     from ePhone7.config.configure import cfg
     from ePhone7.views import *
-    from lib.wrappers import TestCase
+    from mtaf.trace import TestCase
 
 debug = False
 

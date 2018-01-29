@@ -1,6 +1,6 @@
 import csv
 import re
-from lib.user_exception import UserException as Ux
+from mtaf.user_exception import UserException as Ux
 
 
 re_id = re.compile('.*,([^,]*:id/[^,]*),[^,]*,(\d+),(\d+),(\d+),(\d+)')

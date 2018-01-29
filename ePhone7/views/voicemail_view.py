@@ -1,19 +1,19 @@
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
+from mtaf.filters import get_filter
+from mtaf.user_exception import UserException as Ux
+
+from ePhone7.config.configure import cfg
+from ePhone7.utils.e7_microservices import *
+from ePhone7.views.user_view import UserView
+
 import re
 from datetime import datetime, timedelta
 from time import sleep, time
 import datetime
-
 from selenium.common.exceptions import WebDriverException
 
-import lib.logging_esi as logging
-from ePhone7.config.configure import cfg
-from ePhone7.utils.e7_microservices import *
-from ePhone7.views.user_view import UserView
-from lib.filters import get_filter
-from lib.user_exception import UserException as Ux
-from lib.wrappers import Trace
-
-log = logging.get_logger('esi.voicemail_view')
+log = mtaf_logging.get_logger('esi.voicemail_view')
 
 
 class VoicemailView(UserView):

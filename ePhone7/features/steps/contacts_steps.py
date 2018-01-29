@@ -1,8 +1,8 @@
 from behave import *
 from ePhone7.views import *
 from ePhone7.config.configure import cfg
-from lib.wrappers import fake
-from lib.user_exception import UserException as Ux
+from mtaf.trace import fake
+from mtaf.user_exception import UserException as Ux
 from ePhone7.utils.get_softphone import get_softphone
 from time import sleep
 

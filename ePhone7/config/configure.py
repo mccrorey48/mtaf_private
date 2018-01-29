@@ -1,7 +1,8 @@
+from mtaf.mongo import merge_collection
+from mtaf.user_exception import UserException as Ux
+
 import os
 from pymongo import MongoClient
-from lib.mongo import merge_collection
-from lib.user_exception import UserException as Ux
 
 
 class Cfg(object):

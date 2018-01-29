@@ -1,14 +1,15 @@
-from time import sleep
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
+from mtaf.user_exception import UserException as Ux
 
-import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.base_view import BaseView
 from ePhone7.views.prefs_view import prefs_view
-from lib.user_exception import UserException as Ux
-from lib.wrappers import Trace
 
-log = logging_esi.get_logger('esi.user_view')
+from time import sleep
+
+log = mtaf_logging.get_logger('esi.user_view')
 
 
 class UserView(BaseView):

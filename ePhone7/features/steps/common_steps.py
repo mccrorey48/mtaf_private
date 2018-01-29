@@ -4,10 +4,10 @@ from ePhone7.utils.versions import get_downgrade_images, force_app_downgrade
 from time import sleep
 from prefs_steps import *
 from advanced_steps import *
-from lib.user_exception import UserException as Ux, UserFailException as Fx
+from mtaf.user_exception import UserException as Ux, UserFailException as Fx
 from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.utils.versions import *
-from lib.wrappers import fake
+from mtaf.trace import fake
 
 
 @step("A call between two other accounts has been parked by the called account")

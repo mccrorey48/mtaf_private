@@ -1,7 +1,7 @@
 from behave import *
 from ePhone7.views import *
-from lib.wrappers import fake
-from lib.user_exception import UserException as Ux
+from mtaf.trace import fake
+from mtaf.user_exception import UserException as Ux
 
 headset_icon_rgbs = {'blue': [99, 139, 237, 369], 'green': [79, 187, 110, 367]}
 

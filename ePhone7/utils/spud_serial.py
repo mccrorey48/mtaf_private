@@ -1,13 +1,13 @@
 import serial
-from lib.user_exception import UserException as Ux
+from mtaf.user_exception import UserException as Ux
 import socket
 from time import time, sleep
 from contextlib import contextmanager
-import lib.logging_esi as logging_esi
-from lib.wrappers import Trace
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
 import re
 
-log = logging_esi.get_logger('esi.spud_serial')
+log = mtaf_logging.get_logger('esi.spud_serial')
 
 
 class SpudSerial:

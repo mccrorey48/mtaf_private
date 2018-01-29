@@ -1,20 +1,20 @@
+from mtaf import mtaf_logging
+from mtaf.android_zpath import expand_zpath
+from mtaf.android_actions import AndroidActions
+from mtaf.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
+from mtaf.trace import Trace
+
+from ePhone7.config.configure import cfg
+from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.utils.usb_enable import usb_enable
+
 import os
 from time import sleep, time
-
 from appium.webdriver.common.mobileby import MobileBy
 from selenium.common.exceptions import WebDriverException, TimeoutException, StaleElementReferenceException
 from selenium.webdriver.support.ui import WebDriverWait
 
-import lib.logging_esi as logging_esi
-from ePhone7.config.configure import cfg
-from lib.android_zpath import expand_zpath
-from lib.android_actions import AndroidActions
-from lib.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
-from lib.wrappers import Trace
-from ePhone7.utils.spud_serial import SpudSerial
-from ePhone7.utils.usb_enable import usb_enable
-
-log = logging_esi.get_logger('esi.base_view')
+log = mtaf_logging.get_logger('esi.base_view')
 
 keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
 keycodes['KEYCODE_HOME'] = 188

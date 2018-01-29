@@ -1,10 +1,10 @@
-from lib.softphone.simple_pj import SoftphoneManager
+from mtaf.softphone.simple_pj import SoftphoneManager
 from time import sleep
-import lib.logging_esi as logging_esi
-from lib.user_exception import UserException as Ux, UserTimeoutException as Tx
+from mtaf import mtaf_logging
+from mtaf.user_exception import UserException as Ux, UserTimeoutException as Tx
 from ePhone7.config.configure import cfg
 
-log = logging_esi.get_logger('esi.softphone_test')
+log = mtaf_logging.get_logger('esi.softphone_test')
 
 logging_esi.console_handler.setLevel(logging_esi.WARN)
 

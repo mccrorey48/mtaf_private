@@ -2,14 +2,14 @@ import re
 from ePhone7.utils.spud_serial import SpudSerial
 from ePhone7.config.configure import cfg
 import spur
-from lib.user_exception import UserException as Ux
-from lib.wrappers import Trace
-import lib.logging_esi as logging
+from mtaf.user_exception import UserException as Ux
+from mtaf.trace import Trace
+from mtaf import mtaf_logging
 from pyand import ADB, Fastboot
 from os import path, listdir, mkdir
 import shutil
 
-log = logging.get_logger('esi.versions')
+log = mtaf_logging.get_logger('esi.versions')
 
 __all__ = ['get_installed_versions', 'force_aosp_downgrade', 'remove_apk_upgrades', 'get_current_versions']
 

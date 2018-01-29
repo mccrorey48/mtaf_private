@@ -1,9 +1,10 @@
-import lib.logging_esi as logging_esi
+from mtaf import mtaf_logging
+from mtaf.trace import Trace
+
 from ePhone7.config.configure import cfg
 from ePhone7.views.base_view import BaseView
-from lib.wrappers import Trace
 
-log = logging_esi.get_logger('esi.active_call_view')
+log = mtaf_logging.get_logger('esi.active_call_view')
 
 
 class ActiveCallView(BaseView):
