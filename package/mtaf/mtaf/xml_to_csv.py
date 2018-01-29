@@ -1,18 +1,24 @@
 import re
 import xml.etree.ElementTree as ET
+import six
+if six.PY3:
+    from io import StringIO
+else:
+    from StringIO import StringIO
 import csv
-
-import mtaf.lib.android_zpath
+import six
+import android_zpath
 
 tagre = re.compile('([^\[]+)(.*)')
 
+re_bounds = re.compile('\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]')
 
 def printall(writer, node, tag_index, pfx):
     if node.tag == 'node':
         tag = node.attrib['class']
     else:
         tag = node.tag
-    tag = mtaf.lib.android_zpath.get_zpath_tag(tag)
+    tag = android_zpath.get_zpath_tag(tag)
     if tag_index == 0:
         new_prefix = pfx + tag
     else:
@@ -23,15 +29,15 @@ def printall(writer, node, tag_index, pfx):
             try:
                 _str = node.attrib[key].encode('utf-8')
                 if key == 'bounds':
-                    m = re.match('\[(\d+),(\d+)\]\[(\d+),(\d+)\]', _str)
+                    m = re_bounds.match(str(_str))
                     if m:
                         items += m.groups()
                     else:
-                        items += ['', '', '', '']
+                        items += ['0', '0', '0', '0']
                 else:
-                    items.append(repr(_str))
+                    items.append(_str)
             except UnicodeEncodeError as e:
-                print e.message
+                six.print_(e.message)
         else:
             items.append('')
     writer.writerow(items)
@@ -58,25 +64,29 @@ def printall(writer, node, tag_index, pfx):
 
 
 def xml_to_csv(xml_file_path, csv_file_path):
-    tree = ET.parse(xml_file_path)
-    root = tree.getroot()
-    prefix = ''
-    with open(csv_file_path, 'w') as output_file:
-        # header line helps vim display csv (with csv plugin) and used by python cvs.DictReader()
-        writer = csv.writer(output_file, quotechar="'")
-        writer.writerow(['zpath', 'resource-id', 'text', 'min_x', 'min_y', 'lim_x', 'lim_y'])
-        printall(writer, root, 0, prefix)
+    re_uc = re.compile(r"&#\d+")
+    with open (xml_file_path) as input_file:
+        xml_text = re_uc.sub('', input_file.read())
+        xml_stringio = StringIO(xml_text)
+        tree = ET.parse(xml_stringio)
+        root = tree.getroot()
+        prefix = ''
+        with open(csv_file_path, 'w') as output_file:
+            # header line helps vim display csv (with csv plugin) and used by python cvs.DictReader()
+            writer = csv.writer(output_file, quotechar="'")
+            writer.writerow(['zpath', 'resource-id', 'text', 'min_x', 'min_y', 'lim_x', 'lim_y'])
+            printall(writer, root, 0, prefix)
 
 
-# run this file from mtaf top level (repo) directory
 if __name__ == "__main__":
-    import csv
-    xml_file = 'inspector_app/xml/inspector.xml'
-    csv_file = 'inspector_app/csv/inspector.csv'
+    import os
+    tmp_dir = '/tmp/MtafInspector'
+    xml_file = os.path.join(tmp_dir, 'inspector.xml')
+    csv_file = os.path.join(tmp_dir, 'inspector.csv')
     xml_to_csv(xml_file, csv_file)
     with open(csv_file) as f:
         reader = csv.DictReader(f, quotechar="'")
         for i, row in enumerate(reader):
-            print "row %d" % i
+            six.print_("row %d" % i)
             for key in row:
-                print "  %s: %s" % (key, row[key])
+                six.print_("  %s: %s" % (key, row[key]))

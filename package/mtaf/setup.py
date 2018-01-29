@@ -10,13 +10,19 @@ def readme():
 publish_cmdline(writer_name='html', argv=['README.rst', 'README.html'])
 
 setup(
-    name='mtaf_lib',
+    name='mtaf',
     packages=find_packages(),
     author='Martin McCrorey',
-    version='1.1.1',
-    url='https://github.com/mccrorey48/mtaf_lib',
-    description='Mobile Test Automation Framework',
+    version='1.0.27',
+    license='MIT',
+    url='https://github.com/mccrorey48/mtaf',
+    description='Mobile Test Automation Framework with Appium Inspector GUI for Android Applications',
     author_email = 'martin.mccrorey@verizon.net',
+    entry_points={
+        'console_scripts': [
+            'mtaf-inspector=mtaf:start_inspector',
+        ],
+    },
     keywords=['python', 'android', 'appium', 'selenium', 'adb', 'uiautomator', 'viewer', 'inspector', 'gui', 'locator', 'screenshot',
               'xpath', 'resource_id', 'page object model'],
     classifiers=[
@@ -33,7 +39,10 @@ setup(
         'Appium-Python-Client==0.25',
         'olefile==0.44',
         'Pillow==4.3.0',
-        'selenium==3.8.0'
+        'selenium==3.8.0',
+        'PyYAML==3.12',
+        'six==1.11.0',
+        'requests==2.18.4'
     ],
     long_description=readme(),
     zip_safe=False,

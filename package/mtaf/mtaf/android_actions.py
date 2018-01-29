@@ -1,19 +1,20 @@
 from time import time, sleep
-import mtaf.lib.mtaf_logging as logging
-from mtaf.lib.trace import Trace
-from mtaf.lib.selenium_actions import SeleniumActions
+import mtaf_logging as logging
+from trace import Trace
+from selenium_actions import SeleniumActions
 from appium import webdriver
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.common.exceptions import WebDriverException
-from mtaf.lib.user_exception import UserException as Ux
+from user_exception import UserException as Ux
 from time import strftime, localtime
 from PIL import Image
 import os
-from mtaf.lib.ADB import ADB
+from ADB import ADB
 import re
-from urllib2 import URLError
+from requests import ConnectionError
+import six
 
-log = logging.get_logger('mtaf.selenium_actions')
+log = logging.get_logger('mtaf.android_actions')
 
 selenium_url = "http://localhost:4723/wd/hub"
 
@@ -33,7 +34,7 @@ class AndroidActions(SeleniumActions):
             raise Ux("no ADB device")
         output = self.adb.run_cmd('shell dumpsys window windows')
         package = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output).group(1)
-        activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/' + package + '([^}]+)', output).group(2)
+        activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)', output).group(2)
         device_name = self.adb.run_cmd('shell getprop ro.product.model').strip()
         platform_version = self.adb.run_cmd('shell getprop ro.build.version.release').strip()
         caps = {
@@ -54,9 +55,9 @@ class AndroidActions(SeleniumActions):
                 break
             except WebDriverException:
                 log.info("retrying webdriver.Remote(%s, %s)" % (selenium_url, caps))
-            except URLError as e:
-                print "URLError attempting to connect to appium server: %s" % e
-                raise Ux("URLError attempting to connect to appium server")
+            except ConnectionError as e:
+                six.print_("ConnectionError attempting to connect to appium server: %s" % e)
+                raise Ux("ConnectionError attempting to connect to appium server")
         else:
             raise Ux("failed to connect webdriver.Remote within %s seconds" % connect_timeout)
 
@@ -69,7 +70,8 @@ class AndroidActions(SeleniumActions):
             try:
                 logcat = self.driver.get_log('logcat')
                 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
-                with open('log/e7_logcat_%s.log' % timestamp, 'w') as f:
+                logdir = os.getenv('MTAF_LOG_DIR', 'log')
+                with open('%s/logcat_%s.log' % (logdir, timestamp), 'w') as f:
                     for line in [item['message'] for item in logcat]:
                         f.write(line.encode('utf-8') + '\n')
                 # self.driver.quit()

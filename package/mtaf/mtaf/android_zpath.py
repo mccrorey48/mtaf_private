@@ -1,4 +1,5 @@
 import re
+import six
 
 zpaths = {
     "bt": "android.widget.Button",
@@ -27,13 +28,28 @@ zpaths = {
     "vp": "android.support.v4.view.ViewPager"
 }
 
-zpath_tags = dict((v, k) for k, v in zpaths.iteritems())
+
+def create_zpath_tags():
+    global zpath_tags
+    if six.PY3:
+        return dict((v, k) for k, v in zpaths.items())
+    else:
+        return dict((v, k) for k, v in zpaths.iteritems())
+
+
+zpath_tags = create_zpath_tags()
+
+
+def replace_zpaths(new_zpaths):
+    global zpaths, zpath_tags
+    zpaths = new_zpaths
+    zpath_tags = create_zpath_tags()
 
 
 def set_zpath_tag(abbreviation, zpath):
-    global zpath_tags
+    global zpaths, zpath_tags
     zpaths[abbreviation] = zpath
-    zpath_tags = dict((v, k) for k, v in zpaths.iteritems())
+    zpath_tags = create_zpath_tags()
 
 
 def get_zpath_tag(path):

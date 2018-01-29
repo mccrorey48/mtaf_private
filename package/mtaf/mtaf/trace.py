@@ -1,12 +1,12 @@
 import inspect
 import sys
 import traceback
-from time import time, sleep
-import mtaf.lib.mtaf_logging as mtaf_logging
+from time import time
+import mtaf_logging as mtaf_logging
 from appium import webdriver as appium_webdriver
 from selenium import webdriver as selenium_webdriver
 
-from mtaf.lib.user_exception import UserException as Ux, UserFailException as Fx, UserTimeoutException as Tx, \
+from user_exception import UserException as Ux, UserFailException as Fx, UserTimeoutException as Tx, \
     stat_prefix as sp
 
 log = mtaf_logging.get_logger('mtaf.trace')
