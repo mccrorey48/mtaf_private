@@ -39,6 +39,7 @@ setup(
         'Appium-Python-Client==0.25',
         'olefile==0.44',
         'Pillow==4.3.0',
+        'pymongo==3.3.1',
         'selenium==3.8.0',
         'PyYAML==3.12',
         'six==1.11.0',
