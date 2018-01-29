@@ -24,7 +24,7 @@ def start_inspector():
     #    Darwin - /tmp
     #
     # note: log directory is set in mtaf_logging module from MTAF_LOG_DIR environment variable, defaults to ./log
-    parser.add_argument('-c', '--config_file', type=str, default='./config.yml',
+    parser.add_argument('-c', '--config_file', type=str, default='./inspector_config.yml',
                         help='YAML configuration file (default "./config.yml")')
     parser.add_argument('-p', '--plugin_dir', type=str, default='.',
                         help='plugin directory (default="." or set in configuration file)')
@@ -32,6 +32,8 @@ def start_inspector():
                         help='key=value pairs will be added to configuration')
     parser.add_argument('-s', '--show_config_only', action='store_true',
                         help='show configuration without calling run_inspector')
+    parser.add_argument('-l', '--log_window_height', default=10,
+                        help='text height of standard output and recorded output windows')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='print debug messages')
     args = parser.parse_args()
@@ -46,8 +48,12 @@ def start_inspector():
         raise Ux('Unknown system type %s' % system)
     if args.debug:
         six.print_("tmp_dir = %s" % default_tmp_dir)
-    cfg = {'tmp_dir': default_tmp_dir}
-    # if there is a file "config.yml" in tmp_dir, add its settings to cfg
+    cfg = {
+        'tmp_dir': default_tmp_dir,
+        'plugin_dir': args.plugin_dir,
+        'log_window_height': args.log_window_height}
+    # if args.config_file is the path of a YAML configuration file, update
+    # configuration to the default
     try:
         with open(args.config_file) as f:
             cfg2 = load(f, Loader=Loader)

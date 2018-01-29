@@ -1,5 +1,5 @@
-from time import time, sleep
-import mtaf_logging as logging
+from time import time
+import mtaf_logging
 from trace import Trace
 from selenium_actions import SeleniumActions
 from appium import webdriver
@@ -14,7 +14,7 @@ import re
 from requests import ConnectionError
 import six
 
-log = logging.get_logger('mtaf.android_actions')
+log = mtaf_logging.get_logger('mtaf.android_actions')
 
 selenium_url = "http://localhost:4723/wd/hub"
 

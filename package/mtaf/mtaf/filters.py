@@ -1,5 +1,6 @@
 import six
 
+
 def get_filter(method, *args, **kwargs):
 
     def by_text_start(elem):

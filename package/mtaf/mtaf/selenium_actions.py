@@ -1,5 +1,5 @@
 from time import time, sleep
-import mtaf_logging as logging
+import mtaf_logging
 from trace import Trace
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -7,7 +7,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from user_exception import UserException as Ux
-log = logging.get_logger('mtaf.selenium_actions')
+log = mtaf_logging.get_logger('mtaf.selenium_actions')
 
 
 browsers = {

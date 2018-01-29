@@ -1,13 +1,12 @@
 import re
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as etree
+import csv
+import android_zpath
 import six
 if six.PY3:
     from io import StringIO
 else:
     from StringIO import StringIO
-import csv
-import six
-import android_zpath
 
 tagre = re.compile('([^\[]+)(.*)')
 
@@ -68,7 +67,7 @@ def xml_to_csv(xml_file_path, csv_file_path):
     with open (xml_file_path) as input_file:
         xml_text = re_uc.sub('', input_file.read())
         xml_stringio = StringIO(xml_text)
-        tree = ET.parse(xml_stringio)
+        tree = etree.parse(xml_stringio)
         root = tree.getroot()
         prefix = ''
         with open(csv_file_path, 'w') as output_file:

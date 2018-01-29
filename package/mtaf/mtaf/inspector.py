@@ -1,7 +1,7 @@
 import os
 from time import sleep, time
 from user_exception import UserException as Ux
-import mtaf_logging as logging
+import mtaf_logging
 from android_zpath import set_zpath_tag, expand_zpath, replace_zpaths
 from android_actions import AndroidActions
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
@@ -27,7 +27,7 @@ else:
     from ttk import Combobox
 
 
-log = logging.get_logger('mtaf.inspector')
+log = mtaf_logging.get_logger('mtaf.inspector')
 android_actions = AndroidActions()
 re_dumpsys = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
 re_apk = re.compile('(?ms).*Packages:.*?versionName=([^\n]+)')

@@ -1,14 +1,14 @@
 # wrapper for the python "logging" module
 #
-# Importing this module sets the logger class of the python "logging" module to MtafLogger.
-# The MtafLogger class adds the "trace" level to logging.
+# Importing this module sets the logger class of the python "logging" module to EsiLogger.
+# The EsiLogger class adds the "trace" level to logging.
 #
-# When this module is imported, MtafLogger is instantiated with the root name 'mtaf' and the instance
-# sets up output to the console, and to the files mtaf_warn.log, mtaf_info.log, mtaf_trace.log and mtaf_debug.log.
+# When this module is imported, EsiLogger is instantiated with the root name 'esi' and the instance
+# sets up output to the console, and to the files esi_warn.log, esi_info.log, esi_trace.log and esi_debug.log.
 #
 # Then, when the importing program instantiates a new logger with the line:
-#    log = logging_mtaf.get_logger(logname)
-# where logname starts with "mtaf.". The methods log.warn, log.info, log.trace and log.debug create
+#    log = logging_esi.get_logger(logname)
+# where logname starts with "esi.", the methods log.warn, log.info, log.trace and log.debug create
 # formatted output to the log files.
 #
 # The log levels used here correspond to the following symbolic names and values:
@@ -25,33 +25,54 @@ from logging import getLoggerClass, addLevelName, setLoggerClass, NOTSET, DEBUG,
 from logging import Formatter, FileHandler, getLogger, StreamHandler
 from contextlib import contextmanager
 from time import sleep, strftime, localtime
-from prune_logs import prune_logs
-import os
-import errno
+from pymongo import MongoClient
+import re
+from datetime import datetime
+from glob import glob
+from os import lstat, remove
 
 msg_len_max = 30
 msg_src_stack = []
 msg_src = ''
-root_name = 'mtaf'
+root_name = 'esi'
 
-TRACE = int((DEBUG + INFO) / 2)
+TRACE = (DEBUG + INFO) / 2
 
 current_formatter = None
 trace_indent = 0
 
 
-class MtafLogger(getLoggerClass()):
+class EsiLogger(getLoggerClass()):
+
+    db = None
+    db_host = None
+    db_client = None
+    db_collection = None
 
     def __init__(self, name, level=NOTSET):
-        super(MtafLogger, self).__init__(name, level)
+        super(EsiLogger, self).__init__(name, level)
         addLevelName(TRACE, 'TRACE')
 
     def trace(self, msg, *args, **kwargs):
         if self.isEnabledFor(TRACE):
             self._log(TRACE, msg, args, **kwargs)
 
+    def handle(self, record):
+        if self.db_collection and current_formatter:
+            txt = current_formatter.format(record)
+            msg_dict = parse_msg_to_dict(txt)
+            if msg_dict:
+                self.db_collection.insert_one(msg_dict)
+        super(EsiLogger, self).handle(record)
 
-setLoggerClass(MtafLogger)
+    @classmethod
+    def set_db(cls, host_name, db_name, collection_name):
+        cls.db_client = MongoClient(host_name)
+        cls.db = cls.db_client[db_name]
+        cls.db_collection = cls.db[collection_name]
+
+
+setLoggerClass(EsiLogger)
 
 
 @contextmanager
@@ -85,6 +106,7 @@ def set_msg_src(src='', set_linefeed=False):
     global msg_len_max
     global msg_src
     if len(src) > msg_len_max:
+        # print "src = '%s', len(src) = %d, msg_len_max = %d" % (src, len(src), msg_len_max)
         msg_len_max = len(src)
     msg_fmt = "%%-%ds" % (msg_len_max + 1)
     msg_src = src
@@ -102,25 +124,89 @@ def get_logger(name):
     return getLogger(name)
 
 
+re_common = re.compile(
+    '(?P<date>\S+)\s+'
+    + '(?P<time>\S+)\s+\['
+    + '(?P<src>[^\s\]]+)[\s\]]+'
+    + '(?P<level>\S+)[\s\-\]\[]+'
+    + '(?P<tc>\S[^\]]+\S)\s*\]\s+'
+    + '((?P<type>[A-Z ^:]+):\s+)?'
+    + '(?P<tail>.*)'
+)
+
+re_tc = re.compile(
+    '(?P<tc>\S+)\s+'
+    + '(?P<status>\S+)\s*'
+    + '([- ]+)?(?P<msg>.+)?'
+)
+
+re_trace = re.compile(
+    '(?P<func>[^(\s]+)'
+    + '((?P<arglist>\((?P<args>.*)\))?\s*|\s*)'
+    + '((?P<event>returned|EXCEPTION)?:?\s+|)(?P<msg>.+)?'
+)
+
+
+def prune_logs(pattern, max_kept=10, verbose=False):
+    fnames = glob(pattern)
+    ctimes = {fname: datetime.fromtimestamp(lstat(fname).st_ctime) for fname in fnames}
+    for i, fname in enumerate(sorted(fnames, key=lambda x: ctimes[x], reverse=True)):
+        if not i < max_kept:
+            if verbose:
+                print i, fname, '(removing)'
+            remove(fname)
+        elif verbose:
+            print i, fname
+
+
+def parse_msg_to_dict(msg):
+    m = re_common.match(msg)
+    if not m:
+        print 'Unknown log message format:\n%s' % msg
+        return None
+    names = ['date', 'time', 'src', 'level', 'tc', 'type']
+    # names = ['date', 'time', 'src', 'level', 'tc', 'type', 'tail']
+    values = [m.group(name) for name in names]
+    # # print "tail = " + m.group('tail')
+    if m.group('type') == 'TEST CASE':
+        mt = re_tc.match(m.group('tail'))
+        if not mt:
+            print 'Unknown log message tail format: "%s"' % m.group('tail')
+            return None
+        for name in ['tc', 'status', 'msg']:
+            names.append(name)
+            values.append(mt.group(name))
+    elif m.group('type') == 'TRACE':
+        mt = re_trace.match(m.group('tail'))
+        if not mt:
+            print 'Unknown log message tail format: "%s"' % m.group('tail')
+            return None
+        for name in ('func', 'args', 'event', 'msg'):
+            names.append(name)
+            if name == 'event' and mt.group('arglist') is not None:
+                values.append('call')
+            else:
+                values.append(mt.group(name))
+    else:
+        names.append('msg')
+        values.append(m.group('tail'))
+    all_values = dict(zip(names, values))
+    all_values['trace_indent'] = trace_indent
+    # print '  ' + ', '.join(['%s: %s' % (name, all_values[name]) for name in names])
+    return all_values
+
+
 _log = getLogger(root_name)
 _log.setLevel(DEBUG)
-log_dir = os.getenv('MTAF_LOG_DIR', 'log')
-prune_logs(os.path.join(log_dir, '%s_debug_*.log' % root_name), 5)
-prune_logs(os.path.join(log_dir, '*logcat_*.log'), 5)
+prune_logs('log/%s_debug_*.log' % root_name, 5)
+prune_logs('log/*logcat_*.log', 5)
 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
 # file logging for info, debug, trace and warn levels, each with its own output file
-base_warn_fname = os.path.join(log_dir, '%s_warn.log' % root_name)
-base_info_fname = os.path.join(log_dir, '%s_info.log' % root_name)
-base_trace_fname = os.path.join(log_dir, '%s_trace.log' % root_name)
-base_debug_fname = os.path.join(log_dir, '%s_debug.log' % root_name)
-extended_debug_fname = os.path.join(log_dir, '%s_debug_%s.log' % (root_name, timestamp))
-try:
-    os.makedirs(log_dir)
-except OSError as e:
-    if e.errno == errno.EEXIST and os.path.isdir(log_dir):
-        pass
-    else:
-        raise
+base_warn_fname = 'log/%s_warn.log' % root_name
+base_info_fname = 'log/%s_info.log' % root_name
+base_trace_fname = 'log/%s_trace.log' % root_name
+base_debug_fname = 'log/%s_debug.log' % root_name
+extended_debug_fname = 'log/%s_debug_%s.log' % (root_name, timestamp)
 fh = FileHandler(base_warn_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(WARN)
 _log.addHandler(fh)

@@ -1,4 +1,13 @@
-from Tkinter import *
+import six
+
+if six.PY3:
+    from tkinter import *
+    from tkinter import simpledialog as tk_simple_dialog
+    from tkinter.ttk import Combobox
+else:
+    from Tkinter import *
+    import tk_simple_dialog
+    from ttk import Combobox
 
 
 class Dialog(Toplevel):

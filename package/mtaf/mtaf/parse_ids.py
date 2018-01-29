@@ -91,6 +91,7 @@ def parse_ids(csv_fullpath):
                     six.print_("ValueError parsing row: %s" % row)
     return ids
 
+
 def parse_ids_with_zpaths(csv_fullpath):
     ids = parse_ids(csv_fullpath)
     ids_with_zpath = {}
