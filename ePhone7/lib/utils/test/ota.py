@@ -1,7 +1,7 @@
 from ePhone7.views import *
 from mtaf.trace import Trace
 from mtaf import mtaf_logging
-log = logger.get_logger('esi.ota')
+log = logger.get_logger('mtaf.ota')
 from mtaf.user_exception import UserException as Ux
 
 

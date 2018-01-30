@@ -1,13 +1,13 @@
-from mtaf.softphone.simple_pj import SoftphoneManager
+from mtaf.simple_pj import SoftphoneManager
 from time import sleep
 from mtaf import mtaf_logging
 from mtaf.user_exception import UserException as Ux
 from ePhone7.views import *
 from ePhone7.config.configure import cfg
 
-log = mtaf_logging.get_logger('esi.softphone_test')
+log = mtaf_logging.get_logger('mtaf.softphone_test')
 
-logging_esi.console_handler.setLevel(logging_esi.TRACE)
+mtaf_logging.console_handler.setLevel(mtaf_logging.TRACE)
 
 softphone_manager = SoftphoneManager()
 

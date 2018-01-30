@@ -1,11 +1,11 @@
 from mtaf import mtaf_logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import base_view
-from ePhone7.utils.get_softphone import softphone_manager
+from ePhone7.lib.utils.get_softphone import softphone_manager
 from mtaf.user_exception import UserException as Ux
 import datetime
 
-log = mtaf_logging.get_logger('esi.environment')
+log = mtaf_logging.get_logger('mtaf.environment')
 substeps = ''
 
 
@@ -38,18 +38,18 @@ def before_all(context):
 def before_feature(context, feature):
     global substeps
     substeps += "feature = %s\n" % feature.name
-    logging.push_msg_src('feature')
+   mtaf_logging.push_msg_src('feature')
     log.info('feature.name: %s' % feature.name)
 
 
 def after_feature(context, feature):
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def before_scenario(context, scenario):
     global substeps
     substeps += "scenario = %s\n" % scenario.name
-    logging.push_msg_src('  scenario')
+   mtaf_logging.push_msg_src('  scenario')
     log.info('scenario.name: %s' % scenario.name)
 
 
@@ -73,7 +73,7 @@ def after_scenario(context, scenario):
             screenshot_path = base_view.get_screenshot_as_png('exception-%s' % timestamp, cfg.test_screenshot_folder,
                                                               scale=0.2)
             substeps += 'screenshot = %s\n' % screenshot_path
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def before_step(context, step):
@@ -84,7 +84,7 @@ def before_step(context, step):
         substeps += "substep = %s" % step.name
     else:
         substeps += "step = %s\n" % step.name
-    logging.push_msg_src('    step: %s' % step.name[:30])
+   mtaf_logging.push_msg_src('    step: %s' % step.name[:30])
     log.info('step.name: %s' % step.name)
 
 
@@ -95,7 +95,7 @@ def after_step(context, step):
         context.is_substep = False
     if step.exception:
         log.info("EXCEPTION in step %s" % step.name)
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def after_all(context):

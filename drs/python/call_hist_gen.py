@@ -1,9 +1,9 @@
 from ePhone7.utils.get_softphone import get_softphone
 from time import sleep, time
-import lib.logging_esi as logging_esi
+from mtaf import mtaf_logging
 from ePhone7.config.configure import cfg
 
-log = logging_esi.get_logger('esi.softphone_test')
+log =mtaf_logging.get_logger('mtaf.softphone_test')
 
 max_user_count = 100
 

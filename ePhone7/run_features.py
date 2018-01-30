@@ -13,12 +13,12 @@ from mtaf.trace import Trace
 from mtaf.prune_db import prune_db
 import argparse
 from os import path, getenv, mkdir
-from ePhone7.utils.versions import *
+from ePhone7.lib.utils.versions import *
 from shutil import copyfile
 from bson.binary import Binary
 from cStringIO import StringIO
 
-log = mtaf_logging.get_logger('esi.run_features')
+log = mtaf_logging.get_logger('mtaf.run_features')
 
 
 @contextlib.contextmanager

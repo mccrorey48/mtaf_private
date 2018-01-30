@@ -5,7 +5,7 @@ from mtaf.user_exception import UserException as Ux
 import requests
 from time import time
 
-log = mtaf_logging.get_logger('esi.microsvcs')
+log = mtaf_logging.get_logger('mtaf.microsvcs')
 
 __all__ = ['get_microservices']
 default_url = 'https://pro.esiapi.io/'

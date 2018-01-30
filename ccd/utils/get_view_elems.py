@@ -8,8 +8,8 @@ args = parser.parse_args()
 from ccd.utils.configure import cfg
 cfg.set_site(args.cfg_host, args.svr_tag)
 
-import lib.logging_esi as logging_esi
-log = logging_esi.get_logger('esi.get_view_elems')
+from mtaf import mtaf_logging
+log =mtaf_logging.get_logger('mtaf.get_view_elems')
 
 from ccd.views.login import login_view
 elems = login_view.actions.driver.find_elements_by_css_selector('*')

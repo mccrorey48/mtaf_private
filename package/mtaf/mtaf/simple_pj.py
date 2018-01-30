@@ -1,7 +1,7 @@
 from mtaf import mtaf_logging
 from mtaf.trace import Trace
 from mtaf.user_exception import UserException as Ux, UserTimeoutException as Tx
-from mtaf.softphone.wav_audio import create_wav_file
+from mtaf.wav_audio import create_wav_file
 import re
 import threading
 import random
@@ -10,10 +10,9 @@ from time import time, sleep
 import os
 import struct
 
-log = mtaf_logging.get_logger('esi.simple_pj')
+log = mtaf_logging.get_logger('mtaf.simple_pj')
 # set console log level
 mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
-wav_dir = 'wav'
 
 account_infos = {}
 
@@ -36,7 +35,7 @@ call_state_text = {
 }
 
 
-# callback to be used by the pjsip/pjsua C libraries for logging
+# callback to be used by the pjsip/pjsua C libraries formtaf_logging
 def pjl_log_cb(level, _str, _len):
     sip_match = re.match('.*(Request|Response)', _str)
     lines = ["log_cb(%d): %s" % (level, line) for line in _str.splitlines()]
@@ -64,14 +63,14 @@ class SoftphoneManager:
     def __init__(self):
         self.softphones = {}
 
-    def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp, reg_wait=True):
+    def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp, reg_wait=True, wav_dir='wav'):
         if uri in self.softphones:
             self.softphones[uri].account_info.account.set_registration(True)
             log.debug("SoftphoneManager.get_softphone returning existing softphone %s" % uri)
         else:
             log.debug("SoftphoneManager.get_softphone creating softphone %s" % uri)
             self.softphones[uri] = Softphone(uri, proxy=proxy, password=password, null_snd=null_snd, dns_list=dns_list,
-                                             tcp=tcp, reg_wait=False)
+                                             tcp=tcp, reg_wait=False, wav_dir=wav_dir)
         if reg_wait:
             self.softphones[uri].account_info.account_cb.wait()
         return self.softphones[uri]
@@ -94,8 +93,13 @@ class Softphone:
 
     @Trace(log)
     def __init__(self, uri, proxy, password, null_snd=True, dns_list=None, tcp=False,
-                 pbfile='default', record=True, quiet=True, reg_wait=True):
+                 pbfile='default', record=True, quiet=True, reg_wait=True, wav_dir='wav'):
         self.uri = uri
+        self.wav_dir = wav_dir
+        try:
+            os.mkdir(wav_dir)
+        except OSError:
+            pass
         # create and start the pjsua lib instance if not already started
         if not self.lib:
             Softphone.lib = PjsuaLib()
@@ -106,12 +110,13 @@ class Softphone:
             self.number = m.group(1)
             self.domain = m.group(2)
             self.account_info = self.lib.add_account(self.number, self.domain, proxy, password)
+            self.account_info.wav_dir = wav_dir
             if pbfile is None:
                 self.account_info.pbfile_relpath = None
             else:
                 if pbfile == 'default':
                     pbfile = '%s.wav' % ''.join(re.findall('\d', self.number))
-                self.account_info.pbfile_relpath = os.path.join(wav_dir, pbfile)
+                self.account_info.pbfile_relpath = os.path.join(self.wav_dir, pbfile)
                 create_wav_file(self.account_info.pbfile_relpath, quiet)
             if reg_wait:
                 self.account_info.account_cb.wait()
@@ -362,11 +367,11 @@ class MyCallCallback(pj.CallCallback):
             media_ops[action]()
 
     def on_state(self):
-        with logging_esi.msg_src_cm('on_state'):
+        with mtaf_logging.msg_src_cm('on_state'):
             self._on_state()
 
     def on_media_state(self):
-        with logging_esi.msg_src_cm('on_media_state'):
+        with mtaf_logging.msg_src_cm('on_media_state'):
             self._on_state()
 
     @Trace(log)
@@ -389,7 +394,7 @@ class MyCallCallback(pj.CallCallback):
             self.pb_slot = lib.player_get_slot(self.pb_id)
             log.debug("%s: created player %s at slot %d" % (uri, self.pb_id, self.pb_slot))
         if record:
-            rec_file = os.path.join(wav_dir, "rec_%s.wav" % self.account_info.number)
+            rec_file = os.path.join(self.account_info.wav_dir, "rec_%s.wav" % self.account_info.number)
             log.debug("%s: rec file = %s" % (uri, rec_file))
             self.rec_id = lib.create_recorder(rec_file)
             rec_slot = lib.recorder_get_slot(self.rec_id)
@@ -415,7 +420,7 @@ class MyCallCallback(pj.CallCallback):
         else:
             lib.recorder_destroy(self.rec_id)
             self.rec_id = None
-            # rec_file = os.path.join(wav_dir, "rec_%s.wav" % self.account_info.number)
+            # rec_file = os.path.join(self.account_info.wav_dir, "rec_%s.wav" % self.account_info.number)
             # self.patch_recfile(rec_file)
 
     @Trace(log)

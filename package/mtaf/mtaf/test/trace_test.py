@@ -1,11 +1,12 @@
 # import unittest
-import lib.logging_esi as logging_esi
-from lib.user_exception import UserException as Ux, UserFailException as Fx
-from lib.wrappers import Trace, TestCase, SkipTrace
-from lib.esi_result import EsiResult
-log = logging_esi.get_logger('esi.wrapper_test')
-logging_esi.console_handler.setLevel(logging_esi.INFO)
+from mtaf import mtaf_logging
+from mtaf.user_exception import UserException as Ux, UserFailException as Fx
+from mtaf.trace import Trace, TestCase, SkipTrace
+
+log = mtaf_logging.get_logger('mtaf.wrapper_test')
+mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
 # Trace = SkipTrace
+
 
 @Trace(log)
 def f1(*args):
@@ -80,7 +81,7 @@ f3('a')
 
 # suite = unittest.TestSuite()
 # suite.addTest(unittest.TestLoader().loadTestsFromTestCase(AClass))
-# runner = unittest.TextTestRunner(verbosity=0, resultclass=EsiResult)
+# runner = unittest.TextTestRunner(verbosity=0, resultclass=TestResult)
 # result = runner.run(suite)
 
 

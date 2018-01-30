@@ -7,7 +7,7 @@ from mtaf import mtaf_logging
 from mtaf.trace import Trace
 import re
 
-log = mtaf_logging.get_logger('esi.spud_serial')
+log = mtaf_logging.get_logger('mtaf.spud_serial')
 
 
 class SpudSerial:

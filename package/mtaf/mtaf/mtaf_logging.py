@@ -1,22 +1,22 @@
 # wrapper for the python "logging" module
 #
 # Importing this module sets the logger class of the python "logging" module to EsiLogger.
-# The EsiLogger class adds the "trace" level to logging.
+# The EsiLogger class adds the "trace" level tomtaf_logging.
 #
-# When this module is imported, EsiLogger is instantiated with the root name 'esi' and the instance
-# sets up output to the console, and to the files esi_warn.log, esi_info.log, esi_trace.log and esi_debug.log.
+# When this module is imported, EsiLogger is instantiated with the root name 'mtaf' and the instance
+# sets up output to the console, and to the files mtaf_warn.log, mtaf_info.log, mtaf_trace.log and mtaf_debug.log.
 #
 # Then, when the importing program instantiates a new logger with the line:
-#    log = logging_esi.get_logger(logname)
-# where logname starts with "esi.", the methods log.warn, log.info, log.trace and log.debug create
+#    log =mtaf_logging.get_logger(logname)
+# where logname starts with "mtaf.", the methods log.warn, log.info, log.trace and log.debug create
 # formatted output to the log files.
 #
 # The log levels used here correspond to the following symbolic names and values:
 #
-#    warn        logging.WARN       30
-#    info        logging.INFO       20
-#    trace       logging.TRACE      15
-#    debug       logging.DEBUG      10
+#    warn       mtaf_logging.WARN       30
+#    info       mtaf_logging.INFO       20
+#    trace      mtaf_logging.TRACE      15
+#    debug      mtaf_logging.DEBUG      10
 #
 # Lower-level output files will include log output from higher levels.
 
@@ -34,7 +34,7 @@ from os import lstat, remove, mkdir, path
 msg_len_max = 30
 msg_src_stack = []
 msg_src = ''
-root_name = 'esi'
+root_name = 'mtaf'
 
 TRACE = (DEBUG + INFO) / 2
 
@@ -202,7 +202,7 @@ log_dir = 'log'
 prune_logs(path.join(log_dir, 'log/%s_debug_*.log' % root_name), 5)
 prune_logs(path.join(log_dir, '*logcat_*.log'), 5)
 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
-# file logging for info, debug, trace and warn levels, each with its own output file
+# filemtaf_logging for info, debug, trace and warn levels, each with its own output file
 base_warn_fname = path.join(log_dir, '%s_warn.log' % root_name)
 base_info_fname = path.join(log_dir, '%s_info.log' % root_name)
 base_trace_fname = path.join(log_dir, '%s_trace.log' % root_name)
@@ -228,7 +228,7 @@ _log.addHandler(fh)
 fh = FileHandler(extended_debug_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(DEBUG)
 _log.addHandler(fh)
-# console logging for info level
+# consolemtaf_logging for info level
 console_handler = StreamHandler()
 console_handler.setLevel(INFO)
 _log.addHandler(console_handler)

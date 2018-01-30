@@ -1,4 +1,4 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 import lib.filters as filters
 from lib.wrappers import Trace
 from selenium.webdriver import Chrome, Firefox
@@ -9,7 +9,7 @@ from lib.android_actions import SeleniumActions
 from lib.user_exception import UserException as Ux, UserFailException as Fx
 import re
 
-log = logging.get_logger('esi.base_view')
+log =mtaf_logging.get_logger('mtaf.base_view')
 
 
 class BaseView(SeleniumActions):

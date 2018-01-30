@@ -7,9 +7,9 @@ from ePhone7.config.configure import cfg
 from ePhone7.views import *
 from mtaf.user_exception import UserException as Ux
 from mtaf.trace import fake
-from ePhone7.utils.e7_microservices import get_vmids
+from ePhone7.lib.utils.e7_microservices import get_vmids
 
-log = mtaf_logging.get_logger('esi.active_steps')
+log = mtaf_logging.get_logger('mtaf.active_steps')
 
 
 @step('[active call] I touch "Dial"')

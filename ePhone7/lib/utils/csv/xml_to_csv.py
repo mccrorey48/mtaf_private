@@ -100,4 +100,4 @@ def xml_folder_to_csv():
 
 if __name__ == '__main__':
     # xml_folder_to_csv()
-    os.path.walk('ePhone7/utils/xml/xml_appium_gui/', visit, '')
+    os.path.walk('ePhone7/lib/utils/xml/xml_appium_gui/', visit, '')

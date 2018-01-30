@@ -1,7 +1,7 @@
 from mtaf import mtaf_logging
 from ePhone7.views.user_view import UserView
 
-log = mtaf_logging.get_logger('esi.contacts_view')
+log = mtaf_logging.get_logger('mtaf.contacts_view')
 
 
 class HomeView(UserView):

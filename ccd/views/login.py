@@ -1,10 +1,10 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 
 from ccd.utils.configure import cfg
 from ccd.views.base import BaseView
 from lib.wrappers import Trace
 
-log = logging.get_logger('esi.login_view')
+log =mtaf_logging.get_logger('mtaf.login_view')
 
 
 class LoginView(BaseView):

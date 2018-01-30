@@ -6,7 +6,7 @@ from mtaf.user_exception import UserException as Ux
 
 from ePhone7.views.base_view import BaseView
 
-log = mtaf_logging.get_logger('esi.prefs_view')
+log = mtaf_logging.get_logger('mtaf.prefs_view')
 
 list_items = {
     'NeedHelp': ['eHelp', 'Walkthrough'],

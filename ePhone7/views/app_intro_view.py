@@ -3,7 +3,7 @@ from mtaf.trace import Trace
 
 from ePhone7.views.base_view import BaseView
 
-log = mtaf_logging.get_logger('esi.app_intro_view')
+log = mtaf_logging.get_logger('mtaf.app_intro_view')
 
 
 class AppIntroView(BaseView):

@@ -6,7 +6,7 @@ from ePhone7.views.base_view import BaseView
 from ePhone7.config.configure import cfg
 from time import sleep
 
-log = mtaf_logging.get_logger('esi.settings_view')
+log = mtaf_logging.get_logger('mtaf.settings_view')
 
 
 class AdvancedSettingsView(BaseView):

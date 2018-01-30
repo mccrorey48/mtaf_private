@@ -1,7 +1,7 @@
 from behave import *
 from lib.wrappers import fake
-import lib.logging_esi as logging
-log = logging.get_logger('esi.test')
+from mtaf import mtaf_logging
+log =mtaf_logging.get_logger('mtaf.test')
 
 @step("I run a step with no substeps")
 def i_run_a_step_with_no_substeps(context):

@@ -1,9 +1,9 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 from lib.user_exception import UserException as Ux
 from selenium import webdriver
 import os
 
-log = logging.get_logger('esi.environment')
+log =mtaf_logging.get_logger('mtaf.environment')
 substeps = ''
 
 
@@ -26,18 +26,18 @@ def before_all(context):
 def before_feature(context, feature):
     global substeps
     substeps += "feature = %s\n" % feature.name
-    logging.push_msg_src('feature')
+   mtaf_logging.push_msg_src('feature')
     log.info('feature.name: %s' % feature.name)
 
 
 def after_feature(context, feature):
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def before_scenario(context, scenario):
     global substeps
     substeps += "scenario = %s\n" % scenario.name
-    logging.push_msg_src('  scenario')
+   mtaf_logging.push_msg_src('  scenario')
     log.info('scenario.name: %s' % scenario.name)
     if 'BROWSER' in context.config.userdata.keys():
         if context.config.userdata['BROWSER'] is None:
@@ -75,7 +75,7 @@ def after_scenario(context, scenario):
         context.browser.save_screenshot(os.path.join(screenshot_dir, scenario.name + "_failed.png"))
         if 'critical' in scenario.tags + scenario.feature.tags:
             context._config.stop = True
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def before_step(context, step):
@@ -86,7 +86,7 @@ def before_step(context, step):
         substeps += "substep = %s" % step.name
     else:
         substeps += "step = %s\n" % step.name
-    logging.push_msg_src('    step: %s' % step.name[:30])
+   mtaf_logging.push_msg_src('    step: %s' % step.name[:30])
     log.info('step.name: %s' % step.name)
 
 
@@ -97,7 +97,7 @@ def after_step(context, step):
         context.is_substep = False
     if step.exception:
         log.info("EXCEPTION in step %s" % step.name)
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def after_all(context):

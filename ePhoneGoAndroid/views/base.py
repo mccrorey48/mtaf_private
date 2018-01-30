@@ -1,7 +1,7 @@
 import os
 from time import sleep
 
-import lib.logging_esi as logging_esi
+from mtaf import mtaf_logging
 from PIL import Image
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
@@ -13,7 +13,7 @@ from lib.android_zpath import MockDriver
 from lib.android_actions import SeleniumActions
 from lib.user_exception import UserException as Ux
 
-log = logging_esi.get_logger('esi.base_view')
+log =mtaf_logging.get_logger('mtaf.base_view')
 
 keycodes = {'KEYCODE_%d' % k: k + 7 for k in range(10)}
 

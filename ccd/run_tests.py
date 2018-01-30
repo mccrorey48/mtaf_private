@@ -1,11 +1,11 @@
 import argparse
 import time
 
-import lib.logging_esi as logging_esi
+from mtaf import mtaf_logging
 
-from lib.esi_result import EsiResult
+from mtaf.result import TestResult
 
-log = logging_esi.get_logger('esi.run_tests')
+log = mtaf_logging.get_logger('mtaf.run_tests')
 
 # log.set_db('localhost', 'results_ccd', time.strftime('%m_%d_%y-%H_%M_%S', time.localtime()))
 
@@ -15,7 +15,7 @@ parser.add_argument("--cfg_server", default='vqda', help="mongodb configuration 
 parser.add_argument("--failfast", help="stop testing when a test case fails", action="store_true")
 args = parser.parse_args()
 
-with logging_esi.msg_src_cm('run_tests'):
+with mtaf_logging.msg_src_cm('run_tests'):
     import unittest
     from ccd.utils.configure import cfg
 
@@ -27,4 +27,4 @@ with logging_esi.msg_src_cm('run_tests'):
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.LoginTests))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.ResellerTests))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(cron.DomainTests))
-    unittest.TextTestRunner(verbosity=0, resultclass=EsiResult, failfast=args.failfast).run(suite)
+    unittest.TextTestRunner(verbosity=0, resultclass=TestResult, failfast=args.failfast).run(suite)

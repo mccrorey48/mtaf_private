@@ -1,9 +1,9 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 
 from ePhoneGoAndroid.views.base import BaseView
 from lib.wrappers import Trace
 
-log = logging.get_logger('esi.tnc_view')
+log =mtaf_logging.get_logger('mtaf.tnc_view')
 
 
 class TncView(BaseView):

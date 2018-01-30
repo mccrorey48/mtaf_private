@@ -1,4 +1,4 @@
-from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.lib.utils.spud_serial import SpudSerial
 from ePhone7.config.configure import cfg
 import re
 from pyand import ADB

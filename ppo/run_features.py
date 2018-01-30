@@ -5,7 +5,7 @@ import sys
 from datetime import datetime, timedelta
 from behave.__main__ import main
 from pymongo import MongoClient
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 from lib.fake_detector import FakeDetector
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
@@ -13,7 +13,7 @@ import argparse
 from os import path, getenv, mkdir
 from shutil import copyfile
 
-log = logging.get_logger('esi.run_features')
+log =mtaf_logging.get_logger('mtaf.run_features')
 
 
 @contextlib.contextmanager

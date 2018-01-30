@@ -1,7 +1,7 @@
-import lib.logging_esi as logging_esi
+from mtaf import mtaf_logging
 logging_esi.console_handler.setLevel(logging_esi.INFO)
-log = logging_esi.get_logger('esi.cron')
-with logging_esi.msg_src_cm('importing modules'):
+log =mtaf_logging.get_logger('mtaf.cron')
+with mtaf_logging.msg_src_cm('importing modules'):
     import unittest
     from ccd.views import *
     from lib.wrappers import TestCase

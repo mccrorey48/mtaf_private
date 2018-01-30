@@ -1,8 +1,8 @@
 import os
-from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.lib.utils.spud_serial import SpudSerial
 from ePhone7.config.configure import cfg
 from mtaf import mtaf_logging
-log = mtaf_logging.get_logger('esi.usb_enable')
+log = mtaf_logging.get_logger('mtaf.usb_enable')
 
 
 def usb_enable():

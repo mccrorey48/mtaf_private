@@ -1,13 +1,13 @@
 from behave import *
 
-from ePhone7.utils.versions import *
+from ePhone7.lib.utils.versions import *
 from ePhone7.views import *
 from mtaf.trace import fake
 from mtaf import mtaf_logging
 import re
 from mtaf.user_exception import UserException as Ux
 
-log = mtaf_logging.get_logger('esi.prefs')
+log = mtaf_logging.get_logger('mtaf.prefs')
 
 
 @step("[prefs] A popup informs me that help email has been sent to my email address")

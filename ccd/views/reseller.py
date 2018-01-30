@@ -1,10 +1,10 @@
 import re
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 from lib.wrappers import Trace
 from ccd.views.base import BaseView
 from lib.user_exception import UserException as Ux
 
-log = logging.get_logger('esi.reseller_view')
+log =mtaf_logging.get_logger('mtaf.reseller_view')
 
 
 class ResellerView(BaseView):

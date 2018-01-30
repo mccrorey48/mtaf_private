@@ -4,7 +4,7 @@ from os import getenv
 import datetime
 import re
 
-# log = logging.get_logger('esi.run_features')
+# log =mtaf_logging.get_logger('mtaf.run_features')
 
 
 def prune_db(db_name, server, operation, number_to_keep, max_age):

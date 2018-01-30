@@ -1,10 +1,10 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 
 from ccd.utils.configure import cfg
 from ccd.views.reseller import ResellerView
 from lib.wrappers import Trace
 
-log = logging.get_logger('esi.reseller_home_view')
+log =mtaf_logging.get_logger('mtaf.reseller_home_view')
 
 
 class ResellerHomeView(ResellerView):

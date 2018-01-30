@@ -47,4 +47,7 @@ setup(
     ],
     long_description=readme(),
     zip_safe=False,
+    package_data={
+        'mtaf': ['wav/*.wav'],
+    },
 )

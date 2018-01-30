@@ -8,7 +8,7 @@ from appium import webdriver
 from user_exception import UserException as Ux, UserFailException as Fx, UserTimeoutException as Tx, \
     stat_prefix as sp
 
-log = mtaf_logging.get_logger('esi.wrappers')
+log = mtaf_logging.get_logger('mtaf.wrappers')
 
 
 # decorator for test cases that puts the test method name in log messages

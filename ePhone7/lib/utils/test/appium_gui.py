@@ -13,16 +13,16 @@ from mtaf.filters import get_filter
 from PIL import Image, ImageTk
 from ePhone7.config.configure import cfg
 from ePhone7.views import *
-from ePhone7.utils.get_softphone import get_softphone
+from ePhone7.lib.utils.get_softphone import get_softphone
 from ePhone7.views.base_view import keycodes
-from ePhone7.utils.csv.xml_to_csv import xml_to_csv
-from ePhone7.utils.csv.parse_ids import parse_ids, parse_zpaths
-from ePhone7.utils.spud_serial import SpudSerial
-from ePhone7.utils.usb_enable import usb_enable
-from ePhone7.utils.get_focused_app import get_focused_app
-from ePhone7.utils.versions import *
+from ePhone7.lib.utils.csv.xml_to_csv import xml_to_csv
+from ePhone7.lib.utils.csv.parse_ids import parse_ids, parse_zpaths
+from ePhone7.lib.utils.spud_serial import SpudSerial
+from ePhone7.lib.utils.usb_enable import usb_enable
+from ePhone7.lib.utils.get_focused_app import get_focused_app
+from ePhone7.lib.utils.versions import *
 
-log = mtaf_logging.get_logger('esi.appium_gui')
+log = mtaf_logging.get_logger('mtaf.appium_gui')
 
 
 class Command(object):

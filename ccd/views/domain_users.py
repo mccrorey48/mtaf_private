@@ -1,9 +1,9 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 from ccd.utils.configure import cfg
 import re
 from ccd.views.domain import DomainView
 
-log = logging.get_logger('esi.domain_music_on_hold_view')
+log =mtaf_logging.get_logger('mtaf.domain_music_on_hold_view')
 
 
 class DomainUsersView(DomainView):

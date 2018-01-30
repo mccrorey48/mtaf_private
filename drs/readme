@@ -46,7 +46,7 @@ DRS test procedures
 
     It is possible to create more users in the test domains, then include them
     in the specified csv files and use a higher max_user_count. However, there
-    are some settings in lib/softphone/simple_pj.py (max_calls and
+    are some settings in mtaf/lib/simple_pj.py (max_calls and
     max_media_ports) that will have to be changed to use more than 100
     simultaneous user accounts. See comments in simple_pj.py where these values
     are assigned.

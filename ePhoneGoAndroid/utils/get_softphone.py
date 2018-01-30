@@ -1,5 +1,5 @@
 from ePhoneGoAndroid.config.configure import cfg
-from lib.softphone.simple_pj import SoftphoneManager
+from mtaf.simple_pj import SoftphoneManager
 
 softphone_manager = SoftphoneManager()
 

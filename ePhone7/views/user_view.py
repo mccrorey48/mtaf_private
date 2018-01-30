@@ -3,13 +3,13 @@ from mtaf.trace import Trace
 from mtaf.user_exception import UserException as Ux
 
 from ePhone7.config.configure import cfg
-from ePhone7.utils.get_softphone import get_softphone
+from ePhone7.lib.utils.get_softphone import get_softphone
 from ePhone7.views.base_view import BaseView
 from ePhone7.views.prefs_view import prefs_view
 
 from time import sleep
 
-log = mtaf_logging.get_logger('esi.user_view')
+log = mtaf_logging.get_logger('mtaf.user_view')
 
 
 class UserView(BaseView):
@@ -214,7 +214,7 @@ class UserView(BaseView):
 
     @Trace(log)
     def receive_voicemail(self):
-        from ePhone7.utils.get_softphone import get_softphone
+        from ePhone7.lib.utils.get_softphone import get_softphone
         softphone = get_softphone()
         self.set_dnd(on=True)
         dst_cfg = cfg.site['Users']['R2d2User']

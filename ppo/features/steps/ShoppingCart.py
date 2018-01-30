@@ -20,7 +20,7 @@ def step_impl(context, username, password):
     # page.login(username=username,passwd=password)
 
 
-@then("I verify that I successfully logged in by logging out")
+@then("I verify that I successfully logged in bymtaf_logging out")
 def step_impl(context):
     AutomationHomePage(context).sign_out.click()
 

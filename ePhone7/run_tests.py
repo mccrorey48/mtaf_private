@@ -1,19 +1,19 @@
 import argparse
 import time
 from mtaf import mtaf_logging
-from mtaf.esi_result import EsiResult
+from mtaf.test_result import TestResult
 
-log = mtaf_logging.get_logger('esi.run_tests')
+log = mtaf_logging.get_logger('mtaf.run_tests')
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--failfast', help='stop testing when a test case fails', action='store_true')
 parser.add_argument('-m', '--mock', help='use mock driver', action='store_true')
-parser.add_argument('-l', '--log_host', help='name of mongodb server for logging')
+parser.add_argument('-l', '--log_host', help='name of mongodb server formtaf_logging')
 parser.add_argument('--quiet', help='use -20db wave files', action='store_true')
 args = parser.parse_args()
 
-with logging_esi.msg_src_cm('run_tests'):
+with mtaf_logging.msg_src_cm('run_tests'):
     import unittest
     from ePhone7.config.configure import cfg
 
@@ -27,4 +27,4 @@ with logging_esi.msg_src_cm('run_tests'):
 
     suite = unittest.TestSuite()
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(smoke.SmokeTests))
-    unittest.TextTestRunner(verbosity=0, resultclass=EsiResult, failfast=args.failfast).run(suite)
+    unittest.TextTestRunner(verbosity=0, resultclass=TestResult, failfast=args.failfast).run(suite)

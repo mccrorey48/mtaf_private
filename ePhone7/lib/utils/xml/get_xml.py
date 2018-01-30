@@ -4,20 +4,20 @@ from selenium.common.exceptions import NoSuchElementException
 
 from ePhone7.config.configure import cfg
 
-from ePhone7.utils.get_softphone import get_softphone
+from ePhone7.lib.utils.get_softphone import get_softphone
 from ePhone7.views import *
-from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
+from ePhone7.lib.utils.csv.xml_to_csv import xml_folder_to_csv
 from time import sleep
 from mtaf import mtaf_logging
 from mtaf.trace import Trace
 from mtaf.user_exception import UserException as Ux
-log = mtaf_logging.get_logger('esi.get_xml')
+log = mtaf_logging.get_logger('mtaf.get_xml')
 logging_esi.console_handler.setLevel(logging_esi.TRACE)
 
 
 @Trace(log)
 def save_xml_and_screenshot(basename, version):
-    with logging_esi.msg_src_cm('save_xml_and_screenshot()'):
+    with mtaf_logging.msg_src_cm('save_xml_and_screenshot()'):
         xml = base_view.get_source()
         xml_dir = os.path.join(cfg.xml_folder, 'xml_%s' % version)
         try:
@@ -35,7 +35,7 @@ def save_xml_and_screenshot(basename, version):
 
 @Trace(log)
 def get_call_views(version):
-    with logging_esi.msg_src_cm('get_page_sources()'):
+    with mtaf_logging.msg_src_cm('get_page_sources()'):
         # user_view.goto_prefs()
         # prefs_view.set_auto_answer_off()
         # prefs_view.exit_prefs()
@@ -69,7 +69,7 @@ buttons = {
 
 @Trace(log)
 def get_nav_views(version):
-    with logging_esi.msg_src_cm('get_page_sources()'):
+    with mtaf_logging.msg_src_cm('get_page_sources()'):
         save_xml_and_screenshot('user_%s' % version, version)
         for button in ['Contacts', 'History', 'Voicemail', 'Dial']:
             user_view.goto_tab(button)

@@ -4,7 +4,7 @@ The MTAF supports test automation for web and mobile apps by providing these fea
 * Python implementation
 * Page object model architecture
 * Unit test or Behavior Driven Design (BDD) test suite structure
-* Detailed trace and error logging
+* Detailed trace and errormtaf_logging
 * Multiple test site configurations
 * Multiple test target directories that share common library functions
 * Selenium Webdriver for interacting with web apps using multiple browsers

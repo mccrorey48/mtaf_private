@@ -1,11 +1,11 @@
 from time import sleep
 
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 
 from ccd.views.base import BaseView
 from lib.wrappers import Trace
 
-log = logging.get_logger('esi.domain_view')
+log =mtaf_logging.get_logger('mtaf.domain_view')
 
 
 class DomainView(BaseView):

@@ -1,8 +1,8 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 
 from ccd.views.reseller import ResellerView
 
-log = logging.get_logger('esi.reseller_inventory_view')
+log =mtaf_logging.get_logger('mtaf.reseller_inventory_view')
 
 
 class ResellerInventoryView(ResellerView):

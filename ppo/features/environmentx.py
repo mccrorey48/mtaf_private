@@ -6,7 +6,7 @@ import os
 # import zipfile
 import shutil
 import time
-import logging
+importmtaf_logging
 
 
 
@@ -17,9 +17,9 @@ def before_feature(context, feature):
      print("Before feature\n")
      # Create logger
      # TODO - http://stackoverflow.com/questions/6386698/using-the-logging-python-class-to-write-to-a-file
-     context.logger = logging.getLogger('seleniumframework_tests')
-     hdlr = logging.FileHandler('./seleniumframework_tests.log')
-     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+     context.logger =mtaf_logging.getLogger('seleniumframework_tests')
+     hdlr =mtaf_logging.FileHandler('./seleniumframework_tests.log')
+     formatter =mtaf_logging.Formatter('%(asctime)s %(levelname)s %(message)s')
      hdlr.setFormatter(formatter)
      context.logger.addHandler(hdlr)
      context.logger.setLevel(logging.DEBUG)

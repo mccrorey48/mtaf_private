@@ -4,7 +4,7 @@ from mtaf.trace import Trace
 from ePhone7.config.configure import cfg
 from ePhone7.views.base_view import BaseView
 
-log = mtaf_logging.get_logger('esi.active_call_view')
+log = mtaf_logging.get_logger('mtaf.active_call_view')
 
 
 class ActiveCallView(BaseView):

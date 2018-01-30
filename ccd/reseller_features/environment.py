@@ -1,9 +1,9 @@
 from ccd.utils.configure import cfg
 import ccd.views
 from mock import Mock, patch
-import lib.logging_esi as logging_esi
+from mtaf import mtaf_logging
 logging_esi.console_handler.setLevel(logging_esi.INFO)
-log = logging_esi.get_logger('esi.reseller')
+log =mtaf_logging.get_logger('mtaf.reseller')
 
 
 def make_mock(name):
@@ -128,11 +128,11 @@ def before_scenario(context, scenario):
 
 
 def before_step(context, step):
-    logging_esi.push_msg_src("%s:%s" % (context.scenario.name, step.name))
+   mtaf_logging.push_msg_src("%s:%s" % (context.scenario.name, step.name))
 
 
 def after_step(context, step):
-    logging_esi.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def after_scenario(context, scenario):

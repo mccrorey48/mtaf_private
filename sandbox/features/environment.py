@@ -1,11 +1,11 @@
 # from os import path, makedirs
 from time import sleep
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 # from ePhone7.config.configure import cfg
 # from ePhone7.views import base_view
 # from ePhone7.utils.get_softphone import softphone_manager
 
-log = logging.get_logger('esi.environment')
+log =mtaf_logging.get_logger('mtaf.environment')
 substeps=''
 
 
@@ -23,16 +23,16 @@ def before_all(context):
 
 
 def before_feature(context, feature):
-    logging.push_msg_src('feature')
+   mtaf_logging.push_msg_src('feature')
     log.info('feature.name: %s' % feature.name)
 
 
 def after_feature(context, feature):
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def before_scenario(context, scenario):
-    logging.push_msg_src('  scenario')
+   mtaf_logging.push_msg_src('  scenario')
     log.info('scenario.name: %s' % scenario.name)
 
 
@@ -46,7 +46,7 @@ def after_scenario(context, scenario):
     if scenario.status == 'failed' and 'critical' in scenario.tags + scenario.feature.tags:
         context._config.stop = True
         sleep(1)
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def before_step(context, step):
@@ -57,7 +57,7 @@ def before_step(context, step):
         substeps += "substep = %s" % step.name
     else:
         substeps += "step = %s\n" % step.name
-    logging.push_msg_src('    step: %s' % step.name[:30])
+   mtaf_logging.push_msg_src('    step: %s' % step.name[:30])
     log.info('step.name: %s' % step.name)
 
 
@@ -82,7 +82,7 @@ def after_step(context, step):
 #             with open(xml_fullpath, 'w') as _f:
 #                 _f.write(xml.encode('utf8'))
 #             base_view.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
-    logging.pop_msg_src()
+   mtaf_logging.pop_msg_src()
 
 
 def after_all(context):

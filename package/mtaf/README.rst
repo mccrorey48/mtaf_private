@@ -67,11 +67,11 @@ Features
         Filter functions used to narrow down lists of screen elements returned
         by the Appium Python Client search methods
     - mtaf_logging
-        Wrapper for Python logging
+        Wrapper for Pythonmtaf_logging
     - prune_logs
         Utility to limit number and/or age of timestamped logs retained
     - trace
-        Decorators for logging method calls and return values
+        Decorators formtaf_logging method calls and return values
     - user_exception
         Defines UserException class for graceful exception handling in test code
     - softphone (future)
@@ -96,7 +96,7 @@ Features
 **Python Unit Test (future):**
     - Test suite classes are structured using the Python unittest module
       conventions
-    - Custom logging, and method call tracing using decorators
+    - Custommtaf_logging, and method call tracing using decorators
 
 **Python Feature Test (future):**
     - Uses the Python "behave" framework

@@ -7,7 +7,7 @@ import requests
 from ePhone7.config.configure import cfg
 from time import time, sleep
 
-log = mtaf_logging.get_logger('esi.get_vmids')
+log = mtaf_logging.get_logger('mtaf.get_vmids')
 
 
 # @Trace(log)

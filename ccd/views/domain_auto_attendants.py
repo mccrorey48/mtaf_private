@@ -1,8 +1,8 @@
-import lib.logging_esi as logging
+from mtaf import mtaf_logging
 
 from ccd.views.domain import DomainView
 
-log = logging.get_logger('esi.domain_auto_attendants_view')
+log =mtaf_logging.get_logger('mtaf.domain_auto_attendants_view')
 
 
 class DomainAutoAttendantsView(DomainView):
