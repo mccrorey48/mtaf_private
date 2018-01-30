@@ -7,10 +7,12 @@ tmp/
 *.html
 *.out
 xml_not_retrieved
-*.xml
+#*.xml
 *.png
 steps.txt
 substeps.txt
 *.json
 *.log
 *.cap
+xml_1*/
+xml_0_20*/
