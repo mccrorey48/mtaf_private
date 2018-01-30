@@ -5,7 +5,8 @@ import spur
 from mtaf.user_exception import UserException as Ux
 from mtaf.trace import Trace
 from mtaf import mtaf_logging
-from pyand import ADB, Fastboot
+from mtaf.ADB import ADB
+from mtaf.Fastboot import Fastboot
 from os import path, listdir, mkdir
 import shutil
 
