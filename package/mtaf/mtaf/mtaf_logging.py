@@ -29,7 +29,7 @@ from pymongo import MongoClient
 import re
 from datetime import datetime
 from glob import glob
-from os import lstat, remove, mkdir, path
+from os import lstat, remove, mkdir, path, getenv
 
 msg_len_max = 30
 msg_src_stack = []
@@ -198,8 +198,8 @@ def parse_msg_to_dict(msg):
 
 _log = getLogger(root_name)
 _log.setLevel(DEBUG)
-log_dir = 'log'
-prune_logs(path.join(log_dir, 'log/%s_debug_*.log' % root_name), 5)
+log_dir = getenv('MTAF_LOG_DIR', 'log')
+prune_logs(path.join(log_dir, '%s_debug_*.log' % root_name), 5)
 prune_logs(path.join(log_dir, '*logcat_*.log'), 5)
 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
 # filemtaf_logging for info, debug, trace and warn levels, each with its own output file

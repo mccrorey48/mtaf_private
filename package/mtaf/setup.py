@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 from docutils.core import publish_cmdline
+from glob import glob
 
 
 def readme():
@@ -13,7 +14,7 @@ setup(
     name='mtaf',
     packages=find_packages(),
     author='Martin McCrorey',
-    version='1.0.30',
+    version='1.0.34',
     license='MIT',
     url='https://github.com/mccrorey48/mtaf',
     description='Mobile Test Automation Framework with Appium Inspector GUI for Android Applications',
@@ -49,7 +50,7 @@ setup(
     ],
     long_description=readme(),
     zip_safe=False,
-    package_data={
-        'mtaf': ['wav/*.wav'],
-    },
+    data_files=[
+        ('mtaf/wav', glob('wav/*.wav'))
+    ],
 )
