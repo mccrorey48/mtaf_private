@@ -25,6 +25,7 @@ else:
     from Tkinter import *
     import tk_simple_dialog
     from ttk import Combobox
+from mtaf.trace import Trace
 
 
 log = mtaf_logging.get_logger('mtaf.inspector')
@@ -192,7 +193,7 @@ class ButtonFrame(Frame):
 
 
 class Inspector(Frame):
-    cmd_types = {}
+    menu_cmd_labels = {}
 
     def __init__(self, parent, gui_cfg):
         Frame.__init__(self, parent, bg="brown")
@@ -262,7 +263,6 @@ class Inspector(Frame):
         except IOError:
             pass
 
-        self.create_menus(parent)
         self.btn_frame = self.create_btn_frame()
         self.top_frames.append(self.btn_frame)
         self.top_frames.append(self.create_exec_frame())
@@ -275,6 +275,15 @@ class Inspector(Frame):
         self.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
+        self.user_cmds = {
+            'Get Current Activity': lambda: self.do_cmd(self.get_current_activity),
+            'Restart Appium': lambda: self.do_cmd(self.restart_appium),
+            "Get Screenshot": lambda: self.do_cmd(self.create_cwin),
+            "Get Screenshot ADB": self.get_screenshot_adb,
+            "Rotate Image": lambda: self.do_cmd(self.rotate_image),
+            "Get Focused App": lambda: self.do_cmd(self.get_focused_app)
+        }
+        self.create_menus(parent)
 
     def populate_top_frames(self):
         top_frame_row = 0
@@ -301,7 +310,7 @@ class Inspector(Frame):
             self.after(100, self.check_thread)
             return
         else:
-            log.debug("worker thread died")
+            log.debug("worker thread done: %s" % self.worker_thread.name)
             self.worker_thread = None
             if self.appium_is_open:
                 for cmd_type in self.menu.submenus:
@@ -349,29 +358,25 @@ class Inspector(Frame):
                 return True
         return False
 
-    def create_cwin(self, reuse_image=False):
+    @Trace(log)
+    def create_cwin(self, reuse_image=False, force_appium=False):
+        #
         # handle problem with unwanted call when button is apparently disabled but still bound to the command.
         # just doing the cget synchronizes the "set disabled" action so the "if" statement returns false;
         # without this a double click on the button causes an exception in "self.cwin_x = self.cwin.winfo_x()"
         # because create_cwin() is called again before the first cwin is rendered
-        #
+        @Trace(log)
         def disable_screenshot_button():
             if self.bottom_frame.mk_canvas.cget('state') == DISABLED:
                 raise Ux("bogus double call to create_cwin()")
             self.bottom_frame.mk_canvas.configure(command=None)
             self.bottom_frame.mk_canvas.configure(state=DISABLED)
 
-        def get_screenshot():
-            if self.appium_is_open:
-                self.get_screenshot_appium()
-                self.get_xml_appium()
-            else:
-                self.get_screenshot_adb()
-                self.get_xml_adb()
-
+        @Trace(log)
         def enable_screenshot_button():
             self.bottom_frame.mk_canvas.configure(state=NORMAL, command=self.create_cwin)
 
+        @Trace(log)
         def destroy_existing_cwin():
             if self.cwin is not None:
                 if self.drag_polygon is not None:
@@ -386,6 +391,7 @@ class Inspector(Frame):
                     pass
                 self.cwin = None
 
+        @Trace(log)
         def create_new_cwin():
             self.cwin = Toplevel(self.parent, bg='tan')
             self.cwin.protocol("WM_DELETE_WINDOW", self.on_canvas_closing)
@@ -412,7 +418,7 @@ class Inspector(Frame):
             self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
             self.cwin.btn_frame = Frame(self.cwin)
             self.cwin.btn_frame.rotate = Button(self.cwin.btn_frame, text="rotate image", bg=btn_default_bg,
-                                                command=self.rotate_image)
+                                                command=self.user_cmds['Rotate Image'])
             self.cwin.btn_frame.rotate.grid(row=0, column=0)
             self.cwin.btn_frame.grid(row=1, column=0)
             self.cwin.invert_selection = IntVar()
@@ -433,11 +439,10 @@ class Inspector(Frame):
             self.cwin.minsize(width=width, height=height)
 
         try:
-            disable_screenshot_button()
-            if reuse_image:
-                enable_screenshot_button()
-            else:
-                get_screenshot()
+            if not reuse_image:
+                disable_screenshot_button()
+                self.user_cmds['Get Screenshot ADB']()
+                self.get_xml_adb()
             destroy_existing_cwin()
             create_new_cwin()
         except Ux as _e:
@@ -446,6 +451,7 @@ class Inspector(Frame):
         finally:
             enable_screenshot_button()
 
+    @Trace(log)
     def destroy_loc_frames(self):
         if self.id_frame is not None:
             for _id in self.id_frame_btns:
@@ -460,6 +466,7 @@ class Inspector(Frame):
             self.zpath_frame.grid_forget()
             self.zpath_frame = None
 
+    @Trace(log)
     def create_loc_frames(self):
         while len(self.polygons):
             self.im_canvas.delete(self.polygons.pop())
@@ -797,30 +804,32 @@ class Inspector(Frame):
                 self.use_parent.set(0)
 
     def create_commands(self):
-        self.cmd_types['Appium Actions'] = [
-            Command("Get Current Activity", lambda: self.do_cmd(self.get_current_activity)),
-            Command("Restart Appium", lambda: self.do_cmd(self.restart_appium)),
-        ]
-        self.cmd_types['ADB Actions'] = [
-            Command("Get Screenshot", lambda: self.do_cmd(self.get_screenshot_adb())),
-            Command("Get Focused App", lambda: self.do_cmd(self.get_focused_app))
-        ]
+        self.menu_cmd_labels = {
+            'Appium Actions': [
+                "Get Current Activity",
+                "Restart Appium"
+            ],
+            'ADB Actions': [
+                "Get Focused App"
+            ]
+        }
 
     def create_menus(self, parent):
         self.create_commands()
-        menu = MyMenu(parent)
-        for cmd_type in self.cmd_types:
-            menu.add_submenu(cmd_type)
-            submenu = menu.submenus[cmd_type]
-            for command in self.cmd_types[cmd_type]:
-                submenu.add_command(label=command.label, command=command.action)
-        menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
-        menu.submenu_count += 1
-        menu.appium_btn_number = menu.submenu_count
-        parent.config(menu=menu)
-        self.menu = menu
+        self.menu = MyMenu(parent)
+        for cmd_type in self.menu_cmd_labels:
+            self.menu.add_submenu(cmd_type)
+            submenu = self.menu.submenus[cmd_type]
+            for cmd_label in self.menu_cmd_labels[cmd_type]:
+                submenu.add_command(label=cmd_label, command=self.user_cmds[cmd_label])
+        self.menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
+        self.menu.submenu_count += 1
+        self.menu.appium_btn_number = self.menu.submenu_count
+        parent.config(menu=self.menu)
 
     def do_cmd(self, cmd):
+        if self.worker_thread is not None:
+            print "worker thread busy: %s" % cmd.__name__
         for btn in self.appium_btns:
             btn.configure(state=DISABLED)
         for cmd_type in self.menu.submenus:
@@ -828,9 +837,9 @@ class Inspector(Frame):
         self.menu.entryconfig(self.menu.appium_btn_number, state=DISABLED)
         self.update_idletasks()
         # sleep(5)
-        self.worker_thread = threading.Thread(target=cmd, name=cmd)
+        self.worker_thread = threading.Thread(target=cmd, name=cmd.__name__)
         self.worker_thread.start()
-        log.debug("worker thread started")
+        log.debug("worker thread started: %s" % cmd.__name__)
         self.after(100, self.check_thread)
 
     def close_appium_and_quit(self):
@@ -1238,13 +1247,6 @@ class Inspector(Frame):
 
         six.print_("Done")
 
-    def get_screenshot_appium(self):
-        six.print_("Getting Screenshot using Appium...", end='')
-        img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
-        log.debug("saving screenshot to %s" % img_path)
-        android_actions.get_screenshot_as_file(img_path)
-        six.print_("Done")
-
     def get_screenshot_adb(self):
         six.print_("Getting Screenshot using ADB...", end='')
         devices = android_actions.adb.get_devices()
@@ -1270,14 +1272,12 @@ class Inspector(Frame):
                     raise Ux("could not rename 'screencap.png': %s" % _e)
             six.print_("Done")
 
-    def rotate_image(self, redraw_cwin=True):
+    def rotate_image(self):
         six.print_("Rotating screenshot...", end='')
         img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
         im = PIL_Image.open(img_path)
         im = im.rotate(-90, expand=True)
         im.save(img_path)
-        if redraw_cwin:
-            self.create_cwin(reuse_image=True)
         six.print_("Done")
 
     def __del__(self):
