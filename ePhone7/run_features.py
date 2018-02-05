@@ -17,6 +17,7 @@ from ePhone7.lib.utils.versions import *
 from shutil import copyfile
 from bson.binary import Binary
 from cStringIO import StringIO
+import six
 
 log = mtaf_logging.get_logger('mtaf.run_features')
 
@@ -112,14 +113,14 @@ def run_features(config):
     # (if the two data sets don't produce the same sequence of steps, raise an exception
     # because something isn't working right)
     for feature in data:
-        print feature['name']
+        six.print_(feature['name'])
         for element in feature["elements"]:
-            print '  ' + element['name']
+            six.print_('  ' + element['name'])
             if element["keyword"] == "Scenario":
                 new_steps = []
                 for step in element["steps"]:
                     if "result" in step:
-                        print '    ' + step['name']
+                        six.print_('    ' + step['name'])
                         # if it gets to here, the step was executed and should be on the printed_steps list
                         if len(printed_steps) == 0:
                             raise Ux("Error processing new_steps list, printed_steps empty")
@@ -130,13 +131,13 @@ def run_features(config):
                         if 'screenshot' in printed_step:
                             step["screenshot"] = printed_step["screenshot"]
                     else:
-                        print '    ' + step['name'] + ' (skipped)'
+                        six.print_('    ' + step['name'] + ' (skipped)')
                     new_steps.append(step)
                 element["steps"] = new_steps
     output = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
     with open('tmp/output.json', 'w') as f:
         f.write(output)
-    copyfile('log/esi_info.log', 'log/esi_info_copy.log')
+    copyfile(path.join(mtaf_log_dir, 'mtaf_info.log'), path.join(mtaf_log_dir, 'mtaf_info_copy.log'))
     return data
 
 
@@ -214,7 +215,7 @@ def new_status(has_passes=False, has_fails=False, has_fakes=False, has_skips=Fal
 
 
 def write_result_to_db(_args, configuration, _fake_detector, _features):
-    print 'writing to db_name %s, server %s:' % (_args.db_name, _args.server)
+    six.print_('writing to db_name %s, server %s:' % (_args.db_name, _args.server))
     client = MongoClient(_args.server)
     db = client[_args.db_name]
     if len(_features) and 'start_time' in _features[0] and 'start_date' in _features[0]:
@@ -240,9 +241,9 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
     pass_count = 0
     skip_count = 0
     if _args.json_file:
-        info_filename = 'log/esi_info_copy.log'
+        info_filename = path.join(mtaf_log_dir, 'mtaf_info_copy.log')
     else:
-        info_filename = 'log/esi_info.log'
+        info_filename = path.join(mtaf_log_dir, 'mtaf_info.log')
     stepinfo = StepInfo(info_filename)
     last_step_duration = 0
     for iter_num, feature in enumerate(_features):
@@ -365,7 +366,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
             feature['status'] = 'known_bug'
         db['features'].insert_one(feature)
         # del feature['start_id']
-        # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))
+        # six.print_(json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':')))
     start_has_passes = False
     start_has_fails = False
     start_has_fakes = False
@@ -406,6 +407,7 @@ if __name__ == '__main__':
     try:
         # get site name from environment
         mtaf_db_host = getenv('MTAF_DB_HOST')
+        mtaf_log_dir = getenv('MTAF_LOG_DIR', './log')
         parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                          description='  runs behave test on specified features directory and saves' +
                                                      '  the results on a mongodb running on a specified server\n')
@@ -458,4 +460,4 @@ if __name__ == '__main__':
         write_result_to_db(args, report_configuration, fake_detector, features)
         prune_db('e7_results', args.server, 'prune', 10, 30)
     except Ux as e:
-        print "User Exception: " + e.get_msg()
+        six.print_("User Exception: " + e.get_msg())

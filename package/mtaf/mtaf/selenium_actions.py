@@ -68,8 +68,13 @@ class SeleniumActions(object):
             cls = cls.__base__
 
     def get_locator(self, name):
-        # virtual function
-        raise Ux("actions class get_locator method should be overridden in derived view class")
+        cls = self.__class__
+        while True:
+            if not hasattr(cls, 'locators'):
+                raise Ux("Unknown locator %s" % name)
+            if name in cls.locators:
+                return cls.locators[name]
+            cls = cls.__base__
 
     @Trace(log)
     def get_source(self):

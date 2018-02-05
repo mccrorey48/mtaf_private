@@ -830,17 +830,18 @@ class Inspector(Frame):
     def do_cmd(self, cmd):
         if self.worker_thread is not None:
             print "worker thread busy: %s" % cmd.__name__
-        for btn in self.appium_btns:
-            btn.configure(state=DISABLED)
-        for cmd_type in self.menu.submenus:
-                self.menu.entryconfig(self.menu.submenus[cmd_type].number, state=DISABLED)
-        self.menu.entryconfig(self.menu.appium_btn_number, state=DISABLED)
-        self.update_idletasks()
-        # sleep(5)
-        self.worker_thread = threading.Thread(target=cmd, name=cmd.__name__)
-        self.worker_thread.start()
-        log.debug("worker thread started: %s" % cmd.__name__)
-        self.after(100, self.check_thread)
+        else:
+            for btn in self.appium_btns:
+                btn.configure(state=DISABLED)
+            for cmd_type in self.menu.submenus:
+                    self.menu.entryconfig(self.menu.submenus[cmd_type].number, state=DISABLED)
+            self.menu.entryconfig(self.menu.appium_btn_number, state=DISABLED)
+            self.update_idletasks()
+            # sleep(5)
+            self.worker_thread = threading.Thread(target=cmd, name=cmd.__name__)
+            self.worker_thread.start()
+            log.debug("worker thread started: %s" % cmd.__name__)
+            self.after(100, self.check_thread)
 
     def close_appium_and_quit(self):
         if self.appium_is_open:
@@ -1215,17 +1216,6 @@ class Inspector(Frame):
             six.print_("apk: " + apk)
             six.print_("Done")
         return package
-
-    def get_xml_appium(self):
-        six.print_("Getting XML and CSV...", end='')
-        xml = android_actions.driver.page_source
-        xml_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.xml')
-        csv_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.csv')
-        log.info("saving xml %s" % xml_fullpath)
-        with open(xml_fullpath, 'w') as _f:
-            _f.write(xml.encode('utf8'))
-        xml_to_csv(xml_fullpath, csv_fullpath)
-        six.print_("Done")
 
     def get_xml_adb(self):
         six.print_("Getting XML and CSV...", end='')

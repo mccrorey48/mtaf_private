@@ -213,7 +213,7 @@ class BaseView(AndroidActions):
             ss.expect('', 'mtp_open', timeout=timeout, dead_air_timeout=240)
         finally:
             usb_enable()
-            self.open_appium('nolaunch', force=True, timeout=60)
+            self.open_appium(connect_timeout=60)
 
 
     @Trace(log)

@@ -8,7 +8,7 @@ from time import time
 from mtaf import mtaf_logging
 from mtaf.filters import get_filter
 from mtaf.user_exception import UserException as Ux
-log = mtaf.mtaf_logging.get_logger('mtaf.vm_steps')
+log = mtaf_logging.get_logger('mtaf.vm_steps')
 
 
 @step("[voicemail] a keypad appears")
