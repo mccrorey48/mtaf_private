@@ -174,3 +174,5 @@ def get_downgrade_images(downgrade_aosp, downgrade_app=None):
                         shutil.copyfileobj(remote_file, local_file)
 
 
+if __name__ == '__main__':
+    print get_current_versions('alpha')

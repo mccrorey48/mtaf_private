@@ -12,7 +12,7 @@ log = logging.get_logger('esi.settings_view')
 class AdvancedSettingsView(BaseView):
 
     locators = {
-        "AdvancedCheckbox": {"by": "id", "value": "com.esi_estech.ditto:id/checkbox"},
+        "AdvancedCheckbox": {"by": "id", "value": "android:id/checkbox"},
         "AdvancedItems": {"by": "id", "value": "android:id/title"},
         "AdvancedOptions": {"by": "zpath", "value": "//sp/rl/v[1]/fl/ll/fl/rv/tv[1]"},
         "AppsBar": {"by": "zpath", "value": "//lv/ll[6]"},

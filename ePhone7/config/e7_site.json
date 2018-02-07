@@ -31,7 +31,7 @@
                 "Content-Type": "application/json"
             },
             "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
-            "XmlFolder": "ePhone7/utils/xml",
+            "XmlFolder": "ePhone7/utils/e7_xml",
             "type": "constants"
         }
     ],
@@ -307,7 +307,7 @@
         {
             "AccountPassword": "2016",
             "DomainName": "test2.test-eng.com",
-            "PhonePassword": "6k2MzyeD",
+            "PhonePassword": "k8588u96",
             "Proxy": "nr5.cpbx.esihs.net",
             "UserId": "2016b",
             "UserNameIncoming": "Martin Two",

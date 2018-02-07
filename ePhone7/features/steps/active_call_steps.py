@@ -18,12 +18,6 @@ def active_call__i_touch_dial(context):
     active_call_view.click_named_element('InCallDial')
 
 
-@step("[active call] the active call screen appears")
-@fake
-def active_call__the_active_call_screen_appears(context):
-    assert active_call_view.becomes_present(), 'Active call screen not present'
-
-
 @step("[active_call] a Record button is visible")
 @fake
 def activecall__a_record_button_is_visible(context):

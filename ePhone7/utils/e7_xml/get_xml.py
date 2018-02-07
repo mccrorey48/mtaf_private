@@ -26,8 +26,8 @@ def save_xml_and_screenshot(basename, version):
             # ignore 'File exists' error but re-raise any others
             if e.errno != 17:
                 raise e
-        xml_fullpath = os.path.join(xml_dir, '%s.xml' % basename)
-        log.info("saving xml %s" % xml_fullpath)
+        xml_fullpath = os.path.join(xml_dir, '%s.e7_xml' % basename)
+        log.info("saving e7_xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
         base_view.get_screenshot_as_png(basename, cfg.screenshot_folder)

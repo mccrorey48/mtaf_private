@@ -72,11 +72,11 @@ def visit(arg, dirname, names):
     # print "dirname = %s" % dirname
     # for name in names:
     #     print "  name = %s" % name
-    # csv_dir = cfg.csv_folder + '/csv' + re.sub(cfg.xml_folder + '/xml', '', dirname)
-    # print '"%s"' % cfg.csv_folder + '/csv' + re.sub(cfg.xml_folder + '/xml', '', dirname)
+    # csv_dir = cfg.csv_folder + '/csv' + re.sub(cfg.xml_folder + '/e7_xml', '', dirname)
+    # print '"%s"' % cfg.csv_folder + '/csv' + re.sub(cfg.xml_folder + '/e7_xml', '', dirname)
     subdir = re.sub(cfg.xml_folder, '', dirname)
     print "    subdir = %s" % subdir
-    sp = subdir.split('/xml')
+    sp = subdir.split('/e7_xml')
     if len(sp) == 1:
         csv_dir = cfg.csv_folder
     else:
@@ -100,4 +100,4 @@ def xml_folder_to_csv():
 
 if __name__ == '__main__':
     # xml_folder_to_csv()
-    os.path.walk('ePhone7/utils/xml/xml_appium_gui/', visit, '')
+    os.path.walk('ePhone7/utils/e7_xml/xml_appium_gui/', visit, '')

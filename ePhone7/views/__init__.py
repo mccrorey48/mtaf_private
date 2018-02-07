@@ -3,6 +3,7 @@ from .advanced_settings_view import advanced_settings_view
 from .app_intro_view import app_intro_view
 from .base_view import base_view
 from .contacts_view import contacts_view
+from .contact_detail_view import contact_detail_view
 from .dial_view import dial_view
 from .history_view import history_view
 from .home_view import home_view

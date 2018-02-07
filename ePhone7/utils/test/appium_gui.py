@@ -1204,9 +1204,9 @@ class TestGui(Frame):
             # ignore 'File exists' error but re-raise any others
             if e.errno != 17:
                 raise e
-        xml_fullpath = os.path.join(xml_dir, 'appium_gui.xml')
+        xml_fullpath = os.path.join(xml_dir, 'appium_gui.e7_xml')
         csv_fullpath = os.path.join(csv_dir, 'appium_gui.csv')
-        log.info("saving xml %s" % xml_fullpath)
+        log.info("saving e7_xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
         xml_to_csv(xml_fullpath, csv_fullpath)

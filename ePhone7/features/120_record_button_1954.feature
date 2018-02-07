@@ -11,6 +11,7 @@ Feature: As a user I want to have a Record button available during an active cal
     Then  [advanced] the Advanced Options view appears
     When  [advanced] I scroll down to the Call Record Enable setting
 
+  @wip
   Scenario: I want to enable recording for an incoming call
     And   [advanced] I check the Call Record Enable checkbox
     And   I touch the Back button

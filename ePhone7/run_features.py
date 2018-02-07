@@ -10,7 +10,8 @@ from ePhone7.config.configure import cfg
 from lib.fake_detector import FakeDetector
 from lib.user_exception import UserException as Ux
 from lib.wrappers import Trace
-from lib.prune_db import prune_db
+# from lib.prune_db import prune_db
+from pyand import ADB
 import argparse
 from os import path, getenv, mkdir
 from ePhone7.utils.versions import *
@@ -412,6 +413,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
 if __name__ == '__main__':
 
     try:
+        ADB().run_cmd('shell logcat -c')
         # get site name from environment
         mtaf_db_host = getenv('MTAF_DB_HOST')
         parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,

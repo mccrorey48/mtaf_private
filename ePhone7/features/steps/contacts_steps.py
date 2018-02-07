@@ -16,8 +16,8 @@ def contacts__a_check_mark_appears_in_the_box(context):
 @step("[contacts] a contact detail screen appears with a white star icon")
 @fake
 def contacts__a_contact_detail_screen_appears_with_a_white_star_icon(context):
-    assert contacts_view.contact_detail_view_visible(), "contact detail view is not visible"
-    el = contacts_view.find_named_element("FavoriteIndicator")
+    assert contact_detail_view.becomes_present(), "contact detail view is not visible"
+    el = contact_detail_view.find_named_element("FavoriteIndicator")
     base_view.get_screenshot_as_png('contact_detail', cfg.test_screenshot_folder)
     color = contacts_view.get_element_color_and_count('contact_detail', el)
     expect_color = cfg.colors["ContactsView"]["favorite_off_color"]

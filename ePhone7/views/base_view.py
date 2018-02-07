@@ -5,20 +5,19 @@ from time import sleep, time, strftime, localtime
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.touch_action import TouchAction
-from selenium.common.exceptions import WebDriverException, TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import WebDriverException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions
-import traceback
 
 import lib.logging_esi as logging_esi
 from ePhone7.config.configure import cfg
 from lib.android import MockDriver
 from lib.android import expand_zpath
-from lib.selenium_actions import SeleniumActions
+import lib.selenium_actions
 from lib.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
 from lib.wrappers import Trace
 from ePhone7.utils.spud_serial import SpudSerial
 from ePhone7.utils.usb_enable import usb_enable
+import datetime
 
 log = logging_esi.get_logger('esi.base_view')
 
@@ -27,7 +26,7 @@ keycodes['KEYCODE_HOME'] = 188
 keycodes['KEYCODE_BACK'] = 4
 
 
-class BaseView(SeleniumActions):
+class BaseView(lib.selenium_actions.SeleniumActions):
 
     current_activity = None
     caps_tag = None
@@ -52,6 +51,7 @@ class BaseView(SeleniumActions):
         self.By = MobileBy
         self.locator_timeout = 10
         self.presence_element_names = []
+        lib.selenium_actions.except_cb = self.except_screenshot
 
     @Trace(log)
     def becomes_present(self):
@@ -73,7 +73,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def get_locator(self, name):
-        locator = SeleniumActions.get_locator(self, name)
+        locator = lib.selenium_actions.SeleniumActions.get_locator(self, name)
         if locator["by"] == "zpath":
             locator["by"] = "xpath"
             locator["value"] = expand_zpath(locator["value"])
@@ -206,6 +206,11 @@ class BaseView(SeleniumActions):
         log.debug("saving rotated screenshot to %s" % fullpath)
         im.save(fullpath)
         return fullpath
+
+    @Trace(log)
+    def except_screenshot(self, type, value, traceback):
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        self.get_screenshot_as_png('exception-%s' % timestamp, cfg.test_screenshot_folder, scale=0.5)
 
     @staticmethod
     @Trace(log)
@@ -345,11 +350,11 @@ class BaseView(SeleniumActions):
     @Trace(log)
     def open_appium(self, caps_tag='nolaunch', force=False, timeout=30):
         if cfg.site['Mock']:
-            SeleniumActions.driver = MockDriver()
+            lib.selenium_actions.SeleniumActions.driver = MockDriver()
         else:
             log.debug('opening appium')
             try:
-                SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
+                lib.selenium_actions.SeleniumActions.driver = self.update_remote(caps_tag, force, timeout)
             except WebDriverException:
                 raise
 
@@ -366,20 +371,20 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def close_appium(self):
-        if SeleniumActions.driver is None:
+        if lib.selenium_actions.SeleniumActions.driver is None:
             log.debug('appium is already closed')
         else:
             log.debug('closing appium')
             try:
-                logcat = SeleniumActions.driver.get_log('logcat')
+                logcat = lib.selenium_actions.SeleniumActions.driver.get_log('logcat')
                 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
                 with open('log/e7_logcat_%s.log' % timestamp, 'w') as f:
                     for line in [item['message'] for item in logcat]:
                         f.write(line.encode('utf-8') + '\n')
-                SeleniumActions.driver.quit()
+                lib.selenium_actions.SeleniumActions.driver.quit()
             except WebDriverException:
                 log.debug("got WebDriverException, assuming appium already closed")
-            SeleniumActions.driver = None
+            lib.selenium_actions.SeleniumActions.driver = None
             self.caps_tag = None
 
     @Trace(log)

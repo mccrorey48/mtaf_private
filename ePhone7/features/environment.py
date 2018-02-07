@@ -63,6 +63,9 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     global substeps
+    for key in softphone_manager.softphones.keys():
+        if softphone_manager.softphones[key].account_info.call is not None:
+            base_view.except_screenshot(None, None, None)
     softphone_manager.end_all_calls()
     softphone_manager.set_defaults()
     tags = str(context.config.tags).split(',')

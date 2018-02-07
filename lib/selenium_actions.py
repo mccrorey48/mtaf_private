@@ -10,6 +10,8 @@ from lib.user_exception import UserTimeoutException as Tx
 
 log = logging.get_logger('esi.selenium_actions')
 
+except_cb = None
+
 
 # get access to test case assert methods
 class Tc(unittest.TestCase):
@@ -42,32 +44,32 @@ class SeleniumActions(Tc):
                 return cls.locators[name]
             cls = cls.__base__
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def assert_element_text(self, elem, expected, elem_name='element'):
         # log.debug('%s text = %s should be %s' % (elem_name, elem.text, expected))
         self.assertEqual(elem.text, expected, "Expect %s text '%s', got '%s'" % (elem_name, expected, elem.text))
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def assert_element_text_ic(self, elem, expected, elem_name='element'):
         # log.debug('%s text = %s should be %s (ignore case)' % (elem_name, elem.text, expected))
         self.assertEqual(elem.text.upper(), expected.upper(), "Expect %s text '%s', got '%s' (ignoring case)" %
                          (elem_name, expected, elem.text))
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def assert_elements_count(self, elems, expected_count, elem_name='elements'):
         # log.debug('%s count = %d should be %d' % (elem_name, len(elems), expected_count))
         self.assertEqual(len(elems), expected_count, "Expect %s length %d, got %d" %
                          (elem_name, expected_count, len(elems)))
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def get_source(self):
         return self.driver.page_source
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def click_element(self, elem):
         elem.click()
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def click_named_element(self, name):
         elem = self.find_named_element(name)
         text = elem.text
@@ -108,7 +110,7 @@ class SeleniumActions(Tc):
         else:
             return elems
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def find_named_element(self, name, timeout=30):
         locator = self.get_locator(name)
         if 'parent_key' in locator:
@@ -120,25 +122,25 @@ class SeleniumActions(Tc):
         else:
             return elem
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def tap(self, positions, duration=200):
         self.driver.tap(positions, duration)
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def element_is_present_by_locator(self, locator, timeout):
         return self.find_element_by_locator(locator, timeout) is not None
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def element_is_present(self, name, timeout=10):
         locator = self.get_locator(name)
         return self.element_is_present_by_locator(locator, timeout)
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def element_with_text_is_present(self, text, timeout=10):
         locator = {"by": "-android uiautomator", "value": 'new UiSelector().text("%s")' % text}
         return self.element_is_present_by_locator(locator, timeout)
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def wait_for_no_elements_by_locator(self, locator, timeout):
         # waits 'timeout' seconds for zero elements with the indicated locator to be present
         # and returns True if that happens before timeout, False otherwise
@@ -161,18 +163,18 @@ class SeleniumActions(Tc):
                 return False
             sleep(2)
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def element_becomes_not_present(self, name, timeout=1):
         locator = self.get_locator(name)
         return self.wait_for_no_elements_by_locator(locator, timeout)
 
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def element_with_text_is_not_present(self, text, timeout=1):
         locator = {"by": "-android uiautomator", "value": 'new UiSelector().text("%s")' % text}
         return self.wait_for_no_elements_by_locator(locator, timeout)
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def find_named_sub_element(self, parent, name, timeout=20):
         locator = self.get_locator(name)
         try:
@@ -180,7 +182,7 @@ class SeleniumActions(Tc):
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def find_named_elements(self, name, filter_fn=None):
         locator = self.get_locator(name)
         try:
@@ -196,7 +198,7 @@ class SeleniumActions(Tc):
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def test_named_element_text(self, name, expected_text):
         try:
             self.actual_text = self.find_named_element(name, 10).text
@@ -205,7 +207,7 @@ class SeleniumActions(Tc):
             return False
         return self.actual_text == expected_text
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def wait_for_named_element_text(self, name, expected_text, seconds=30):
         start_time = time()
         while time() < start_time + seconds:
@@ -215,12 +217,12 @@ class SeleniumActions(Tc):
         raise Ux('actual element text = "%s", expected "%s" after %d seconds' %
                  (self.actual_text, expected_text, seconds))
 
-    @Trace(log)
+    @Trace(log, except_cb=except_cb)
     def wait_for_title(self, title, timeout=20):
         WebDriverWait(self.driver, timeout).until(EC.title_is(title))
 
     @staticmethod
-    @Trace(log, log_level='debug')
+    @Trace(log, log_level='debug', except_cb=except_cb)
     def wait_for_condition_true(condition_fn, failmsg_fn, timeout=30, poll_time=1.0, warn_time=5.0):
         start_time = time()
         while True:
@@ -233,7 +235,7 @@ class SeleniumActions(Tc):
                 return True
             sleep(poll_time)
 
-    @Trace(log, log_level='debug')
+    @Trace(log, log_level='debug', except_cb=except_cb)
     def find_element_by_locator(self, locator, timeout=10, parent=None):
         # calls find_named_elements until exactly one element is returned, and returns that element
         # or times out and returns None

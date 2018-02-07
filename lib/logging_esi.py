@@ -184,8 +184,8 @@ def parse_msg_to_dict(msg):
 
 _log = getLogger(root_name)
 _log.setLevel(DEBUG)
-prune_logs('log/%s_debug_*.log' % root_name, 5)
-prune_logs('log/*logcat_*.log', 5)
+prune_logs('log/%s_debug_*.log' % root_name, 15)
+prune_logs('log/*logcat_*.log', 15)
 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
 # file logging for info, debug, trace and warn levels, each with its own output file
 base_warn_fname = 'log/%s_warn.log' % root_name

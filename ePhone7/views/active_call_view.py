@@ -9,10 +9,10 @@ log = logging_esi.get_logger('esi.active_call_view')
 class ActiveCallView(BaseView):
 
     locators = {
-        "ActiveCallLabel": {"by": "id", "value": "com.esi_estech.ditto:id/call_state", "text": "Active Call"},
         "AudioPathIcon": {"by": "id", "value": "com.esi_estech.ditto:id/currentAudioImage"},
-        "CallCardName": {"by": "accessibility id", "value": "Call Park Pickup"},
-        "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
+        "CallCardDetails": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_details"},
+        "CallCardName": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_name"},
+        "CallParkButton": {"by": "id", "value": "com.esi_estech.ditto:id/callParkBtn"},
         "DefaultForwardAccountName": {"by": "uia_text", "value": cfg.site['DefaultForwardAccount']},
         "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endCallButton"},
         "InCallDial": {"by": "id", "value": "com.esi_estech.ditto:id/dialpadButton"},
@@ -20,11 +20,12 @@ class ActiveCallView(BaseView):
         "InCallDialpad": {"by": "id", "value": "com.esi_estech.ditto:id/in_call_dialpad"},
         "PrimaryCallBanner": {"by": "id", "value": "com.esi_estech.ditto:id/primary_call_button_container"},
         "PrimaryCallName": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_name"},
-        "RecordActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/recordImageButton"},
+        "RecordActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/callRecordBtn"},
         "SecondaryCallBanner": {"by": "id", "value": "com.esi_estech.ditto:id/secondaryCallInfo"},
         "SecondaryCallName": {"by": "id", "value": "com.esi_estech.ditto:id/secondaryCallName"},
         "TransferDialogTitle": {"by": "id", "value": "com.esi_estech.ditto:id/transfer_dialog_title"},
-        "TransferToVm": {"by": "id", "value": "com.esi_estech.ditto:id/transfer_vm"}
+        "TransferButton": {"by": "id", "value": "com.esi_estech.ditto:id/transferBtn"},
+        "TransferToVmButton": {"by": "id", "value": "com.esi_estech.ditto:id/transferToVmBtn"}
     }
 
     def __init__(self):
@@ -32,7 +33,7 @@ class ActiveCallView(BaseView):
         self.cfg = cfg
         self.png_file_base = 'active_call'
         BaseView.active_call_view = self
-        self.presence_element_names = ['ActiveCallLabel']
+        self.presence_element_names = ['CallCardDetails']
 
     @Trace(log)
     def vm_xfer_dest_banner_present(self):
@@ -56,14 +57,14 @@ class ActiveCallView(BaseView):
 
     @Trace(log)
     def becomes_present(self):
-        return self.element_is_present('ActiveCallLabel')
+        return self.element_is_present('CallCardDetails')
 
     @Trace(log)
     def transfer_dialog_is_present(self):
         return self.element_is_present('TransferDialogTitle')
 
     def touch_transfer_to_vm(self):
-        self.click_named_element('TransferToVm')
+        self.click_named_element('TransferToVmButton')
 
     @Trace(log)
     def touch_default_forward_account_name(self):
