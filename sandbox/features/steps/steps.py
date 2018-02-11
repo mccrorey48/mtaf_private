@@ -3,6 +3,7 @@ from lib.wrappers import fake
 import lib.logging_esi as logging
 log = logging.get_logger('esi.test')
 
+
 @step("I run a step with no substeps")
 def i_run_a_step_with_no_substeps(context):
     log.info("I run a step with no substeps")
@@ -22,12 +23,14 @@ def i_run_a_step_with_a_passing_substep(context):
     # context.run_substep("and also this")
     # assert True
 
+
 @step("I run a step with a fake substep")
 @fake
 def i_run_a_step_with_a_fake_substep(context):
     context.run_substep("fake substep")
     # context.run_substep("and also this")
     # assert True
+
 
 @step("I run a step with fake and passing substeps")
 @fake

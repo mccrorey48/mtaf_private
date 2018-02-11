@@ -2,7 +2,7 @@ import unittest
 from time import time, sleep
 import lib.logging_esi as logging
 from lib.wrappers import Trace
-from selenium.common.exceptions import WebDriverException, TimeoutException
+from selenium.common.exceptions import WebDriverException, NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from lib.user_exception import UserException as Ux
@@ -241,11 +241,13 @@ class SeleniumActions(Tc):
             parent = locator["parent"]
         start_time = time()
         elems = []
+        ignored_exceptions = (NoSuchElementException, StaleElementReferenceException)
         while time() - start_time < timeout:
             if parent:
                 elems = parent.find_elements(locator['by'], locator['value'])
             else:
-                elems = self.driver.find_elements(locator['by'], locator['value'])
+                elems = WebDriverWait(self.driver, timeout, ignored_exceptions=ignored_exceptions).until(
+                    EC.presence_of_all_elements_located((locator['by'], locator['value'])))
             if 'text' in locator:
                 elems = [elem for elem in elems if elem.text == locator['text']]
             if len(elems) == 1:

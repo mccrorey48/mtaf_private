@@ -13,6 +13,7 @@ def sort(filename):
     with open(filename) as f:
         lines = f.readlines()
         for lnum, line in enumerate(lines):
+            line = line.rstrip()
             m = step_re.match(line)
             if m:
                 # make a copy of m.groups() and replace periods with spaces
@@ -37,17 +38,17 @@ def sort(filename):
                     prefix_lines.append(line)
                 elif def_re.match(line):
                     arglist = def_re.match(line).group(2)
-                    step_defs[current_key].append('@fake\ndef ' + current_key + arglist + ':\n')
+                    step_defs[current_key].append('@fake\ndef ' + current_key + arglist + ':')
                 elif len(line.strip()):
                     step_defs[current_key].append(line)
     with open(filename, 'w') as f:
         for line in prefix_lines:
-            f.write(line)
+            f.write(line + '\n')
         for key in sorted(step_defs.keys(), key=lambda key: ''.join(key.lower().split('"'))):
             # print ">>> " + key
             for line in step_defs[key]:
-                f.write(line)
-            f.write("\n\n")
+                f.write(line + '\n')
+            f.write('\n\n')
 
 
 if __name__ == '__main__':
