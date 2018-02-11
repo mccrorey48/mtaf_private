@@ -204,7 +204,7 @@ def new_status(has_passes=False, has_fails=False, has_fakes=False, has_skips=Fal
         return 'failed'
     if has_passes is True and has_fakes is False and has_skips is False and has_incompletes is False:
         return 'passed'
-    if has_passes is False and has_fakes is False and has_skips is True and has_incompletes is False:
+    if has_passes is False and has_fakes is False and has_incompletes is False:
         return 'skipped'
     # if has_passes is False and has_fakes is True and has_skips is False and has_incompletes is False:
     if has_passes is False and has_fakes is True and has_incompletes is False:
