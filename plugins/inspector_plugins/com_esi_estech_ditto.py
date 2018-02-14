@@ -92,8 +92,10 @@ class E7Commands(object):
         self.app.softphone_frame = create_softphone_frame(self, acct_specs)
 
     def get_screenshot_adb_and_rotate(self):
-        self.parent.__class__.get_screenshot_adb()
-        self.parent.rotate_image(redraw_cwin=False)
+        self.app.get_screenshot_adb()
+        six.print_("-->rotating image...")
+        self.app.rotate_image()
+        six.print_("Done")
 
 
 class Plugin(object):
@@ -106,26 +108,38 @@ class Plugin(object):
         # - if there is no drop-down menu labeled with a key, a new drop-down menu will be created
 
         e7_cmds = E7Commands(app)
-        cmd_types = {
+        app.user_cmds.update({
+            'Dial Advanced Settings Code': e7_cmds.dial_advanced_settings,
+            'Dial Alpha OTA Code': e7_cmds.dial_alpha_ota,
+            'Dial Beta OTA Code': e7_cmds.dial_beta_ota,
+            'Dial Current OTA Code': e7_cmds.dial_show_ota,
+            'Dial Production OTA Code': e7_cmds.dial_prod_ota,
+            'Set Coworker Favorites': e7_cmds.set_favorites,
+            'Enable USB': e7_cmds.usb_enable,
+            'Create Softphones': e7_cmds.create_softphone_frames,
+            'Reboot': e7_cmds.reboot,
+            'Get Screenshot ADB': e7_cmds.get_screenshot_adb_and_rotate
+        })
+        menu_cmd_labels = {
             'Appium Actions': [
-                {'label': 'Dial Advanced Settings Code', 'command': e7_cmds.dial_advanced_settings},
-                {'label': 'Dial Alpha OTA Code', 'command': e7_cmds.dial_alpha_ota},
-                {'label': 'Dial Beta OTA Code', 'command': e7_cmds.dial_beta_ota},
-                {'label': 'Dial Current OTA Code', 'command': e7_cmds.dial_show_ota},
-                {'label': 'Dial Production OTA Code', 'command': e7_cmds.dial_prod_ota},
-                {'label': 'Set Coworker Favorites', 'command': e7_cmds.set_favorites}
+                'Dial Advanced Settings Code',
+                'Dial Alpha OTA Code',
+                'Dial Beta OTA Code',
+                'Dial Current OTA Code',
+                'Dial Production OTA Code',
+                'Set Coworker Favorites'
             ],
             'Other Actions': [
-                {'label': 'Enable USB', 'command': e7_cmds.usb_enable},
-                {'label': 'Create Softphones', 'command': e7_cmds.create_softphone_frames},
-                {'label': 'Reboot', 'command': e7_cmds.reboot}
+                'Enable USB',
+                'Create Softphones',
+                'Reboot'
             ]
         }
-        for cmd_type in cmd_types:
+        for cmd_type in menu_cmd_labels:
             if cmd_type not in app.menu.submenus:
                 app.menu.add_submenu(cmd_type)
-            for cmd_spec in cmd_types[cmd_type]:
-                app.menu.submenus[cmd_type].add_command(label=cmd_spec['label'], command=cmd_spec['command'])
+            for cmd_label in menu_cmd_labels[cmd_type]:
+                app.menu.submenus[cmd_type].add_command(label=cmd_label, command=app.user_cmds[cmd_label])
 
         # add locator type options for various ePhone7 views
         app.locator_by_values += ('contacts_locator', 'voicemail_locator', 'history_locator',
@@ -135,6 +149,5 @@ class Plugin(object):
         app.update_locator_list()
         app.views = {'contacts': contacts_view, 'history': history_view, 'voicemail': voicemail_view, 'dial': dial_view,
                      'prefs': prefs_view}
-        app.get_screenshot_adb = e7_cmds.get_screenshot_adb_and_rotate
 
 
