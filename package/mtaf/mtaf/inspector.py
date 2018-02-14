@@ -34,6 +34,7 @@ re_dumpsys = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')
 re_apk = re.compile('(?ms).*Packages:.*?versionName=([^\n]+)')
 btn_default_bg = '#d9d9d9'
 btn_select_bg = '#d97979'
+from Queue import Queue
 
 
 def mkdir_p(path):
@@ -126,6 +127,8 @@ class VerticalScrolledFrame(Frame):
 class ScrolledLogwin(Frame):
     def __init__(self, parent, height=20, label=None):
         Frame.__init__(self, parent)
+        self.log_q = Queue()
+        self.parent = parent
         row = 0
         if label is not None:
             self.label = Label(self, text=label)
@@ -140,25 +143,34 @@ class ScrolledLogwin(Frame):
         self.sb.grid(row=row, column=1, sticky='ns', padx=2, pady=2)
         self.rowconfigure(row, weight=1)
         self.print_buf = ''
+        self.read_q()
 
     def write(self, _txt):
-        # log.debug("write: _txt = [%s], len=%d" % (repr(_txt), len(_txt)))
-        if len(_txt) > 0 and _txt[-1] == '\n':
-            eol = True
-        else:
-            eol = False
-        lines = _txt.strip().split('\n')
-        self.txt.configure(state=NORMAL)
-        for line in lines[:-1]:
-            self.txt.insert('end', line + '\n')
-        if len(lines):
-            self.txt.insert('end', lines[-1])
-        if eol:
-            self.txt.insert('end', '\n')
-        # self.delete('0.0', 'end - %d lines' % self.scrollback)
-        self.txt.see('end')
-        self.update_idletasks()
-        self.txt.configure(state=DISABLED)
+        self.log_q.put(_txt)
+
+    def read_q(self):
+        while not self.log_q.empty():
+            _txt = self.log_q.get()
+            # old_stdout.write(">>%s<<" % _txt)
+            log.debug("write: _txt = [%s], len=%d" % (repr(_txt), len(_txt)))
+            if len(_txt) > 0 and _txt[-1] == '\n':
+                eol = True
+            else:
+                eol = False
+            lines = _txt.strip().split('\n')
+            self.txt.configure(state=NORMAL)
+            for line in lines[:-1]:
+                self.txt.insert('end', line + '\n')
+            if len(lines):
+                self.txt.insert('end', lines[-1])
+            if eol:
+                self.txt.insert('end', '\n')
+            # self.delete('0.0', 'end - %d lines' % self.scrollback)
+            self.txt.see('end')
+            # self.update_idletasks()
+            self.txt.configure(state=DISABLED)
+        self.after(100, self.read_q)
+
 
 
 class MyMenu(Menu):
@@ -191,6 +203,7 @@ class BottomFrame(Frame):
 class ButtonFrame(Frame):
     find_frame = None
 
+old_stdout = sys.stdout
 
 class Inspector(Frame):
     menu_cmd_labels = {}
@@ -235,7 +248,6 @@ class Inspector(Frame):
         self.menu = None
         self.new_drag_polygon_x1 = None
         self.new_drag_polygon_y1 = None
-        self.old_stdout = sys.stdout
         self.parent_element = None
         self.polygons = []
         self.rec_file = os.path.join(self.cfg['tmp_dir'], 'inspector_recording.txt')
@@ -260,7 +272,7 @@ class Inspector(Frame):
         try:
             with open(self.loc_file, 'r') as f:
                 self.locators = json.loads(f.read())
-        except IOError:
+        except (IOError, ValueError):
             pass
 
         self.btn_frame = self.create_btn_frame()
@@ -271,6 +283,8 @@ class Inspector(Frame):
         self.top_frames.append(self.bottom_frame)
         self.populate_top_frames()
 
+        sys.stdout = self.log_frame
+
         self.grid_columnconfigure(0, weight=1)
         self.grid(row=0, column=0, padx=2, pady=2, sticky='nsew')
         for btn in self.appium_btns:
@@ -280,7 +294,7 @@ class Inspector(Frame):
             'Restart Appium': lambda: self.do_cmd(self.restart_appium),
             "Get Screenshot": lambda: self.do_cmd(self.create_cwin),
             "Get Screenshot ADB": self.get_screenshot_adb,
-            "Rotate Image": lambda: self.do_cmd(self.rotate_image),
+            "Rotate Image": self.rotate_image,
             "Get Focused App": lambda: self.do_cmd(self.get_focused_app)
         }
         self.create_menus(parent)
@@ -447,7 +461,7 @@ class Inspector(Frame):
             create_new_cwin()
         except Ux as _e:
             six.print_("error creating screenshot window: %s" % _e)
-            traceback.print_exc()
+            # traceback.print_exc()
         finally:
             enable_screenshot_button()
 
@@ -622,10 +636,9 @@ class Inspector(Frame):
 
     def create_log_frame(self):
         pw = PanedWindow(self, orient=VERTICAL, bg='brown')
-        log_frame = ScrolledLogwin(pw, height=self.cfg['log_window_height'], label='standard output')
-        sys.stdout = log_frame
-        log_frame.grid_columnconfigure(0, weight=1)
-        pw.add(log_frame, stretch='always')
+        self.log_frame = ScrolledLogwin(pw, height=self.cfg['log_window_height'], label='standard output')
+        self.log_frame.grid_columnconfigure(0, weight=1)
+        pw.add(self.log_frame, stretch='always')
         rec_frame = ScrolledLogwin(pw, height=self.cfg['log_window_height'], label='recorded text')
         self.rec_frame = rec_frame
         rec_frame.grid_columnconfigure(0, weight=1)
@@ -829,7 +842,7 @@ class Inspector(Frame):
 
     def do_cmd(self, cmd):
         if self.worker_thread is not None:
-            print "worker thread busy: %s" % cmd.__name__
+            six.print_("worker thread busy: %s" % cmd.__name__)
         else:
             for btn in self.appium_btns:
                 btn.configure(state=DISABLED)
@@ -853,7 +866,6 @@ class Inspector(Frame):
             pass
         with open(self.loc_file, 'w') as f:
             f.write(json.dumps(self.locators, sort_keys=True, indent=4, separators=(',', ': ')))
-        sys.stdout = self.old_stdout
         self.parent.destroy()
 
     def tap_xy(self):
@@ -1004,7 +1016,7 @@ class Inspector(Frame):
                 _msg = "  %10s: %s" % (attr, elem.get_attribute(attr))
             except NoSuchElementException:
                 _msg = "NoSuchElementException running elem.get_attribute(%s)" % attr
-                log.debug(msg)
+                log.debug(_msg)
             six.print_(_msg)
             self.record(_msg)
         self.draw_outlines([{
@@ -1051,15 +1063,16 @@ class Inspector(Frame):
             self.draw_outlines(geoms)
 
     def draw_outlines(self, geoms):
-        while len(self.polygons):
-            self.im_canvas.delete(self.polygons.pop())
-        for geom in geoms:
-            x1 = geom["x1"] * self.cwin.scale + self.cwin.canvas_borderwidth
-            y1 = geom["y1"] * self.cwin.scale + self.cwin.canvas_borderwidth
-            y2 = geom["y2"] * self.cwin.scale + self.cwin.canvas_borderwidth
-            x2 = geom["x2"] * self.cwin.scale + self.cwin.canvas_borderwidth
-            # six.print_("calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1))
-            self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
+        if self.im_canvas is not None:
+            while len(self.polygons):
+                self.im_canvas.delete(self.polygons.pop())
+            for geom in geoms:
+                x1 = geom["x1"] * self.cwin.scale + self.cwin.canvas_borderwidth
+                y1 = geom["y1"] * self.cwin.scale + self.cwin.canvas_borderwidth
+                y2 = geom["y2"] * self.cwin.scale + self.cwin.canvas_borderwidth
+                x2 = geom["x2"] * self.cwin.scale + self.cwin.canvas_borderwidth
+                # six.print_("calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1))
+                self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
                                                                fill=''))
 
     def get_elem_color(self):
@@ -1160,8 +1173,8 @@ class Inspector(Frame):
                 self.update_find_widgets(None)
                 six.print_("Done")
                 break
-            except Ux as _e:
-                six.print_("Error\nUserException in open_appium: %s" % _e.msg)
+            except BaseException as _e:
+                six.print_("Error trying to open Appium: %s" % _e)
             finally:
                 attempts += 1
             if attempts < max_attempts:
@@ -1221,13 +1234,15 @@ class Inspector(Frame):
         six.print_("Getting XML and CSV...", end='')
         xml_path = os.path.join(self.cfg['tmp_dir'], 'inspector.xml')
         csv_path = os.path.join(self.cfg['tmp_dir'], 'inspector.csv')
-        log.info("saving xml %s" % xml_path)
-        android_actions.adb.run_cmd('shell uiautomator dump')
-        android_actions.adb.run_cmd('pull /sdcard/window_dump.xml')
         try:
             os.remove(xml_path)
-        except:
+            os.remove(csv_path)
+        except OSError:
             pass
+        android_actions.adb.run_cmd('shell rm /sdcard/window_dump.xml')
+        android_actions.adb.run_cmd('shell uiautomator dump')
+        android_actions.adb.run_cmd('pull /sdcard/window_dump.xml')
+        log.info("saving xml %s" % xml_path)
         try:
             os.rename('window_dump.xml', xml_path)
         except OSError as e:
@@ -1245,13 +1260,14 @@ class Inspector(Frame):
         else:
             six.print_("%d devices found" % len(devices))
             img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
+            try:
+                os.remove(img_path)
+            except OSError:
+                pass
+            android_actions.adb.run_cmd('shell rm /sdcard/screencap.png')
             android_actions.adb.run_cmd('shell screencap -p /sdcard/screencap.png')
             android_actions.adb.run_cmd('pull /sdcard/screencap.png')
             log.debug("saving screenshot to %s" % img_path)
-            try:
-                os.remove(img_path)
-            except:
-                pass
             try:
                 os.rename('screencap.png', img_path)
             except OSError as _e:
@@ -1268,6 +1284,7 @@ class Inspector(Frame):
         im = PIL_Image.open(img_path)
         im = im.rotate(-90, expand=True)
         im.save(img_path)
+        self.create_cwin(reuse_image=True)
         six.print_("Done")
 
     def __del__(self):
