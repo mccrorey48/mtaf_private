@@ -1184,9 +1184,12 @@ class Inspector(Frame):
 
     def close_appium(self):
         six.print_("Closing Appium...", end='')
-        android_actions.close_appium()
-        self.appium_is_open = False
-        six.print_("Done")
+        try:
+            android_actions.close_appium()
+            self.appium_is_open = False
+            six.print_("Done")
+        except Ux as e:
+            six.print_(e)
 
     @staticmethod
     def log_action(spud_serial, action):
