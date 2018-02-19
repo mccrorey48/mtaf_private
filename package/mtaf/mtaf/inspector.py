@@ -28,6 +28,7 @@ else:
 from mtaf.trace import Trace
 
 
+mtaf_logging.disable_console()
 log = mtaf_logging.get_logger('mtaf.inspector')
 android_actions = AndroidActions()
 re_dumpsys = re.compile('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)')

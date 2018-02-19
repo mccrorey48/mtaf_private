@@ -159,6 +159,16 @@ def prune_logs(pattern, max_kept=10, verbose=False):
             print i, fname
 
 
+def disable_console():
+    if console_handler in _log.handlers:
+        _log.removeHandler(console_handler)
+
+
+def enable_console():
+    if console_handler not in _log.handlers:
+        _log.addHandler(console_handler)
+
+
 def parse_msg_to_dict(msg):
     m = re_common.match(msg)
     if not m:
@@ -228,7 +238,7 @@ _log.addHandler(fh)
 fh = FileHandler(extended_debug_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(DEBUG)
 _log.addHandler(fh)
-# consolemtaf_logging for info level
+# console mtaf_logging for info level
 console_handler = StreamHandler()
 console_handler.setLevel(INFO)
 _log.addHandler(console_handler)
