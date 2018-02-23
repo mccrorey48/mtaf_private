@@ -3,28 +3,16 @@ from eConsole.views import *
 from lib.wrappers import fake
 
 
-@step("I click the button with my user name")
-@fake
-def i_click_the_button_with_my_user_name(context):
-    pass
-
-
-@step("I click the Logout menu item")
-@fake
-def i_click_the_logout_menu_item(context):
-    pass
-
-
-@step("I click the Mailbox Settings menu item")
+@step("I click the Message Settings menu item")
 @fake
 def i_click_the_mailbox_settings_menu_item(context):
-    pass
+    base_view.click_named_element('MessageSettings')
 
 
 @step("the Settings Menu appears")
 @fake
 def the_settings_menu_appears(context):
-    pass
+    assert base_view.element_is_present('MessageSettings'), "Message Settings menu item not found"
 
 
 @step("the {view_name} page appears")
@@ -36,8 +24,10 @@ def the_viewname_page_appears(context, view_name):
         "home": home_view,
         "login": login_view,
         "messages": messages_view,
+        "message settings": message_settings_view,
         "phones": phones_view
     }
     assert views[view_name.lower()].becomes_present(), "%s view not present" % view_name
+    assert base_view.element_becomes_not_present('LoadingGif', 10), "loading GIF present after 10 sec" % view_name
 
 

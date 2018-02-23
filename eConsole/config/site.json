@@ -1,8 +1,162 @@
 {
-  "defaults": {
-  },
-  "devdash": {
-    "system": "svlab"
-  }
-
+    "defaults": {
+      "svlab": {
+          "ndp_url": "ndp.svlab.esihs.net"
+      }
+    },
+    "mm": {
+        "common": {
+            "screenshot_folder": "/home/mmccrorey/mtaf/eConsole/screenshots"
+        },
+        "devdash": {
+            "accounts": [
+                {
+                    "delete": "true",
+                    "email": "1000@svauto-ccd2.com",
+                    "password": "1000",
+                    "name1": "select",
+                    "name2": "user00",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "select",
+                    "type": "account",
+                    "uri": "sip:1000@svauto-ccd2.com"
+                },
+                {
+                    "delete": "true",
+                    "email": "1001@svauto-ccd2.com",
+                    "password": "1001",
+                    "name1": "select",
+                    "name2": "user01",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "select",
+                    "type": "account",
+                    "uri": "sip:1001@svauto-ccd2.com"
+                },
+                {
+                    "delete": "true",
+                    "email": "1002@svauto-ccd2.com",
+                    "password": "1002",
+                    "name1": "select",
+                    "name2": "user02",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "select",
+                    "type": "account",
+                    "uri": "sip:1002@svauto-ccd2.com"
+                },
+                {
+                    "delete": "true",
+                    "email": "1003@svauto-ccd2.com",
+                    "password": "1003",
+                    "name1": "select",
+                    "name2": "user03",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": ".premier",
+                    "type": "account",
+                    "uri": "sip:1003@svauto-ccd2.com"
+                },
+                {
+                    "delete": "true",
+                    "email": "1004@svauto-ccd2.com",
+                    "password": "1004",
+                    "name1": "select",
+                    "name2": "user04",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "select",
+                    "type": "account",
+                    "uri": "sip:1004@svauto-ccd2.com"
+                },
+                {
+                    "delete": "true",
+                    "email": "1005@svauto-ccd2.com",
+                    "password": "1005",
+                    "name1": "select",
+                    "name2": "user05",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "select",
+                    "type": "account",
+                    "uri": "sip:1005@svauto-ccd2.com"
+                },
+                {
+                    "delete": "false",
+                    "email": "1006@svauto-ccd2.com",
+                    "password": "1006",
+                    "name1": "premier",
+                    "name2": "user06",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "premier",
+                    "type": "account",
+                    "uri": "sip:1006@svauto-ccd2.com"
+                },
+                {
+                    "delete": "false",
+                    "email": "1007@svauto-ccd2.com",
+                    "password": "1007",
+                    "name1": "premier",
+                    "name2": "user07",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "premier",
+                    "type": "account",
+                    "uri": "sip:1007@svauto-ccd2.com"
+                },
+                {
+                    "delete": "false",
+                    "email": "1008@svauto-ccd2.com",
+                    "password": "1008",
+                    "name1": "premier",
+                    "name2": "user08",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "premier",
+                    "type": "account",
+                    "uri": "sip:1008@svauto-ccd2.com"
+                },
+                {
+                    "delete": "false",
+                    "email": "1009@svauto-ccd2.com",
+                    "password": "1009",
+                    "name1": "premier",
+                    "name2": "user09",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "premier",
+                    "type": "account",
+                    "uri": "sip:1009@svauto-ccd2.com"
+                },
+                {
+                    "delete": "false",
+                    "email": "1010@svauto-ccd2.com",
+                    "password": "1010",
+                    "name1": "premier",
+                    "name2": "user10",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "premier",
+                    "type": "account",
+                    "uri": "sip:1010@svauto-ccd2.com"
+                },
+                {
+                    "delete": "false",
+                    "email": "1011@svauto-ccd2.com",
+                    "password": "1011",
+                    "name1": "premier",
+                    "name2": "user11",
+                    "phone_type": "soft",
+                    "proxy": "svlab.esihs.net",
+                    "scope": "premier",
+                    "type": "account",
+                    "uri": "sip:1011@svauto-ccd2.com"
+                }
+            ],
+            "portal_url": "http://devdash.esi-estech.com",
+            "system": "svlab"
+        }
+    }
 }

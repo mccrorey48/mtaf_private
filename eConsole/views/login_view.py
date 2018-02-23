@@ -22,15 +22,15 @@ class LoginView(BaseView):
 
     @Trace(log)
     def input_username(self, scope):
-        username = [account['username'] for account in cfg.site['accounts'] if account['scope'] == scope][0]
+        username = [account['email'] for account in cfg.site['accounts'] if account['scope'] == scope][0]
         log.debug("username = %s" % username)
-        self.find_named_element('UserName').send_keys(username)
+        self.input_text(username, 'UserName')
 
     @Trace(log)
     def input_password(self, scope):
         password = [account['password'] for account in cfg.site['accounts'] if account['scope'] == scope][0]
         log.debug("password = %s" % password)
-        self.find_named_element('Password').send_keys(password)
+        self.input_text(password, 'Password')
 
     @Trace(log)
     def click_login_button(self):

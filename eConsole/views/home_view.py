@@ -17,7 +17,6 @@ class HomeView(BaseView):
     def __init__(self):
         super(HomeView, self).__init__()
         self.presence_element_names = ["eConsoleHelp"]
-        self.banner_item_texts = []
         self.nav_tab_names = ["HOME", "MESSAGES", "CONTACTS", "PHONES", "CALL HISTORY", "SETTINGS"]
 
     @Trace(log)

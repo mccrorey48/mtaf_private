@@ -8,7 +8,6 @@ from lib.user_exception import UserException as Ux
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
-from time import sleep
 from PIL import Image
 
 log = logging.get_logger('esi.base_view')
@@ -19,7 +18,7 @@ class BaseView(SeleniumActions):
     locators = {
         "ShowContacts": {"by": "id", "value": "showContacts"},
         "Banner": {"by": "class name", "value": "esi-header"},
-        "BannerItems": {"by": "class name", "value": "esi-header-text"},
+        "BannerText": {"by": "class name", "value": "esi-header-text"},
         "Logout": {"by": "id", "value": "logout"},
         "NavTabs": {"by": "css selector", "value": ".navbar-nav .nav-item"},
         "HomeTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(1)"},
@@ -28,7 +27,9 @@ class BaseView(SeleniumActions):
         "ContactsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(4)"},
         "PhonesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(5)"},
         "SettingsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(6)"},
-        "MainButton": {"by": "id", "value": "mainButton"}
+        "MainButton": {"by": "id", "value": "mainButton"},
+        "LoadingGif": {"by": "class name", "value": "loadingoverlay"},
+        "MessageSettings": {"by": "css selector", "value": "li.nav-item.dropdown.show > div > a:nth-child(2)"}
     }
 
     def __init__(self):
@@ -38,7 +39,7 @@ class BaseView(SeleniumActions):
         self.log_file = None
         self.presence_element_names = ["ShowContacts"]
         self.nav_tab_names = []
-        self.banner_item_texts = []
+        self.banner_texts = []
         super(BaseView, self).__init__()
 
     @Trace(log)
@@ -70,28 +71,40 @@ class BaseView(SeleniumActions):
         self.click_named_element("Logout")
 
     @Trace(log)
+    def input_text(self, text, locator_name):
+        log.debug('inputting text "%s" to element "%s"' % (text, locator_name))
+        self.find_named_element(locator_name).send_keys(text)
+        self.element_trigger_change(locator_name)
+
+    @Trace(log)
     def click_named_element(self, name):
         locator = self.get_locator(name)
         driver_locator = (locator["by"], locator["value"])
+        log.debug('waiting for element "%s" to be clickable' % name)
         elem = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable(driver_locator))
+        log.debug('element "%s" is clickable' % name)
         try:
             elem.click()
         except WebDriverException as e:
             raise Ux("WebDriverException: %s" % e)
+        self.wait_until_page_ready()
 
     @Trace(log)
     def becomes_present(self):
+        self.wait_until_angular_ready()
         if len(self.presence_element_names) == 0:
             raise Ux("becomes_present() not implemented here")
         for element_name in self.presence_element_names:
             if not self.element_is_present(element_name):
                 return False
-        if len(self.banner_item_texts) > 0:
+        if self.banner_texts:
             if not self.element_is_present("Banner"):
                 return False
-            banner_items = self.find_named_elements("BannerItems")
-            if [banner_item.text for banner_item in banner_items] != self.banner_item_texts:
-                return False
+            elem = self.find_named_element("BannerText")
+            texts = elem.text.split('/')
+            for text in self.banner_texts:
+                if texts.pop(0).strip() != text:
+                    return False
         if len(self.nav_tab_names) > 0:
             locator = self.get_locator('NavTabs')
             driver_locator = (locator["by"], locator["value"])

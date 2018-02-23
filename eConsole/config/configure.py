@@ -8,14 +8,16 @@ class Cfg:
     def __init__(self):
         self.site_name = os.getenv('MTAF_SITE', 'default')
         with open("eConsole/config/site.json") as f:
-            self.site_cfgs = json.load(f)
+            self.all_site_cfgs = json.load(f)
         self.site = None
 
     def set_test_target(self, target):
-        if self.site_name in self.site_cfgs:
-            self.site = self.site_cfgs['defaults'][self.site_cfgs[self.site_name][target]['system']]
-            target_cfg = self.site_cfgs[self.site_name][target]
-            self.site.update(target_cfg)
+        if self.site_name in self.all_site_cfgs:
+            site_cfg = self.all_site_cfgs[self.site_name]
+            system = site_cfg[target]['system']
+            self.site = self.all_site_cfgs['defaults'][system]
+            self.site.update(site_cfg['common'])
+            self.site.update(site_cfg[target])
         else:
             raise Ux('site name %s not found in config file' % self.site_name)
 

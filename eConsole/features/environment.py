@@ -4,6 +4,7 @@ from eConsole.views import *
 from lib.user_exception import UserException as Ux
 import datetime
 
+
 logging.console_handler.setLevel(logging.INFO)
 log = logging.get_logger('esi.environment')
 substeps = ''
@@ -63,7 +64,11 @@ def after_scenario(context, scenario):
             screenshot_path = base_view.get_screenshot_as_png('exception-%s' % timestamp, cfg.site['screenshot_folder'],
                                                               scale=0.5)
             substeps += 'screenshot = %s\n' % screenshot_path
-    base_view.logout()
+    try:
+        base_view.logout()
+    except Ux:
+        log.info("got user exception attempting to log out")
+        context._config.stop = True
     if scenario.steps[-1].exception:
         base_view.close_browser()
         with open('tmp/steps.txt', 'w') as f:

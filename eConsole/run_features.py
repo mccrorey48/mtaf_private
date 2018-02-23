@@ -13,6 +13,7 @@ from lib.wrappers import Trace
 import argparse
 from os import path, getenv, mkdir
 from shutil import copyfile
+from bson.binary import Binary
 from cStringIO import StringIO
 
 log = logging.get_logger('esi.run_features')
@@ -201,18 +202,15 @@ def new_step_status(old_status, has_passes, has_fails, has_fakes):
 def new_status(has_passes=False, has_fails=False, has_fakes=False, has_skips=False, has_incompletes=False):
     if has_fails:
         return 'failed'
-    if has_passes:
-        if has_fakes or has_incompletes:
+    if has_passes is True and has_fakes is False and has_skips is False and has_incompletes is False:
+        return 'passed'
+    if has_passes is False and has_fakes is False and has_incompletes is False:
+        return 'skipped'
+    # if has_passes is False and has_fakes is True and has_skips is False and has_incompletes is False:
+    if has_passes is False and has_fakes is True and has_incompletes is False:
+        return 'fake'
+    if has_fakes or has_incompletes or has_skips:
             return 'incomplete'
-        else:
-            return 'passed'
-    else:
-        if has_fakes and not has_incompletes:
-            return 'fake'
-        if has_incompletes:
-            return 'incomplete'
-        else:
-            return 'skipped'
 
 
 def write_result_to_db(_args, configuration, _fake_detector, _features):
@@ -325,6 +323,11 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
                         scenario_has_fakes = True
                     elif step['status'] == 'failed':
                         scenario_has_fails = True
+                        if 'screenshot' in step:
+                            with open(step['screenshot'], 'rb') as f:
+                                bin_data = StringIO(f.read())
+                                step['screenshot_id'] = db['screenshots'].insert_one(
+                                    {'screenshot': Binary(bin_data.getvalue())}).inserted_id
                     else:
                         scenario_has_passes = True
                     if 'error_message' in step['result']:

@@ -21,15 +21,10 @@ Feature: Home Page Navigation
     When I click the PHONES tab
     Then the Phones page appears
 
-  Scenario: I want to see my Mailbox Settings page
+  Scenario: I want to see my Message Settings page
     Given I log in to the dashboard
     When I click the SETTINGS tab
     Then the Settings Menu appears
-    When I click the Mailbox Settings menu item
-    Then the Mailbox Settings page appears
-
-  Scenario: I want log out of the dashboard
-    Given I click the button with my user name
-    And I click the Logout menu item
-    Then the Login page appears
+    When I click the Message Settings menu item
+    Then the Message Settings page appears
 
