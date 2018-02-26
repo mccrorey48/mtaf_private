@@ -9,6 +9,6 @@ args = parser.parse_args()
 
 print "login = %s" % args.login
 print "password = %s" % args.password
-ms = Microservices(args.login, args.password)
+ms = Microservices(args.login, args.password, 'https://pro.esiapi.io/')
 for cat in 'new', 'saved', 'deleted':
     print "%s %s" % (cat, ms.get_vm_count(cat))

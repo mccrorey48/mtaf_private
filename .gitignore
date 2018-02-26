@@ -14,3 +14,7 @@ substeps.txt
 *.json
 *.log
 *.cap
+*.png
+build/
+dist/
+mtaf.egg-info/
