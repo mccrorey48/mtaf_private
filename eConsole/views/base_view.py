@@ -3,7 +3,7 @@ import lib.logging_esi as logging
 from lib.wrappers import Trace
 from selenium.webdriver import Chrome, Firefox
 from eConsole.config.configure import cfg
-from lib.selenium_actions import SeleniumActions
+from lib.angular_actions import AngularActions
 from lib.user_exception import UserException as Ux
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -13,7 +13,7 @@ from PIL import Image
 log = logging.get_logger('esi.base_view')
 
 
-class BaseView(SeleniumActions):
+class BaseView(AngularActions):
 
     locators = {
         "ShowContacts": {"by": "id", "value": "showContacts"},
@@ -117,31 +117,31 @@ class BaseView(SeleniumActions):
 
     @staticmethod
     def get_url(url):
-        if SeleniumActions.driver is None:
+        if AngularActions.driver is None:
             raise Ux('remote is not open')
         log.debug('getting url %s' % url)
-        SeleniumActions.driver.get(url)
+        AngularActions.driver.get(url)
 
     def open_browser(self, browser='chrome'):
         if self.current_browser is not None:
             log.debug('browser is already open')
         else:
             if browser.lower() == 'chrome':
-                SeleniumActions.driver = Chrome()
+                AngularActions.driver = Chrome()
             elif browser.lower() == 'firefox':
                 self.log_file = open('/home/mmccrorey/firefox.log', 'w')
-                SeleniumActions.driver = Firefox()
+                AngularActions.driver = Firefox()
             else:
                 raise Ux ('Unknown browser %s' % browser)
-            SeleniumActions.driver.set_window_size(1280, 1024)
+            AngularActions.driver.set_window_size(1280, 1024)
             self.current_browser = browser
 
     def close_browser(self):
         if self.current_browser is None:
             log.debug('browser is already closed')
         else:
-            SeleniumActions.driver.quit()
-            SeleniumActions.driver = None
+            AngularActions.driver.quit()
+            AngularActions.driver = None
             self.current_browser = None
             if self.log_file is not None:
                 self.log_file.close()
