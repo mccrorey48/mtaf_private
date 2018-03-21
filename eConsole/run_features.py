@@ -223,11 +223,15 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
         start_datetime = datetime.now()
     _time = start_datetime.strftime('%X')
     _date = start_datetime.strftime('%x')
+    if configuration['portal_server'] == 'devdash':
+        environment = 'svlab'
+    else:
+        environment = 'production'
     test_start = {
         'app': 'eConsole',
         'build': '',
         'configuration': configuration,
-        'environment': _args.environment,
+        'environment': environment,
         'fail_count': 0,
         'skip_count': 0,
         'pass_count': 0,
@@ -422,7 +426,6 @@ if __name__ == '__main__':
         parser.add_argument("-d", "--db_name", type=str, default='ccd2_results', help="name of db")
         parser.add_argument("-c", "--test_class", type=str, default='regression',
                             help="class of test, e.g. regression, smoke etc.")
-        parser.add_argument("-e", "--environment", type=str, default='svlab', help="environment e.g. svlab")
         parser.add_argument("-f", "--features_directory", type=str, default='eConsole/features',
                             help="operation to perform")
         parser.add_argument("-F", "--features_file", type=str, default=None,
@@ -432,7 +435,7 @@ if __name__ == '__main__':
                             help="(optional) specify mongodb server, default vqda1")
         parser.add_argument("-r", "--run_tags", type=str, default='', help="run tags (comma separated list)")
         parser.add_argument("-p", "--portal_server", type=str, default='devdash',
-                            choices=['devdash'], help="OTA server (default devdash)")
+                            choices=['devdash', 'aws'], help="OTA server (default devdash)")
         parser.add_argument("-u", "--user_scope", type=str, default=supported_scopes[0],
                             choices=supported_scopes, help="User scope (default %s)" % supported_scopes[0])
         args = parser.parse_args()
@@ -459,7 +462,8 @@ if __name__ == '__main__':
                 'stop': args.stop
             }
             features = run_features(run_configuration)
-        report_configuration = {'site_tag': getenv('MTAF_SITE'), 'run_tags': args.run_tags, 'scope': args.user_scope}
+        report_configuration = {'site_tag': getenv('MTAF_SITE'), 'run_tags': args.run_tags, 'scope': args.user_scope,
+                                'portal_server': args.portal_server}
         write_result_to_db(args, report_configuration, fake_detector, features)
     except Ux as e:
         print "User Exception: " + e.get_msg()

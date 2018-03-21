@@ -1,8 +1,11 @@
 {
     "defaults": {
-      "svlab": {
-          "ndp_url": "ndp.svlab.esihs.net"
-      }
+        "svlab": {
+            "ndp_url": "ndp.svlab.esihs.net"
+        },
+        "production": {
+            "ndp_url": "ndp.esihs.net"
+        }
     },
     "mm": {
         "common": {
@@ -11,7 +14,6 @@
         "devdash": {
             "accounts": [
                 {
-                    "delete": "true",
                     "email": "1000@svauto-ccd2.com",
                     "password": "1000",
                     "name1": "select",
@@ -23,7 +25,6 @@
                     "uri": "sip:1000@svauto-ccd2.com"
                 },
                 {
-                    "delete": "true",
                     "email": "1001@svauto-ccd2.com",
                     "password": "1001",
                     "name1": "select",
@@ -35,7 +36,6 @@
                     "uri": "sip:1001@svauto-ccd2.com"
                 },
                 {
-                    "delete": "true",
                     "email": "1002@svauto-ccd2.com",
                     "password": "1002",
                     "name1": "select",
@@ -47,7 +47,6 @@
                     "uri": "sip:1002@svauto-ccd2.com"
                 },
                 {
-                    "delete": "true",
                     "email": "1003@svauto-ccd2.com",
                     "password": "1003",
                     "name1": "select",
@@ -59,7 +58,6 @@
                     "uri": "sip:1003@svauto-ccd2.com"
                 },
                 {
-                    "delete": "true",
                     "email": "1004@svauto-ccd2.com",
                     "password": "1004",
                     "name1": "select",
@@ -71,7 +69,6 @@
                     "uri": "sip:1004@svauto-ccd2.com"
                 },
                 {
-                    "delete": "true",
                     "email": "1005@svauto-ccd2.com",
                     "password": "1005",
                     "name1": "select",
@@ -83,7 +80,6 @@
                     "uri": "sip:1005@svauto-ccd2.com"
                 },
                 {
-                    "delete": "false",
                     "email": "1006@svauto-ccd2.com",
                     "password": "1006",
                     "name1": "premier",
@@ -95,7 +91,6 @@
                     "uri": "sip:1006@svauto-ccd2.com"
                 },
                 {
-                    "delete": "false",
                     "email": "1007@svauto-ccd2.com",
                     "password": "1007",
                     "name1": "premier",
@@ -107,7 +102,6 @@
                     "uri": "sip:1007@svauto-ccd2.com"
                 },
                 {
-                    "delete": "false",
                     "email": "1008@svauto-ccd2.com",
                     "password": "1008",
                     "name1": "premier",
@@ -119,7 +113,6 @@
                     "uri": "sip:1008@svauto-ccd2.com"
                 },
                 {
-                    "delete": "false",
                     "email": "1009@svauto-ccd2.com",
                     "password": "1009",
                     "name1": "premier",
@@ -131,7 +124,6 @@
                     "uri": "sip:1009@svauto-ccd2.com"
                 },
                 {
-                    "delete": "false",
                     "email": "1010@svauto-ccd2.com",
                     "password": "1010",
                     "name1": "premier",
@@ -143,7 +135,6 @@
                     "uri": "sip:1010@svauto-ccd2.com"
                 },
                 {
-                    "delete": "false",
                     "email": "1011@svauto-ccd2.com",
                     "password": "1011",
                     "name1": "premier",
@@ -157,6 +148,34 @@
             ],
             "portal_url": "http://devdash.esi-estech.com",
             "system": "svlab"
+        },
+        "aws": {
+            "accounts": [
+                {
+                    "email": "4501@pm.esihs.net",
+                    "password": "20184501",
+                    "name1": "guljeet",
+                    "name2": "accelq",
+                    "phone_type": "soft",
+                    "proxy": "nr5.cpbx.esihs.net",
+                    "scope": "select",
+                    "type": "account",
+                    "uri": "sip:4501@pm.esihs.net"
+                },
+                {
+                    "email": "4502@pm.esihs.net",
+                    "password": "20184502",
+                    "name1": "vinuthna",
+                    "name2": "accelq",
+                    "phone_type": "soft",
+                    "proxy": "nr5.cpbx.esihs.net",
+                    "scope": "premier",
+                    "type": "account",
+                    "uri": "sip:4502@pm.esihs.net"
+                }
+            ],
+            "portal_url": "http://staging-econsole.esihs.net",
+            "system": "production"
         }
     }
 }
