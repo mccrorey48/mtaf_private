@@ -1,4 +1,4 @@
-plugin_dir: /home/mmccrorey/mtaf_plugins/inspector_plugins
+plugin_dir: /home/mmccrorey/mtaf/run_inspector/plugins/inspector_plugins
 # zpath_tags_all replaces the default zpath list
 #zpath_tags_all:
 #    bt: android.widget.Button
