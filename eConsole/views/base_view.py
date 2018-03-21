@@ -7,7 +7,7 @@ from lib.angular_actions import AngularActions
 from lib.user_exception import UserException as Ux
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, TimeoutException
 from PIL import Image
 
 log = logging.get_logger('esi.base_view')
@@ -29,7 +29,7 @@ class BaseView(AngularActions):
         "SettingsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(6)"},
         "MainButton": {"by": "id", "value": "mainButton"},
         "LoadingGif": {"by": "class name", "value": "loadingoverlay"},
-        "MessageSettings": {"by": "css selector", "value": "li.nav-item.dropdown.show > div > a:nth-child(2)"}
+        "MessageSettings": {"by": "css selector", "value": ".dropdown-item.ng-scope", "text": "Message Settings"}
     }
 
     def __init__(self):
@@ -77,17 +77,23 @@ class BaseView(AngularActions):
         self.element_trigger_change(locator_name)
 
     @Trace(log)
-    def click_named_element(self, name):
-        locator = self.get_locator(name)
-        driver_locator = (locator["by"], locator["value"])
-        log.debug('waiting for element "%s" to be clickable' % name)
-        elem = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable(driver_locator))
+    def click_named_element(self, name, timeout=5):
+        elem = self.find_named_element(name)
+        try:
+            WebDriverWait(self.driver, timeout).until(lambda driver: self.element_is_clickable(elem))
+        except TimeoutException:
+            raise Ux("element named \"%s\" not clickable in %s seconds" % (name, timeout))
         log.debug('element "%s" is clickable' % name)
         try:
             elem.click()
         except WebDriverException as e:
             raise Ux("WebDriverException: %s" % e)
         self.wait_until_page_ready()
+
+    @Trace(log)
+    def element_is_clickable(self, elem):
+        return elem.is_enabled() and elem.is_displayed()
+
 
     @Trace(log)
     def becomes_present(self):
