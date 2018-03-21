@@ -387,6 +387,14 @@ class Inspector(Frame):
             self.bottom_frame.mk_canvas.configure(command=None)
             self.bottom_frame.mk_canvas.configure(state=DISABLED)
 
+        def get_screenshot():
+            if self.appium_is_open:
+                self.get_screenshot_appium()
+                self.get_xml_appium()
+            else:
+                self.get_screenshot_adb()
+                self.get_xml_adb()
+
         @Trace(log)
         def enable_screenshot_button():
             self.bottom_frame.mk_canvas.configure(state=NORMAL, command=self.create_cwin)
@@ -454,10 +462,11 @@ class Inspector(Frame):
             self.cwin.minsize(width=width, height=height)
 
         try:
-            if not reuse_image:
-                disable_screenshot_button()
-                self.user_cmds['Get Screenshot ADB']()
-                self.get_xml_adb()
+            disable_screenshot_button()
+            if reuse_image:
+                enable_screenshot_button()
+            else:
+                get_screenshot()
             destroy_existing_cwin()
             create_new_cwin()
         except Ux as _e:
@@ -1234,6 +1243,17 @@ class Inspector(Frame):
             six.print_("Done")
         return package
 
+    def get_xml_appium(self):
+        six.print_("Getting XML and CSV...", end='')
+        xml = android_actions.driver.page_source
+        xml_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.xml')
+        csv_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.csv')
+        log.info("saving xml %s" % xml_fullpath)
+        with open(xml_fullpath, 'w') as _f:
+            _f.write(xml.encode('utf8'))
+        xml_to_csv(xml_fullpath, csv_fullpath)
+        six.print_("Done")
+
     def get_xml_adb(self):
         six.print_("Getting XML and CSV...", end='')
         xml_path = os.path.join(self.cfg['tmp_dir'], 'inspector.xml')
@@ -1254,6 +1274,13 @@ class Inspector(Frame):
         else:
             xml_to_csv(xml_path, csv_path)
 
+        six.print_("Done")
+
+    def get_screenshot_appium(self):
+        six.print_("Getting Screenshot using Appium...", end='')
+        img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
+        log.debug("saving screenshot to %s" % img_path)
+        android_actions.get_screenshot_as_file(img_path)
         six.print_("Done")
 
     def get_screenshot_adb(self):
