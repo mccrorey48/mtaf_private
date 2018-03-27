@@ -113,14 +113,14 @@ def run_features(config):
     # (if the two data sets don't produce the same sequence of steps, raise an exception
     # because something isn't working right)
     for feature in data:
-        six.print_(feature['name'])
+        # six.print_(feature['name'])
         for element in feature["elements"]:
-            six.print_('  ' + element['name'])
+            # six.print_('  ' + element['name'])
             if element["keyword"] == "Scenario":
                 new_steps = []
                 for step in element["steps"]:
                     if "result" in step:
-                        six.print_('    ' + step['name'])
+                        # six.print_('    ' + step['name'])
                         # if it gets to here, the step was executed and should be on the printed_steps list
                         if len(printed_steps) == 0:
                             raise Ux("Error processing new_steps list, printed_steps empty")
@@ -130,8 +130,8 @@ def run_features(config):
                         step["substeps"] = printed_step["substeps"]
                         if 'screenshot' in printed_step:
                             step["screenshot"] = printed_step["screenshot"]
-                    else:
-                        six.print_('    ' + step['name'] + ' (skipped)')
+                    # else:
+                    #     six.print_('    ' + step['name'] + ' (skipped)')
                     new_steps.append(step)
                 element["steps"] = new_steps
     output = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
