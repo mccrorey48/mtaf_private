@@ -2,6 +2,7 @@ from mtaf import mtaf_logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import base_view
 from ePhone7.lib.utils.get_softphone import softphone_manager
+from ePhone7.lib.utils.usb_enable import usb_enable
 from ePhone7.lib.utils.e7_microservices import get_e7_microservices
 from mtaf.user_exception import UserException as Ux
 import datetime
@@ -32,7 +33,14 @@ def before_all(context):
     context.make_assertion = make_assertion(context)
     tags = str(context.config.tags).split(',')
     if 'fake' not in tags and 'json' not in tags:
-        base_view.open_appium()
+        try:
+            base_view.open_appium()
+        except Ux as e:
+            if e.message == 'no ADB device':
+                usb_enable()
+                base_view.open_appium()
+            else:
+                raise e
         base_view.wait_for_activity('.activities.MainViewActivity')
 
 
@@ -99,7 +107,7 @@ def before_step(context, step):
 def after_step(context, step):
     global substeps
     if context.is_substep:
-        substeps += (',%s,%.3f\n' % (step.status, step.duration))
+        substeps += (',%s,%.3f\n' % (step.status.name, step.duration))
         context.is_substep = False
     if step.exception:
         log.info("EXCEPTION in step %s" % step.name)
