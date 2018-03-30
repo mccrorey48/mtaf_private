@@ -91,7 +91,7 @@ def before_step(context, step):
 def after_step(context, step):
     global substeps
     if context.is_substep:
-        substeps += (',%s,%.3f\n' % (step.status, step.duration))
+        substeps += (',%s,%.3f\n' % (step.status.name, step.duration))
         context.is_substep = False
     if step.exception:
         log.info("EXCEPTION in step %s" % step.name)
