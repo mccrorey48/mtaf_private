@@ -98,10 +98,11 @@ class UserView(BaseView):
 
     @Trace(log)
     def goto_tab(self, tab_name):
-        self.expected_tab = tab_name
-        failmsg_fmt = 'expect active tab to be %s, got %s'
-        self.wait_for_condition_true(self.verify_active_tab,
-                                             lambda: failmsg_fmt % (self.expected_tab, self.active_tab), timeout=120)
+        self.click_named_element(tab_name)
+        # self.expected_tab = tab_name
+        # failmsg_fmt = 'expect active tab to be %s, got %s'
+        # self.wait_for_condition_true(self.verify_active_tab,
+        #                                      lambda: failmsg_fmt % (self.expected_tab, self.active_tab), timeout=120)
 
     @Trace(log)
     def get_logo_element(self):
