@@ -1,0 +1,20 @@
+Environment variables used in MTAF:
+
+APPIUM_HOME         Path of the top-level directory in the Appium distribution,
+                    (clone of https://github.com/appium/appium.git),
+                    used by appium.sh to start the local Appium server
+                    e.g. "~/appium"
+
+ANDROID_HOME        Path of the top-level directory in the Android SDK,
+                    used by some Android utilities
+                    e.g. "~/android-sdk-linux"
+
+MTAF_DB_HOST        Address of the mongodb server used to save MTAF configuration files and test results,
+                    (FQDN or IP address)
+                    e.g. "10.0.12.42", "localhost"
+
+MTAF_SITE           Abbreviation used to identify a particular test host, so each host can retrieve its own
+                    configuration from MTAF_DB_HOST (or from local JSON files containing multiple site specifications)
+                    e.g. "mm", "js"
+
+MTAF_LOG_DIR        Path of the directory where the mtaf_logging module will save log files
