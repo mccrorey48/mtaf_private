@@ -174,15 +174,18 @@ class MenuItem(object):
         self.uses_appium = uses_appium
 
 
-class MyMenu2(Menu):
+class MyMenu(Menu):
     def __init__(self, parent):
         Menu.__init__(self, parent)
         self.items = {}
 
     def add_submenu(self, label, menu_items):
-        submenu = MyMenu(self)
-        self.add_cascade(label=label, menu=submenu)
-        self.items[label] = {"menu": submenu, "uses_appium": []}
+        if label in self.items:
+            submenu = self.items[label]["menu"]
+        else:
+            submenu = MyMenu(self)
+            self.add_cascade(label=label, menu=submenu)
+            self.items[label] = {"menu": submenu, "uses_appium": []}
         for i, item in enumerate(menu_items):
             submenu.add_command(label=item.label, command=item.action)
             self.items[label]["uses_appium"].append(item.uses_appium)
@@ -196,25 +199,6 @@ class MyMenu2(Menu):
                     self.items[label]["menu"].entryconfig(i + 1, state=NORMAL)
                 else:
                     self.items[label]["menu"].entryconfig(i + 1, state=DISABLED)
-
-
-class MyMenu(Menu):
-    def __init__(self, parent):
-        Menu.__init__(self, parent)
-        self.submenus = {}
-        self.submenu_count = 0
-
-    def add_submenu(self, cmd_type):
-        submenu = MyMenu(self)
-        self.submenu_count += 1
-        submenu.number = self.submenu_count
-        self.add_cascade(label=cmd_type, menu=submenu)
-        if cmd_type == 'Appium Actions':
-            submenu.appium_required = True
-            self.entryconfig(submenu.number, state=DISABLED)
-        else:
-            submenu.appium_required = False
-        self.submenus[cmd_type] = submenu
 
 
 class AttrFrame(Frame):
@@ -327,8 +311,7 @@ class Inspector(Frame):
             "Get Focused App": lambda: self.do_cmd(self.get_focused_app),
             "Close Appium": lambda: self.do_cmd(self.close_appium)
         }
-        # self.create_menus(parent)
-        self.create_menus2(parent)
+        self.create_menus(parent)
 
     def populate_top_frames(self):
         top_frame_row = 0
@@ -848,57 +831,29 @@ class Inspector(Frame):
             else:
                 self.use_parent.set(0)
 
-    def create_commands2(self):
-        self.menu_cmds = {
-            'Appium Actions': [
-                MenuItem('Get Current Activity', self.user_cmds['Get Current Activity'], True),
-                MenuItem('Restart Appium', self.user_cmds['Restart Appium'], True)
-            ],
-            'ADB Actions': [
-                MenuItem('Get Focused App', self.user_cmds['Get Focused App'], False)
-            ],
-            'Appium Session': [
-                MenuItem('Open Appium', self.user_cmds['Open Appium'], False),
-                MenuItem('Open Appium (UIAutomator2)', self.user_cmds['Open Appium (UIAutomator2)'], False),
-                MenuItem('Close Appium', self.user_cmds['Close Appium'], True)
-            ]
-        }
-
-    def create_commands(self):
-        self.menu_cmd_labels = {
-            'Appium Actions': [
-                "Get Current Activity",
-                "Restart Appium"
-            ],
-            'ADB Actions': [
-                "Get Focused App"
-            ],
-            'Appium Session': [
-                "Open Appium",
-                "Open Appium (UIAutomator2)"
-            ]
-        }
-
-    def create_menus2(self, parent):
-        self.create_commands2()
-        self.menu = MyMenu2(parent)
-        for cmd_type in self.menu_cmds:
-            self.menu.add_submenu(cmd_type, self.menu_cmds[cmd_type])
-        # depending on self.appium_is_enabled value, enable/disable dropdown menu items
-        self.menu.enable_items(self.appium_is_open)
-        parent.config(menu=self.menu)
+    def make_menu_items(self, menu_items):
+        return [MenuItem(item['label'], self.user_cmds[item['label']], item['uses_appium']) for item in menu_items]
 
     def create_menus(self, parent):
-        self.create_commands()
+        menu_items = {
+            'Appium Actions': [
+                {'label': 'Get Current Activity', 'uses_appium': True},
+                {'label': 'Restart Appium', 'uses_appium': True}
+            ],
+            'ADB Actions': [
+                {'label': 'Get Focused App', 'uses_appium': False}
+            ],
+            'Appium Session': [
+                {'label':'Open Appium', 'uses_appium': False},
+                {'label':'Open Appium (UIAutomator2)', 'uses_appium': False},
+                {'label':'Close Appium', 'uses_appium': True}
+            ]
+        }
         self.menu = MyMenu(parent)
-        for cmd_type in self.menu_cmd_labels:
-            self.menu.add_submenu(cmd_type)
-            submenu = self.menu.submenus[cmd_type]
-            for cmd_label in self.menu_cmd_labels[cmd_type]:
-                submenu.add_command(label=cmd_label, command=self.user_cmds[cmd_label])
-        # self.menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
-        # self.menu.submenu_count += 1
-        # self.menu.appium_btn_number = self.menu.submenu_count
+        for menu_label in menu_items:
+            self.menu.add_submenu(menu_label, self.make_menu_items(menu_items[menu_label]))
+        # depending on self.appium_is_enabled value, enable/disable dropdown menu items
+        self.menu.enable_items(self.appium_is_open)
         parent.config(menu=self.menu)
 
     def do_cmd(self, cmd):

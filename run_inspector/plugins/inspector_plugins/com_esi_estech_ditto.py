@@ -120,26 +120,24 @@ class Plugin(object):
             'Reboot': e7_cmds.reboot,
             'Get Screenshot ADB': e7_cmds.get_screenshot_adb_and_rotate
         })
-        menu_cmd_labels = {
+        menu_items = {
             'Appium Actions': [
-                'Dial Advanced Settings Code',
-                'Dial Alpha OTA Code',
-                'Dial Beta OTA Code',
-                'Dial Current OTA Code',
-                'Dial Production OTA Code',
-                'Set Coworker Favorites'
+                {'label': 'Dial Advanced Settings Code', 'uses_appium': True},
+                {'label': 'Dial Alpha OTA Code', 'uses_appium': True},
+                {'label': 'Dial Beta OTA Code', 'uses_appium': True},
+                {'label': 'Dial Current OTA Code', 'uses_appium': True},
+                {'label': 'Dial Production OTA Code', 'uses_appium': True},
+                {'label': 'Set Coworker Favorites', 'uses_appium': True}
             ],
             'Other Actions': [
-                'Enable USB',
-                'Create Softphones',
-                'Reboot'
+                {'label': 'Enable USB', 'uses_appium': True},
+                {'label': 'Create Softphones', 'uses_appium': True},
+                {'label': 'Reboot', 'uses_appium': True}
             ]
         }
-        for cmd_type in menu_cmd_labels:
-            if cmd_type not in app.menu.submenus:
-                app.menu.add_submenu(cmd_type)
-            for cmd_label in menu_cmd_labels[cmd_type]:
-                app.menu.submenus[cmd_type].add_command(label=cmd_label, command=app.user_cmds[cmd_label])
+        for menu_label in menu_items:
+            app.menu.add_submenu(menu_label, app.make_menu_items(menu_items[menu_label]))
+        app.menu.enable_items(app.appium_is_open)
 
         # add locator type options for various ePhone7 views
         app.locator_by_values += ('contacts_locator', 'voicemail_locator', 'history_locator',
