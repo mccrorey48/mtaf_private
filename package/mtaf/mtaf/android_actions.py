@@ -29,7 +29,7 @@ class AndroidActions(SeleniumActions):
     def close_browser(self):
         raise Ux('close_browser method not available using Appium')
 
-    def open_appium(self, connect_timeout=10):
+    def open_appium(self, connect_timeout=10, automation_name='Appium'):
         if len(self.adb.get_devices()) == 0:
             raise Ux("no ADB device")
         output = self.adb.run_cmd('shell dumpsys window windows')
@@ -41,7 +41,7 @@ class AndroidActions(SeleniumActions):
                 "appPackage": package,
                 "appActivity": activity,
                 "autoLaunch": False,
-                "automationName": "Appium",
+                "automationName": automation_name,
                 "deviceName": device_name,
                 "newCommandTimeout": 1200,
                 "noReset": True,

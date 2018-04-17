@@ -69,12 +69,6 @@ class MyDialog(tk_simple_dialog.Dialog):
         self.devices = {0: self.devices[key]}
 
 
-class Command(object):
-    def __init__(self, label, action):
-        self.label = label
-        self.action = action
-
-
 class VerticalScrolledFrame(Frame):
     """A pure Tkinter scrollable frame that actually works!
     * Use the 'interior' attribute to place widgets inside the scrollable frame
@@ -173,6 +167,36 @@ class ScrolledLogwin(Frame):
         self.after(100, self.read_q)
 
 
+class MenuItem(object):
+    def __init__(self, label, action, uses_appium):
+        self.label = label
+        self.action = action
+        self.uses_appium = uses_appium
+
+
+class MyMenu2(Menu):
+    def __init__(self, parent):
+        Menu.__init__(self, parent)
+        self.items = {}
+
+    def add_submenu(self, label, menu_items):
+        submenu = MyMenu(self)
+        self.add_cascade(label=label, menu=submenu)
+        self.items[label] = {"menu": submenu, "uses_appium": []}
+        for i, item in enumerate(menu_items):
+            submenu.add_command(label=item.label, command=item.action)
+            self.items[label]["uses_appium"].append(item.uses_appium)
+
+    def enable_items(self, appium_open):
+        for label in self.items:
+            for i in range(len(self.items[label]["uses_appium"])):
+                if appium_open and self.items[label]["uses_appium"][i]:
+                    self.items[label]["menu"].entryconfig(i + 1, state=NORMAL)
+                elif (not appium_open) and (not self.items[label]["uses_appium"][i]):
+                    self.items[label]["menu"].entryconfig(i + 1, state=NORMAL)
+                else:
+                    self.items[label]["menu"].entryconfig(i + 1, state=DISABLED)
+
 
 class MyMenu(Menu):
     def __init__(self, parent):
@@ -206,6 +230,7 @@ class ButtonFrame(Frame):
 
 old_stdout = sys.stdout
 
+
 class Inspector(Frame):
     menu_cmd_labels = {}
 
@@ -217,6 +242,7 @@ class Inspector(Frame):
         parent.bind_all("<Button-5>", self.mouse_btn)
         self.appium_btns = []
         self.appium_is_open = False
+        self.automation_name = None
         self.clickable_element = None
         self.cwin = None
         self.cwin_x = None
@@ -296,9 +322,13 @@ class Inspector(Frame):
             "Get Screenshot": lambda: self.do_cmd(self.create_cwin),
             "Get Screenshot ADB": self.get_screenshot_adb,
             "Rotate Image": self.rotate_image,
-            "Get Focused App": lambda: self.do_cmd(self.get_focused_app)
+            "Open Appium": lambda: self.do_cmd(self.open_appium),
+            "Open Appium (UIAutomator2)": lambda: self.do_cmd(lambda: self.open_appium(automation_name="UIAutomator2")),
+            "Get Focused App": lambda: self.do_cmd(self.get_focused_app),
+            "Close Appium": lambda: self.do_cmd(self.close_appium)
         }
-        self.create_menus(parent)
+        # self.create_menus(parent)
+        self.create_menus2(parent)
 
     def populate_top_frames(self):
         top_frame_row = 0
@@ -327,27 +357,19 @@ class Inspector(Frame):
         else:
             log.debug("worker thread done: %s" % self.worker_thread.name)
             self.worker_thread = None
+            # if do_cmd thread is done, re-enable the menubar dropdowns
+            for i in range(len(self.menu.items)):
+                self.menu.entryconfig(i + 1, state=NORMAL)
             if self.appium_is_open:
-                for cmd_type in self.menu.submenus:
-                    self.menu.entryconfig(self.menu.submenus[cmd_type].number, state=NORMAL)
                 for btn in self.appium_btns:
                     btn.configure(state=NORMAL)
-                self.menu.entryconfig(self.menu.appium_btn_number, label='Stop Appium', state=NORMAL,
-                                      command=lambda: self.do_cmd(self.close_appium))
-            else:
-                for cmd_type in self.menu.submenus:
-                    submenu = self.menu.submenus[cmd_type]
-                    if submenu.appium_required:
-                        self.menu.entryconfig(submenu.number, state=DISABLED)
-                    else:
-                        self.menu.entryconfig(submenu.number, state=NORMAL)
-                self.menu.entryconfig(self.menu.appium_btn_number, label='Start Appium', state=NORMAL,
-                                      command=lambda: self.do_cmd(self.open_appium))
+            # depending on self.appium_is_enabled value, enable/disable dropdown menu items
+            self.menu.enable_items(self.appium_is_open)
 
     def create_bottom_frame(self):
         bottom_frame = BottomFrame(self, bg="tan")
         bottom_frame.grid_columnconfigure(0, weight=1)
-        bottom_frame.mk_canvas = Button(bottom_frame, text="screenshot", bg=btn_default_bg, command=self.create_cwin)
+        bottom_frame.mk_canvas = Button(bottom_frame, text="Screenshot", bg=btn_default_bg, command=self.create_cwin)
         bottom_frame.mk_canvas.grid(row=0, column=0, sticky='e', padx=2, pady=2)
         # self.appium_btns.append(bottom_frame.mk_canvas)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", bg=btn_default_bg, command=self.close_appium_and_quit)
@@ -374,7 +396,7 @@ class Inspector(Frame):
         return False
 
     @Trace(log)
-    def create_cwin(self, reuse_image=False, force_appium=False):
+    def create_cwin(self, reuse_image=False):
         #
         # handle problem with unwanted call when button is apparently disabled but still bound to the command.
         # just doing the cget synchronizes the "set disabled" action so the "if" statement returns false;
@@ -826,6 +848,22 @@ class Inspector(Frame):
             else:
                 self.use_parent.set(0)
 
+    def create_commands2(self):
+        self.menu_cmds = {
+            'Appium Actions': [
+                MenuItem('Get Current Activity', self.user_cmds['Get Current Activity'], True),
+                MenuItem('Restart Appium', self.user_cmds['Restart Appium'], True)
+            ],
+            'ADB Actions': [
+                MenuItem('Get Focused App', self.user_cmds['Get Focused App'], False)
+            ],
+            'Appium Session': [
+                MenuItem('Open Appium', self.user_cmds['Open Appium'], False),
+                MenuItem('Open Appium (UIAutomator2)', self.user_cmds['Open Appium (UIAutomator2)'], False),
+                MenuItem('Close Appium', self.user_cmds['Close Appium'], True)
+            ]
+        }
+
     def create_commands(self):
         self.menu_cmd_labels = {
             'Appium Actions': [
@@ -834,8 +872,21 @@ class Inspector(Frame):
             ],
             'ADB Actions': [
                 "Get Focused App"
+            ],
+            'Appium Session': [
+                "Open Appium",
+                "Open Appium (UIAutomator2)"
             ]
         }
+
+    def create_menus2(self, parent):
+        self.create_commands2()
+        self.menu = MyMenu2(parent)
+        for cmd_type in self.menu_cmds:
+            self.menu.add_submenu(cmd_type, self.menu_cmds[cmd_type])
+        # depending on self.appium_is_enabled value, enable/disable dropdown menu items
+        self.menu.enable_items(self.appium_is_open)
+        parent.config(menu=self.menu)
 
     def create_menus(self, parent):
         self.create_commands()
@@ -845,9 +896,9 @@ class Inspector(Frame):
             submenu = self.menu.submenus[cmd_type]
             for cmd_label in self.menu_cmd_labels[cmd_type]:
                 submenu.add_command(label=cmd_label, command=self.user_cmds[cmd_label])
-        self.menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
-        self.menu.submenu_count += 1
-        self.menu.appium_btn_number = self.menu.submenu_count
+        # self.menu.add_command(label="Start Appium", command=lambda: self.do_cmd(self.open_appium))
+        # self.menu.submenu_count += 1
+        # self.menu.appium_btn_number = self.menu.submenu_count
         parent.config(menu=self.menu)
 
     def do_cmd(self, cmd):
@@ -856,9 +907,10 @@ class Inspector(Frame):
         else:
             for btn in self.appium_btns:
                 btn.configure(state=DISABLED)
-            for cmd_type in self.menu.submenus:
-                    self.menu.entryconfig(self.menu.submenus[cmd_type].number, state=DISABLED)
-            self.menu.entryconfig(self.menu.appium_btn_number, state=DISABLED)
+            # disable the menubar dropdowns while thread is running
+            for i in range(len(self.menu.items)):
+                    self.menu.entryconfig(i + 1, state=DISABLED)
+            pass
             self.update_idletasks()
             # sleep(5)
             self.worker_thread = threading.Thread(target=cmd, name=cmd.__name__)
@@ -989,7 +1041,7 @@ class Inspector(Frame):
         else:
             try:
                 self.elems = self.find_elements_with_driver(locator)
-            except InvalidSelectorException as _e:
+            except WebDriverException as _e:
                 six.print_(str(_e).strip())
                 return
             # keep frame element setting if using "by" value ending in '*_locator'
@@ -1170,16 +1222,17 @@ class Inspector(Frame):
             six.print_("got exception %s" % _e)
         self.update_find_widgets(None)
 
-    def open_appium(self, max_attempts=1, retry_seconds=5):
+    def open_appium(self, max_attempts=1, retry_seconds=5, automation_name="Appium"):
         attempts = 0
-        six.print_("Opening Appium...", end='')
+        six.print_("Opening Appium (%s)..." % automation_name, end='')
         while attempts < max_attempts:
             try:
                 if attempts > 0:
                     six.print_("\n(retrying) Opening Appium...", end='')
                 self.update_idletasks()
-                android_actions.open_appium()
+                android_actions.open_appium(automation_name=automation_name)
                 self.appium_is_open = True
+                self.automation_name = automation_name
                 self.update_find_widgets(None)
                 six.print_("Done")
                 break
@@ -1197,6 +1250,7 @@ class Inspector(Frame):
         try:
             android_actions.close_appium()
             self.appium_is_open = False
+            self.automation_name = None
             six.print_("Done")
         except Ux as e:
             six.print_(e)
@@ -1211,10 +1265,14 @@ class Inspector(Frame):
             log.debug(' '*7 + line.encode('string_escape'))
 
     def restart_appium(self):
-        six.print_("Restarting Appium...", end='')
+        six.print_("--> Restarting Appium")
+        if not self.appium_is_open:
+            raise Ux("called restart_appium when appium was not open")
+        # calling close_appium will set self.automation_name to none, so save it
+        automation_name = self.automation_name
         self.close_appium()
-        self.open_appium()
-        six.print_("Done")
+        self.open_appium(automation_name=automation_name)
+        six.print_("--> Done")
 
     def get_focused_app(self, quiet=False):
         if not quiet:
