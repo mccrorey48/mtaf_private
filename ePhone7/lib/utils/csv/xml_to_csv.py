@@ -1,6 +1,7 @@
 import os
 import re
 import xml.etree.ElementTree as ET
+import six
 
 import mtaf.android_zpath
 from ePhone7.config.configure import cfg
@@ -32,7 +33,7 @@ def printall(ofile, node, tag_index, pfx):
                 else:
                     items.append(repr(_str))
             except UnicodeEncodeError as e:
-                print e.message
+                six.print_(e.message)
         else:
             items.append('')
     ofile.write('%s\n' % ','.join(items))
@@ -75,7 +76,7 @@ def visit(arg, dirname, names):
     # csv_dir = cfg.site.CsvFolder + '/csv' + re.sub(cfg.XmlFolder + '/xml', '', dirname)
     # print '"%s"' % cfg.site.CsvFolder + '/csv' + re.sub(cfg.XmlFolder + '/xml', '', dirname)
     subdir = re.sub(cfg.site.XmlFolder, '', dirname)
-    print "    subdir = %s" % subdir
+    six.print_("    subdir = %s" % subdir)
     sp = subdir.split('/xml')
     if len(sp) == 1:
         csv_dir = cfg.site.CsvFolder
@@ -91,7 +92,7 @@ def visit(arg, dirname, names):
         if name[-4:] == '.xml':
             _xml_file_path = os.path.join(dirname, name)
             _csv_file_path = "csv".join(_xml_file_path.rsplit('xml', 3))
-            # print "calling xml_to_csv(%s, %s)" % (_xml_file_path, _csv_file_path)
+            # six.print_("calling xml_to_csv(%s, %s)" % (_xml_file_path, _csv_file_path))
             xml_to_csv(_xml_file_path, _csv_file_path)
 
 
@@ -99,5 +100,5 @@ def xml_folder_to_csv():
     os.path.walk(cfg.site.XmlFolder, visit, '')
 
 if __name__ == '__main__':
-    # xml_folder_to_csv()
-    os.path.walk('ePhone7/lib/utils/xml/xml_appium_gui/', visit, '')
+    xml_folder_to_csv()
+    # os.path.walk('ePhone7/lib/utils/xml/xml_appium_gui/', visit, '')
