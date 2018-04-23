@@ -4,7 +4,7 @@ from user_exception import UserException as Ux
 import mtaf_logging
 from android_zpath import set_zpath_tag, expand_zpath, replace_zpaths
 from android_actions import AndroidActions
-from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
 import threading
 import json
 from filters import get_filter
