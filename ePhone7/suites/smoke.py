@@ -17,16 +17,16 @@ debug = False
 def except_screenshot(type, value, traceback):
     xml = base_view.get_source();
     try:
-        makedirs(cfg.xml_folder)
+        makedirs(cfg.site.XmlFolder)
     except OSError as e:
         # ignore 'File exists' error but re-raise any others
         if e.errno != 17:
             raise e
-    xml_fullpath = path.join(cfg.xml_folder, 'exception.xml')
+    xml_fullpath = path.join(cfg.site.XmlFolder, 'exception.xml')
     log.info("saving xml %s" % xml_fullpath)
     with open(xml_fullpath, 'w') as _f:
         _f.write(xml.encode('utf8'))
-    base_view.get_screenshot_as_png('exception', cfg.test_screenshot_folder)
+    base_view.get_screenshot_as_png('exception', cfg.site.ScreenshotFolder)
 
 
 class SmokeTests(unittest.TestCase):

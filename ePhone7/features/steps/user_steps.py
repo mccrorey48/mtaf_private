@@ -70,7 +70,7 @@ def user__i_touch_the_headset_icon_if_it_is_color(context, color):
         raise Ux("Unknown color specified: %s" % color)
     icon = user_view.find_named_element("HeadsetButton")
     user_view.get_screenshot_as_png('headset_button')
-    if user_view.get_element_color_and_count(cfg.screenshot_folder, 'headset_button', icon, color_list_index=1) == headset_icon_rgbs[color]:
+    if user_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'headset_button', icon, color_list_index=1) == headset_icon_rgbs[color]:
         icon.click()
 
 
@@ -146,7 +146,7 @@ def user__the_headset_icon_is_expectcolor(context, expect_color):
         raise Ux("Unknown color specified: %s" % expect_color)
     icon = user_view.find_named_element("HeadsetButton")
     user_view.get_screenshot_as_png('headset_button')
-    actual_rgb = user_view.get_element_color_and_count(cfg.screenshot_folder, 'headset_button', icon, color_list_index=1)
+    actual_rgb = user_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'headset_button', icon, color_list_index=1)
     for color in headset_icon_rgbs:
         if actual_rgb == headset_icon_rgbs[color]:
             assert expect_color == color, "expected headset icon color %s, got %s" % (expect_color, color)

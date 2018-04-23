@@ -12,14 +12,14 @@ from mtaf import mtaf_logging
 from mtaf.trace import Trace
 from mtaf.user_exception import UserException as Ux
 log = mtaf_logging.get_logger('mtaf.get_xml')
-logging_esi.console_handler.setLevel(logging_esi.TRACE)
+mtaf_logging.console_handler.setLevel(mtaf_logging.TRACE)
 
 
 @Trace(log)
 def save_xml_and_screenshot(basename, version):
     with mtaf_logging.msg_src_cm('save_xml_and_screenshot()'):
         xml = base_view.get_source()
-        xml_dir = os.path.join(cfg.xml_folder, 'xml_%s' % version)
+        xml_dir = os.path.join(cfg.site.XmlFolder, 'xml_%s' % version)
         try:
             os.makedirs(xml_dir)
         except OSError as e:
@@ -30,7 +30,7 @@ def save_xml_and_screenshot(basename, version):
         log.info("saving xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
-        base_view.get_screenshot_as_png(basename, cfg.screenshot_folder)
+        base_view.get_screenshot_as_png(basename, cfg.site.XmlFolder)
 
 
 @Trace(log)
@@ -63,7 +63,7 @@ def get_call_views(version):
 buttons = {
     'Contacts': {'view': contacts_view, 'tabs': ['Personal', 'Coworkers', 'Favorites', 'Groups']},
     'History': {'view': history_view, 'tabs': ['All', 'Missed']},
-    'Voicemail': {'view': voicemail_view, 'tabs': ['New', 'Saved', 'Trash']},
+    'Voicemail': {'view': voicemail_view, 'tabs': ['NewTab', 'SavedTab', 'TrashTab']},
     'Dial': {'view': dial_view, 'tabs': []}
 }
 
@@ -90,9 +90,7 @@ def get_nav_views(version):
 
 
 if __name__ == '__main__':
-    _version = 'not_retrieved'
-    # try:
-    base_view.open_appium('nolaunch', force=True, timeout=60)
+    base_view.open_appium()
     base_view.startup()
     user_view.goto_prefs()
     _version = prefs_view.get_app_version()
@@ -102,7 +100,7 @@ if __name__ == '__main__':
     try:
         get_call_views(_version)
         base_view.close_appium()
-        base_view.open_appium('nolaunch', force=True, timeout=60)
+        base_view.open_appium()
         base_view.startup()
         get_nav_views(_version)
         base_view.close_appium()

@@ -56,12 +56,12 @@ class UserView(BaseView):
         else:
             desired_color = cfg.colors['UserView']['dnd_off_color'][:-1]
         elem = self.find_named_element('DndButton')
-        self.get_screenshot_as_png('set_dnd', cfg.test_screenshot_folder)
+        self.get_screenshot_as_png('set_dnd', cfg.site.ScreenshotFolder)
         current_color = self.get_element_color('set_dnd', elem)
         if current_color != desired_color:
             self.click_element(elem)
             sleep(5)
-        self.get_screenshot_as_png('set_dnd', cfg.test_screenshot_folder)
+        self.get_screenshot_as_png('set_dnd', cfg.site.ScreenshotFolder)
         current_color = self.get_element_color('set_dnd', elem)
         if current_color != desired_color:
             raise Ux('unable to set dnd icon to desired color %s, current color is %s' % (desired_color, current_color))
@@ -128,7 +128,7 @@ class UserView(BaseView):
         # if no tab is active, raise an exception
         self.click_named_element(self.expected_tab)
         sleep(5)
-        self.get_screenshot_as_png(self.png_file_base, cfg.test_screenshot_folder)
+        self.get_screenshot_as_png(self.png_file_base, cfg.site.ScreenshotFolder)
         self.active_tab = None
         for tab_name in self.tab_names:
             tab_color = self.get_tab_color(self.png_file_base, tab_name)

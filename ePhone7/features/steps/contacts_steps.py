@@ -18,8 +18,8 @@ def contacts__a_check_mark_appears_in_the_box(context):
 def contacts__a_contact_detail_screen_appears_with_a_white_star_icon(context):
     assert contacts_view.contact_detail_view_visible(), "contact detail view is not visible"
     el = contacts_view.find_named_element("FavoriteIndicator")
-    base_view.get_screenshot_as_png('contact_detail', cfg.test_screenshot_folder)
-    color = contacts_view.get_element_color_and_count(cfg.screenshot_folder, 'contact_detail', el)
+    base_view.get_screenshot_as_png('contact_detail', cfg.site.ScreenshotFolder)
+    color = contacts_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'contact_detail', el)
     expect_color = cfg.colors["ContactsView"]["favorite_off_color"]
     assert color == expect_color, "expected color %s, got %s" % (expect_color, color)
 
@@ -184,9 +184,9 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_favorites_star_icon(con
     stars = contacts_view.find_named_elements('CallButton')[:8]
     assert len(names) == len(stars), "Expected contact name count (%d) to equal star icon count (%d)" \
                                      % (len(names), len(stars))
-    base_view.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+    base_view.get_screenshot_as_png('multi_edit', cfg.site.ScreenshotFolder)
     for i in range(len(names)):
-        color = base_view.get_element_color_and_count(cfg.test_screenshot_folder, 'multi_edit', stars[i])
+        color = base_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'multi_edit', stars[i])
         fail_msg = "No favorites icon found for contact name %s" % names[i].text
         assert (base_view.color_match(color, cfg.colors['ContactsView']['multi_favorite_on_color'])
                 or base_view.color_match(color, cfg.colors['ContactsView']['multi_favorite_off_color'])), fail_msg
@@ -202,9 +202,9 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
     assert len(names) == len(call_buttons), "Expected contact name count (%d) to equal star icon count (%d)" \
                                             % (len(names), len(call_buttons))
     context.call_buttons = dict(zip(names, call_buttons))
-    base_view.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+    base_view.get_screenshot_as_png('multi_edit', cfg.site.ScreenshotFolder)
     for i in range(len(names)):
-        color = base_view.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', call_buttons[i])
+        color = base_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'multi_edit', call_buttons[i])
         fail_msg = "No handset icon found for contact name %s" % names[i].text
         assert (base_view.color_match(color, cfg.colors['ContactsView']['handset_online_color'])
                 or base_view.color_match(color, cfg.colors['ContactsView']['handset_offline_color'])
@@ -340,6 +340,6 @@ def contacts__the_star_turns_colorname(context, color_name):
         raise Ux('bad color name %s' % color_name)
     el = contacts_view.find_named_element("FavoriteIndicator")
     expect_color = cfg.colors["ContactsView"][cfg_color_names[color_name]]
-    base_view.get_screenshot_as_png('contact_detail', cfg.test_screenshot_folder)
-    actual_color = contacts_view.get_element_color_and_count(cfg.screenshot_folder, 'contact_detail', el)
+    base_view.get_screenshot_as_png('contact_detail', cfg.site.ScreenshotFolder)
+    actual_color = contacts_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'contact_detail', el)
     assert actual_color == expect_color, "expected color %s, got %s" % (expect_color, actual_color)

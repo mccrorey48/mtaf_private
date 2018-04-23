@@ -72,15 +72,15 @@ def visit(arg, dirname, names):
     # print "dirname = %s" % dirname
     # for name in names:
     #     print "  name = %s" % name
-    # csv_dir = cfg.csv_folder + '/csv' + re.sub(cfg.xml_folder + '/xml', '', dirname)
-    # print '"%s"' % cfg.csv_folder + '/csv' + re.sub(cfg.xml_folder + '/xml', '', dirname)
-    subdir = re.sub(cfg.xml_folder, '', dirname)
+    # csv_dir = cfg.site.CsvFolder + '/csv' + re.sub(cfg.XmlFolder + '/xml', '', dirname)
+    # print '"%s"' % cfg.site.CsvFolder + '/csv' + re.sub(cfg.XmlFolder + '/xml', '', dirname)
+    subdir = re.sub(cfg.site.XmlFolder, '', dirname)
     print "    subdir = %s" % subdir
     sp = subdir.split('/xml')
     if len(sp) == 1:
-        csv_dir = cfg.csv_folder
+        csv_dir = cfg.site.CsvFolder
     else:
-        csv_dir = cfg.csv_folder + '/csv' + sp[1]
+        csv_dir = cfg.site.CsvFolder + '/csv' + sp[1]
     try:
         os.makedirs(csv_dir)
     except OSError as e:
@@ -96,7 +96,7 @@ def visit(arg, dirname, names):
 
 
 def xml_folder_to_csv():
-    os.path.walk(cfg.xml_folder, visit, '')
+    os.path.walk(cfg.site.XmlFolder, visit, '')
 
 if __name__ == '__main__':
     # xml_folder_to_csv()

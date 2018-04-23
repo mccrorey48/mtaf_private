@@ -160,7 +160,7 @@ class BaseView(AndroidActions):
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder=None, scale=None):
         if screenshot_folder is None:
-            screenshot_folder = cfg.test_screenshot_folder
+            screenshot_folder = cfg.site.ScreenshotFolder
         img_path = os.path.join(screenshot_folder, filebase + '.png')
         log.debug("saving screenshot to %s" % img_path)
         self.get_screenshot_as_file(img_path, scale)
@@ -178,7 +178,7 @@ class BaseView(AndroidActions):
 
     @Trace(log)
     def get_tab_color(self, filebase, tab_name):
-        img_path = os.path.join(self.cfg.test_screenshot_folder, filebase + '.png')
+        img_path = os.path.join(self.cfg.site.ScreenshotFolder, filebase + '.png')
         log.debug('getting tab color from file %s' % img_path)
         view_classname = self.__class__.__name__
         active_color = self.cfg.colors[view_classname]['active_color'][:-1]

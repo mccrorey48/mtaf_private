@@ -66,7 +66,7 @@ class ContactsView(UserView):
         current_color = None
         desired_color = cfg.colors['ContactsView']['handset_online_color'][:-1]
         while current_time - start_time < timeout:
-            self.get_screenshot_as_png('call_from_contacts', cfg.test_screenshot_folder)
+            self.get_screenshot_as_png('call_from_contacts', cfg.site.ScreenshotFolder)
             current_color = self.get_element_color('call_from_contacts', icon)
             if current_color == desired_color:
                 break
@@ -200,15 +200,15 @@ class ContactsView(UserView):
         wrong_color = cfg.colors['ContactsView']['multi_favorite_on_color']
         while True:
             displayed_items = self.get_all_fully_visible_contact_list_items()
-            self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+            self.get_screenshot_as_png('multi_edit', cfg.site.ScreenshotFolder)
             prev_numbers_len = len(checked_numbers)
             for item in displayed_items:
                 if item['number'] not in checked_numbers:
-                    color = self.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', item['icon'])
+                    color = self.get_element_color_and_count(cfg.site.ScreenshotFolder, 'multi_edit', item['icon'])
                     if self.color_match(color, wrong_color):
                         item['icon'].click()
-                        self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
-                        color = self.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', item['icon'])
+                        self.get_screenshot_as_png('multi_edit', cfg.site.ScreenshotFolder)
+                        color = self.get_element_color_and_count(cfg.site.ScreenshotFolder, 'multi_edit', item['icon'])
                         if not self.color_match(color, right_color):
                             raise Ux("Expected color %s to equal %s" % (color, right_color))
                     log.debug('adding %s to checked number list' % item['number'])
@@ -229,7 +229,7 @@ class ContactsView(UserView):
         favorites = cfg.site['Users']['R2d2User']['FavoriteContacts'][:]
         while len(favorites):
             displayed_items = self.get_all_fully_visible_contact_list_items()
-            self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
+            self.get_screenshot_as_png('multi_edit', cfg.site.ScreenshotFolder)
             prev_numbers_len = len(checked_numbers)
             for item in displayed_items:
                 if item['number'] not in checked_numbers:
@@ -239,11 +239,11 @@ class ContactsView(UserView):
                     else:
                         right_color = cfg.colors['ContactsView']['multi_favorite_off_color']
                         wrong_color = cfg.colors['ContactsView']['multi_favorite_on_color']
-                    color = self.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', item['icon'])
+                    color = self.get_element_color_and_count(cfg.site.ScreenshotFolder, 'multi_edit', item['icon'])
                     if self.color_match(color, wrong_color):
                         item['icon'].click()
-                        self.get_screenshot_as_png('multi_edit', cfg.test_screenshot_folder)
-                        color = self.get_element_color_and_count(cfg.screenshot_folder, 'multi_edit', item['icon'])
+                        self.get_screenshot_as_png('multi_edit', cfg.site.ScreenshotFolder)
+                        color = self.get_element_color_and_count(cfg.site.ScreenshotFolder, 'multi_edit', item['icon'])
                         if not self.color_match(color, right_color):
                             raise Ux("Expected color %s to equal %s" % (color, right_color))
                     if item['number'] in favorites:
@@ -284,7 +284,7 @@ class ContactsView(UserView):
         # wait for the contact list to appear
         self.find_named_element('FirstContactName', timeout=30)
         numbers = self.get_all_group_contacts(contacts_group)
-        self.get_screenshot_as_png('contact_verify_numbers', cfg.test_screenshot_folder)
+        self.get_screenshot_as_png('contact_verify_numbers', cfg.site.ScreenshotFolder)
         err_msg = 'contact numbers %s not equal to group "%s"' % (repr(numbers), contacts_group)
         self.assertEqual(set(numbers), set(contacts_group), err_msg)
 
@@ -318,7 +318,7 @@ class ContactsView(UserView):
             self.click_element(self.get_contact_list_element(number))
             # desired_color = cfg.colors['ContactsView']['handset_online_color'][:-1]
             filebase = 'contact_%s' % number
-            self.get_screenshot_as_png(filebase, cfg.test_screenshot_folder)
+            self.get_screenshot_as_png(filebase, cfg.site.ScreenshotFolder)
             icon = self.find_named_element('FavoriteIndicator')
             current_color = self.get_element_color(filebase, icon)
             desired_color = cfg.colors['ContactsView']['multi_favorite_on_color'][:-1]

@@ -150,7 +150,7 @@ def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
     call_icon = active_call_view.find_named_element('AudioPathIcon')
     user_view.get_screenshot_as_png('call_icon')
     expected_count = white_counts[expect_icon]
-    actual_count = active_call_view.get_element_color_and_count(cfg.screenshot_folder, 'call_icon', call_icon)[-1]
+    actual_count = active_call_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'call_icon', call_icon)[-1]
     for icon in white_counts:
         if white_counts[icon] == actual_count:
             assert actual_count == expected_count, "Expected %s icon, got %s" % (expect_icon, icon)
