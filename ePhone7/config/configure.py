@@ -1,55 +1,83 @@
-from mtaf.mongo import merge_collection
-from mtaf.user_exception import UserException as Ux
-
 import os
-from pymongo import MongoClient
+import json
+from mtaf.user_exception import UserException as Ux
+from six import print_, iteritems
+
+
+def byteify(input):
+    if isinstance(input, dict):
+        return {byteify(key): byteify(value)
+                # for key, value in input.iteritems()}
+                for key, value in iteritems(input)}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
+
+
+class Site(object):
+    _dict = {}
+
+    def __getattr__(self, name):
+        if name in self._dict:
+            return self._dict[name]
+        else:
+            raise Ux('name "%s" not in site dictionary')
+
+    def __getitem__(self, name):
+        if name in self._dict:
+            return self._dict[name]
+        else:
+            raise Ux('name "%s" not in site dictionary')
+
+    def update(self, d):
+        self._dict.update(d)
 
 
 class Cfg(object):
 
     def __init__(self):
-        self.cfg_folder_path = None
-        self.test_screenshot_folder = None
-        self.screenshot_folder = None
-        self.xml_folder = None
-        self.csv_folder = None
-        self.colors_folder = None
-        self.site = {}
-        self.exec_dir = os.getcwd()
-        self.caps = {}
-        self.colors = {}
-        self.site_tag = os.getenv('MTAF_SITE')
-        if not self.site_tag:
-            raise Ux('MTAF_SITE must be defined in the run-time environment')
-        self.db_host = os.getenv('MTAF_DB_HOST')
-        if not self.db_host:
-            raise Ux('MTAF_DB_HOST must be defined in the run-time environment')
-        self.set_site(self.db_host, self.site_tag)
+        self.site = Site()
+        self.site_name = os.getenv('MTAF_SITE', 'default')
+        with open("ePhone7/config/site.json") as f:
+            self.all_site_cfgs = json.load(f)
+        # - self.all_site_cfgs is the dictionary containing the output of the
+        #   json.load() performed on ePhone7/config/site.json
+        # - site.json contains configuration data needed at runtime to perform
+        #   tests on ePhone7; the values needed will depend on the site (which host
+        #   machine is running the tests)
+        # - self.all_site_cfgs will contain 3 name/value pairs. The names are:
+        #        caps - value is a dictionary of named "desired capabilities" dictionaries;
+        #               one of these is selected to be used when starting appium
+        #        colors - value is a dictionary of colors used to compare with observed
+        #                 colors of various elements displayed on the ePhone7 screen
+        #        sites - named dictionaries of site-specific configuration information;
+        #                the environment variable "MTAF_SITE" is used to determine
+        #                which of these dictionaries will be saved in self.site
+        #                (used in the test program as "cfg.site")
+        #
+        # first save the desired caps in "self.caps" and the colors in "self.colors"
+        self.caps = byteify(self.all_site_cfgs["caps"])
+        self.colors = byteify(self.all_site_cfgs["colors"])
+        # next populate self.site with default values; self.site will then be updated with
+        # site-specific values, which will override default values that have the same name
+        # (self.site is a Site class instance, set up so that dictionary <name>/<value> pairs
+        #
+        self.site.update(byteify(self.all_site_cfgs['defaults']))
+        if self.site_name in self.all_site_cfgs["sites"]:
+            self.site.update(byteify(self.all_site_cfgs["sites"][self.site_name]))
+        else:
+            raise Ux('site name %s not found in config file' % self.site_name)
 
-    def set_site(self, db_host, site_tag):
-        client = MongoClient(db_host)
-        db = client['e7_site']
-        merge_collection(self.site, db[site_tag])
-        merge_collection(self.site, db["default"])
-        db = client['e7_caps']
-        for name in db.collection_names(False):
-            self.caps[name] = {}
-            merge_collection(self.caps[name], db[name])
-        db = client['e7_colors']
-        for name in db.collection_names(False):
-            self.colors[name] = {}
-            merge_collection(self.colors[name], db[name])
-            self.test_screenshot_folder = os.path.join(self.exec_dir, self.site['TestScreenshotsFolder'])
-            self.screenshot_folder = os.path.join(self.exec_dir, self.site['ScreenshotsFolder'])
-            self.xml_folder = os.path.join(self.exec_dir, self.site['XmlFolder'])
-            self.csv_folder = os.path.join(self.exec_dir, self.site['CsvFolder'])
-            self.colors_folder = os.path.join(self.exec_dir, self.site['ColorsFolder'])
 
 
 cfg = Cfg()
 
 if __name__ == '__main__':
-    import json
-    json_repr = json.dumps(cfg.__dict__, sort_keys=True, indent=4, separators=(',', ': '))
-    with open('tmp/cfg_site_%s_%s.json' % (cfg.site_tag, cfg.db_host), 'w') as f:
-        f.write(json_repr)
+    print_(cfg.site.XmlFolder)
+    # print_(json.dumps(cfg.caps, sort_keys=True, indent=4, separators=(',', ': ')))
+    # print_(json.dumps(cfg.colors, sort_keys=True, indent=4, separators=(',', ': ')))
+    # print_(json.dumps(cfg.site, sort_keys=True, indent=4, separators=(',', ': ')))
+
