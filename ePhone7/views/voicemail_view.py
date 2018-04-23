@@ -28,14 +28,12 @@ class VoicemailView(UserView):
         "ForwardText": {"by": "id", "value": "com.esi_estech.ditto:id/forward_text"},
         "ForwardList": {"by": "id", "value": "android:id/list"},
         "ForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_voicemail"},
-        "New": {"by": "zpath", "value": "//bt[@text='NEW']"},
+        "NewTab": {"by": "id", "value": "com.esi_estech.ditto:id/new_vm_btn"},
         "NoVoicemails": {"by": "id", "value": "com.esi_estech.ditto:id/call_log_empty"},
         "OkForwardButton": {"by": "id", "value": "com.esi_estech.ditto:id/forward_dialog_ok_button"},
         "PlaybackStartStop": {"by": "id", "value": "com.esi_estech.ditto:id/playback_start_stop"},
-        "NewTab": {"by": "id", "value": "com.esi_estech.ditto:id/new_vm_btn"},
-        "SaveTab": {"by": "id", "value": "com.esi_estech.ditto:id/saved_vm_btn"},
+        "SavedTab": {"by": "id", "value": "com.esi_estech.ditto:id/saved_vm_btn"},
         "SaveButton": {"by": "id", "value": "com.esi_estech.ditto:id/save_voicemail"},
-        "Saved": {"by": "zpath", "value": "//ll/bt[@text='SAVED']"},
         "SearchItem": {"by": "id", "value": "com.esi_estech.ditto:id/contact_search_item_layout"},
         "SearchNumber": {"by": "id", "value": "com.esi_estech.ditto:id/search_number"},
         "ShareButton": {"by": "id", "value": "com.esi_estech.ditto:id/share_voicemail"},
@@ -52,12 +50,12 @@ class VoicemailView(UserView):
 
     def __init__(self):
         super(VoicemailView, self).__init__()
-        self.tab_names = ('New', 'Saved', 'Trash')
+        self.tab_names = ('NewTab', 'SavedTab', 'TrashTab')
         self.png_file_base = 'voicemail'
         self.elems = []
         self.saved_vals = {}
         self.new_vals = {}
-        self.presence_element_names = ['New', 'Saved', 'TrashTab']
+        self.presence_element_names = ['NewTab', 'SavedTab', 'TrashTab']
 
     @Trace(log)
     def call_first_vm_caller(self):
