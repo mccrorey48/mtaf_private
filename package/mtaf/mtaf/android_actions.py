@@ -113,12 +113,12 @@ class AndroidActions(SeleniumActions):
         else:
             return None
 
-    @Trace(log)
-    def get_cropped_color(self, img_path, crop_points):
-        im = Image.open(img_path)
-        cropped = im.crop(crop_points)
-        (n, (r, g, b, depth)) = max(cropped.getcolors(1000), key=lambda x: x[0])
-        return [r, g, b]
+    # @Trace(log)
+    # def get_cropped_color(self, img_path, crop_points):
+    #     im = Image.open(img_path)
+    #     cropped = im.crop(crop_points)
+    #     (n, (r, g, b, depth)) = max(cropped.getcolors(1000), key=lambda x: x[0])
+    #     return [r, g, b]
 
     @Trace(log)
     def keyevent(self, code):

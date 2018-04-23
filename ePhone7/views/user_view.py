@@ -99,10 +99,11 @@ class UserView(BaseView):
 
     @Trace(log)
     def goto_tab(self, tab_name):
-        self.expected_tab = tab_name
-        failmsg_fmt = 'expect active tab to be %s, got %s'
-        self.wait_for_condition_true(self.verify_active_tab,
-                                             lambda: failmsg_fmt % (self.expected_tab, self.active_tab), timeout=120)
+        self.click_named_element(tab_name)
+        # self.expected_tab = tab_name
+        # failmsg_fmt = 'expect active tab to be %s, got %s'
+        # self.wait_for_condition_true(self.verify_active_tab,
+        #                                      lambda: failmsg_fmt % (self.expected_tab, self.active_tab), timeout=120)
 
     @Trace(log)
     def get_logo_element(self):
@@ -118,25 +119,25 @@ class UserView(BaseView):
         self.click_named_element('PrefsButton')
         return prefs_view.verify_view()
 
-    @Trace(log)
-    def verify_active_tab(self):
-        # for use with wait_for_condition_true
-        # click the tab expected to become active
-        # after a few seconds, test to see if it has become the active tab by looking at its color
-        # if it is active, return true
-        # if another tab is active, return false
-        # if no tab is active, raise an exception
-        self.click_named_element(self.expected_tab)
-        sleep(5)
-        self.get_screenshot_as_png(self.png_file_base, cfg.site.ScreenshotFolder)
-        self.active_tab = None
-        for tab_name in self.tab_names:
-            tab_color = self.get_tab_color(self.png_file_base, tab_name)
-            log.debug("get_tab_color(%s, %s) returned %s" % (self.png_file_base, tab_name, tab_color))
-            if tab_color == 'active_color':
-                self.active_tab = tab_name
-                break
-        return self.active_tab == self.expected_tab
+    # @Trace(log)
+    # def verify_active_tab(self):
+    #     # for use with wait_for_condition_true
+    #     # click the tab expected to become active
+    #     # after a few seconds, test to see if it has become the active tab by looking at its color
+    #     # if it is active, return true
+    #     # if another tab is active, return false
+    #     # if no tab is active, raise an exception
+    #     self.click_named_element(self.expected_tab)
+    #     sleep(5)
+    #     self.get_screenshot_as_png(self.png_file_base, cfg.site.ScreenshotFolder)
+    #     self.active_tab = None
+    #     for tab_name in self.tab_names:
+    #         tab_color = self.get_tab_color(self.png_file_base, tab_name)
+    #         log.debug("get_tab_color(%s, %s) returned %s" % (self.png_file_base, tab_name, tab_color))
+    #         if tab_color == 'active_color':
+    #             self.active_tab = tab_name
+    #             break
+    #     return self.active_tab == self.expected_tab
 
     @Trace(log)
     def receive_call(self, caller_name=None, wait_for_status='early', wait_timeout=None):

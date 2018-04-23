@@ -58,14 +58,14 @@ class SeleniumActions(object):
         def __call__(self, actions):
             return actions.find_named_elements(self.name)
 
-    def get_short_locator(self, name):
-        cls = self.__class__
-        while True:
-            if not hasattr(cls, 'locators'):
-                raise Ux("Unknown locator %s" % name)
-            if name in cls.locators:
-                return cls.locators[name]
-            cls = cls.__base__
+    # def get_short_locator(self, name):
+    #     cls = self.__class__
+    #     while True:
+    #         if not hasattr(cls, 'locators'):
+    #             raise Ux("Unknown locator %s" % name)
+    #         if name in cls.locators:
+    #             return cls.locators[name]
+    #         cls = cls.__base__
 
     def get_locator(self, name):
         cls = self.__class__

@@ -176,25 +176,25 @@ class BaseView(AndroidActions):
         log.debug("color %s matches %s" % (c1, c2))
         return True
 
-    @Trace(log)
-    def get_tab_color(self, filebase, tab_name):
-        img_path = os.path.join(self.cfg.site.ScreenshotFolder, filebase + '.png')
-        log.debug('getting tab color from file %s' % img_path)
-        view_classname = self.__class__.__name__
-        active_color = self.cfg.colors[view_classname]['active_color'][:-1]
-        inactive_color = self.cfg.colors[view_classname]['inactive_color'][:-1]
-        crop_points = tuple(self.cfg.colors[view_classname]['crop_points'][tab_name])
-        log.debug("crop_points: %s" % repr(crop_points))
-        tab_color = self.get_cropped_color(img_path, crop_points)
-        if self.color_match(tab_color, active_color):
-            log.debug('tab_color is "active": %s' % repr(tab_color))
-            return 'active_color'
-        elif self.color_match(tab_color, inactive_color):
-            log.debug('tab_color is "inactive": %s' % repr(tab_color))
-            return 'inactive_color'
-        else:
-            exc_format = 'invalid color %s found for tab %s in view %s, active = %s, inactive = %s'
-            raise Ux(exc_format % (repr(tab_color), tab_name, view_classname, repr(active_color), repr(inactive_color)))
+    # @Trace(log)
+    # def get_tab_color(self, filebase, tab_name):
+    #     img_path = os.path.join(self.cfg.site.ScreenshotFolder, filebase + '.png')
+    #     log.debug('getting tab color from file %s' % img_path)
+    #     view_classname = self.__class__.__name__
+    #     active_color = self.cfg.colors[view_classname]['active_color'][:-1]
+    #     inactive_color = self.cfg.colors[view_classname]['inactive_color'][:-1]
+    #     crop_points = tuple(self.cfg.colors[view_classname]['crop_points'][tab_name])
+    #     log.debug("crop_points: %s" % repr(crop_points))
+    #     tab_color = self.get_cropped_color(img_path, crop_points)
+    #     if self.color_match(tab_color, active_color):
+    #         log.debug('tab_color is "active": %s' % repr(tab_color))
+    #         return 'active_color'
+    #     elif self.color_match(tab_color, inactive_color):
+    #         log.debug('tab_color is "inactive": %s' % repr(tab_color))
+    #         return 'inactive_color'
+    #     else:
+    #         exc_format = 'invalid color %s found for tab %s in view %s, active = %s, inactive = %s'
+    #         raise Ux(exc_format % (repr(tab_color), tab_name, view_classname, repr(active_color), repr(inactive_color)))
 
     @Trace(log)
     def get_element_color(self, filebase, elem, cropped_suffix=''):
