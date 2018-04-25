@@ -13,7 +13,11 @@ import argparse
 from os import path, getenv, mkdir
 from shutil import copyfile
 from bson.binary import Binary
-from cStringIO import StringIO
+import six
+if six.PY3:
+    from io import StringIO
+else:
+    from cStringIO import StringIO
 
 log = logging.get_logger('esi.run_features')
 
@@ -21,7 +25,6 @@ log = logging.get_logger('esi.run_features')
 @contextlib.contextmanager
 def capture():
     import sys
-    from cStringIO import StringIO
     oldout, olderr = sys.stdout, sys.stderr
     out = []
     try:

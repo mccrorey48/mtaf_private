@@ -5,11 +5,15 @@ import json
 from behave.__main__ import main
 import contextlib
 import time
+import six
 
 @contextlib.contextmanager
 def capture():
     import sys
-    from cStringIO import StringIO
+    if six.PY3:
+        from io import StringIO
+    else:
+        from cStringIO import StringIO
     oldout, olderr = sys.stdout, sys.stderr
     out = []
     try:
