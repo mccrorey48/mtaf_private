@@ -40,7 +40,9 @@ class Cfg(object):
 
     def __init__(self):
         self.site = Site()
-        self.site_name = os.getenv('MTAF_SITE', 'default')
+        self.site_tag = os.getenv('MTAF_SITE')
+        if self.site_tag is None:
+            raise Ux('MTAF_SITE must be defined in the run-time environment')
         with open("ePhone7/config/site.json") as f:
             self.all_site_cfgs = json.load(f)
         # - self.all_site_cfgs is the dictionary containing the output of the
@@ -66,10 +68,10 @@ class Cfg(object):
         # (self.site is a Site class instance, set up so that dictionary <name>/<value> pairs
         #
         self.site.update(byteify(self.all_site_cfgs['defaults']))
-        if self.site_name in self.all_site_cfgs["sites"]:
-            self.site.update(byteify(self.all_site_cfgs["sites"][self.site_name]))
+        if self.site_tag in self.all_site_cfgs["sites"]:
+            self.site.update(byteify(self.all_site_cfgs["sites"][self.site_tag]))
         else:
-            raise Ux('site name %s not found in config file' % self.site_name)
+            raise Ux('site name %s not found in config file' % self.site_tag)
 
 
 
