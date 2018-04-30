@@ -178,8 +178,10 @@ def contacts__my_coworker_contacts_are_displayed_in_a_list_with_checkboxes(conte
 @step("[contacts] my Coworker contacts are each shown with a Favorites star icon")
 @fake
 def contacts__my_coworker_contacts_are_each_shown_with_a_favorites_star_icon(context):
+    # this is the first thing done after touching the "Coworkers" tab and switching to multi-edit view
+    # with a long press, so it will be at the top of the contacts list
+    #
     # limit inspection to first 8 contacts because #9, if it exists, will be partly obscured
-    contacts_view.scroll_to_top_of_list()
     names = contacts_view.find_named_elements('ContactName')[:8]
     stars = contacts_view.find_named_elements('CallButton')[:8]
     assert len(names) == len(stars), "Expected contact name count (%d) to equal star icon count (%d)" \
@@ -196,7 +198,11 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_favorites_star_icon(con
 @fake
 def contacts__my_coworker_contacts_are_each_shown_with_a_handset_icon(context):
     # limit inspection to first 8 contacts because #9, if it exists, will be partly obscured
-    contacts_view.scroll_to_top_of_list()
+    # contacts_view.scroll_to_top_of_list()
+    #
+    # touching the active "Coworkers" tab is a workaround for not being able to scroll
+    # without getting the "Add Multiple Favorites" popup
+    context.run_substep('I touch the "Coworkers" tab')
     names = contacts_view.find_named_elements('ContactName')[:8]
     call_buttons = contacts_view.find_named_elements('CallButton')[:8]
     assert len(names) == len(call_buttons), "Expected contact name count (%d) to equal star icon count (%d)" \
