@@ -171,7 +171,7 @@ def voicemail__the_new_voicemail_is_the_first_category_item_listed(context, cate
 def voicemail__the_voicemail_audio_plays_back(context):
     elem = voicemail_view.find_named_element("PlaybackStartStop")
     voicemail_view.get_screenshot_as_png('playback')
-    color = voicemail_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'playback', elem, color_list_index=0)
+    color = voicemail_view.get_element_color_and_count('playback', elem, color_list_index=0)
     assert color[:3] == [56, 62, 77], \
         "Voicemail playback/start/stop wrong first color, expected (56, 62, 77), got %s" % color[:3]
     # paused: color[3] == 10930     playing: color[3] == 38160
