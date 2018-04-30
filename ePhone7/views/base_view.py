@@ -28,7 +28,6 @@ class BaseView(AndroidActions):
 
     locators = {
         "ActiveCallScreen": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_call_details"},
-        "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/recordButton"},
         "OtaServerOk": {"by": "id", "value": "com.esi_estech.ditto:id/confirm_button"},
         "CrashOkButton": {"by": "id", "value": "com.esi_estech.ditto:id/acra_crash_ok_btn"},
         "CrashOkButton2": {"by": "id", "value": "android:id/button1", "text": "OK"},
@@ -195,10 +194,6 @@ class BaseView(AndroidActions):
     #     else:
     #         exc_format = 'invalid color %s found for tab %s in view %s, active = %s, inactive = %s'
     #         raise Ux(exc_format % (repr(tab_color), tab_name, view_classname, repr(active_color), repr(inactive_color)))
-
-    @Trace(log)
-    def get_element_color(self, filebase, elem, cropped_suffix=''):
-        return self.get_element_color_and_count(filebase, elem, cropped_suffix)[:3]
 
     @Trace(log)
     def tap_element(self, el, duration=200):
