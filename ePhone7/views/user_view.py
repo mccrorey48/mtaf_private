@@ -21,7 +21,6 @@ class UserView(BaseView):
         "EhelpButton": {"by": "accessibility id", "value": "eHelp"},
         "HeadsetButton": {"by": "id", "value": "com.esi_estech.ditto:id/headset_button"},
         "History": {"by": "zpath", "value": "//tw/rl[2]/ll/tv", "text": "History"},
-        "HomeScreenLogo": {"by": "id", "value": "com.esi_estech.ditto:id/home_screen_company_logo"},
         "IncomingCallAnswerToHeadset": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_headset_button"},
         "IncomingCallIgnore": {"by": "id", "value": "com.esi_estech.ditto:id/ignore_button"},
         "IncomingCallAnswerToSpeaker": {"by": "id", "value": "com.esi_estech.ditto:id/answer_to_speaker_button"},
@@ -56,12 +55,12 @@ class UserView(BaseView):
         else:
             desired_color = cfg.colors['UserView']['dnd_off_color'][:-1]
         elem = self.find_named_element('DndButton')
-        self.get_screenshot_as_png('set_dnd', cfg.site.ScreenshotFolder)
+        self.get_screenshot_as_png('set_dnd')
         current_color = self.get_element_color('set_dnd', elem)
         if current_color != desired_color:
             self.click_element(elem)
             sleep(5)
-        self.get_screenshot_as_png('set_dnd', cfg.site.ScreenshotFolder)
+        self.get_screenshot_as_png('set_dnd')
         current_color = self.get_element_color('set_dnd', elem)
         if current_color != desired_color:
             raise Ux('unable to set dnd icon to desired color %s, current color is %s' % (desired_color, current_color))
