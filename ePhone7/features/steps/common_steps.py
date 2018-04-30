@@ -390,9 +390,9 @@ def i_go_to_the_home_screen(context):
     for i in range(tries):
         tries -= 1
         base_view.send_keycode_home()
-        if user_view.UserHeaderName is None:
+        if home_view.UserHeaderName is None:
             log.warn("retrying send_keycode_home: UserHeaderName element not present")
-        elif user_view.HomeScreenLogo is None:
+        elif home_view.HomeScreenLogo is None:
             log.warn("retrying send_keycode_home: HomeScreenLogo element not present")
         else:
             break
