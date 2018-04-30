@@ -1,0 +1,546 @@
+{
+    "caps": {
+        "login": [
+            {
+                "appActivity": ".settings.ui.LoginActivity",
+                "appPackage": "com.esi_estech.ditto",
+                "appWaitActivity": ".settings.ui.LoginActivity",
+                "appium-version": "1.3.7",
+                "autoLaunch": true,
+                "deviceName": "r2d2",
+                "newCommandTimeout": 1200,
+                "platformName": "Android",
+                "platformVersion": "4.4",
+                "type": "constants"
+            }
+        ],
+        "main": [
+            {
+                "appActivity": ".activities.MainViewActivity",
+                "appPackage": "com.esi_estech.ditto",
+                "appWaitActivity": "activities.MainViewActivity",
+                "appWaitPackage": "com.esi_estech.ditto",
+                "automationName": "Appium",
+                "deviceName": "r2d2",
+                "dontStopAppOnReset": true,
+                "newCommandTimeout": 1200,
+                "noReset": true,
+                "platformName": "Android",
+                "platformVersion": "4.4",
+                "type": "constants"
+            }
+        ],
+        "nolaunch": [
+            {
+                "appPackage": "com.esi_estech.ditto",
+                "autoLaunch": false,
+                "automationName": "Appium",
+                "deviceName": "r2d2",
+                "dontStopAppOnReset": true,
+                "newCommandTimeout": 1200,
+                "noReset": true,
+                "platformName": "Android",
+                "platformVersion": "4.4",
+                "type": "constants"
+            }
+        ],
+        "settings": [
+            {
+                "appPackage": "com.esi_estech.ditto",
+                "appium-version": "1.3.7",
+                "autoLaunch": false,
+                "deviceName": "r2d2",
+                "newCommandTimeout": 1200,
+                "platformName": "Android",
+                "platformVersion": "4.4",
+                "type": "constants"
+            }
+        ],
+        "tnc": [
+            {
+                "appActivity": ".activities.MainViewActivity",
+                "appPackage": "com.esi_estech.ditto",
+                "appWaitActivity": "settings.ui.TermsAndConditionsScreen",
+                "appium-version": "1.3.7",
+                "autoLaunch": true,
+                "deviceName": "r2d2",
+                "newCommandTimeout": 1200,
+                "platformName": "Android",
+                "platformVersion": "4.4",
+                "type": "constants"
+            }
+        ]
+    },
+    "colors": {
+        "ContactsView": {
+            "active_color": [
+                49,
+                63,
+                101,
+                65
+            ],
+            "crop_points": {
+                "Coworkers": [
+                    170,
+                    165,
+                    277,
+                    170
+                ],
+                "Favorites": [
+                    320,
+                    165,
+                    428,
+                    170
+                ],
+                "Groups": [
+                    471,
+                    165,
+                    579,
+                    170
+                ],
+                "Personal": [
+                    20,
+                    165,
+                    127,
+                    170
+                ]
+            },
+            "favorite_off_color": [
+                255,
+                255,
+                255,
+                375
+            ],
+            "favorite_on_color": [
+                255,
+                203,
+                5,
+                372
+            ],
+            "handset_dnd_color": [
+                216,
+                82,
+                81,
+                284
+            ],
+            "handset_empty_color": [
+                89,
+                95,
+                106,
+                91
+            ],
+            "handset_offline_color": [
+                86,
+                86,
+                86,
+                211
+            ],
+            "handset_online_color": [
+                79,
+                187,
+                110,
+                212
+            ],
+            "handset_unavailable_color": [
+                216,
+                82,
+                81,
+                210
+            ],
+            "inactive_color": [
+                34,
+                42,
+                68,
+                106
+            ],
+            "multi_favorite_off_color": [
+                255,
+                255,
+                255,
+                235
+            ],
+            "multi_favorite_on_color": [
+                255,
+                203,
+                5,
+                233
+            ],
+            "type": "constants"
+        },
+        "HistoryView": {
+            "active_color": [
+                49,
+                63,
+                101,
+                210
+            ],
+            "crop_points": {
+                "All": [
+                    22,
+                    165,
+                    279,
+                    170
+                ],
+                "Missed": [
+                    322,
+                    165,
+                    579,
+                    170
+                ]
+            },
+            "inactive_color": [
+                34,
+                42,
+                68,
+                256
+            ],
+            "type": "constants"
+        },
+        "UserView": {
+            "active_color": [
+                110,
+                121,
+                145,
+                108
+            ],
+            "crop_points": {
+                "Contacts": [
+                    20,
+                    950,
+                    129,
+                    955
+                ],
+                "Dial": [
+                    470,
+                    950,
+                    579,
+                    955
+                ],
+                "History": [
+                    170,
+                    950,
+                    279,
+                    955
+                ],
+                "Voicemail": [
+                    320,
+                    950,
+                    429,
+                    955
+                ]
+            },
+            "dnd_off_color": [
+                99,
+                139,
+                237,
+                545
+            ],
+            "dnd_on_color": [
+                229,
+                83,
+                83,
+                541
+            ],
+            "inactive_color": [
+                22,
+                23,
+                27,
+                109
+            ],
+            "type": "constants"
+        } ,
+        "VoicemailView": {
+            "active_color": [
+                49,
+                63,
+                101,
+                110
+            ],
+            "crop_points": {
+                "NewTab": [
+                    20,
+                    165,
+                    177,
+                    170
+                ],
+                "SavedTab": [
+                    220,
+                    165,
+                    378,
+                    170
+                ],
+                "TrashTab": [
+                    421,
+                    165,
+                    579,
+                    170
+                ]
+            },
+            "inactive_color": [
+                34,
+                42,
+                68,
+                158
+            ],
+            "type": "constants"
+        }
+    },
+    "defaults": {
+        "BuildImageServer": "10.3.1.164",
+        "BuildPropServer": "ec2-52-36-62-239.us-west-2.compute.amazonaws.com",
+        "ColorsFolder": "ePhone7/lib/utils",
+        "CsvFolder": "ePhone7/lib/utils/csv",
+        "DefaultTimeout": 1,
+        "DnsList": [
+            "10.0.50.156",
+            "10.0.50.157"
+        ],
+        "Mock": false,
+        "NullSound": false,
+        "OauthHeaders": {
+            "content-type": "application/json"
+        },
+        "OauthURL": "https://pro.esiapi.io/aaa/v2",
+        "OauthUsername": "{\"username\":\"%s@%s\",\"password\":\"%s\"}",
+        "OtaAlphaUrl": "http://52.36.62.239/aus/",
+        "OtaBetaUrl": "http://52.36.62.239/aus/beta/",
+        "OtaProdUrl": "http://52.36.62.239/aus/beta/",
+        "Quiet": true,
+        "ScreenshotFolder": "ePhone7/lib/utils/screenshots",
+        "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
+        "SerialDev": "/dev/ttyUSB0",
+        "UseTcp": false,
+        "VVMHeaders": {
+            "Authorization": "Bearer %s",
+            "Content-Type": "application/json"
+        },
+        "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
+        "XmlFolder": "ePhone7/lib/utils/xml"
+    },
+    "sites": {
+        "ds": {
+            "AospsHome": "/home/mmccrorey/aosps",
+            "ApksHome": "/home/mmccrorey/apks",
+            "DefaultForwardAccount": "Auto TesterH",
+            "DefaultSoftphoneUser": "Auto TesterG",
+            "Users": {
+                "R2d2User": {
+                    "AccountPassword": "2012",
+                    "AllContacts": [
+                        "2200",
+                        "2201",
+                        "2202",
+                        "2203",
+                        "2204"
+                    ],
+                    "CoworkerContacts": [
+                        "2200",
+                        "2201",
+                        "2202",
+                        "2203",
+                        "2204",
+                        "2205",
+                        "2206",
+                        "2207"
+                    ],
+                    "DomainName": "test2.test-eng.com",
+                    "FavoriteContacts": [
+                        "2205",
+                        "2206",
+                        "2207"
+                    ],
+                    "PhonePassword": "2012",
+                    "UserId": "2012",
+                    "UserName": "Martin Two",
+                    "type": "user"
+                },
+                "R2d2AltUser": {
+                    "AccountPassword": "",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "v67XkM6U",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2012b",
+                    "UserNameIncoming": "Martin Two",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2012.wav",
+                    "type": "user"
+                },
+                "Auto TesterG": {
+                    "AccountPassword": "2206",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "Lp0PLwJk",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2206",
+                    "UserNameIncoming": "Auto Testerg",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2206.wav",
+                    "type": "user"
+                },
+                "Auto TesterH": {
+                    "AccountPassword": "2207",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "61M46JUi",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2207",
+                    "UserNameIncoming": "Auto Testerh",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2207.wav",
+                    "type": "user"
+                }
+            }
+        },
+        "js": {
+            "AospsHome": "/home/jsabugo/aosps",
+            "ApksHome": "/home/jsabugo/apks",
+            "DefaultForwardAccount": "Auto TesterF",
+            "DefaultSoftphoneUser": "Auto TesterE",
+            "Users": {
+                "R2d2User": {
+                    "AccountPassword": "2001",
+                    "AllContacts": [
+                        "2200",
+                        "2201",
+                        "2202",
+                        "2203",
+                        "2204"
+                    ],
+                    "CoworkerContacts": [
+                        "2200",
+                        "2201",
+                        "2202",
+                        "2203",
+                        "2204",
+                        "2205",
+                        "2206",
+                        "2207"
+                    ],
+                    "DomainName": "test2.test-eng.com",
+                    "FavoriteContacts": [
+                        "2205",
+                        "2206",
+                        "2207"
+                    ],
+                    "PhonePassword": "2001",
+                    "UserId": "2001",
+                    "UserName": "Jessica Sabugo"
+                },
+                "R2d2AltUser": {
+                    "AccountPassword": "",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "G273ci42",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2001b",
+                    "UserNameIncoming": "Jessica Sabugo",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2001.wav"
+                },
+                "Auto TesterE": {
+                    "AccountPassword": "2204",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "kVAsy1oc",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2204",
+                    "UserNameIncoming": "Auto Testere",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2204.wav"
+                },
+                "Auto TesterF": {
+                    "AccountPassword": "2205",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "nBiQ9DEG",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2205",
+                    "UserNameIncoming": "Auto Testerf",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2205.wav"
+                }
+            }
+        },
+        "mm": {
+            "AospsHome": "/home/mmccrorey/aosps",
+            "ApksHome": "/home/mmccrorey/apks",
+            "DefaultForwardAccount": "Auto TesterD",
+            "DefaultSoftphoneUser": "Auto TesterC",
+            "aospshome": "/home/mmccrorey/aosps",
+            "apkshome": "/home/mmccrorey/apks",
+            "Users": {
+                "R2d2User": {
+                    "AccountPassword": "2016",
+                    "AllContacts": [
+                        "2200",
+                        "2201",
+                        "2202",
+                        "2203",
+                        "2204"
+                    ],
+                    "CoworkerContacts": [
+                        "2200",
+                        "2201",
+                        "2202",
+                        "2203",
+                        "2204",
+                        "2205"
+                    ],
+                    "DomainName": "test2.test-eng.com",
+                    "FavoriteContacts": [
+                        "2200",
+                        "2201",
+                        "2202"
+                    ],
+                    "PhonePassword": "2016",
+                    "UserId": "2016",
+                    "UserName": "David ePhone7"
+                },
+                "R2d2AltUser": {
+                    "AccountPassword": "2016",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "yafK8HPF",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2016b",
+                    "UserNameIncoming": "Martin Two",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2016.wav"
+                },
+                "Auto TesterC": {
+                    "AccountPassword": "2202",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "vsvSIHpL",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2202",
+                    "UserNameIncoming": "Auto Testerc",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2202.wav"
+                },
+                "Auto TesterD": {
+                    "AccountPassword": "2203",
+                    "DomainName": "test2.test-eng.com",
+                    "PhonePassword": "H7037Q47",
+                    "Proxy": "nr5.cpbx.esihs.net",
+                    "UserId": "2203",
+                    "UserNameIncoming": "Auto Testerd",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2203.wav"
+                }
+            }
+        }
+
+    }
+}
