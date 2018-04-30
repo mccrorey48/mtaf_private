@@ -756,7 +756,10 @@ class Inspector(Frame):
         btn_frame.find_frame.cbs.grid(row=0, column=ai.ffr, padx=2, pady=2, sticky='n')
 
         btn_frame.find_frame.loc = Frame(btn_frame.find_frame)
-        btn_frame.find_frame.loc.grid(row=0, column=ai.ffr, padx=2, pady=2, sticky='n')
+        btn_frame.find_frame.loc.grid_columnconfigure(0, weight=1)
+        loc_column = ai.ffr
+        btn_frame.find_frame.loc.grid(row=0, column=loc_column, padx=2, pady=2, sticky='new')
+        btn_frame.find_frame.grid_columnconfigure(loc_column, weight=1)
 
         self.use_parent = IntVar()
         self.use_parent.set(0)
@@ -781,7 +784,6 @@ class Inspector(Frame):
         btn_frame.find_frame.loc.hsb = Scrollbar(btn_frame.find_frame.loc, orient=HORIZONTAL,
                                                  command=btn_frame.find_frame.loc.value.xview)
         btn_frame.find_frame.loc.value["xscrollcommand"] = btn_frame.find_frame.loc.hsb.set
-        btn_frame.find_frame.grid_columnconfigure(3, weight=1)
         btn_frame.find_frame.loc.value.grid(row=0, column=0, padx=2, pady=0, sticky='ew')
         btn_frame.find_frame.loc.hsb.grid(row=1, column=0, sticky='ew')
 
