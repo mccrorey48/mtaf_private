@@ -1,4 +1,4 @@
-rm dist/*
+rm -f dist/* build/*
 python setup.py bdist_wheel --universal
 pip uninstall -y mtaf
 pip install dist/*
