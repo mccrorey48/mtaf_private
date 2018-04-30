@@ -25,6 +25,7 @@ def i_touch_the_ptextptail(context, text, tail):
     # then looks for an element with full text content matching <text>
     if tail == 'tab':
         all_views.user.goto_tab(text)
+        context.last_tab_selected = text
     else:
         all_views.base.touch_element_with_text(text)
 
