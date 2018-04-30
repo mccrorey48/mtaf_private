@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from docutils.core import publish_cmdline
 from glob import glob
 
 
@@ -8,13 +7,12 @@ def readme():
         return f.read()
 
 
-publish_cmdline(writer_name='html', argv=['README.rst', 'README.html'])
 
 setup(
     name='mtaf',
     packages=find_packages(),
     author='Martin McCrorey',
-    version='1.0.41',
+    version='1.0.42',
     license='MIT',
     url='https://github.com/mccrorey48/mtaf',
     description='Mobile Test Automation Framework with Appium Inspector GUI for Android Applications',
@@ -38,14 +36,15 @@ setup(
     ],
     install_requires=[
         'Appium-Python-Client==0.25',
+        'behave==1.2.6',
         'olefile==0.44',
+        'requests==2.18.4',
         'Pillow==4.3.0',
         'pymongo==3.3.1',
-        'selenium==3.8.0',
-        'PyYAML==3.12',
-        'six==1.11.0',
-        'requests==2.18.4',
         'pyserial==3.3',
+        'PyYAML==3.12',
+        'selenium==3.8.0',
+        'six==1.11.0',
         'spur==0.3.20'
     ],
     long_description=readme(),
