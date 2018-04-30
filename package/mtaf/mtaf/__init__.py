@@ -25,7 +25,7 @@ def start_inspector():
     #
     # note: log directory is set in mtaf_logging module from MTAF_LOG_DIR environment variable, defaults to ./log
     parser.add_argument('-c', '--config_file', type=str, default='./inspector_config.yml',
-                        help='YAML configuration file (default "./config.yml")')
+                        help='YAML configuration file (default "./inspector_config.yml")')
     parser.add_argument('-p', '--plugin_dir', type=str, default='.',
                         help='plugin directory (default="." or set in configuration file)')
     parser.add_argument('opts', type=str, nargs='*', metavar='key=value',
