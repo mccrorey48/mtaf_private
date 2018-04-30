@@ -43,6 +43,7 @@ class UserView(BaseView):
         self.tab_names = ('Contacts', 'History', 'Voicemail', 'Dial')
         self.png_file_base = 'user'
         self.expected_tab = None
+        self.current_tab = None
         self.active_tab = None
         self.call_status_wait = 30
         self.softphones = {}
@@ -99,6 +100,7 @@ class UserView(BaseView):
     @Trace(log)
     def goto_tab(self, tab_name):
         self.click_named_element(tab_name)
+        self.current_tab = tab_name
         # self.expected_tab = tab_name
         # failmsg_fmt = 'expect active tab to be %s, got %s'
         # self.wait_for_condition_true(self.verify_active_tab,
