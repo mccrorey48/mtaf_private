@@ -16,7 +16,6 @@ from shutil import copy
 from time import time
 
 from mtaf.user_exception import UserException as Ux
-# from pkg_resources import Requirement, resource_filename
 
 hi = [1209.0, 1336.0, 1477.0, 1633.0]
 lo = [697.0, 770.0, 852.0, 941.0]
@@ -200,7 +199,6 @@ def create_wav_file(path, quiet=False):
         use_dtmf = False
     else:
         raise Ux('unable to create wav file %s' % path)
-    # source_wav_dir = resource_filename(Requirement.parse("mtaf"), "mtaf/wav")
     source_wav_dir = os.path.join(sys.prefix, 'mtaf', 'wav')
     # generate a new wav file by concatenating the elements
     data = []
