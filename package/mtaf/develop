@@ -1,2 +1,10 @@
 pip uninstall -y mtaf
 python setup.py develop
+src_dir=$PWD
+cdvirtualenv
+echo $PWD
+rm -rf mtaf
+mkdir -p mtaf
+cd mtaf
+ln -s $src_dir/wav
+cd $src_dir
