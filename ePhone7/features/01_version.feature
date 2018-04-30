@@ -4,8 +4,8 @@ Feature: The version of the software should be correct
   Background: I am at the Home screen
     Given I go to the home screen
 
-  Scenario: I upgrade the phone if the versions are not correct
-    Then  I upgrade the phone if the versions are not correct
+#  Scenario: I upgrade the phone if the versions are not correct
+#    Then  I upgrade the phone if the versions are not correct
 
   Scenario: I want to be using the correct version of the ePhone7 software
     When  [user] I touch the Preferences icon
