@@ -16,7 +16,11 @@ from os import path, getenv, mkdir
 from ePhone7.lib.utils.versions import *
 from shutil import copyfile
 from bson.binary import Binary
-from cStringIO import StringIO
+import six
+if six.PY3:
+    from io import StringIO
+else:
+    from cStringIO import StringIO
 import six
 
 log = mtaf_logging.get_logger('mtaf.run_features')
