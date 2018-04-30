@@ -27,8 +27,8 @@ def active_call__the_active_call_screen_appears(context):
 @step("[active_call] a Record button is visible")
 @fake
 def activecall__a_record_button_is_visible(context):
-    assert user_view.element_is_present('CallRecordButton')
-    context.record_button = user_view.find_named_element('CallRecordButton')
+    assert active_call_view.element_is_present('CallRecordButton')
+    context.record_button = active_call_view.find_named_element('CallRecordButton')
 
 
 @step('[active_call] an "Active Call" window appears')
@@ -150,7 +150,7 @@ def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
     call_icon = active_call_view.find_named_element('AudioPathIcon')
     user_view.get_screenshot_as_png('call_icon')
     expected_count = white_counts[expect_icon]
-    actual_count = active_call_view.get_element_color_and_count(cfg.site.ScreenshotFolder, 'call_icon', call_icon)[-1]
+    actual_count = active_call_view.get_element_color_and_count('call_icon', call_icon)[-1]
     for icon in white_counts:
         if white_counts[icon] == actual_count:
             assert actual_count == expected_count, "Expected %s icon, got %s" % (expect_icon, icon)
@@ -169,7 +169,7 @@ def activecall__the_incall_contacts_screen_appears(context):
 @fake
 def activecall__the_record_button_is_gray(context):
     user_view.get_screenshot_as_png('record_button')
-    expected_color = [119, 120, 122]
+    expected_color = [38, 40, 43]
     actual_color = user_view.get_element_color('record_button', context.record_button)
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
