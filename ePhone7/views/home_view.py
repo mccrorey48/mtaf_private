@@ -7,7 +7,7 @@ log = mtaf_logging.get_logger('mtaf.contacts_view')
 class HomeView(UserView):
 
     locators = {
-        "HomeScreenLogo": {"by": "id", "value": "com.esi_estech.ditto:id/home_screen_company_logo"},
+        "HomeScreenLogo": {"by": "id", "value": "com.esi_estech.ditto:id/companyLogoWidget"},
     }
 
     def __init__(self):
