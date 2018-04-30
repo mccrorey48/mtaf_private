@@ -63,16 +63,15 @@ class SoftphoneManager:
     def __init__(self):
         self.softphones = {}
 
-    def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp, reg_wait=True, wav_dir='wav'):
+    def get_softphone(self, uri, proxy, password, null_snd, dns_list, tcp, reg_wait=True, wav_dir='wav',
+                      require_reg_ok=True):
         if uri in self.softphones:
             self.softphones[uri].account_info.account.set_registration(True)
             log.debug("SoftphoneManager.get_softphone returning existing softphone %s" % uri)
         else:
             log.debug("SoftphoneManager.get_softphone creating softphone %s" % uri)
             self.softphones[uri] = Softphone(uri, proxy=proxy, password=password, null_snd=null_snd, dns_list=dns_list,
-                                             tcp=tcp, reg_wait=False, wav_dir=wav_dir)
-        if reg_wait:
-            self.softphones[uri].account_info.account_cb.wait()
+                                             tcp=tcp, reg_wait=reg_wait, wav_dir=wav_dir, require_reg_ok=require_reg_ok)
         return self.softphones[uri]
 
     def end_all_calls(self):
@@ -93,7 +92,7 @@ class Softphone:
 
     @Trace(log)
     def __init__(self, uri, proxy, password, null_snd=True, dns_list=None, tcp=False,
-                 pbfile='default', record=True, quiet=True, reg_wait=True, wav_dir='wav'):
+                 pbfile='default', record=True, quiet=True, reg_wait=True, wav_dir='wav', require_reg_ok=True):
         self.uri = uri
         self.wav_dir = wav_dir
         try:
@@ -119,7 +118,7 @@ class Softphone:
                 self.account_info.pbfile_relpath = os.path.join(self.wav_dir, pbfile)
                 create_wav_file(self.account_info.pbfile_relpath, quiet)
             if reg_wait:
-                self.account_info.account_cb.wait()
+                self.account_info.account_cb.wait(require_reg_ok=require_reg_ok)
             self.account_info.record = record
             self.account_info.lib = self.lib
 
@@ -257,6 +256,7 @@ class MyAccountCallback(pj.AccountCallback):
 
     sem = None
     call_info = None
+    require_reg_ok = None
 
     def __init__(self, account_info):
         pj.AccountCallback.__init__(self)
@@ -264,19 +264,23 @@ class MyAccountCallback(pj.AccountCallback):
         self.account_info = account_info
         pass
 
-    def wait(self):
+    def wait(self, require_reg_ok=True):
+        self.require_reg_ok = require_reg_ok
         self.sem = threading.Semaphore(0)
-        log.debug("%s: acquiring semaphore")
+        log.debug("%s: acquiring semaphore" % self.account_info.uri)
         self.sem.acquire()
+        if self.require_reg_ok and self.account_info.reg_status != 200:
+            raise Ux("Softphone registration status = %s, expected 200" % self.account_info.reg_status)
 
     def on_reg_state(self):
         reg_info = self.account.info()
         log.debug("%s: on_reg_state - registration status = %s (%s)" % (reg_info.uri, reg_info.reg_status,
                                                                         reg_info.reg_reason))
         self.account_info.reg_status = reg_info.reg_status
-        if self.sem and self.account_info.reg_status == 200:
+        if self.sem:
             self.sem.release()
             self.sem = None
+            log.debug("%s: released semaphore" % reg_info.uri)
 
     def on_incoming_call(self, call):
         log.debug('on_incoming_call: account_info = %s' % self.account_info)
