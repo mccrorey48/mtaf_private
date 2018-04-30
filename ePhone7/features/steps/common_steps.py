@@ -377,12 +377,6 @@ def i_enter_part_of_a_personal_contact_number_using_the_keypad(context):
     pass
 
 
-@step("I go to the Contacts view")
-@fake
-def i_go_to_the_contacts_view(context):
-    user_view.goto_tab('Contacts')
-
-
 @step("I go to the home screen")
 @fake
 def i_go_to_the_home_screen(context):
@@ -398,18 +392,6 @@ def i_go_to_the_home_screen(context):
             break
     else:
         raise Ux("Did not go to home screen in %d tries" % tries)
-
-
-@step("I go to the New Voicemail view")
-@fake
-def i_go_to_the_new_voicemail_view(context):
-    contacts_view.goto_tab('Personal')
-
-
-@step("I go to the Saved Voicemail view")
-@fake
-def i_go_to_the_saved_voicemail_view(context):
-    contacts_view.goto_tab('Personal')
 
 
 @step("I have at least one new voicemail")
