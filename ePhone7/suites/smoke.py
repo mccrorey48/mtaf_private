@@ -3,7 +3,7 @@ from os import path, makedirs
 from mtaf import mtaf_logging
 from ePhone7.lib.utils.e7_microservices import get_vmids
 
-logging_esi.console_handler.setLevel(logging_esi.INFO)
+mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
 log = mtaf_logging.get_logger('mtaf.smoke')
 with mtaf_logging.msg_src_cm('importing modules'):
     import unittest
@@ -15,7 +15,7 @@ debug = False
 
 
 def except_screenshot(type, value, traceback):
-    xml = base_view.get_source();
+    xml = base_view.get_source()
     try:
         makedirs(cfg.site.XmlFolder)
     except OSError as e:
@@ -26,7 +26,7 @@ def except_screenshot(type, value, traceback):
     log.info("saving xml %s" % xml_fullpath)
     with open(xml_fullpath, 'w') as _f:
         _f.write(xml.encode('utf8'))
-    base_view.get_screenshot_as_png('exception', cfg.site.ScreenshotFolder)
+    base_view.get_screenshot_as_png('exception')
 
 
 class SmokeTests(unittest.TestCase):
