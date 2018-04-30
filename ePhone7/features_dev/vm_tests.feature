@@ -1,6 +1,5 @@
 Feature: voicemail matcher
 
-  @wip
   Scenario: match new VM elements to vvm microservice metadata
     Given I send the Home keycode
     Then  the Home view is present

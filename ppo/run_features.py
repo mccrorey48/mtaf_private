@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 from behave.__main__ import main
 from pymongo import MongoClient
 from mtaf import mtaf_logging
-from lib.fake_detector import FakeDetector
-from lib.user_exception import UserException as Ux
-from lib.wrappers import Trace
+from mtaf.fake_detector import FakeDetector
+from mtaf.user_exception import UserException as Ux
+from mtaf.trace import Trace
 import argparse
 from os import path, getenv, mkdir
 from shutil import copyfile
@@ -19,7 +19,11 @@ log =mtaf_logging.get_logger('mtaf.run_features')
 @contextlib.contextmanager
 def capture():
     import sys
-    from cStringIO import StringIO
+    import six
+    if six.PY3:
+        from io import StringIO
+    else:
+        from cStringIO import StringIO
     oldout, olderr = sys.stdout, sys.stderr
     out = []
     try:
