@@ -22,6 +22,7 @@ selenium_url = "http://localhost:4723/wd/hub"
 class AndroidActions(SeleniumActions):
     driver = None
     adb = ADB()
+    cfg = None
 
     def open_browser(self, browser=None):
         raise Ux('open_browser method not available using Appium')
@@ -80,8 +81,15 @@ class AndroidActions(SeleniumActions):
             AndroidActions.driver = None
 
     @Trace(log)
-    def get_element_color_and_count(self, screenshot_dir, filebase, elem, cropped_suffix='', color_list_index=1):
-        im = Image.open(os.path.join(screenshot_dir, filebase + '.png'))
+    def get_element_color(self, filebase, elem, cropped_suffix=''):
+        return self.get_element_color_and_count(filebase, elem, cropped_suffix)[:3]
+
+    @Trace(log)
+    def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
+        if self.cfg is None:
+            raise Ux("self.cfg must be set in the derived view class")
+        screenshot_folder = self.cfg.site.ScreenshotFolder
+        im = Image.open(os.path.join(screenshot_folder, filebase + '.png'))
         # calculate image crop points from element location['x'], location['y'], size['height'] and size['width']
         location = elem.location
         size = elem.size
@@ -95,10 +103,10 @@ class AndroidActions(SeleniumActions):
         crop_points = [int(i) for i in (x1, y1, x2, y2)]
         # print "crop_points: " + repr(crop_points)
         cropped = im.crop(crop_points)
-        cropped.save(os.path.join(screenshot_dir, 'cropped%s.png' % cropped_suffix))
+        cropped.save(os.path.join(screenshot_folder, 'cropped%s.png' % cropped_suffix))
         color_band = Image.new('RGBA', (crop_points[2] - crop_points[0], crop_points[3] - crop_points[1]), 'yellow')
         im.paste(color_band, crop_points, 0)
-        im.save(os.path.join(screenshot_dir, filebase + '_after.png'))
+        im.save(os.path.join(screenshot_folder, filebase + '_after.png'))
         return self.get_image_color(cropped, color_list_index)
 
     @Trace(log)
@@ -175,5 +183,8 @@ class AndroidActions(SeleniumActions):
     def wait_activity(self, activity, timeout):
         return self.driver.wait_activity(activity, timeout)
 
+#
+#
+#
 
 android_actions = AndroidActions()
