@@ -22,14 +22,14 @@ Feature: As a user I want to keep access to my voicemail after I stop using a VL
   Scenario: I have my new and saved voicemails after disabling the VLAN
     Given I have at least one saved voicemail
     And   I have at least one new voicemail
-    And   I go to the New Voicemail view
+    When  I touch the "New" tab
     Then  my new voicemails are listed
-    When  I go to the Saved Voicemail view
+    When  I touch the "Saved" tab
     Then  my saved voicemails are listed
     When  [network] I touch the VLAN Disable button
     Then  [network] the Disable button is active
-    When  I go to the New Voicemail view
+    When  I touch the "New" tab
     Then  my new voicemails are listed
-    When  I go to the Saved Voicemail view
+    When  I touch the "Saved" tab
     Then  my saved voicemails are listed
 
