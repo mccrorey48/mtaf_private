@@ -48,6 +48,46 @@ def mkdir_p(path):
             raise
 
 
+class AutoIncrementer(object):
+    # useful for keeping track of row and column assignments when building a GUI;
+    # permits adding a widget in the middle of a group without having to reassign
+    # the rows or columns in widgets that follow the added widget
+    #
+    # To Use:
+    # - create an instance of AutoIncrementer
+    # - to start a named row or column counter, give it an appropriate class member name
+    #   and it will be automatically created, returning a zero value
+    # - each time the value of the counter is used, it will be incremented by 1
+    # - to set the value of the counter, just assign to it
+    # - to skip rows or columns, use the "+=" operator
+    #
+    # Example:
+    #   ai = AutoIncrementer()
+    #   btn = Button(...)
+    #   btn.grid(row=0, column=ai.btn_col)
+    #   btn2 = Button(...)
+    #   btn2.grid(row=0, column=ai.btn_col)
+    #   btn3 = Button(...)
+    #   # skip a couple of columns
+    #   ai.btn_col += 2
+    #   btn3.grid(row=0, column=ai.btn_col)
+
+    def __init__(self):
+        self.__dict__['counts'] = {}
+
+    def __setattr__(self, name, value):
+        self.__dict__['counts'][name] = value
+
+    def __getattr__(self, name):
+        if name not in self.__dict__['counts']:
+            self.__dict__['counts'][name] = 0
+        prev_count = self.__dict__['counts'][name]
+        self.__dict__['counts'][name] += 1
+        # six.print_("AutoIncrementer returning %s for name %s" % (prev_count, name))
+        return prev_count
+
+
+
 class MyDialog(tk_simple_dialog.Dialog):
 
     list = None
@@ -193,9 +233,10 @@ class MyMenu(Menu):
     def enable_items(self, appium_open):
         for label in self.items:
             for i in range(len(self.items[label]["uses_appium"])):
-                if appium_open and self.items[label]["uses_appium"][i]:
+                uses_appium = self.items[label]["uses_appium"][i]
+                if appium_open and (uses_appium is True or uses_appium is None):
                     self.items[label]["menu"].entryconfig(i + 1, state=NORMAL)
-                elif (not appium_open) and (not self.items[label]["uses_appium"][i]):
+                elif (not appium_open) and (uses_appium is False or uses_appium is None):
                     self.items[label]["menu"].entryconfig(i + 1, state=NORMAL)
                 else:
                     self.items[label]["menu"].entryconfig(i + 1, state=DISABLED)
@@ -211,6 +252,7 @@ class BottomFrame(Frame):
 
 class ButtonFrame(Frame):
     find_frame = None
+
 
 old_stdout = sys.stdout
 
@@ -264,6 +306,8 @@ class Inspector(Frame):
         self.rec_file = os.path.join(self.cfg['tmp_dir'], 'inspector_recording.txt')
         self.loc_file = os.path.join(self.cfg['tmp_dir'], 'inspector_locators.json')
         self.rec_frame = None
+        self.scroll_elem1_var = StringVar()
+        self.scroll_elem2_var = StringVar()
         self.swipe_ms_var = StringVar()
         self.swipe_y1_var = StringVar()
         self.swipe_y2_var = StringVar()
@@ -273,7 +317,7 @@ class Inspector(Frame):
         self.top_frames = []
         self.use_parent = None
         self.views = []
-        self.within_frame = IntVar()
+        self.within_frame = None
         self.worker_thread = None
         self.zpath_frame_btns = {}
         self.zpath_frame = None
@@ -319,7 +363,7 @@ class Inspector(Frame):
             if hasattr(top_frame, 'expand_y') and top_frame.expand_y is True:
                 self.grid_rowconfigure(top_frame_row, weight=1)
             top_frame.grid_forget()
-            top_frame.grid(row=top_frame_row, column=0, padx=4, pady=4, sticky='news')
+            top_frame.grid(row=top_frame_row, column=0, padx=4, pady=2, sticky='news')
             top_frame_row += 1
 
     def record(self, txt):
@@ -688,13 +732,17 @@ class Inspector(Frame):
         self.find_button.configure(bg=btn_select_bg, activebackground=btn_select_bg)
 
     def create_btn_frame(self):
-        btn_frame_row = 0
+        ai = AutoIncrementer()
         btn_frame = ButtonFrame(self, bg="brown")
+
         btn_frame.find_frame = Frame(btn_frame, bg='tan')
+        btn_frame.find_frame.grid(row=ai.bf_row, column=0, sticky='ew', padx=2, pady=2)
         btn = Button(btn_frame.find_frame, text="find elements:", bg=btn_default_bg,
                      command=lambda: self.do_cmd(self.find_elements), state=DISABLED)
         self.find_button = btn
         self.appium_btns.append(btn)
+        btn.grid(row=0, column=ai.ffr, padx=2, pady=2, sticky='n')
+
         self.find_by_var = StringVar()
         self.find_by_var.set(self.locator_by_values[0])
         btn_frame.find_frame.by = Combobox(btn_frame.find_frame, width=16, state='readonly', takefocus=False,
@@ -702,103 +750,79 @@ class Inspector(Frame):
         self.appium_btns.append(btn_frame.find_frame.by)
         btn_frame.find_frame.by.bind('<<ComboboxSelected>>', self.update_find_widgets)
         btn_frame.find_frame.by.bind("<FocusIn>", self.defocus)
-        btn_frame.find_frame.by.grid(row=0, column=1, padx=2, pady=2, sticky='ew')
+        btn_frame.find_frame.by.grid(row=0, column=ai.ffr, padx=2, pady=2, sticky='n')
+
+        btn_frame.find_frame.cbs = Frame(btn_frame.find_frame, bg='tan')
+        btn_frame.find_frame.cbs.grid(row=0, column=ai.ffr, padx=2, pady=2, sticky='n')
+
+        btn_frame.find_frame.loc = Frame(btn_frame.find_frame)
+        btn_frame.find_frame.loc.grid(row=0, column=ai.ffr, padx=2, pady=2, sticky='n')
+
         self.use_parent = IntVar()
         self.use_parent.set(0)
-        btn_frame.find_frame.use_parent = Checkbutton(btn_frame.find_frame, text='from Parent',
-                                                      variable=self.use_parent, state=DISABLED)
-        btn_frame.find_frame.use_parent.grid(row=0, column=2, padx=2, pady=2, sticky='ew')
+        btn_frame.find_frame.cbs.use_parent = Checkbutton(btn_frame.find_frame.cbs, text='from Parent',
+                                                          variable=self.use_parent, state=DISABLED)
+        btn_frame.find_frame.cbs.use_parent.grid(row=0, column=0, padx=2, pady=2, sticky='ew')
+
+        self.within_frame = IntVar()
         self.within_frame.set(0)
-        btn_frame.find_frame.within_frame = Checkbutton(btn_frame.find_frame, text='within frame',
+        btn_frame.find_frame.cbs.within_frame = Checkbutton(btn_frame.find_frame.cbs, text='within frame',
                                                         variable=self.within_frame, state=DISABLED)
-        btn_frame.find_frame.within_frame.grid(row=2, column=2, padx=2, pady=2, sticky='ew')
+        btn_frame.find_frame.cbs.within_frame.grid(row=1, column=0, padx=2, pady=2, sticky='ew')
+
         self.find_value_var = StringVar()
         self.find_value_var.trace('w', self.callback)
-        btn_frame.find_frame.value = Combobox(btn_frame.find_frame, width=60,
-                                              values=self.get_filtered_locator_keys(),
-                                              textvariable=self.find_value_var)
-        self.appium_btns.append(btn_frame.find_frame.value)
-        btn_frame.find_frame.value.bind('<<ComboboxSelected>>', self.update_find_frame)
-        btn_frame.find_frame.value.bind("<FocusIn>", self.defocus)
-        btn_frame.find_frame.hsb = Scrollbar(btn_frame.find_frame, orient=HORIZONTAL,
-                                             command=btn_frame.find_frame.value.xview)
-        btn_frame.find_frame.value["xscrollcommand"] = btn_frame.find_frame.hsb.set
-        btn.grid(row=0, column=0, padx=2, pady=2)
+        btn_frame.find_frame.loc.value = Combobox(btn_frame.find_frame.loc, width=60,
+                                                  values=self.get_filtered_locator_keys(),
+                                                  textvariable=self.find_value_var)
+        self.appium_btns.append(btn_frame.find_frame.loc.value)
+        btn_frame.find_frame.loc.value.bind('<<ComboboxSelected>>', self.update_find_frame)
+        btn_frame.find_frame.loc.value.bind("<FocusIn>", self.defocus)
+        btn_frame.find_frame.loc.hsb = Scrollbar(btn_frame.find_frame.loc, orient=HORIZONTAL,
+                                                 command=btn_frame.find_frame.loc.value.xview)
+        btn_frame.find_frame.loc.value["xscrollcommand"] = btn_frame.find_frame.loc.hsb.set
         btn_frame.find_frame.grid_columnconfigure(3, weight=1)
-        btn_frame.find_frame.value.grid(row=0, column=3, padx=2, pady=0, sticky='ew')
-        btn_frame.find_frame.hsb.grid(row=1, column=3, sticky='ew')
-        btn_frame.find_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
-        btn_frame_row += 1
-        btn_frame.xy_frame = Frame(btn_frame, bg='tan')
-        btn_frame.xy_frame.grid_columnconfigure(0, weight=1)
-        y_entry = Entry(btn_frame.xy_frame, width=4, textvariable=self.tap_y_var)
-        self.appium_btns.append(y_entry)
-        x_entry = Entry(btn_frame.xy_frame, width=4, textvariable=self.tap_x_var)
-        self.appium_btns.append(x_entry)
-        btn = Button(btn_frame.xy_frame, text="tap:", bg=btn_default_bg, command=self.tap_xy, state=DISABLED)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=1, padx=2, pady=2, sticky='w')
-        Label(btn_frame.xy_frame, text=" x:").grid(row=0, column=2)
-        x_entry.grid(row=0, column=3, padx=2, pady=2, sticky='w')
-        Label(btn_frame.xy_frame, text=" y:").grid(row=0, column=4)
-        y_entry.grid(row=0, column=5, padx=2, pady=2, sticky='w')
-        y1_entry = Entry(btn_frame.xy_frame, width=4, textvariable=self.swipe_y1_var)
-        self.appium_btns.append(y1_entry)
-        y2_entry = Entry(btn_frame.xy_frame, width=4, textvariable=self.swipe_y2_var)
-        self.appium_btns.append(y2_entry)
-        ms_entry = Entry(btn_frame.xy_frame, width=4, textvariable=self.swipe_ms_var)
-        self.swipe_ms_var.set(100)
-        self.appium_btns.append(ms_entry)
-        Label(btn_frame.xy_frame, text="   ", bg='tan').grid(row=0, column=6)
-        btn = Button(btn_frame.xy_frame, text="swipe:", bg=btn_default_bg, command=self.swipe, state=DISABLED)
-        self.appium_btns.append(btn)
-        btn.grid(row=0, column=7, padx=2, pady=2, sticky='w')
-        Label(btn_frame.xy_frame, text=" y1:").grid(row=0, column=8)
-        y1_entry.grid(row=0, column=9, padx=2, pady=2, sticky='w')
-        Label(btn_frame.xy_frame, text=" y2:").grid(row=0, column=10)
-        y2_entry.grid(row=0, column=11, padx=2, pady=2, sticky='w')
-        btn_frame.xy_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
-        Label(btn_frame.xy_frame, text=" ms:").grid(row=0, column=13)
-        ms_entry.grid(row=0, column=14, padx=2, pady=2, sticky='w')
-        btn_frame.xy_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
-        btn_frame_row += 1
+        btn_frame.find_frame.loc.value.grid(row=0, column=0, padx=2, pady=0, sticky='ew')
+        btn_frame.find_frame.loc.hsb.grid(row=1, column=0, sticky='ew')
+
         btn_frame.attr_frame = AttrFrame(btn_frame, bg='tan')
+        btn_frame.attr_frame.grid(row=ai.bf_row, column=0, sticky='ew', padx=2, pady=2)
         btn_frame.attr_frame.index_label = Label(btn_frame.attr_frame, text="select elem:", bg="tan")
         self.appium_btns.append(btn_frame.attr_frame.index_label)
-        btn_frame.attr_frame.index_label.grid(row=0, column=0, padx=2, pady=2, sticky='e')
+        btn_frame.attr_frame.index_label.grid(row=0, column=ai.atf_r1, padx=2, pady=2, sticky='e')
         self.elem_index = StringVar()
         self.elem_index.set('')
         btn_frame.attr_frame.index = Combobox(btn_frame.attr_frame, width=6, values=[], textvariable=self.elem_index)
         self.appium_btns.append(btn_frame.attr_frame.index)
-        btn_frame.attr_frame.index.grid(row=0, column=1, padx=2, pady=2, sticky='e')
+        btn_frame.attr_frame.index.grid(row=0, column=ai.atf_r1, padx=2, pady=2, sticky='e')
         btn = Button(btn_frame.attr_frame, text="get elem attributes", bg=btn_default_bg, command=self.get_elem_attrs,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=0, column=2, padx=2, pady=2)
+        btn.grid(row=0, column=ai.atf_r1, padx=2, pady=2)
         btn = Button(btn_frame.attr_frame, text="get elem color", bg=btn_default_bg, command=self.get_elem_color,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=0, column=3, padx=2, pady=2)
+        btn.grid(row=0, column=ai.atf_r1, padx=2, pady=2)
         btn = Button(btn_frame.attr_frame, text="click elem", bg=btn_default_bg, command=self.click_element,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=0, column=4, padx=2, pady=2)
+        btn.grid(row=0, column=ai.atf_r1, padx=2, pady=2)
         btn = Button(btn_frame.attr_frame, text="set parent", bg=btn_default_bg, command=self.set_parent,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=0, column=6, padx=2, pady=2)
+        btn.grid(row=0, column=ai.atf_r1, padx=2, pady=2)
         btn = Button(btn_frame.attr_frame, text="set frame", bg=btn_default_bg, command=self.set_frame,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=0, column=7, padx=2, pady=2)
+        btn.grid(row=0, column=ai.atf_r1, padx=2, pady=2)
         btn = Button(btn_frame.attr_frame, text="clear elem", bg=btn_default_bg, command=self.clear_element,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=1, column=0, padx=2, pady=2)
+        btn.grid(row=1, column=ai.atf_r2, padx=2, pady=2)
         btn = Button(btn_frame.attr_frame, text="input text", bg=btn_default_bg, command=self.input_text,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=1, column=1, padx=2, pady=2)
+        btn.grid(row=1, column=ai.atf_r2, padx=2, pady=2)
         frame = Frame(btn_frame.attr_frame, bg='tan')
         frame.columnconfigure(0, weight=1)
         self.text_to_send = StringVar()
@@ -808,12 +832,90 @@ class Inspector(Frame):
         btn = Button(frame, text='X', command=self.clear_text_to_send, padx=0, pady=0)
         btn.grid(row=0, column=1)
         self.appium_btns.append(btn)
-        frame.grid(row=1, column=2, padx=2, pady=2, columnspan=4, sticky='ew')
+        frame.grid(row=1, column=ai.atf_r2, padx=2, pady=2, columnspan=3, sticky='ew')
         btn = Button(btn_frame.attr_frame, text="input ENTER", bg=btn_default_bg, command=self.input_enter,
                      state=DISABLED, padx=1)
         self.appium_btns.append(btn)
-        btn.grid(row=1, column=6, padx=2, pady=2)
-        btn_frame.attr_frame.grid(row=btn_frame_row, column=0, sticky='ew', padx=2, pady=2)
+        ai.atf_r2 += 2
+        btn.grid(row=1, column=ai.atf_r2, columnspan=2, padx=2, pady=2, sticky='w')
+
+        btn_frame.xy_frame = Frame(btn_frame, bg='tan')
+        btn_frame.xy_frame.grid(row=ai.bf_row, column=0, sticky='ew', padx=2, pady=2)
+
+        btn_frame.xy_frame.tap_frame = Frame(btn_frame.xy_frame, bg='tan')
+        btn_frame.xy_frame.tap_frame.grid(row=0, column=ai.xyf, sticky='w', padx=2, pady=2)
+
+        btn = Button(btn_frame.xy_frame.tap_frame, text="tap:", bg=btn_default_bg, command=self.tap_xy, state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=ai.tap, padx=2, pady=2, sticky='w')
+
+        lbl = Label(btn_frame.xy_frame.tap_frame, text="x:", bg='tan')
+        self.appium_btns.append(lbl)
+        lbl.grid(row=0, column=ai.tap)
+        x_entry = Entry(btn_frame.xy_frame.tap_frame, width=4, textvariable=self.tap_x_var)
+        self.appium_btns.append(x_entry)
+        x_entry.grid(row=0, column=ai.tap, padx=2, pady=2, sticky='w')
+
+        lbl = Label(btn_frame.xy_frame.tap_frame, text="y:", bg='tan')
+        self.appium_btns.append(lbl)
+        lbl.grid(row=0, column=ai.tap)
+        y_entry = Entry(btn_frame.xy_frame.tap_frame, width=4, textvariable=self.tap_y_var)
+        self.appium_btns.append(y_entry)
+        y_entry.grid(row=0, column=ai.tap, padx=2, pady=2, sticky='w')
+
+        btn_frame.xy_frame.swipe_frame = Frame(btn_frame.xy_frame, bg='tan')
+        btn_frame.xy_frame.swipe_frame.grid(row=0, column=ai.xyf, sticky='w', padx=60, pady=2)
+
+        btn = Button(btn_frame.xy_frame.swipe_frame, text="swipe:", bg=btn_default_bg, command=self.swipe,
+                     state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=ai.swp, padx=2, pady=2, sticky='w')
+
+        lbl = Label(btn_frame.xy_frame.swipe_frame, text="x:", bg='tan')
+        self.appium_btns.append(lbl)
+        lbl.grid(row=0, column=ai.swp)
+        entry = Entry(btn_frame.xy_frame.swipe_frame, width=4, textvariable=self.swipe_y1_var)
+        self.appium_btns.append(entry)
+        entry.grid(row=0, column=ai.swp, padx=2, pady=2, sticky='w')
+
+        lbl = Label(btn_frame.xy_frame.swipe_frame, text="y:", bg='tan')
+        self.appium_btns.append(lbl)
+        lbl.grid(row=0, column=ai.swp)
+        entry = Entry(btn_frame.xy_frame.swipe_frame, width=4, textvariable=self.swipe_y2_var)
+        self.appium_btns.append(entry)
+        entry.grid(row=0, column=ai.swp, padx=2, pady=2, sticky='w')
+
+        lbl = Label(btn_frame.xy_frame.swipe_frame, text="ms:", bg='tan')
+        self.appium_btns.append(lbl)
+        lbl.grid(row=0, column=ai.swp)
+        entry = Entry(btn_frame.xy_frame.swipe_frame, width=4, textvariable=self.swipe_ms_var)
+        self.swipe_ms_var.set(100)
+        self.appium_btns.append(entry)
+        entry.grid(row=0, column=ai.swp, padx=2, pady=2, sticky='w')
+        btn_frame.xy_frame.scroll_frame = Frame(btn_frame.xy_frame, bg='tan')
+        btn_frame.xy_frame.scroll_frame.grid(row=0, column=ai.xyf, sticky='w', padx=2, pady=2)
+
+        btn = Button(btn_frame.xy_frame.scroll_frame, text="scroll:", bg=btn_default_bg, command=self.scroll,
+                     state=DISABLED)
+        self.appium_btns.append(btn)
+        btn.grid(row=0, column=ai.scrl, padx=2, pady=2, sticky='w')
+
+        lbl = Label(btn_frame.xy_frame.scroll_frame, text="elem1:", bg='tan')
+        self.appium_btns.append(lbl)
+        lbl.grid(row=0, column=ai.scrl)
+        btn_frame.xy_frame.scroll_frame.elem1 = Combobox(btn_frame.xy_frame.scroll_frame, width=6, values=[],
+                                                         textvariable=self.scroll_elem1_var)
+        self.appium_btns.append(btn_frame.xy_frame.scroll_frame.elem1)
+        btn_frame.xy_frame.scroll_frame.elem1.grid(row=0, column=ai.scrl, padx=2, pady=2, sticky='w')
+
+        lbl = Label(btn_frame.xy_frame.scroll_frame, text="elem2:", bg='tan')
+        self.appium_btns.append(lbl)
+        lbl.grid(row=0, column=ai.scrl)
+        btn_frame.xy_frame.scroll_frame.elem2 = Combobox(btn_frame.xy_frame.scroll_frame, width=6, values=[],
+                                                         textvariable=self.scroll_elem2_var)
+        self.appium_btns.append(btn_frame.xy_frame.scroll_frame.elem2)
+        btn_frame.xy_frame.scroll_frame.elem2.grid(row=0, column=ai.scrl, padx=2, pady=2, sticky='w')
+
         btn_frame.grid_columnconfigure(0, weight=1)
         return btn_frame
 
@@ -902,23 +1004,35 @@ class Inspector(Frame):
             y2 = int(self.swipe_y2_var.get())
             ms = int(self.swipe_ms_var.get())
         except (ValueError, TypeError):
-            six.print_("Can't execute swipe with x='%s', y='%s'" % (self.tap_x_var.get(), self.tap_y_var.get()))
+            six.print_("Can't execute swipe with y1='%s', y2='%s'" % (self.swipe_y1_var.get(), self.swipe_y2_var.get()))
         else:
             six.print_("Executing swipe([(300, %d, 300, %d, %d)])..." % (y1, y2, ms), end='')
-            android_actions.long_press_swipe(300, y1, 300, y2, duration=ms)
+            android_actions.swipe(300, y1, 300, y2, ms)
+            six.print_("Done")
+
+    def scroll(self):
+        try:
+            elem1 = int(self.scroll_elem1_var.get())
+            elem2 = int(self.scroll_elem2_var.get())
+        except (ValueError, TypeError):
+            six.print_("Can't execute scroll with elem1='%s', elem2='%s'" % (self.scroll_elem1_var.get(),
+                                                                             self.scroll_elem1_var.get()))
+        else:
+            six.print_("Executing scroll from elem %s to elem %s..." % (elem1, elem2), end='')
+            android_actions.short_press_scroll(self.elems[elem1], self.elems[elem2])
             six.print_("Done")
 
     def update_find_widgets(self, event):
         find_by = self.find_by_var.get()
         if (find_by == 'id') and self.parent_element is not None:
-            self.btn_frame.find_frame.use_parent.configure(state=NORMAL)
+            self.btn_frame.find_frame.cbs.use_parent.configure(state=NORMAL)
         else:
-            self.btn_frame.find_frame.use_parent.configure(state=DISABLED)
+            self.btn_frame.find_frame.cbs.use_parent.configure(state=DISABLED)
             self.use_parent.set(0)
         if find_by[-11:] == 'locator_all' and self.frame_element is not None:
-            self.btn_frame.find_frame.within_frame.configure(state=NORMAL)
+            self.btn_frame.find_frame.cbs.within_frame.configure(state=NORMAL)
         else:
-            self.btn_frame.find_frame.within_frame.configure(state=DISABLED)
+            self.btn_frame.find_frame.cbs.within_frame.configure(state=DISABLED)
 
     def find_elements_by_locator_name(self, locator):
         by = locator['by']
@@ -979,7 +1093,7 @@ class Inspector(Frame):
         for key in sorted_keys[50:]:
             del self.locators[key]
             sorted_keys.pop()
-        self.btn_frame.find_frame.value.configure(value=self.get_filtered_locator_keys())
+        self.btn_frame.find_frame.loc.value.configure(value=self.get_filtered_locator_keys())
 
     def find_elements(self):
         six.print_("finding elements...", end='')
@@ -1007,12 +1121,16 @@ class Inspector(Frame):
         self.record(_msg)
         elem_indices = [str(i) for i in range(len(self.elems))]
         self.btn_frame.attr_frame.index.configure(values=elem_indices)
+        self.btn_frame.xy_frame.scroll_frame.elem1.configure(values=elem_indices)
+        self.btn_frame.xy_frame.scroll_frame.elem2.configure(values=elem_indices)
+        self.scroll_elem1_var.set('')
+        self.scroll_elem2_var.set('')
         if len(elem_indices):
             self.elem_index.set('0')
         else:
             self.elem_index.set('')
         self.parent_element = None
-        self.btn_frame.find_frame.use_parent.configure(state=DISABLED)
+        self.btn_frame.find_frame.cbs.use_parent.configure(state=DISABLED)
         self.use_parent.set(0)
         self.update_find_widgets(None)
 
