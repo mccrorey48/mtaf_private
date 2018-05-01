@@ -474,7 +474,7 @@ class Inspector(Frame):
             small = image.resize((self.im_width, self.im_height))
             self.cwin.minsize(width=self.im_width, height=self.im_height)
             self.cwin.canvas_borderwidth = 8
-            self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='brown',
+            self.im_canvas = Canvas(self.cwin, height=self.im_height, width=self.im_width, bg='darkgrey',
                                     borderwidth=self.cwin.canvas_borderwidth)
             self.im_canvas.photo = ImageTk.PhotoImage(small)
             self.im_canvas.create_image(self.im_width/2 + self.cwin.canvas_borderwidth,
@@ -579,12 +579,18 @@ class Inspector(Frame):
         self.zpath_frame.update()
         self.cwin.update()
 
+    def scale(self, dim):
+        return dim * self.cwin.scale + self.cwin.canvas_borderwidth
+
+    def descale(self, dim):
+        return int((dim - self.cwin.canvas_borderwidth) / self.cwin.scale)
+
     def xy_within_zpath(self, x, y, key):
         geom = self.zpaths[key]['geoms'][0]
-        x1 = geom['x1'] * self.cwin.scale + self.cwin.canvas_borderwidth
-        x2 = geom['x2'] * self.cwin.scale + self.cwin.canvas_borderwidth
-        y1 = geom['y1'] * self.cwin.scale + self.cwin.canvas_borderwidth
-        y2 = geom['y2'] * self.cwin.scale + self.cwin.canvas_borderwidth
+        x1 = self.scale(geom['x1'])
+        x2 = self.scale(geom['x2'])
+        y1 = self.scale(geom['y1'])
+        y2 = self.scale(geom['y2'])
         return x1 <= x <= x2 and y1 <= y <= y2
 
     def zpath_area(self, key):
@@ -648,9 +654,13 @@ class Inspector(Frame):
             else:
                 # click/release with no drag, select and outline smallest element and put its zpath in the value
                 # combobox
+                six.print_("clicked: (image) %s,%s  (device) %s,%s" % (x1, y1, self.descale(x1), self.descale(y1)))
                 zpath_key = self.select_smallest(x1, y1)
-                # six.print_("zpath['geom'] = %s" % self.zpaths[zpath_key]['geoms'])
-                self.get_zpath_outline_fn(zpath_key)()
+                if zpath_key is None:
+                    six.print_("No element reported at location: (image) %s,%s  (device) %s,%s" %
+                               (x1, y1, self.descale(x1), self.descale(y1)))
+                else:
+                    self.get_zpath_outline_fn(zpath_key)()
         elif event.type == '6':
             x1 = self.new_drag_polygon_x1
             y1 = self.new_drag_polygon_y1
@@ -665,7 +675,7 @@ class Inspector(Frame):
                 self.drag_polygon_x2 = x2
                 self.drag_polygon_y2 = y2
                 self.drag_polygon = self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='blue',
-                                                                  fill='')
+                                                                  fill='', width=2)
 
         return 'break'
 
@@ -1204,13 +1214,13 @@ class Inspector(Frame):
             while len(self.polygons):
                 self.im_canvas.delete(self.polygons.pop())
             for geom in geoms:
-                x1 = geom["x1"] * self.cwin.scale + self.cwin.canvas_borderwidth
-                y1 = geom["y1"] * self.cwin.scale + self.cwin.canvas_borderwidth
-                y2 = geom["y2"] * self.cwin.scale + self.cwin.canvas_borderwidth
-                x2 = geom["x2"] * self.cwin.scale + self.cwin.canvas_borderwidth
+                x1 = self.scale(geom["x1"]) + 2
+                y1 = self.scale(geom["y1"]) + 2
+                y2 = self.scale(geom["y2"]) - 1
+                x2 = self.scale(geom["x2"]) - 1
                 # six.print_("calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1))
                 self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
-                                                               fill=''))
+                                                               fill='', width=2))
 
     def get_elem_color(self):
         text_index = self.elem_index.get()
