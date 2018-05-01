@@ -185,7 +185,8 @@ class E7Commands(object):
 
 class Plugin(object):
 
-    def install_plugin(self, app):
+    @staticmethod
+    def install_plugin(app):
 
         # - install drop-down menu items appropriate for ePhone7
         # - "cmd_types" key values are the labels for drop-down menus in Inspector

@@ -1,25 +1,39 @@
+import six
+
+
+class NexusCommands:
+
+    def __init__(self, app):
+        self.app = app
+
+    @staticmethod
+    def print_hello():
+        six.print_("Hello, World")
+
+    @staticmethod
+    def print_goodbye():
+        six.print_("Goodbye, World")
+
+
 class Plugin(object):
 
-    def install_plugin(self, _app):
+    @staticmethod
+    def install_plugin(app):
 
-        def hello():
-            print "Hello, World"
-
-        def goodbye():
-            print "Goodbye, World"
-
-        cmd_types = {
+        nexus_cmds = NexusCommands(app)
+        app.user_cmds.update({
+            'Print Hello World': nexus_cmds.print_hello,
+            'Print Goodbye World': nexus_cmds.print_goodbye,
+        })
+        menu_items = {
             'ADB Actions': [
-                {'label': 'Print Hello World', 'command': hello},
+                {'label': 'Print Hello World', 'uses_appium': False},
             ],
             'Other Actions': [
-                {'label': 'Print Goodbye World', 'command': goodbye},
+                {'label': 'Print Goodbye World', 'uses_appium': False},
             ]
         }
-        for cmd_type in cmd_types:
-            if cmd_type not in _app.menu.submenus:
-                _app.menu.add_submenu(cmd_type)
-            for cmd_spec in cmd_types[cmd_type]:
-                _app.menu.submenus[cmd_type].add_command(label=cmd_spec['label'], command=cmd_spec['command'])
-
-        _app.set_zpath_tag('ws', 'com.android.launcher3.Workspace')
+        for menu_label in menu_items:
+            app.menu.add_submenu(menu_label, app.make_menu_items(menu_items[menu_label]))
+        app.menu.enable_items(app.appium_is_open)
+        app.set_zpath_tag('ws', 'com.android.launcher3.Workspace')
