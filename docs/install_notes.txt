@@ -1,5 +1,11 @@
 The following steps were performed on a new Ubuntu 14.04 LTS partition to
 create a working run-time environment for the MTAF test framework.
+
+(5/4/2018 addendum:
+    The "new_arch" branch was created to implement a new architecture that creates an MTAF "package", suitable for
+    uploading to PyPi. For this architecture, some installation steps are different. See "NEW_ARCH" below for
+    differences. Also see the file "new_arch_notes.txt" for info about running and debugging in a development
+    environment with the new architecture.)
 ------------------------------------------------------------------------
 1. Install required Ubuntu programs and libraries:
     sudo apt-get update
@@ -67,6 +73,9 @@ Python installation, beyond installing virtualenv and virtualenvwrapper:
 
 5. Install the required Python modules in the mtaf virtualenv:
     workon mtaf
+    (NEW_ARCH: To set up for running tests, install the mtaf shared library code in the Python library environment,
+               skip the following steps and go to section 6. See "new_arch_notes.txt" for ways to install the mtaf
+               shared library code.n)
     pip install selenium
     pip install numpy
     pip install matplotlib
@@ -77,18 +86,17 @@ Python installation, beyond installing virtualenv and virtualenvwrapper:
     git clone https://github.com/ardevd/pyand.git
     cd pyand
     python setup.py install
-    deactivate
 
 6. Build the pjsip/pjsua libraries and python module
     git clone https://bitbucket.org/esi-tau/pjproject
     cd to pjproject directory
-    build pjsip:
+    build and install pjsip and the pjsua python API:
         ./configure CFLAGS=-fPIC CCFLAGS=-fPIC
         make dep
         make
-        workon mtaf
+        workon mtaf (if not already in mtaf virtualenv)
         cd pjsip-apps/src/python
-        deactivate
+        python setup.py install
 
 7. Set up the mtaf to use a specific test site configuration:
 
@@ -110,7 +118,16 @@ Python installation, beyond installing virtualenv and virtualenvwrapper:
          export MTAF_SITE=<site tag>
          export MTAF_DB_HOST=10.0.12.42
 
+    The mongodb server defined by MTAF_DB_HOST is also used to save test results. It should be running the report_spa
+    web app so that test results can be viewed with a browser at port 3000 on that server.
+
 < special section on how to create a new site tag, if one is needed >
+    (NEW_ARCH: Ignore this section. Setting up the two environment variables is the same, but the site configuration
+    variables are no longer loaded at runtime from the mongodb configuration database. Instead, they are extracted from
+    the file "mtaf/<product name>/config/site.json". Instead of updating the database and adding new site tags to it as
+    described in the following "special section" note, add or update a site specification by directly editing the
+    site.json file.)
+
      The value of <site tag> must match a site tag defined in the e7_site
      database on the MTAF_DB_HOST server.  The database is updated by editing
      the file "mtaf/ePhone7/config/e7_site.json", using these steps:

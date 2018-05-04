@@ -22,7 +22,6 @@ selenium_url = "http://localhost:4723/wd/hub"
 class AndroidActions(SeleniumActions):
     driver = None
     adb = ADB()
-    cfg = None
 
     def open_browser(self, browser=None):
         raise Ux('open_browser method not available using Appium')
@@ -81,14 +80,8 @@ class AndroidActions(SeleniumActions):
             AndroidActions.driver = None
 
     @Trace(log)
-    def get_element_color(self, filebase, elem, cropped_suffix=''):
-        return self.get_element_color_and_count(filebase, elem, cropped_suffix)[:3]
-
-    @Trace(log)
-    def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
-        if self.cfg is None:
-            raise Ux("self.cfg must be set in the derived view class")
-        screenshot_folder = self.cfg.site.ScreenshotFolder
+    def get_element_color_and_count_using_folder(self, screenshot_folder, filebase, elem, cropped_suffix,
+                                                 color_list_index):
         im = Image.open(os.path.join(screenshot_folder, filebase + '.png'))
         # calculate image crop points from element location['x'], location['y'], size['height'] and size['width']
         location = elem.location

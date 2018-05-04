@@ -1,5 +1,6 @@
 from behave import *
 from ePhone7.views import *
+from ePhone7.config.configure import cfg
 from mtaf.trace import fake
 from mtaf.user_exception import UserException as Ux
 
@@ -22,12 +23,6 @@ def user__a_keypad_appears_with_a_list_of_contacts(context):
 @fake
 def user__i_enter_the_call_park_queue_number(context):
     pass
-
-
-@step("[user] I get the logo element from the home screen")
-@fake
-def user__i_get_the_logo_element_from_the_home_screen(context):
-    context.logo_element = user_view.get_logo_element()
 
 
 @step("[user] I see the Contacts, History, Voicemail and Dial buttons at the bottom of the screen")
@@ -78,6 +73,8 @@ def user__i_touch_the_headset_icon_if_it_is_color(context, color):
 @fake
 def user__i_touch_the_home_button(context):
     user_view.send_keycode('KEYCODE_HOME')
+    user_view.send_keycode('KEYCODE_BACK')
+    pass
 
 
 @step("[user] I touch the Preferences icon")
@@ -159,11 +156,5 @@ def user__the_headset_icon_is_expectcolor(context, expect_color):
 @fake
 def user__the_keypad_disappears(context):
     pass
-
-
-@step("[user] the logo width is at least {width} pixels")
-@fake
-def user__the_logo_width_is_at_least_width_pixels(context, width):
-    assert int(context.logo_element.size['width']) >= int(width)
 
 

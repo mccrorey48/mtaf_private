@@ -105,10 +105,6 @@ class UserView(BaseView):
         #                                      lambda: failmsg_fmt % (self.expected_tab, self.active_tab), timeout=120)
 
     @Trace(log)
-    def get_logo_element(self):
-        return self.find_named_element('HomeScreenLogo')
-
-    @Trace(log)
     def goto_prefs(self):
         self.wait_for_condition_true(self.verify_prefs_view,
                                              lambda: "prefs view not present", timeout=60)

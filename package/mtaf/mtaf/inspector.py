@@ -347,7 +347,7 @@ class Inspector(Frame):
         self.user_cmds = {
             'Get Current Activity': lambda: self.do_cmd(self.get_current_activity),
             'Restart Appium': lambda: self.do_cmd(self.restart_appium),
-            "Get Screenshot": lambda: self.do_cmd(self.create_cwin),
+            "Get Screenshot": self.get_screenshot_appium,
             "Get Screenshot ADB": self.get_screenshot_adb,
             "Rotate Image": self.rotate_image,
             "Open Appium": lambda: self.do_cmd(self.open_appium),
@@ -438,10 +438,10 @@ class Inspector(Frame):
 
         def get_screenshot():
             if self.appium_is_open:
-                self.get_screenshot_appium()
+                self.user_cmds['Get Screenshot Appium']()
                 self.get_xml_appium()
             else:
-                self.get_screenshot_adb()
+                self.user_cmds['Get Screenshot ADB']()
                 self.get_xml_adb()
 
         @Trace(log)
@@ -1218,9 +1218,10 @@ class Inspector(Frame):
                 y1 = self.scale(geom["y1"]) + 2
                 y2 = self.scale(geom["y2"]) - 1
                 x2 = self.scale(geom["x2"]) - 1
-                # six.print_("calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" % (x1, y1, x1, y2, x2, y2, x2, y1))
+                # six.print_("calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" %
+                #            (x1, y1, x1, y2, x2, y2, x2, y1))
                 self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
-                                                               fill='', width=2))
+                                                                   fill='', width=2))
 
     def get_elem_color(self):
         text_index = self.elem_index.get()
@@ -1229,16 +1230,16 @@ class Inspector(Frame):
         index = int(text_index)
         elem = self.elems[index]
         android_actions.get_screenshot_as_file('inspector.png')
-        color = android_actions.get_element_color_and_count(self.cfg['tmp_dir'], 'inspector', elem,
-                                                            color_list_index=0)
+        color = android_actions.get_element_color_and_count_using_folder(self.cfg['tmp_dir'], 'inspector', elem,
+                                                                         cropped_suffix='', color_list_index=0)
         six.print_("first color and count: %s" % color)
         self.record("first color and count: %s" % color)
-        color = android_actions.get_element_color_and_count(self.cfg['tmp_dir'], 'inspector', elem,
-                                                            color_list_index=1)
+        color = android_actions.get_element_color_and_count_using_folder(self.cfg['tmp_dir'], 'inspector', elem,
+                                                                         cropped_suffix='', color_list_index=1)
         six.print_("second color and count: %s" % color)
         self.record("second color and count: %s" % color)
-        color = android_actions.get_element_color_and_count(self.cfg['tmp_dir'], 'inspector', elem,
-                                                            color_list_index=2)
+        color = android_actions.get_element_color_and_count_using_folder(self.cfg['tmp_dir'], 'inspector', elem,
+                                                                         cropped_suffix='', color_list_index=2)
         self.record("third color and count: %s" % color)
 
     def click_element(self):

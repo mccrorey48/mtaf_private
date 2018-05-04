@@ -170,7 +170,7 @@ def activecall__the_incall_contacts_screen_appears(context):
 def activecall__the_record_button_is_gray(context):
     user_view.get_screenshot_as_png('record_button')
     expected_color = [38, 40, 43]
-    actual_color = user_view.get_element_color('record_button', context.record_button)
+    actual_color = active_call_view.get_element_color_and_count('record_button', context.record_button)[:3]
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
 
@@ -179,7 +179,7 @@ def activecall__the_record_button_is_gray(context):
 def activecall__the_record_button_is_white(context):
     user_view.get_screenshot_as_png('record_button')
     expected_color = [255, 255, 255]
-    actual_color = user_view.get_element_color('record_button', context.record_button)
+    actual_color = active_call_view.get_element_color_and_count('record_button', context.record_button)[:3]
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
 
