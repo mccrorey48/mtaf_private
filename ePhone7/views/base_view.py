@@ -177,8 +177,8 @@ class BaseView(AndroidActions):
 
     @Trace(log)
     def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
-        self.get_element_color_and_count_using_folder(self, cfg.site.ScreenshotFolder, filebase, elem, cropped_suffix,
-                                                      color_list_index)
+        return self.get_element_color_and_count_using_folder(cfg.site.ScreenshotFolder, filebase, elem, cropped_suffix,
+                                                             color_list_index)
 
     @Trace(log)
     def tap_element(self, el, duration=200):

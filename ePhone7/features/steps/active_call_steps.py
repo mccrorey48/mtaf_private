@@ -144,15 +144,15 @@ def activecall__the_coworkers_tab_is_selected(context):
 @step("[active_call] the {expect_icon} icon is displayed")
 @fake
 def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
-    white_counts = {'speaker': 714, 'handset': 580, 'headset': 618}
-    if expect_icon not in white_counts:
+    second_color_counts = {'speaker': 2272, 'handset': 1351, 'headset': 681}
+    if expect_icon not in second_color_counts:
         raise Ux("Unexpected expect_icon value: %s" % expect_icon)
     call_icon = active_call_view.find_named_element('AudioPathIcon')
     user_view.get_screenshot_as_png('call_icon')
-    expected_count = white_counts[expect_icon]
+    expected_count = second_color_counts[expect_icon]
     actual_count = active_call_view.get_element_color_and_count('call_icon', call_icon)[-1]
-    for icon in white_counts:
-        if white_counts[icon] == actual_count:
+    for icon in second_color_counts:
+        if second_color_counts[icon] == actual_count:
             assert actual_count == expected_count, "Expected %s icon, got %s" % (expect_icon, icon)
             break
     else:

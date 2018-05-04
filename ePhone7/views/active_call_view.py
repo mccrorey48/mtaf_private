@@ -10,7 +10,7 @@ log = mtaf_logging.get_logger('mtaf.active_call_view')
 class ActiveCallView(BaseView):
 
     locators = {
-        "AudioPathIcon": {"by": "id", "value": "com.esi_estech.ditto:id/currentAudioImage"},
+        "AudioPathIcon": {"by": "zpath", "value": "//ll[8]/ll/iv"},
         "CallCardName": {"by": "accessibility id", "value": "Call Park Pickup"},
         "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
         "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/callRecordBtn"},
