@@ -347,7 +347,7 @@ class Inspector(Frame):
         self.user_cmds = {
             'Get Current Activity': lambda: self.do_cmd(self.get_current_activity),
             'Restart Appium': lambda: self.do_cmd(self.restart_appium),
-            "Get Screenshot": self.get_screenshot_appium,
+            "Get Screenshot Appium": self.get_screenshot_appium,
             "Get Screenshot ADB": self.get_screenshot_adb,
             "Rotate Image": self.rotate_image,
             "Open Appium": lambda: self.do_cmd(self.open_appium),
