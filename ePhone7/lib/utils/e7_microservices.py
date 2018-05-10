@@ -6,6 +6,7 @@ from mtaf import mtaf_logging
 log = mtaf_logging.get_logger('mtaf.vvm_usvc')
 __all__ = ['get_e7_microservices', 'get_vmids']
 
+
 @Trace(log)
 def get_e7_microservices(username):
     user_cfg = cfg.site['Users'][username]

@@ -14,6 +14,7 @@ log = mtaf_logging.get_logger('mtaf.versions')
 
 __all__ = ['get_installed_versions', 'force_aosp_downgrade', 'remove_apk_upgrades', 'get_current_versions']
 
+
 @Trace(log)
 def get_installed_versions():
     re_aosp = re.compile('\[ro\.build\.id\]:\s+\[(.*)\]')

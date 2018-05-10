@@ -216,6 +216,7 @@ def new_status(has_passes=False, has_fails=False, has_fakes=False, has_skips=Fal
         return 'fake'
     if has_fakes or has_incompletes or has_skips:
             return 'incomplete'
+    return 'passed'
 
 
 def write_result_to_db(_args, configuration, _fake_detector, _features):
@@ -350,10 +351,11 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
             scenario['status'] = new_status(scenario_has_passes, scenario_has_fails, scenario_has_fakes,
                                             scenario_has_skips, scenario_has_incompletes)
             if scenario['status'] == 'failed':
-                feature_has_fails = True
                 if 'known_bug' in scenario['tags'] + feature['tags']:
                     scenario['status'] = 'known_bug'
                     feature_has_known_bug = True
+                else:
+                    feature_has_fails = True
             elif scenario['status'] == 'skipped':
                 feature_has_skips = True
             elif scenario['status'] == 'fake':
@@ -366,7 +368,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
         del feature['elements']
         feature['status'] = new_status(feature_has_passes, feature_has_fails, feature_has_fakes,
                                        feature_has_skips, feature_has_incompletes)
-        if feature['status'] == 'failed' and feature_has_known_bug:
+        if feature['status'] == 'passed' and feature_has_known_bug:
             feature['status'] = 'known_bug'
         db['features'].insert_one(feature)
         # del feature['start_id']
@@ -393,10 +395,9 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
             start_has_incompletes = True
         elif feature['status'] == 'known_bug':
             fail_count += 1
-            start_has_fails = True
             start_has_known_bug = True
     start_result = new_status(start_has_passes, start_has_fails, start_has_fakes, start_has_skips, start_has_incompletes)
-    if start_result == 'failed' and start_has_known_bug:
+    if (start_result == 'passed' or start_result == 'skipped') and start_has_known_bug:
         start_result = 'known_bug'
     db['test_starts'].find_one_and_update({"_id": start_id}, {'$set': {'pass_count': pass_count,
                                                                        'fail_count': fail_count,

@@ -11,7 +11,7 @@ from ePhone7.lib.utils.usb_enable import usb_enable
 import os
 from time import sleep, time
 from appium.webdriver.common.mobileby import MobileBy
-from selenium.common.exceptions import WebDriverException, TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import WebDriverException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 
 log = mtaf_logging.get_logger('mtaf.base_view')

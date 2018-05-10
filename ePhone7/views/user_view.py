@@ -161,6 +161,18 @@ class UserView(BaseView):
         return self.element_is_present('IncomingCallLabel')
 
     @Trace(log)
+    def incoming_call_screen_is_not_present(self):
+        return self.element_becomes_not_present('IncomingCallLabel')
+
+    @Trace(log)
+    def in_call_screen_is_present(self):
+        return self.element_is_present('In-callLabel')
+
+    @Trace(log)
+    def in_call_screen_is_not_present(self):
+        return self.element_becomes_not_present('In-callLabel')
+
+    @Trace(log)
     def incoming_call_screen_test(self):
         caller_name, src_cfg  = self.receive_call()
         self.find_named_element('IncomingCallAnswerToHeadset')
@@ -209,16 +221,20 @@ class UserView(BaseView):
         softphone.end_call()
 
     @Trace(log)
-    def receive_voicemail(self):
-        from ePhone7.lib.utils.get_softphone import get_softphone
+    def receive_voicemail(self, dnd=True):
         softphone = get_softphone()
-        self.set_dnd(on=True)
+        if dnd is True:
+            self.set_dnd(on=True)
+            waiting_time = 10
+        else:
+            waiting_time = 30
         dst_cfg = cfg.site['Users']['R2d2User']
         dst_uri = 'sip:' + dst_cfg['UserId'] + '@' + dst_cfg['DomainName']
         softphone.make_call(dst_uri)
-        softphone.wait_for_call_status('call', 10)
+        softphone.wait_for_call_status('call', waiting_time)
         softphone.leave_msg()
-        self.set_dnd(on=False)
+        if dnd is True:
+            self.set_dnd(on=False)
         softphone.end_call()
 
 

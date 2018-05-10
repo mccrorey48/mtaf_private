@@ -10,10 +10,11 @@ log = mtaf_logging.get_logger('mtaf.active_call_view')
 class ActiveCallView(BaseView):
 
     locators = {
-        "AudioPathIcon": {"by": "zpath", "value": "//ll[8]/ll/iv"},
+        "ActiveCallLabel": {"by": "id", "value": "com.esi_estech.ditto:id/call_state"},
+        "AudioPathIcon": {"by": "id", "value": "com.esi_estech.ditto:id/currentAudioImage"},
         "CallCardName": {"by": "accessibility id", "value": "Call Park Pickup"},
         "CallParkButton": {"by": "accessibility id", "value": "Call Park Pickup"},
-        "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/callRecordBtn"},
+        "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/recordButton"},
         "DefaultForwardAccountName": {"by": "uia_text", "value": cfg.site['DefaultForwardAccount']},
         "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endCallButton"},
         "InCallControls": {"by": "id", "value": "com.esi_estech.ditto:id/incall_controls"},
@@ -34,7 +35,7 @@ class ActiveCallView(BaseView):
         self.cfg = cfg
         self.png_file_base = 'active_call'
         BaseView.active_call_view = self
-        self.presence_element_names = ['InCallControls']
+        self.presence_element_names = ['ActiveCallLabel']
 
     @Trace(log)
     def vm_xfer_dest_banner_present(self):

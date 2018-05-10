@@ -14,11 +14,8 @@ from .user_view import user_view
 from .voicemail_view import voicemail_view
 
 view_dict = {
-    'active_call': active_call_view,
     'active call': active_call_view,
-    'advanced_settings': advanced_settings_view,
     'advanced settings': advanced_settings_view,
-    'app_intro': app_intro_view,
     'app intro': app_intro_view,
     'base': base_view,
     'contacts': contacts_view,

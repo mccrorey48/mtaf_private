@@ -23,7 +23,7 @@ class ContactsView(UserView):
         "ContactName": {"by": "id", "value": "com.esi_estech.ditto:id/text1"},
         "ContactNumber": {"by": "id", "value": "com.esi_estech.ditto:id/text2"},
         "ContactParent": {"by": "id", "value": "com.esi_estech.ditto:id/contact_list_item_layout"},
-        "ContactsList": {"by": "id", "value": "com.esi_estech.ditto:id/contacts_list_view"},
+        "ContactsList": {"by": "id", "value": "com.esi_estech.ditto:id/contact_details_sliding_layout"},
         "Coworkers": {"by": "id", "value": "com.esi_estech.ditto:id/ephone_contacts", "text": "Coworkers"},
         "ContactDetail": {"by": "id", "value": "com.esi_estech.ditto:id/contact_details_sliding_layout"},
         "EmptyFavoritesList": {"by": "id", "value": "com.esi_estech.ditto:id/empty_view",

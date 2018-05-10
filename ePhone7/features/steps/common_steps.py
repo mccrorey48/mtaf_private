@@ -1,6 +1,5 @@
 from behave import *
 from ePhone7.views import *
-from ePhone7.lib.utils.versions import get_downgrade_images, force_app_downgrade
 from time import sleep
 from prefs_steps import *
 from advanced_steps import *
@@ -8,6 +7,7 @@ from mtaf.user_exception import UserException as Ux, UserFailException as Fx
 from ePhone7.lib.utils.get_softphone import get_softphone
 from ePhone7.lib.utils.versions import *
 from mtaf.trace import fake
+import six
 
 
 @step("A call between two other accounts has been parked by the called account")
@@ -397,7 +397,10 @@ def i_go_to_the_home_screen(context):
         else:
             break
     else:
-        raise Ux("Did not go to home screen in %d tries" % tries)
+        six.print_("Did not go to home screen in %d tries; restarting Appium" % tries)
+        base_view.close_appium()
+        base_view.open_appium()
+        base_view.startup()
 
 
 @step("I go to the New Voicemail view")
@@ -427,7 +430,7 @@ def i_have_at_least_one_saved_voicemail(context):
 @step("I ignore the call")
 @fake
 def i_ignore_the_call(context):
-    pass
+    history_view.ignore_step()
 
 
 @step("I perform an OTA upgrade")
@@ -453,6 +456,16 @@ def i_receive_a_call(context):
 @fake
 def i_receive_a_new_voicemail(context):
     user_view.receive_voicemail()
+
+
+@step("I receive and answer a call")
+@fake
+def i_receive_and_ignore_a_call(context):
+    context.run_substep("I receive a call")
+    context.run_substep("the incoming call window appears")
+    context.run_substep("I answer the call")
+    context.run_substep("the caller ends the call")
+    context.run_substep("the incoming call window disappears")
 
 
 @step("I receive and ignore a call")
@@ -706,7 +719,10 @@ def my_new_voicemails_are_listed(context):
 @step("my phone calls back the caller")
 @fake
 def my_phone_calls_back_the_caller(context):
-    pass
+    context.run_substep('[active_call] an "Active Call" window appears')
+    # should verify caller information?
+    context.run_substep("[active_call] I end the call")
+    context.run_substep('[active_call] an "Active Call" window disappears')
 
 
 @step("my phone calls the number")
@@ -791,7 +807,11 @@ def the_caller_leaves_a_message(context):
 @step("the caller leaves a voicemail")
 @fake
 def the_caller_leaves_a_voicemail(context):
-    pass
+    # context.caller_name is the one currently making a call to the ePhone7
+    # so call get_softphone with that argument to get the instance
+    sp = get_softphone(context.caller_name)
+    sp.wait_for_call_status('call', timeout=30)
+    sp.leave_msg()
 
 
 @step("the Contacts tab window disappears")
@@ -882,26 +902,26 @@ def the_google_dialog_disappears(context):
 
 @step("the in-call window appears")
 @fake
-def the_incall_window_appears(context):
-    pass
+def the_in_call_window_appears(context):
+    assert user_view.in_call_screen_is_present, "user_view.in_call_screen is present"
 
 
 @step("the in-call window disappears")
 @fake
-def the_incall_window_disappears(context):
-    pass
+def the_in_call_window_disappears(context):
+    assert user_view.in_call_screen_is_not_present, "user_view.in_call_screen is not present"
 
 
 @step("the incoming call window appears")
 @fake
 def the_incoming_call_window_appears(context):
-    pass
+    assert user_view.incoming_call_screen_is_present, "user_view.incoming_call_screen is present"
 
 
 @step("the incoming call window disappears")
 @fake
 def the_incoming_call_window_disappears(context):
-    pass
+    assert user_view.incoming_call_screen_is_not_present, "user_view.incoming_call_screen is not present"
 
 
 @step("the installed aosp is not the downgrade version")

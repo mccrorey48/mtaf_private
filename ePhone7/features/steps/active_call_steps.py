@@ -34,7 +34,13 @@ def activecall__a_record_button_is_visible(context):
 @step('[active_call] an "Active Call" window appears')
 @fake
 def activecall__an_active_call_window_appears(context):
-    assert active_call_view.becomes_present()
+    assert active_call_view.becomes_present(), 'Active call window did not appear'
+
+
+@step('[active_call] an "Active Call" window disappears')
+@fake
+def activecall__an_active_call_window_disappears(context):
+    assert active_call_view.becomes_not_present(), 'Active call window did not disappear'
 
 
 @step("[active_call] I end the call")
@@ -144,15 +150,15 @@ def activecall__the_coworkers_tab_is_selected(context):
 @step("[active_call] the {expect_icon} icon is displayed")
 @fake
 def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
-    second_color_counts = {'speaker': 2272, 'handset': 1351, 'headset': 681}
-    if expect_icon not in second_color_counts:
+    white_counts = {'speaker': 714, 'handset': 580, 'headset': 618}
+    if expect_icon not in white_counts:
         raise Ux("Unexpected expect_icon value: %s" % expect_icon)
     call_icon = active_call_view.find_named_element('AudioPathIcon')
     user_view.get_screenshot_as_png('call_icon')
-    expected_count = second_color_counts[expect_icon]
+    expected_count = white_counts[expect_icon]
     actual_count = active_call_view.get_element_color_and_count('call_icon', call_icon)[-1]
-    for icon in second_color_counts:
-        if second_color_counts[icon] == actual_count:
+    for icon in white_counts:
+        if white_counts[icon] == actual_count:
             assert actual_count == expected_count, "Expected %s icon, got %s" % (expect_icon, icon)
             break
     else:
@@ -169,7 +175,7 @@ def activecall__the_incall_contacts_screen_appears(context):
 @fake
 def activecall__the_record_button_is_gray(context):
     user_view.get_screenshot_as_png('record_button')
-    expected_color = [38, 40, 43]
+    expected_color = [119, 120, 122]
     actual_color = active_call_view.get_element_color_and_count('record_button', context.record_button)[:3]
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
