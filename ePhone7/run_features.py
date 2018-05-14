@@ -21,7 +21,6 @@ if six.PY3:
     from io import StringIO
 else:
     from cStringIO import StringIO
-import six
 
 log = mtaf_logging.get_logger('mtaf.run_features')
 
