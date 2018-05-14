@@ -5,7 +5,6 @@ from ePhone7.config.configure import cfg
 from ePhone7.lib.utils.spud_serial import SpudSerial
 from ePhone7.lib.utils.get_softphone import get_softphone
 import six
-from mtaf.user_exception import UserException as Ux
 import os
 if six.PY3:
     from tkinter import *
@@ -91,7 +90,7 @@ class E7Commands(object):
 
     @staticmethod
     def dial_beta_ota():
-        six.print_("dialing beta OTA code...",)
+        six.print_("dialing beta OTA code...", end="")
         user_view.goto_tab('Dial')
         user_view.touch_element_with_text('Dial')
         dial_view.dial_set_beta_ota_server()
@@ -100,7 +99,7 @@ class E7Commands(object):
 
     @staticmethod
     def dial_alpha_ota():
-        six.print_("dialing alpha OTA code...",)
+        six.print_("dialing alpha OTA code...", end="")
         user_view.goto_tab('Dial')
         user_view.touch_element_with_text('Dial')
         dial_view.dial_set_alpha_ota_server()
@@ -109,7 +108,7 @@ class E7Commands(object):
 
     @staticmethod
     def dial_prod_ota():
-        six.print_("dialing prod OTA code...",)
+        six.print_("dialing prod OTA code...", end="")
         user_view.goto_tab('Dial')
         dial_view.dial_set_production_ota_server()
         dial_view.touch_call_button()
@@ -117,7 +116,7 @@ class E7Commands(object):
 
     @staticmethod
     def dial_show_ota():
-        six.print_("dialing show OTA code...",)
+        six.print_("dialing show OTA code...", end="")
         user_view.goto_tab('Dial')
         dial_view.dial_show_ota_server()
         dial_view.touch_call_button()
@@ -125,7 +124,7 @@ class E7Commands(object):
 
     @staticmethod
     def dial_advanced_settings():
-        six.print_("dialing advanced settings code...",)
+        six.print_("dialing advanced settings code...", end="")
         user_view.goto_tab('Dial')
         dial_view.dial_advanced_settings()
         dial_view.touch_call_button()
@@ -133,25 +132,26 @@ class E7Commands(object):
 
     @staticmethod
     def get_installed_versions():
-        six.print_("getting installed versions")
+        six.print_("getting installed versions...")
         # self.update_idletasks()
         aosp, app = get_installed_versions()
         six.print_("aosp: %s, app: %s" % (aosp, app))
+        six.print_("Done")
 
     @staticmethod
     def set_favorites():
-        six.print_("setting all favorite coworkers...",)
+        six.print_("setting all favorite coworkers...", end="")
         contacts_view.set_all_favorites()
         six.print_("Done")
 
     @staticmethod
     def usb_enable():
-        six.print_("Enabling USB via spud port...",)
+        six.print_("Enabling USB via spud port...", end="")
         usb_enable()
         six.print_("Done")
 
     def reboot(self):
-        six.print_("rebooting...",)
+        six.print_("rebooting...", end="")
         ss = SpudSerial(cfg.site['SerialDev'])
         self.app.log_action(ss, {'cmd': 'cd\n', 'new_cwd': 'data'})
         self.app.log_action(ss, {'cmd': 'reboot\n', 'new_cwd': '', 'expect': 'mtp_open', 'dead_air_timeout': 20,
@@ -178,7 +178,7 @@ class E7Commands(object):
 
     def get_screenshot_adb_and_rotate(self):
         self.app.get_screenshot_adb()
-        six.print_("-->rotating image...")
+        six.print_("-->rotating image...", end="")
         self.app.rotate_image()
         six.print_("Done")
 
@@ -200,6 +200,7 @@ class Plugin(object):
             'Dial Beta OTA Code': e7_cmds.dial_beta_ota,
             'Dial Current OTA Code': e7_cmds.dial_show_ota,
             'Dial Production OTA Code': e7_cmds.dial_prod_ota,
+            'Get Installed Versions': e7_cmds.get_installed_versions,
             'Set Coworker Favorites': e7_cmds.set_favorites,
             'Enable USB': e7_cmds.usb_enable,
             'Create Softphones': e7_cmds.create_softphone_frames,
@@ -216,9 +217,10 @@ class Plugin(object):
                 {'label': 'Set Coworker Favorites', 'uses_appium': True}
             ],
             'Other Actions': [
-                {'label': 'Enable USB', 'uses_appium': True},
+                {'label': 'Enable USB', 'uses_appium': False},
                 {'label': 'Create Softphones', 'uses_appium': None},
-                {'label': 'Reboot', 'uses_appium': True}
+                {'label': 'Get Installed Versions', 'uses_appium': None},
+                {'label': 'Reboot', 'uses_appium': None}
             ]
         }
         for menu_label in menu_items:
