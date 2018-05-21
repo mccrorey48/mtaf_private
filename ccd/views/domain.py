@@ -3,9 +3,9 @@ from time import sleep
 from mtaf import mtaf_logging
 
 from ccd.views.base import BaseView
-from lib.wrappers import Trace
+from mtaf.trace import Trace
 
-log =mtaf_logging.get_logger('mtaf.domain_view')
+log = mtaf_logging.get_logger('mtaf.domain_view')
 
 
 class DomainView(BaseView):
@@ -84,5 +84,6 @@ class DomainView(BaseView):
         self.click_named_element('SettingsTab')
         link_elem = self.find_named_element('Loc')
         link_elem.click()
+
 
 domain_view = DomainView()

@@ -76,6 +76,13 @@ class SeleniumActions(object):
                 return cls.locators[name]
             cls = cls.__base__
 
+    @staticmethod
+    def assert_equal(a, b, msg=''):
+        if msg == '':
+            msg = "%s does not equal %s" % (a, b)
+        if a != b:
+            raise AssertionError(msg)
+
     @Trace(log)
     def get_source(self):
         return self.driver.page_source

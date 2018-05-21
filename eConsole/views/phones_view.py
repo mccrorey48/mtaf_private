@@ -1,4 +1,4 @@
-import lib.logging_esi as logging
+import mtaf.mtaf_logging as logging
 from eConsole.views.base_view import BaseView
 
 log = logging.get_logger('esi.home')

@@ -1,10 +1,10 @@
 import re
 from mtaf import mtaf_logging
-from lib.wrappers import Trace
+from mtaf.trace import Trace
 from ccd.views.base import BaseView
 from lib.user_exception import UserException as Ux
 
-log =mtaf_logging.get_logger('mtaf.reseller_view')
+log = mtaf_logging.get_logger('mtaf.reseller_view')
 
 
 class ResellerView(BaseView):
@@ -46,10 +46,10 @@ class ResellerView(BaseView):
             _version, _build, _date, _time = m.groups()
             log.debug("version info = %s", m.groups())
             _site = self.cfg.site
-            self.assertEqual(_version, _site['Version'], 'Expected version %s, actual %s' % (_version, _site['Version']))
-            self.assertEqual(_build, _site['Build'], 'Expected build %s, actual %s' % (_version, _site['Build']))
-            self.assertEqual(_date, _site['Date'], 'Expected date %s, actual %s' % (_version, _site['Date']))
-            self.assertEqual(_time, _site['Time'], 'Expected time %s, actual %s' % (_version, _site['Time']))
+            self.assert_equal(_version, _site['Version'], 'Expected version %s, actual %s' % (_version, _site['Version']))
+            self.assert_equal(_build, _site['Build'], 'Expected build %s, actual %s' % (_version, _site['Build']))
+            self.assert_equal(_date, _site['Date'], 'Expected date %s, actual %s' % (_version, _site['Date']))
+            self.assert_equal(_time, _site['Time'], 'Expected time %s, actual %s' % (_version, _site['Time']))
         else:
             raise Ux('failed to find version info')
 

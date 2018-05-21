@@ -1,12 +1,12 @@
 import os
-import lib.logging_esi as logging
-from lib.wrappers import Trace
+import mtaf.mtaf_logging as logging
+from mtaf.trace import Trace
 from selenium.webdriver import Chrome, Firefox
 from eConsole.config.configure import cfg
-from lib.angular_actions import AngularActions
-from lib.user_exception import UserException as Ux
+from mtaf.angular_actions import AngularActions
+from mtaf.user_exception import UserException as Ux
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions
 from selenium.common.exceptions import WebDriverException, TimeoutException
 from PIL import Image
 
@@ -30,6 +30,8 @@ class BaseView(AngularActions):
         "MainButton": {"by": "id", "value": "mainButton"},
         "LoadingGif": {"by": "class name", "value": "loadingoverlay"},
         "MessageSettings": {"by": "css selector", "value": ".dropdown-item.ng-scope", "text": "Message Settings"}
+        # only thing saved from the now-deleted "econs" branch was this locator:
+        # "MessageSettings": {"by": "css selector", "value": "li.nav-item.dropdown.show > div > a:nth-child(2)"}
     }
 
     def __init__(self):
@@ -74,7 +76,7 @@ class BaseView(AngularActions):
     def input_text(self, text, locator_name):
         log.debug('inputting text "%s" to element "%s"' % (text, locator_name))
         self.find_named_element(locator_name).send_keys(text)
-        self.element_trigger_change(locator_name)
+        self.element_trigger_change()
 
     @Trace(log)
     def click_named_element(self, name, timeout=5):
@@ -93,7 +95,6 @@ class BaseView(AngularActions):
     @Trace(log)
     def element_is_clickable(self, elem):
         return elem.is_enabled() and elem.is_displayed()
-
 
     @Trace(log)
     def becomes_present(self):
@@ -114,7 +115,8 @@ class BaseView(AngularActions):
         if len(self.nav_tab_names) > 0:
             locator = self.get_locator('NavTabs')
             driver_locator = (locator["by"], locator["value"])
-            if len(WebDriverWait(self.driver, 5).until(EC.visibility_of_any_elements_located(driver_locator))) == 0:
+            if len(WebDriverWait(self.driver, 5).until(
+                    expected_conditions.visibility_of_any_elements_located(driver_locator))) == 0:
                 return False
         return True
 
@@ -138,7 +140,7 @@ class BaseView(AngularActions):
                 self.log_file = open('/home/mmccrorey/firefox.log', 'w')
                 AngularActions.driver = Firefox()
             else:
-                raise Ux ('Unknown browser %s' % browser)
+                raise Ux('Unknown browser %s' % browser)
             AngularActions.driver.set_window_size(1280, 1024)
             self.current_browser = browser
 

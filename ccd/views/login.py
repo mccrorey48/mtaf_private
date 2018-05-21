@@ -2,9 +2,9 @@ from mtaf import mtaf_logging
 
 from ccd.utils.configure import cfg
 from ccd.views.base import BaseView
-from lib.wrappers import Trace
+from mtaf.trace import Trace
 
-log =mtaf_logging.get_logger('mtaf.login_view')
+log = mtaf_logging.get_logger('mtaf.login_view')
 
 
 class LoginView(BaseView):
@@ -90,5 +90,6 @@ class LoginView(BaseView):
         el = self.find_named_element("PasswordAlert", timeout)
         self.assert_element_text(elem=el, expected="Username or password is invalid. Please try again.",
                                  elem_name="alert")
+
 
 login_view = LoginView()

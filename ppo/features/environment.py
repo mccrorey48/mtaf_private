@@ -3,7 +3,7 @@ from lib.user_exception import UserException as Ux
 from selenium import webdriver
 import os
 
-log =mtaf_logging.get_logger('mtaf.environment')
+log = mtaf_logging.get_logger('mtaf.environment')
 substeps = ''
 
 

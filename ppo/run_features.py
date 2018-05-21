@@ -13,7 +13,7 @@ import argparse
 from os import path, getenv, mkdir
 from shutil import copyfile
 
-log =mtaf_logging.get_logger('mtaf.run_features')
+log = mtaf_logging.get_logger('mtaf.run_features')
 
 
 @contextlib.contextmanager

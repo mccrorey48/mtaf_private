@@ -1,15 +1,14 @@
 from mtaf import mtaf_logging
-import lib.filters as filters
-from lib.wrappers import Trace
+from mtaf.trace import Trace
 from selenium.webdriver import Chrome, Firefox
 from selenium.webdriver.common.keys import Keys
 
 from ccd.utils.configure import cfg
-from lib.android_actions import SeleniumActions
-from lib.user_exception import UserException as Ux, UserFailException as Fx
+from mtaf.selenium_actions import SeleniumActions
+from mtaf.user_exception import UserException as Ux, UserFailException as Fx
 import re
 
-log =mtaf_logging.get_logger('mtaf.base_view')
+log = mtaf_logging.get_logger('mtaf.base_view')
 
 
 class BaseView(SeleniumActions):
@@ -97,4 +96,6 @@ class BaseView(SeleniumActions):
             self.current_browser = None
             if self.log_file is not None:
                 self.log_file.close()
+
+
 base_view = BaseView()

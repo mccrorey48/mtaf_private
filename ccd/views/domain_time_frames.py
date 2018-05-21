@@ -2,7 +2,7 @@ from mtaf import mtaf_logging
 
 from ccd.views.domain import DomainView
 
-log =mtaf_logging.get_logger('mtaf.domain_time_frames_view')
+log = mtaf_logging.get_logger('mtaf.domain_time_frames_view')
 
 
 class DomainTimeFramesView(DomainView):
@@ -19,5 +19,6 @@ class DomainTimeFramesView(DomainView):
         super(DomainTimeFramesView, self).__init__()
         self.view_name = "domain_time_frames"
         self.page_title = "Manager Portal - Time Frames"
+
 
 domain_time_frames_view = DomainTimeFramesView()

@@ -1,11 +1,11 @@
 from mtaf import mtaf_logging
-from lib.wrappers import Trace
+from mtaf.trace import Trace
 
 from ccd.utils.configure import cfg
 from ccd.views.reseller import ResellerView
 from lib.user_exception import UserException as Ux
 
-log =mtaf_logging.get_logger('mtaf.reseller_domains_view')
+log = mtaf_logging.get_logger('mtaf.reseller_domains_view')
 
 
 class ResellerDomainsView(ResellerView):
@@ -65,5 +65,6 @@ class ResellerDomainsView(ResellerView):
         if elems[0].text != cfg.site['TestDomain']:
             raise Ux("expected domain in table to be %s, got %s" % (
                 cfg.site['TestDomain'], elems[0].text))
+
 
 reseller_domains_view = ResellerDomainsView()

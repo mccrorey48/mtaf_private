@@ -3,7 +3,7 @@ from ccd.utils.configure import cfg
 import re
 from ccd.views.domain import DomainView
 
-log =mtaf_logging.get_logger('mtaf.domain_music_on_hold_view')
+log = mtaf_logging.get_logger('mtaf.domain_music_on_hold_view')
 
 
 class DomainUsersView(DomainView):

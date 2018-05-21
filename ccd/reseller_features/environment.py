@@ -2,8 +2,8 @@ from ccd.utils.configure import cfg
 import ccd.views
 from mock import Mock, patch
 from mtaf import mtaf_logging
-logging_esi.console_handler.setLevel(logging_esi.INFO)
-log =mtaf_logging.get_logger('mtaf.reseller')
+mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
+log = mtaf_logging.get_logger('mtaf.reseller')
 
 
 def make_mock(name):

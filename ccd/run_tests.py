@@ -3,7 +3,7 @@ import time
 
 from mtaf import mtaf_logging
 
-from mtaf.result import TestResult
+from mtaf.test_result import TestResult
 
 log = mtaf_logging.get_logger('mtaf.run_tests')
 

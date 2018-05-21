@@ -4,7 +4,7 @@ from lib.user_exception import UserException as Ux
 from ePhoneGoAndroid.views.base import BaseView
 from lib.wrappers import Trace
 
-log =mtaf_logging.get_logger('mtaf.settings_view')
+log = mtaf_logging.get_logger('mtaf.settings_view')
 
 
 class SettingsView(BaseView):

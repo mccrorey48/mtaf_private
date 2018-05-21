@@ -7,7 +7,7 @@
 # sets up output to the console, and to the files mtaf_warn.log, mtaf_info.log, mtaf_trace.log and mtaf_debug.log.
 #
 # Then, when the importing program instantiates a new logger with the line:
-#    log =mtaf_logging.get_logger(logname)
+#    log = mtaf_logging.get_logger(logname)
 # where logname starts with "mtaf.", the methods log.warn, log.info, log.trace and log.debug create
 # formatted output to the log files.
 #

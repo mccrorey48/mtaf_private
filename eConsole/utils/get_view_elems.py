@@ -3,6 +3,7 @@ from eConsole.config.configure import cfg
 from time import sleep
 # from bs4 import BeautifulSoup
 from mtaf import mtaf_logging
+import six
 cfg.set_test_target("devdash")
 log = mtaf_logging.get_logger('esi.get_view_elems')
 
@@ -16,7 +17,7 @@ if login_view.becomes_present():
         sleep(1)
         tabs = home_view.find_named_elements("NavTabs")
         for tab in tabs:
-            print tab.text
+            six.print_(tab.text)
 base_view.close_browser()
 
 

@@ -1,8 +1,8 @@
-import lib.logging_esi as logging
+import mtaf.mtaf_logging as logging
 
 from eConsole.config.configure import cfg
 from eConsole.views.base_view import BaseView
-from lib.wrappers import Trace
+from mtaf.trace import Trace
 
 log = logging.get_logger('esi.login_view')
 

@@ -2,9 +2,9 @@ from mtaf import mtaf_logging
 
 from ccd.utils.configure import cfg
 from ccd.views.reseller import ResellerView
-from lib.wrappers import Trace
+from mtaf.trace import Trace
 
-log =mtaf_logging.get_logger('mtaf.reseller_home_view')
+log = mtaf_logging.get_logger('mtaf.reseller_home_view')
 
 
 class ResellerHomeView(ResellerView):
@@ -22,5 +22,6 @@ class ResellerHomeView(ResellerView):
     def goto_test_domain_quick(self):
         self.filter_dropdown_and_click_result_by_link_text("DomainQuickLaunch", cfg.site["TestDomainMin"],
                                                            cfg.site["TestDomainExtended"])
+
 
 reseller_home_view = ResellerHomeView()
