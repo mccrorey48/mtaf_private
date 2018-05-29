@@ -37,6 +37,7 @@ setup(
     install_requires=[
         'Appium-Python-Client==0.25',
         'behave==1.2.6',
+        'ipaddress==1.0.22',
         'olefile==0.44',
         'requests==2.18.4',
         'Pillow==4.3.0',
