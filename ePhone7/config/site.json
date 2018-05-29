@@ -349,21 +349,21 @@
                         "2206",
                         "2207"
                     ],
-                    "PhonePassword": "2012",
-                    "UserId": "2012",
-                    "UserName": "Martin Two"
+                    "PhonePassword": "2016",
+                    "UserId": "2016",
+                    "UserName": "David ePhone7"
                 },
                 "R2d2AltUser": {
                     "AccountPassword": "",
                     "DomainName": "test2.test-eng.com",
-                    "PhonePassword": "v67XkM6U",
+                    "PhonePassword": "yafK8HPF",
                     "Proxy": "nr5.cpbx.esihs.net",
-                    "UserId": "2012b",
-                    "UserNameIncoming": "Martin Two",
+                    "UserId": "2016b",
+                    "UserNameIncoming": "David ePhone7",
                     "dns_list": [
                         "10.0.50.156"
                     ],
-                    "pbfile": "wav/2012.wav"
+                    "pbfile": "wav/2016.wav"
                 },
                 "Auto TesterG": {
                     "AccountPassword": "2206",

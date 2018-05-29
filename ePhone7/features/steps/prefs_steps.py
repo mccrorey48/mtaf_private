@@ -71,7 +71,7 @@ def prefs__i_read_the_displayed_versions_for_the_app_and_aosp(context):
     aosp_version = prefs_view.find_named_element('SystemVersion').text
     prefs_view.click_named_element('AboutOk')
     prefs_view.click_named_element('System')
-    m = re.match('App Version : (\S*)', app_version.encode('utf8'))
+    m = re.match('App Version : (\d+\.\d+\.\d+)', app_version.encode('utf8'))
     if m is None:
         context.app_version = "Unknown Version"
     else:
