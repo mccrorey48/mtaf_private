@@ -9,7 +9,7 @@ from mtaf.user_exception import UserException as Ux
 from mtaf.selenium_actions import SeleniumActions
 from ExtendedSelenium2Library import ExtendedSelenium2Library
 
-log = logging.get_logger('esi.angular_actions')
+log = logging.get_logger('mtaf.angular_actions')
 
 
 class AngularActions(SeleniumActions):

@@ -1,6 +1,6 @@
 from mtaf import mtaf_logging
 log = mtaf_logging.get_logger('mtaf.log_test')
-logging.console_handler.setLevel(logging.INFO)
+mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
 log.debug("debug message")
 log.trace("trace message")
 log.info("info message")

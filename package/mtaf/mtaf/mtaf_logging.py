@@ -1,9 +1,9 @@
 # wrapper for the python "logging" module
 #
-# Importing this module sets the logger class of the python "logging" module to EsiLogger.
-# The EsiLogger class adds the "trace" level tomtaf_logging.
+# Importing this module sets the logger class of the python "logging" module to MtafLogger.
+# The MtafLogger class adds the "trace" level tomtaf_logging.
 #
-# When this module is imported, EsiLogger is instantiated with the root name 'mtaf' and the instance
+# When this module is imported, MtafLogger is instantiated with the root name 'mtaf' and the instance
 # sets up output to the console, and to the files mtaf_warn.log, mtaf_info.log, mtaf_trace.log and mtaf_debug.log.
 #
 # Then, when the importing program instantiates a new logger with the line:
@@ -42,7 +42,7 @@ current_formatter = None
 trace_indent = 0
 
 
-class EsiLogger(getLoggerClass()):
+class MtafLogger(getLoggerClass()):
 
     db = None
     db_host = None
@@ -50,7 +50,7 @@ class EsiLogger(getLoggerClass()):
     db_collection = None
 
     def __init__(self, name, level=NOTSET):
-        super(EsiLogger, self).__init__(name, level)
+        super(MtafLogger, self).__init__(name, level)
         addLevelName(TRACE, 'TRACE')
 
     def trace(self, msg, *args, **kwargs):
@@ -63,7 +63,7 @@ class EsiLogger(getLoggerClass()):
             msg_dict = parse_msg_to_dict(txt)
             if msg_dict:
                 self.db_collection.insert_one(msg_dict)
-        super(EsiLogger, self).handle(record)
+        super(MtafLogger, self).handle(record)
 
     @classmethod
     def set_db(cls, host_name, db_name, collection_name):
@@ -72,7 +72,7 @@ class EsiLogger(getLoggerClass()):
         cls.db_collection = cls.db[collection_name]
 
 
-setLoggerClass(EsiLogger)
+setLoggerClass(MtafLogger)
 
 
 @contextmanager
@@ -206,6 +206,7 @@ def parse_msg_to_dict(msg):
     return all_values
 
 
+behave_log = get_logger('behave')
 _log = getLogger(root_name)
 _log.setLevel(DEBUG)
 log_dir = getenv('MTAF_LOG_DIR', 'log')
@@ -217,12 +218,16 @@ base_warn_fname = path.join(log_dir, '%s_warn.log' % root_name)
 base_info_fname = path.join(log_dir, '%s_info.log' % root_name)
 base_trace_fname = path.join(log_dir, '%s_trace.log' % root_name)
 base_debug_fname = path.join(log_dir, '%s_debug.log' % root_name)
+base_behave_fname = path.join(log_dir, '%s_behave.log' % root_name)
 extended_debug_fname = path.join(log_dir, '%s_debug_%s.log' % (root_name, timestamp))
 # make sure the tmp directory exists so we can put temporary files there
 try:
     mkdir('log')
 except OSError:
     pass
+fh = FileHandler(base_behave_fname, mode='w', encoding=None, delay=False)
+fh.setLevel(DEBUG)
+behave_log.addHandler(fh)
 fh = FileHandler(base_warn_fname, mode='w', encoding=None, delay=False)
 fh.setLevel(WARN)
 _log.addHandler(fh)
