@@ -15,7 +15,7 @@ log = mtaf_logging.get_logger('mtaf.active_steps')
 @step('[active call] I touch "Dial"')
 @fake
 def active_call__i_touch_dial(context):
-    active_call_view.click_named_element('InCallDial')
+    active_call_view.click_named_element('ActiveCallDial')
 
 
 @step("[active call] the active call screen appears")
@@ -70,7 +70,7 @@ def activecall__i_see_an_orange_banner_with_the_callers_name(context):
 @step("[active_call] I see the keypad")
 @fake
 def activecall__i_see_the_keypad(context):
-    assert active_call_view.element_is_present('InCallDialpad')
+    assert active_call_view.element_is_present('ActiveCallDialpad')
 
 
 @step("[active_call] I select a coworker's mailbox")
@@ -118,7 +118,7 @@ def activecall__my_favorite_coworker_contacts_are_listed(context):
 @step("[active_call] the buttons are {w} pixels wide and {h} pixels high")
 @fake
 def activecall__the_buttons_are_w_pixels_wide_and_h_pixels_high(context, w, h):
-    elems = active_call_view.find_named_elements('InCallDialKeys')
+    elems = active_call_view.find_named_elements('ActiveCallDialKeys')
     # location = elems[0].location
     # assert location['x'] == 54 and location['y'] == 403, "Expected key 1 location (54, 403), got (%d, %d)" \
     #                                                      % (location['x'], location['y'])

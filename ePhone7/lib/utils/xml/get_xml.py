@@ -51,7 +51,7 @@ def get_call_views(version):
         sleep(5)
         # end_active_call = user_view.find_named_element('EndActiveCall')
         save_xml_and_screenshot('active_call_%s' % version, version)
-        active_call_view.click_named_element('InCallDial')
+        active_call_view.click_named_element('ActiveCallDial')
         save_xml_and_screenshot('active_call_dial_%s' % version, version)
         # log.trace("clicking end active call icon")
         # end_active_call.click()

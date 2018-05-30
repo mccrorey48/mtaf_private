@@ -10,6 +10,10 @@ log = mtaf_logging.get_logger('mtaf.active_call_view')
 class ActiveCallView(BaseView):
 
     locators = {
+        "ActiveCallControls": {"by": "id", "value": "com.esi_estech.ditto:id/incall_controls"},
+        "ActiveCallDial": {"by": "id", "value": "com.esi_estech.ditto:id/dialpadButton"},
+        "ActiveCallDialKeys": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_key_number"},
+        "ActiveCallDialpad": {"by": "id", "value": "com.esi_estech.ditto:id/in_call_dialpad"},
         "ActiveCallLabel": {"by": "id", "value": "com.esi_estech.ditto:id/inCallScreenFrame"},
         "AudioPathIcon": {"by": "id", "value": "com.esi_estech.ditto:id/currentAudioImage"},
         "CallCardName": {"by": "accessibility id", "value": "Call Park Pickup"},
@@ -17,10 +21,6 @@ class ActiveCallView(BaseView):
         "CallRecordButton": {"by": "id", "value": "com.esi_estech.ditto:id/recordButton"},
         "DefaultForwardAccountName": {"by": "uia_text", "value": cfg.site['DefaultForwardAccount']},
         "EndActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/endCallButton"},
-        "InCallControls": {"by": "id", "value": "com.esi_estech.ditto:id/incall_controls"},
-        "InCallDial": {"by": "id", "value": "com.esi_estech.ditto:id/dialpadButton"},
-        "InCallDialKeys": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_key_number"},
-        "InCallDialpad": {"by": "id", "value": "com.esi_estech.ditto:id/in_call_dialpad"},
         "PrimaryCallBanner": {"by": "id", "value": "com.esi_estech.ditto:id/primary_call_button_container"},
         "PrimaryCallName": {"by": "id", "value": "com.esi_estech.ditto:id/call_card_name"},
         "RecordActiveCall": {"by": "id", "value": "com.esi_estech.ditto:id/recordImageButton"},
