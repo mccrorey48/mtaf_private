@@ -187,9 +187,8 @@ def contacts__my_coworker_contacts_are_each_shown_with_a_favorites_star_icon(con
     base_view.get_screenshot_as_png('multi_edit')
     for i in range(len(names)):
         color = base_view.get_element_color_and_count('multi_edit', stars[i])
-        fail_msg = "No favorites icon found for contact name %s" % names[i].text
-        assert (base_view.color_match(color, cfg.colors['ContactsView']['multi_favorite_on_color'])
-                or base_view.color_match(color, cfg.colors['ContactsView']['multi_favorite_off_color'])), fail_msg
+        fail_msg = "No white or yellow star icon found for contact name %s" % names[i].text
+        assert base_view.color_is(color, 'yellow star') or base_view.color_is(color, 'white star'), fail_msg
 
 
 @step("[contacts] my Coworker contacts are each shown with a handset icon")

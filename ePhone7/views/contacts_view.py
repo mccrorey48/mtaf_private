@@ -196,8 +196,6 @@ class ContactsView(UserView):
         # until scrolling fails to show contacts not already in the list
         self.scroll_to_top_of_list()
         checked_numbers = []
-        right_color = cfg.colors['ContactsView']['multi_favorite_off_color']
-        wrong_color = cfg.colors['ContactsView']['multi_favorite_on_color']
         while True:
             displayed_items = self.get_all_fully_visible_contact_list_items()
             self.get_screenshot_as_png('multi_edit')
@@ -205,12 +203,12 @@ class ContactsView(UserView):
             for item in displayed_items:
                 if item['number'] not in checked_numbers:
                     color = self.get_element_color_and_count('multi_edit', item['icon'])
-                    if self.color_match(color, wrong_color):
+                    if self.color_is(color, 'yellow star'):
                         item['icon'].click()
                         self.get_screenshot_as_png('multi_edit')
                         color = self.get_element_color_and_count('multi_edit', item['icon'])
-                        if not self.color_match(color, right_color):
-                            raise Ux("Expected color %s to equal %s" % (color, right_color))
+                        if not self.color_is(color, 'white star'):
+                            raise Ux("Expected star to turn white but color is %s" % color)
                     log.debug('adding %s to checked number list' % item['number'])
                     checked_numbers.append(item['number'])
             if prev_numbers_len == len(checked_numbers):
@@ -234,17 +232,17 @@ class ContactsView(UserView):
             for item in displayed_items:
                 if item['number'] not in checked_numbers:
                     if item['number'] in favorites:
-                        right_color = cfg.colors['ContactsView']['multi_favorite_on_color']
-                        wrong_color = cfg.colors['ContactsView']['multi_favorite_off_color']
+                        right_color = 'yellow star'
+                        wrong_color = 'white star'
                     else:
-                        right_color = cfg.colors['ContactsView']['multi_favorite_off_color']
-                        wrong_color = cfg.colors['ContactsView']['multi_favorite_on_color']
+                        right_color = 'white star'
+                        wrong_color = 'yellow star'
                     color = self.get_element_color_and_count('multi_edit', item['icon'])
-                    if self.color_match(color, wrong_color):
+                    if self.color_is(color, wrong_color):
                         item['icon'].click()
                         self.get_screenshot_as_png('multi_edit')
                         color = self.get_element_color_and_count('multi_edit', item['icon'])
-                        if not self.color_match(color, right_color):
+                        if not self.color_is(color, right_color):
                             raise Ux("Expected color %s to equal %s" % (color, right_color))
                     if item['number'] in favorites:
                         favorites.remove(item['number'])
@@ -317,13 +315,11 @@ class ContactsView(UserView):
         # and if it is not already a favorite, toggle the favorites selector
         for number in new_favorites:
             self.click_element(self.get_contact_list_element(number))
-            # desired_color = cfg.colors['ContactsView']['handset_online_color'][:-1]
             filebase = 'contact_%s' % number
             self.get_screenshot_as_png(filebase)
             icon = self.find_named_element('FavoriteIndicator')
-            current_color = self.get_element_color(filebase, icon)
-            desired_color = cfg.colors['ContactsView']['multi_favorite_on_color'][:-1]
-            if current_color != desired_color:
+            color = self.get_element_color(filebase, icon)
+            if not self.color_is(color, 'yellow star'):
                 self.click_element(icon)
             self.click_named_element('ContactClose')
 

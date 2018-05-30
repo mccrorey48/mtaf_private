@@ -175,6 +175,21 @@ class BaseView(AndroidActions):
         log.debug("color %s matches %s" % (c1, c2))
         return True
 
+    @staticmethod
+    @Trace(log)
+    def color_is(c, color_name):
+        # normalize the colors to the range 0-255
+        cmax = max(c[:3])
+        scale = 255.0 / cmax
+        [r, g, b] = [int(x * scale) for x in c[:3]]
+        count = c[3]
+        log.debug('normalized color %s'% ([r, g, b]))
+        if color_name == 'white star':
+            return min([r, g, b]) > 245 and 230 < count < 238
+        elif color_name == 'yellow star':
+            return r == 255 and 195 < g < 215 and b < 30 and 230 < count < 238
+        return False
+
     @Trace(log)
     def get_element_color_and_count(self, filebase, elem, cropped_suffix='', color_list_index=1):
         return self.get_element_color_and_count_using_folder(cfg.site.ScreenshotFolder, filebase, elem, cropped_suffix,
