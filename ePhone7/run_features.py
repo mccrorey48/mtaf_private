@@ -23,12 +23,12 @@ else:
     from cStringIO import StringIO
 
 log = mtaf_logging.get_logger('mtaf.run_features')
+mtaf_log_dir = getenv('MTAF_LOG_DIR', './log')
 
 
 @contextlib.contextmanager
 def capture():
     import sys
-    from cStringIO import StringIO
     oldout, olderr = sys.stdout, sys.stderr
     out = []
     try:
@@ -55,6 +55,7 @@ def run_features(config):
         sys.argv.append('--tags=%s' % config['run_tags'])
     if config['stop']:
         sys.argv.append('--stop')
+    sys.argv.append('-k')
     sys.argv.append('-f')
     sys.argv.append('json.pretty')
     sys.argv.append(config['features_dir'])
@@ -411,7 +412,6 @@ if __name__ == '__main__':
     try:
         # get site name from environment
         mtaf_db_host = getenv('MTAF_DB_HOST')
-        mtaf_log_dir = getenv('MTAF_LOG_DIR', './log')
         parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                          description='  runs behave test on specified features directory and saves' +
                                                      '  the results on a mongodb running on a specified server\n')
@@ -459,8 +459,12 @@ if __name__ == '__main__':
             installed_app = now.strftime("%H-%M-%S")
         else:
             installed_aosp, installed_app = get_current_versions(args.ota_server)
-        report_configuration = {"site_tag":cfg.site_tag, "run_tags": args.run_tags, "installed_aosp": installed_aosp,
-                                "installed_app": installed_app}
+        report_configuration = {
+            "site_tag": cfg.site_tag,
+            "run_tags": args.run_tags,
+            "installed_aosp": installed_aosp,
+            "installed_app": installed_app
+        }
         write_result_to_db(args, report_configuration, fake_detector, features)
         prune_db('e7_results', args.server, 'prune', 10, 30)
     except Ux as e:
