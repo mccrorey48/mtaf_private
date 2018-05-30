@@ -4,7 +4,7 @@ import mtaf.mtaf_logging as logging
 from eConsole.views.base_view import BaseView
 from mtaf.trace import Trace
 
-log = logging.get_logger('esi.home')
+log = logging.get_logger('mtaf.home')
 
 
 class HomeView(BaseView):

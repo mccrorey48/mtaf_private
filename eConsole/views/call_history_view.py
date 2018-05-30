@@ -1,7 +1,7 @@
 import mtaf.mtaf_logging as logging
 from eConsole.views.base_view import BaseView
 
-log = logging.get_logger('esi.home')
+log = logging.get_logger('mtaf.call_history')
 
 
 class CallHistoryView(BaseView):

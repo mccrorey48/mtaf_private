@@ -4,9 +4,8 @@ from eConsole.views import *
 from mtaf.user_exception import UserException as Ux
 import datetime
 
-
-mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
-log = mtaf_logging.get_logger('esi.environment')
+log = mtaf_logging.get_logger('mtaf.environment')
+behave_log = mtaf_logging.get_logger('behave')
 substeps = ''
 
 
@@ -25,13 +24,12 @@ def make_assertion(context):
 
 
 def before_all(context):
-    cfg.set_test_target(context.config.userdata.get('portal_server'))
     global substeps
     substeps = ''
     context.is_substep = False
+    context.app_version = ''
     context.run_substep = run_substep(context)
     context.make_assertion = make_assertion(context)
-    tags = str(context.config.tags).split(',')
     base_view.open_browser()
 
 
@@ -48,10 +46,14 @@ def after_feature(context, feature):
 
 def before_scenario(context, scenario):
     global substeps
-    context.scenario_name = scenario.name
     substeps += "scenario = %s\n" % scenario.name
     mtaf_logging.push_msg_src('  scenario')
     log.info('scenario.name: %s' % scenario.name)
+    base_view.get_url(cfg['portal_url'][context.config.userdata['portal_server']])
+    if not context.app_version:
+        context.app_version = base_view.find_named_element("AppVersion").text.split('eConsole Version: ')[1]
+        with open('app_version.txt', 'w') as f:
+            f.write(context.app_version)
 
 
 def after_scenario(context, scenario):
@@ -85,6 +87,7 @@ def before_step(context, step):
         substeps += "step = %s\n" % step.name
     mtaf_logging.push_msg_src('    step: %s' % step.name[:40])
     log.info('step.name: %s' % step.name)
+    behave_log.warn('Step: %s' % step.name)
 
 
 def after_step(context, step):

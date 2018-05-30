@@ -5,10 +5,11 @@ import sys
 from datetime import datetime, timedelta
 from behave.__main__ import main
 from pymongo import MongoClient
-import mtaf.mtaf_logging as logging
+from mtaf import mtaf_logging
 from mtaf.fake_detector import FakeDetector
 from mtaf.user_exception import UserException as Ux
-from mtaf.decorators import Trace
+from mtaf.trace import Trace
+from mtaf.prune_db import prune_db
 import argparse
 from os import path, getenv, mkdir
 from shutil import copyfile
@@ -19,7 +20,8 @@ if six.PY3:
 else:
     from cStringIO import StringIO
 
-log = logging.get_logger('esi.run_features')
+log = mtaf_logging.get_logger('mtaf.run_features')
+mtaf_log_dir = getenv('MTAF_LOG_DIR', './log')
 
 
 @contextlib.contextmanager
@@ -49,10 +51,12 @@ def run_features(config):
     sys.argv.append('portal_server=%s' % config['portal_server'])
     sys.argv.append('-D')
     sys.argv.append('user_scope=%s' % config['user_scope'])
+    sys.argv.append('--tags=%s' % config['user_scope'])
     if config['run_tags']:
         sys.argv.append('--tags=%s' % config['run_tags'])
     if config['stop']:
         sys.argv.append('--stop')
+    sys.argv.append('-k')
     sys.argv.append('-f')
     sys.argv.append('json.pretty')
     sys.argv.append(config['features_dir'])
@@ -114,14 +118,14 @@ def run_features(config):
     # (if the two data sets don't produce the same sequence of steps, raise an exception
     # because something isn't working right)
     for feature in data:
-        print feature['name']
+        # six.print_(feature['name'])
         for element in feature["elements"]:
-            print '  ' + element['name']
+            # six.print_('  ' + element['name'])
             if element["keyword"] == "Scenario":
                 new_steps = []
                 for step in element["steps"]:
                     if "result" in step:
-                        print '    ' + step['name']
+                        # six.print_('    ' + step['name'])
                         # if it gets to here, the step was executed and should be on the printed_steps list
                         if len(printed_steps) == 0:
                             raise Ux("Error processing new_steps list, printed_steps empty")
@@ -131,14 +135,14 @@ def run_features(config):
                         step["substeps"] = printed_step["substeps"]
                         if 'screenshot' in printed_step:
                             step["screenshot"] = printed_step["screenshot"]
-                    else:
-                        print '    ' + step['name'] + ' (skipped)'
+                    # else:
+                    #     six.print_('    ' + step['name'] + ' (skipped)')
                     new_steps.append(step)
                 element["steps"] = new_steps
     output = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
     with open('tmp/output.json', 'w') as f:
         f.write(output)
-    copyfile('log/esi_info.log', 'log/esi_info_copy.log')
+    copyfile(path.join(mtaf_log_dir, 'mtaf_info.log'), path.join(mtaf_log_dir, 'mtaf_info_copy.log'))
     return data
 
 
@@ -206,58 +210,48 @@ def new_status(has_passes=False, has_fails=False, has_fakes=False, has_skips=Fal
         return 'failed'
     if has_passes is True and has_fakes is False and has_skips is False and has_incompletes is False:
         return 'passed'
-    if has_passes is False and has_fakes is False and has_incompletes is False:
+    if has_passes is False and has_fakes is False and has_skips is True and has_incompletes is False:
         return 'skipped'
     # if has_passes is False and has_fakes is True and has_skips is False and has_incompletes is False:
     if has_passes is False and has_fakes is True and has_incompletes is False:
         return 'fake'
     if has_fakes or has_incompletes or has_skips:
             return 'incomplete'
+    return 'passed'
 
 
 def write_result_to_db(_args, configuration, _fake_detector, _features):
-    print 'writing to db_name %s, server %s:' % (_args.db_name, _args.server)
+    six.print_('writing to db_name %s, server %s:' % (_args.db_name, _args.server))
     client = MongoClient(_args.server)
     db = client[_args.db_name]
     if len(_features) and 'start_time' in _features[0] and 'start_date' in _features[0]:
         start_datetime = datetime.strptime("%s %s" % (_features[0]['start_date'], _features[0]['start_time']), '%x %X')
     else:
         start_datetime = datetime.now()
-    _time = start_datetime.strftime('%X')
-    _date = start_datetime.strftime('%x')
-    if configuration['portal_server'] == 'devdash':
-        environment = 'svlab'
-    else:
-        environment = 'production'
     test_start = {
         'app': 'eConsole',
         'build': '',
         'configuration': configuration,
-        'environment': environment,
+        'environment': configuration['portal_server'],
         'fail_count': 0,
         'skip_count': 0,
         'pass_count': 0,
         'status': '',
         'test_class': _args.test_class,
-        'time': _time,
-        'date': _date,
+        'time': start_datetime.strftime('%X'),
+        'date': start_datetime.strftime('%x'),
         'version': '1.x'
     }
-    # in case we are redoing this test from a json file, delete the old data
-    if _args.json_file:
-        for x in range(db['test_starts'].count({'time': _time, 'date': _date})):
-            old_start_id = db['test_starts'].find_one({'time': _time, 'date': _date})['_id']
-            db['test_starts'].delete_one({'_id': old_start_id})
-            db['features'].delete_many({'start_id': old_start_id})
-        info_filename = 'log/esi_info_copy.log'
-    else:
-        info_filename = 'log/esi_info.log'
-    stepinfo = StepInfo(info_filename)
-    last_step_duration = 0
     start_id = db['test_starts'].insert_one(test_start).inserted_id
     fail_count = 0
     pass_count = 0
     skip_count = 0
+    if _args.json_file:
+        info_filename = path.join(mtaf_log_dir, 'mtaf_info_copy.log')
+    else:
+        info_filename = path.join(mtaf_log_dir, 'mtaf_info.log')
+    stepinfo = StepInfo(info_filename)
+    last_step_duration = 0
     for iter_num, feature in enumerate(_features):
         feature_has_skips = False
         feature_has_fakes = False
@@ -375,11 +369,11 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
         del feature['elements']
         feature['status'] = new_status(feature_has_passes, feature_has_fails, feature_has_fakes,
                                        feature_has_skips, feature_has_incompletes)
-        if (feature['status'] == 'passed' or feature['status'] is None) and feature_has_known_bug:
+        if feature['status'] == 'passed' and feature_has_known_bug:
             feature['status'] = 'known_bug'
         db['features'].insert_one(feature)
         # del feature['start_id']
-        # print json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':'))
+        # six.print_(json.dumps(feature, sort_keys=True, indent=4, separators=(',', ':')))
     start_has_passes = False
     start_has_fails = False
     start_has_fakes = False
@@ -392,7 +386,7 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
             start_has_passes = True
         elif feature['status'] == 'skipped':
             skip_count += 1
-        #     start_has_skips = True
+            start_has_skips = True
         elif feature['status'] == 'failed':
             fail_count += 1
             start_has_fails = True
@@ -402,10 +396,9 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
             start_has_incompletes = True
         elif feature['status'] == 'known_bug':
             fail_count += 1
-            # start_has_fails = True
             start_has_known_bug = True
     start_result = new_status(start_has_passes, start_has_fails, start_has_fakes, start_has_skips, start_has_incompletes)
-    if (start_result == 'passed' or start_result is None) and start_has_known_bug:
+    if (start_result == 'passed' or start_result == 'skipped') and start_has_known_bug:
         start_result = 'known_bug'
     db['test_starts'].find_one_and_update({"_id": start_id}, {'$set': {'pass_count': pass_count,
                                                                        'fail_count': fail_count,
@@ -436,18 +429,19 @@ if __name__ == '__main__':
         parser.add_argument("-s", "--server", type=str, default=mtaf_db_host,
                             help="(optional) specify mongodb server, default vqda1")
         parser.add_argument("-r", "--run_tags", type=str, default='', help="run tags (comma separated list)")
-        parser.add_argument("-p", "--portal_server", type=str, default='devdash',
-                            choices=['devdash', 'aws'], help="OTA server (default devdash)")
+        parser.add_argument("-p", "--portal_server", type=str, default='staging',
+                            choices=['staging', 'production'], help="portal server (default staging)")
         parser.add_argument("-u", "--user_scope", type=str, default=supported_scopes[0],
                             choices=supported_scopes, help="User scope (default %s)" % supported_scopes[0])
         args = parser.parse_args()
-        taglist = ' '.join(args.run_tags.split(',')).split()
+        taglist = args.run_tags.split(',')
         for tag in taglist:
             if tag in supported_scopes:
                 raise Ux("supported user scope (any of %s) not allowed as run tag" % ', '.join(supported_scopes))
         fake_tag = 'fake' in taglist
-        fake_detector = FakeDetector(path.join(args.features_directory, "steps"), fake_tag=fake_tag)
-        args.run_tags = ','.join([args.user_scope] + taglist)
+        fake_detector = FakeDetector(path.join(args.features_directory, "steps"),
+                                     fake_tag=fake_tag)
+        args.run_tags = ','.join(taglist)
         if args.json_file:
             with open(args.json_file) as fp:
                 features = json.load(fp)
@@ -464,8 +458,17 @@ if __name__ == '__main__':
                 'stop': args.stop
             }
             features = run_features(run_configuration)
-        report_configuration = {'site_tag': getenv('MTAF_SITE'), 'run_tags': args.run_tags, 'scope': args.user_scope,
-                                'portal_server': args.portal_server}
+        with open('app_version.txt') as f:
+            app_version = f.read()
+        report_configuration = {
+            'installed_app': app_version,
+            'site_tag': getenv('MTAF_SITE'),
+            'run_tags': "%s,%s" % (args.user_scope, args.run_tags),
+            'scope': args.user_scope,
+            'supported_scopes': supported_scopes,
+            'portal_server': args.portal_server
+        }
         write_result_to_db(args, report_configuration, fake_detector, features)
+        prune_db('ccd2_results', args.server, 'prune', 10, 30)
     except Ux as e:
-        print "User Exception: " + e.get_msg()
+        six.print_("User Exception: " + e.get_msg())

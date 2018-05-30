@@ -1,10 +1,10 @@
 from mtaf import mtaf_logging
 mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
-log = mtaf_logging.get_logger('esi.cron')
+log = mtaf_logging.get_logger('mtaf.cron')
 with mtaf_logging.msg_src_cm('importing modules'):
     import unittest
     from eConsole.views import *
-    from mtaf.decorators import TestCase
+    from mtaf.trace import TestCase
 
 debug = False
 browser = 'chrome'

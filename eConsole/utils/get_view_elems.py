@@ -5,10 +5,10 @@ from time import sleep
 from mtaf import mtaf_logging
 import six
 cfg.set_test_target("devdash")
-log = mtaf_logging.get_logger('esi.get_view_elems')
+log = mtaf_logging.get_logger('mtaf.get_view_elems')
 
 base_view.open_browser()
-base_view.get_url("http://devdash.esi-estech.com")
+base_view.get_url("http://staging-econsole.esi-estech.com")
 if login_view.becomes_present():
     login_view.input_username('select')
     login_view.input_password('select')

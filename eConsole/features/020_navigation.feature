@@ -1,4 +1,4 @@
-@select @premier
+@select @premier @regression
 Feature: Home Page Navigation
 
   Scenario: I want to see my Messages page

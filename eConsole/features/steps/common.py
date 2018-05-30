@@ -12,7 +12,6 @@ def camel_case(text):
     return ''.join(words)
 
 
-
 @step("I click the {tab_text} tab")
 @fake
 def i_click_the_tabtext_tab(context, tab_text):
@@ -24,7 +23,7 @@ def i_click_the_tabtext_tab(context, tab_text):
 @step("I log in to the dashboard")
 @fake
 def i_log_in_to_the_dashboard(context):
-    context.run_substep("I enter a user ID")
-    context.run_substep("I enter a password")
+    context.run_substep("I enter a %s user ID" % context.config.userdata['user_scope'])
+    context.run_substep("I enter a %s password" % context.config.userdata['user_scope'])
     context.run_substep("I click the Login button")
     context.run_substep("the Home page appears")

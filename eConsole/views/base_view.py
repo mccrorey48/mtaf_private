@@ -10,26 +10,27 @@ from selenium.webdriver.support import expected_conditions
 from selenium.common.exceptions import WebDriverException, TimeoutException
 from PIL import Image
 
-log = logging.get_logger('esi.base_view')
+log = logging.get_logger('mtaf.base_view')
 
 
 class BaseView(AngularActions):
 
     locators = {
-        "ShowContacts": {"by": "id", "value": "showContacts"},
         "Banner": {"by": "class name", "value": "esi-header"},
         "BannerText": {"by": "class name", "value": "esi-header-text"},
-        "Logout": {"by": "id", "value": "logout"},
-        "NavTabs": {"by": "css selector", "value": ".navbar-nav .nav-item"},
-        "HomeTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(1)"},
-        "MessagesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(2)"},
         "CallHistoryTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(3)"},
         "ContactsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(4)"},
+        "HomeTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(1)"},
+        "LoadingGif": {"by": "class name", "value": "loadingoverlay"},
+        "Logout": {"by": "id", "value": "logout"},
+        "MainButton": {"by": "id", "value": "mainButton"},
+        "MessageSettings": {"by": "css selector", "value": ".dropdown-item.ng-scope", "text": "Message Settings"},
+        "MessagesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(2)"},
+        "NavTabs": {"by": "css selector", "value": ".navbar-nav .nav-item"},
         "PhonesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(5)"},
         "SettingsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(6)"},
-        "MainButton": {"by": "id", "value": "mainButton"},
-        "LoadingGif": {"by": "class name", "value": "loadingoverlay"},
-        "MessageSettings": {"by": "css selector", "value": ".dropdown-item.ng-scope", "text": "Message Settings"}
+        "ShowContacts": {"by": "id", "value": "showContacts"},
+        "AppVersion": {"by": "css selector", "value": ".mt-auto"}
         # only thing saved from the now-deleted "econs" branch was this locator:
         # "MessageSettings": {"by": "css selector", "value": "li.nav-item.dropdown.show > div > a:nth-child(2)"}
     }
@@ -115,13 +116,10 @@ class BaseView(AngularActions):
         if len(self.nav_tab_names) > 0:
             locator = self.get_locator('NavTabs')
             driver_locator = (locator["by"], locator["value"])
-            if len(WebDriverWait(self.driver, 5).until(
+            if len(WebDriverWait(self.driver, 15).until(
                     expected_conditions.visibility_of_any_elements_located(driver_locator))) == 0:
                 return False
         return True
-
-    def get_portal_url(self):
-        self.get_url(cfg.site['portal_url'])
 
     @staticmethod
     def get_url(url):

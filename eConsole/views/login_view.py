@@ -4,7 +4,7 @@ from eConsole.config.configure import cfg
 from eConsole.views.base_view import BaseView
 from mtaf.trace import Trace
 
-log = logging.get_logger('esi.login_view')
+log = logging.get_logger('mtaf.login')
 
 
 class LoginView(BaseView):
@@ -21,15 +21,11 @@ class LoginView(BaseView):
         self.presence_element_names = ["LoginButton", "Password", "UserName"]
 
     @Trace(log)
-    def input_username(self, scope):
-        username = [account['email'] for account in cfg.site['accounts'] if account['scope'] == scope][0]
-        log.debug("username = %s" % username)
+    def input_username(self, username):
         self.input_text(username, 'UserName')
 
     @Trace(log)
-    def input_password(self, scope):
-        password = [account['password'] for account in cfg.site['accounts'] if account['scope'] == scope][0]
-        log.debug("password = %s" % password)
+    def input_password(self, password):
         self.input_text(password, 'Password')
 
     @Trace(log)
