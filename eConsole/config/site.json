@@ -1,181 +1,86 @@
 {
-    "defaults": {
-        "svlab": {
-            "ndp_url": "ndp.svlab.esihs.net"
-        },
-        "production": {
-            "ndp_url": "ndp.esihs.net"
-        }
-    },
     "mm": {
-        "common": {
-            "screenshot_folder": "/home/mmccrorey/mtaf/eConsole/screenshots"
+        "accounts": {
+            "1000@test1.test-eng.com": {
+                "password": "1000",
+                "name1": "select",
+                "name2": "user00"
+            },
+            "1001@test1.test-eng.com": {
+                "password": "1001",
+                "name1": "select",
+                "name2": "user01"
+            },
+            "1002@test1.test-eng.com": {
+                "password": "1002",
+                "name1": "select",
+                "name2": "user02"
+            },
+            "1003@test1.test-eng.com": {
+                "password": "1003",
+                "name1": "select",
+                "name2": "user03"
+            },
+            "1004@test1.test-eng.com": {
+                "password": "1004",
+                "name1": "select",
+                "name2": "user04"
+            },
+            "1005@test1.test-eng.com": {
+                "password": "1005",
+                "name1": "select",
+                "name2": "user05"
+            },
+            "1006@test1.test-eng.com": {
+                "password": "1006",
+                "name1": "premier",
+                "name2": "user06"
+            },
+            "1007@test1.test-eng.com": {
+                "password": "1007",
+                "name1": "premier",
+                "name2": "user07"
+            },
+            "1008@test1.test-eng.com": {
+                "password": "1008",
+                "name1": "premier",
+                "name2": "user08"
+            },
+            "1009@test1.test-eng.com": {
+                "password": "1009",
+                "name1": "premier",
+                "name2": "user09"
+            },
+            "1010@test1.test-eng.com": {
+                "password": "1010",
+                "name1": "premier",
+                "name2": "user10"
+            },
+            "1011@test1.test-eng.com": {
+                "password": "1011",
+                "name1": "premier",
+                "name2": "user11"
+            },
+            "1012@test1.test-eng.com": {
+                "password": "1012",
+                "name1": "office_mgr",
+                "name2": "user12"
+            },
+            "1013@test1.test-eng.com": {
+                "password": "1013",
+                "name1": "office_mgr",
+                "name2": "user13"
+            }
         },
-        "devdash": {
-            "accounts": [
-                {
-                    "email": "1000@svauto-ccd2.com",
-                    "password": "1000",
-                    "name1": "select",
-                    "name2": "user00",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "select",
-                    "type": "account",
-                    "uri": "sip:1000@svauto-ccd2.com"
-                },
-                {
-                    "email": "1001@svauto-ccd2.com",
-                    "password": "1001",
-                    "name1": "select",
-                    "name2": "user01",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "select",
-                    "type": "account",
-                    "uri": "sip:1001@svauto-ccd2.com"
-                },
-                {
-                    "email": "1002@svauto-ccd2.com",
-                    "password": "1002",
-                    "name1": "select",
-                    "name2": "user02",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "select",
-                    "type": "account",
-                    "uri": "sip:1002@svauto-ccd2.com"
-                },
-                {
-                    "email": "1003@svauto-ccd2.com",
-                    "password": "1003",
-                    "name1": "select",
-                    "name2": "user03",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": ".premier",
-                    "type": "account",
-                    "uri": "sip:1003@svauto-ccd2.com"
-                },
-                {
-                    "email": "1004@svauto-ccd2.com",
-                    "password": "1004",
-                    "name1": "select",
-                    "name2": "user04",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "select",
-                    "type": "account",
-                    "uri": "sip:1004@svauto-ccd2.com"
-                },
-                {
-                    "email": "1005@svauto-ccd2.com",
-                    "password": "1005",
-                    "name1": "select",
-                    "name2": "user05",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "select",
-                    "type": "account",
-                    "uri": "sip:1005@svauto-ccd2.com"
-                },
-                {
-                    "email": "1006@svauto-ccd2.com",
-                    "password": "1006",
-                    "name1": "premier",
-                    "name2": "user06",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "premier",
-                    "type": "account",
-                    "uri": "sip:1006@svauto-ccd2.com"
-                },
-                {
-                    "email": "1007@svauto-ccd2.com",
-                    "password": "1007",
-                    "name1": "premier",
-                    "name2": "user07",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "premier",
-                    "type": "account",
-                    "uri": "sip:1007@svauto-ccd2.com"
-                },
-                {
-                    "email": "1008@svauto-ccd2.com",
-                    "password": "1008",
-                    "name1": "premier",
-                    "name2": "user08",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "premier",
-                    "type": "account",
-                    "uri": "sip:1008@svauto-ccd2.com"
-                },
-                {
-                    "email": "1009@svauto-ccd2.com",
-                    "password": "1009",
-                    "name1": "premier",
-                    "name2": "user09",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "premier",
-                    "type": "account",
-                    "uri": "sip:1009@svauto-ccd2.com"
-                },
-                {
-                    "email": "1010@svauto-ccd2.com",
-                    "password": "1010",
-                    "name1": "premier",
-                    "name2": "user10",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "premier",
-                    "type": "account",
-                    "uri": "sip:1010@svauto-ccd2.com"
-                },
-                {
-                    "email": "1011@svauto-ccd2.com",
-                    "password": "1011",
-                    "name1": "premier",
-                    "name2": "user11",
-                    "phone_type": "soft",
-                    "proxy": "svlab.esihs.net",
-                    "scope": "premier",
-                    "type": "account",
-                    "uri": "sip:1011@svauto-ccd2.com"
-                }
-            ],
-            "portal_url": "http://devdash.esi-estech.com",
-            "system": "svlab"
+        "office_manager": "1012@test1.test-eng.com",
+        "screenshot_folder": "/home/mmccrorey/mtaf/eConsole/screenshots",
+        "default_user": {
+            "select": "1000@test1.test-eng.com",
+            "premier": "1006@test1.test-eng.com"
         },
-        "aws": {
-            "accounts": [
-                {
-                    "email": "4501@pm.esihs.net",
-                    "password": "20184501",
-                    "name1": "guljeet",
-                    "name2": "accelq",
-                    "phone_type": "soft",
-                    "proxy": "nr5.cpbx.esihs.net",
-                    "scope": "select",
-                    "type": "account",
-                    "uri": "sip:4501@pm.esihs.net"
-                },
-                {
-                    "email": "4502@pm.esihs.net",
-                    "password": "20184502",
-                    "name1": "vinuthna",
-                    "name2": "accelq",
-                    "phone_type": "soft",
-                    "proxy": "nr5.cpbx.esihs.net",
-                    "scope": "premier",
-                    "type": "account",
-                    "uri": "sip:4502@pm.esihs.net"
-                }
-            ],
-            "portal_url": "http://staging-econsole.esihs.net",
-            "system": "production"
+        "portal_url": {
+            "production": "http://econsole.esihs.net",
+            "staging": "http://staging-econsole.esihs.net"
         }
     }
 }
