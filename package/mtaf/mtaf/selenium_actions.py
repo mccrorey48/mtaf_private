@@ -3,7 +3,7 @@ import mtaf_logging
 from trace import Trace
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from user_exception import UserException as Ux
@@ -34,6 +34,44 @@ desired_capabilities = {
 class SeleniumActions(object):
     selenium_server = 'localhost'
     driver = None
+    locator_timeout = 10
+
+    class All(object):
+        def __init__(self, view):
+            self.view = view
+
+        def __getitem__(self, item_name):
+            return self.__getattr__(item_name)
+
+        def __getattr__(self, attr_name):
+            return self.view.find_named_elements(attr_name)
+
+    class Missing(object):
+        def __init__(self, view):
+            self.view = view
+
+        def __getitem__(self, item_name):
+            return self.__getattr__(item_name)
+
+        def __getattr__(self, attr_name):
+            return self.view.element_becomes_not_present(attr_name, self.view.locator_timeout)
+
+    def __getitem__(self, item_name):
+        return self.__getattr__(item_name)
+
+    def __getattr__(self, attr_name):
+        if attr_name == 'all':
+            return self.All(self)
+        elif attr_name == 'missing':
+            return self.Missing(self)
+        try:
+            elements = WebDriverWait(self, self.locator_timeout).until(
+                self.PresenceOfElementsByName(attr_name))
+        except TimeoutException:
+            return None
+        if len(elements) != 1:
+            raise Ux("self.PresenceOfElementsByName(%s) returned %s elements" % (attr_name, len(elements)))
+        return elements[0]
 
     def open_browser(self, browser='chrome'):
         # site.json can specify selenium_url as a remote webdriver server

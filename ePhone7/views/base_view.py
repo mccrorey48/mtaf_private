@@ -11,8 +11,7 @@ from ePhone7.lib.utils.usb_enable import usb_enable
 import os
 from time import sleep, time
 from appium.webdriver.common.mobileby import MobileBy
-from selenium.common.exceptions import WebDriverException, TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import WebDriverException
 
 log = mtaf_logging.get_logger('mtaf.base_view')
 
@@ -74,43 +73,6 @@ class BaseView(AndroidActions):
             locator["by"] = "-android uiautomator"
             locator["value"] = 'new UiSelector().text("%s")' % locator["value"]
         return locator
-
-    class All(object):
-        def __init__(self, view):
-            self.view = view
-
-        def __getitem__(self, item_name):
-            return self.__getattr__(item_name)
-
-        def __getattr__(self, attr_name):
-            return self.view.find_named_elements(attr_name)
-
-    class Missing(object):
-        def __init__(self, view):
-            self.view = view
-
-        def __getitem__(self, item_name):
-            return self.__getattr__(item_name)
-
-        def __getattr__(self, attr_name):
-            return self.view.element_becomes_not_present(attr_name, self.view.locator_timeout)
-
-    def __getitem__(self, item_name):
-        return self.__getattr__(item_name)
-
-    def __getattr__(self, attr_name):
-        if attr_name == 'all':
-            return self.All(self)
-        elif attr_name == 'missing':
-            return self.Missing(self)
-        try:
-            elements = WebDriverWait(self, self.locator_timeout).until(
-                self.PresenceOfElementsByName(attr_name))
-        except TimeoutException:
-            return None
-        if len(elements) != 1:
-            raise Ux("self.PresenceOfElementsByName(%s) returned %s elements" % (attr_name, len(elements)))
-        return elements[0]
 
     @Trace(log)
     def send_keycode(self, keycode):
