@@ -31,3 +31,21 @@ def i_go_to_the_portal_login_page(context):
     base_view.get_url(cfg['portal_url'][context.config.userdata['portal_server']])
 
 
+@step("the {expected_name} tab is selected")
+@fake
+def step_impl(context, expected_name):
+    selected_tab_text = base_view.SelectedTab.text
+    assert selected_tab_text == expected_name, "selected tab text is %s, expected %s" % (
+        selected_tab_text, expected_name)
+
+
+@step("my name is displayed in the upper right corner")
+@fake
+def step_impl(context):
+    user = cfg.accounts[cfg.default_user[context.config.userdata['user_scope']]]
+    expect_text = ' '.join([user[key] for key in ['name1', 'name2', 'password']])
+    main_button_text = base_view.MainButton.text
+    assert main_button_text == expect_text, "main button text is %s, expected %s" % (
+        main_button_text, expect_text)
+
+

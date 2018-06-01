@@ -29,6 +29,7 @@ class BaseView(AngularActions):
         "NavTabs": {"by": "css selector", "value": ".navbar-nav .nav-item"},
         "PhonesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(5)"},
         "SettingsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(6)"},
+        "SelectedTab": {"by": "css selector", "value": ".navbar-nav .nav-item .active"},
         "ShowContacts": {"by": "id", "value": "showContacts"},
         "AppVersion": {"by": "css selector", "value": ".mt-auto"}
         # only thing saved from the now-deleted "econs" branch was this locator:
