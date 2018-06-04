@@ -82,7 +82,7 @@ class HistoryView(UserView):
 
     @Trace(log)
     def get_top_call_record(self):
-        self.wait_for_condition_true(self.get_top_record_parent, lambda: 'no correct recent record')
+        self.wait_for_condition_true(self.get_top_record_parent, lambda: 'no correct recent record', timeout=60)
 
     @Trace(log)
     def ignore_step(self):

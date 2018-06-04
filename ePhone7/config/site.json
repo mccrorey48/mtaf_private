@@ -396,9 +396,10 @@
             "ApksHome": "/home/jsabugo/apks",
             "DefaultForwardAccount": "Auto TesterF",
             "DefaultSoftphoneUser": "Auto TesterE",
+            "10DigitNumber" : "0000000000",
             "Users": {
                 "R2d2User": {
-                    "AccountPassword": "2001",
+                    "AccountPassword": "2012",
                     "AllContacts": [
                         "2200",
                         "2201",
@@ -422,21 +423,21 @@
                         "2206",
                         "2207"
                     ],
-                    "PhonePassword": "2001",
-                    "UserId": "2001",
-                    "UserName": "Jessica Sabugo"
+                    "PhonePassword": "2012",
+                    "UserId": "2012",
+                    "UserName": "Martin Two"
                 },
                 "R2d2AltUser": {
                     "AccountPassword": "",
                     "DomainName": "test2.test-eng.com",
-                    "PhonePassword": "G273ci42",
+                    "PhonePassword": "v67XkM6U",
                     "Proxy": "nr5.cpbx.esihs.net",
-                    "UserId": "2001b",
-                    "UserNameIncoming": "Jessica Sabugo",
+                    "UserId": "2012b",
+                    "UserNameIncoming": "Martin Two",
                     "dns_list": [
                         "10.0.50.156"
                     ],
-                    "pbfile": "wav/2001.wav"
+                    "pbfile": "wav/2012.wav"
                 },
                 "Auto TesterE": {
                     "AccountPassword": "2204",
