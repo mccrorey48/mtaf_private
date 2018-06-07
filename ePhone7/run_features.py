@@ -466,6 +466,6 @@ if __name__ == '__main__':
             "installed_app": installed_app
         }
         write_result_to_db(args, report_configuration, fake_detector, features)
-        prune_db('e7_results', args.server, 'prune', 10, 30)
+        prune_db('e7_results', args.server, 'prune', 100, 30)
     except Ux as e:
         six.print_("User Exception: " + e.get_msg())
