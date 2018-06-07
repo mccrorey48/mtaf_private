@@ -212,6 +212,7 @@ _log.setLevel(DEBUG)
 log_dir = getenv('MTAF_LOG_DIR', 'log')
 prune_logs(path.join(log_dir, '%s_debug_*.log' % root_name), 5)
 prune_logs(path.join(log_dir, '*logcat_*.log'), 5)
+prune_logs(path.join(log_dir, 'browser*.log'), 5)
 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
 # filemtaf_logging for info, debug, trace and warn levels, each with its own output file
 base_warn_fname = path.join(log_dir, '%s_warn.log' % root_name)

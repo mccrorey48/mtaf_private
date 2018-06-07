@@ -3,6 +3,7 @@ import argparse
 from os import getenv
 import datetime
 import re
+import six
 
 # log = mtaf_logging.get_logger('mtaf.run_features')
 
@@ -10,8 +11,8 @@ import re
 def prune_db(db_name, server, operation, number_to_keep, max_age):
     re_cfg = re.compile(', installed[^,]*, installed[^,]*')
     if operation=='list':
-        print 'pruning %s on server %s to latest %d test runs within last %d days' % (
-            db_name, server, number_to_keep, max_age)
+        six.print_('pruning %s on server %s to latest %d test runs within last %d days' % (
+            db_name, server, number_to_keep, max_age))
     client = MongoClient(server)
     db = client[db_name]
     starts = db['test_starts'].find({}, {'date': 1, 'time': 1, 'configuration': 1})
@@ -48,7 +49,7 @@ def prune_db(db_name, server, operation, number_to_keep, max_age):
             if too_old:
                 why_msgs.append("age > %d days" % max_age)
             if removable:
-                print 'cfg = "%s": _id = %s: removing test data [%s]' % (cfg, d['_id'], ', '.join(why_msgs))
+                six.print_('cfg = "%s": _id = %s: removing test data [%s]' % (cfg, d['_id'], ', '.join(why_msgs)))
                 remove_start_ids.append(d['_id'])
             else:
                 keep_start_ids.append(d['_id'])
@@ -68,12 +69,12 @@ def prune_db(db_name, server, operation, number_to_keep, max_age):
         if doc['_id'] not in keep_screenshot_ids:
             remove_screenshot_ids.append(doc['_id'])
     if operation == 'list':
-        print "keep_start_ids: %s" % keep_start_ids
-        print "remove_start_ids: %s" % remove_start_ids
-        print "keep_feature_ids: %s" % keep_feature_ids
-        print "remove_feature_ids: %s" % remove_feature_ids
-        print "keep_screenshot_ids: %s" % keep_screenshot_ids
-        print "remove_screenshot_ids: %s" % remove_screenshot_ids
+        six.print_("keep_start_ids: %s" % keep_start_ids)
+        six.print_("remove_start_ids: %s" % remove_start_ids)
+        six.print_("keep_feature_ids: %s" % keep_feature_ids)
+        six.print_("remove_feature_ids: %s" % remove_feature_ids)
+        six.print_("keep_screenshot_ids: %s" % keep_screenshot_ids)
+        six.print_("remove_screenshot_ids: %s" % remove_screenshot_ids)
     elif operation == 'prune':
         for _id in remove_start_ids:
             db['test_starts'].delete_one({'_id': _id})
