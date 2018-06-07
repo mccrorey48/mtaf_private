@@ -1,6 +1,7 @@
 from behave import *
 from ePhone7.views import *
 from mtaf.trace import fake
+from ePhone7.config.configure import cfg
 
 
 @step("[dial] A list of contacts containing the partial number appears above the keypad")
@@ -30,13 +31,14 @@ def dial__i_dial_the_codename_direct_code(context, code_name):
 @step("[dial] I enter a 10-digit phone number using the keypad")
 @fake
 def dial__i_enter_a_10digit_phone_number_using_the_keypad(context):
-    pass
+    dial_view.dial_number(call_name=cfg.site["js"]["10DigitNumber"])
 
 
 @step("[dial] I enter a Coworker contact number using the keypad")
 @fake
 def dial__i_enter_a_coworker_contact_number_using_the_keypad(context):
-    pass
+    # coworker_contacts = cfg.site["Users"]["R2d2User"]["CoworkerContacts"][0])
+    dial_view.dial_number(cfg.site["Users"]["R2d2User"]["CoworkerContacts"][0])
 
 
 @step("[dial] I enter part of a Coworker contact number using the keypad")
@@ -57,7 +59,7 @@ def dial__i_make_a_call_to_a_coworker_contact(context):
 @step("[dial] I see the keypad")
 @fake
 def dial__i_see_the_keypad(context):
-    pass
+    assert dial_view.DialPad is not None, "dial_view.DialPad element not present"
 
 
 @step("[dial] I touch the Call button")
