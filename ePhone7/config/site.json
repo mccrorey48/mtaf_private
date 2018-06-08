@@ -396,7 +396,7 @@
             "ApksHome": "/home/jsabugo/apks",
             "DefaultForwardAccount": "Auto TesterF",
             "DefaultSoftphoneUser": "Auto TesterE",
-            "10DigitNumber" : "0000000000",
+            "10DigitNumber" : "9728762953",
             "Users": {
                 "R2d2User": {
                     "AccountPassword": "2012",
@@ -416,6 +416,17 @@
                         "2205",
                         "2206",
                         "2207"
+                    ],
+                    "CoworkerContactsDialPadNumber": "8372",
+                    "CoworkerContactsName":[
+                        "Auto TesterA",
+                        "Auto TesterB",
+                        "Auto TesterC",
+                        "Auto TesterD",
+                        "Auto TesterE",
+                        "Auto TesterF",
+                        "Auto TesterG",
+                        "Auto TesterH"
                     ],
                     "DomainName": "test2.test-eng.com",
                     "FavoriteContacts": [

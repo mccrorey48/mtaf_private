@@ -14,15 +14,17 @@ log = mtaf_logging.get_logger('mtaf.keypad_view')
 class DialView(UserView):
 
     locators = {
-        "CurrentOtaPopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server" },
+        "CurrentOtaPopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server"},
         "CurrentOtaPopupContent": {"by": "id", "value": "com.esi_estech.ditto:id/content_text"},
         "DialButton": {"by": "id", "value": "com.esi_estech.ditto:id/dial_call_button_view"},
         "DialPad": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_sliding_panel"},
+        "DialPadContactName": {"by": "id", "value": "com.esi_estech.ditto:id/contact_name"},
         "Delete": {"by": "id", "value": "com.esi_estech.ditto:id/deleteButton"},
         "Digits": {"by": "id", "value": "com.esi_estech.ditto:id/digits"},
         "FuncKeyAll": {"by": "zpath", "value": "//tl/tr/ll"},
-        "FuncKeyBksp": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_delete_button_container" },
-        "FuncKeySearch": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_search_button_container" },
+        "FuncKeyBksp": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_delete_button_container"},
+        "FuncKeySearch": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_search_button_container"},
+        "HideDialPad": {"by": "id", "value": "com.esi_estech.ditto:id/hide_dial_pad"},
         "NumberButton": {"by": "id", "value": "com.esi_estech.ditto:id/keypad_symbols"},
         "NumKeyAll": {"by": "zpath", "value": "//gv/rl"},
         "NumKey1": {"by": "id", "value": "dial_one"},
