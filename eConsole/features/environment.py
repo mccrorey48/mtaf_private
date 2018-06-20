@@ -3,6 +3,8 @@ from eConsole.config.configure import cfg
 from eConsole.views import *
 from mtaf.user_exception import UserException as Ux
 import datetime
+from time import strftime, localtime
+import os
 
 log = mtaf_logging.get_logger('mtaf.environment')
 behave_log = mtaf_logging.get_logger('behave')
@@ -28,6 +30,7 @@ def before_all(context):
     substeps = ''
     context.is_substep = False
     context.app_version = ''
+    context.browser_log = []
     context.run_substep = run_substep(context)
     context.make_assertion = make_assertion(context)
     base_view.open_browser()
@@ -99,10 +102,28 @@ def after_step(context, step):
         log.info("EXCEPTION in step %s" % step.name)
         context._config.stop = True
     mtaf_logging.pop_msg_src()
+    log_items = base_view.driver.get_log('browser')
+    for log_item in log_items:
+        log_item['step'] = step.name
+        log_item['scenario'] = context.scenario.name
+        log_item['feature'] = context.feature.name
+        context.browser_log.append(log_item)
 
 
 def after_all(context):
+    global substeps
     base_view.close_browser()
+    logdir = os.getenv('MTAF_LOG_DIR', 'log')
+    timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
+    browser_fname = os.path.join(logdir, 'browser_%s.log' % timestamp)
+    with open(browser_fname, 'w') as f:
+        for log in context.browser_log:
+            if len(log['message']):
+                timestamp = strftime('%m/%d/%y %H:%M:%S', localtime(log['timestamp'] / 1000))
+                f.write('timestamp: %s\nfeature: %s\nscenario: %s\nstep: %s\nmessage: ' % (
+                    timestamp, log['feature'], log['scenario'], log['step']))
+                f.write(log['message'].encode('utf-8') + '\n\n')
+    substeps += 'browser_log = %s\n' % browser_fname
     with open('tmp/steps.txt', 'w') as f:
         f.write(substeps)
 
