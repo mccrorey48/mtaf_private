@@ -22,6 +22,7 @@ else:
 
 log = mtaf_logging.get_logger('mtaf.run_features')
 mtaf_log_dir = getenv('MTAF_LOG_DIR', './log')
+browser_log = ''
 
 
 @contextlib.contextmanager
@@ -41,6 +42,7 @@ def capture():
 
 @Trace(log)
 def run_features(config):
+    global browser_log
     # make sure the tmp directory exists so we can put temporary files there
     try:
         mkdir('tmp')
@@ -99,6 +101,8 @@ def run_features(config):
             current_step["substeps"].append(substep)
         elif _type == 'screenshot' and current_step is not None:
             current_step['screenshot'] = name
+        elif _type == 'browser_log':
+            browser_log = name
     if current_step is not None:
         printed_steps.append(current_step)
 
@@ -400,7 +404,10 @@ def write_result_to_db(_args, configuration, _fake_detector, _features):
     start_result = new_status(start_has_passes, start_has_fails, start_has_fakes, start_has_skips, start_has_incompletes)
     if (start_result == 'passed' or start_result == 'skipped') and start_has_known_bug:
         start_result = 'known_bug'
+    with open(browser_log, 'r') as f:
+        log_data = f.read()
     db['test_starts'].find_one_and_update({"_id": start_id}, {'$set': {'pass_count': pass_count,
+                                                                       'browser_log': log_data,
                                                                        'fail_count': fail_count,
                                                                        'skip_count': skip_count,
                                                                        'status': start_result}})
@@ -412,7 +419,7 @@ if __name__ == '__main__':
 
     try:
         # get site name from environment
-        supported_scopes = ['select', 'premier']
+        supported_scopes = ['select', 'premier', 'office_mgr']
         mtaf_db_host = getenv('MTAF_DB_HOST')
         parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                          description='  runs behave test on specified features directory and saves' +
