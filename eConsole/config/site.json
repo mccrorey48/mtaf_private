@@ -76,7 +76,93 @@
         "screenshot_folder": "/home/mmccrorey/mtaf/eConsole/screenshots",
         "default_user": {
             "select": "1000@test1.test-eng.com",
-            "premier": "1006@test1.test-eng.com"
+            "premier": "1006@test1.test-eng.com",
+            "office_mgr": "1012@test1.test-eng.com"
+        },
+        "portal_url": {
+            "production": "http://econsole.esihs.net",
+            "staging": "http://staging-econsole.esihs.net"
+        }
+    },
+    "vqda1": {
+        "accounts": {
+            "2000@test3.test-eng.com": {
+                "password": "2000",
+                "name1": "select",
+                "name2": "user2000"
+            },
+            "2001@test3.test-eng.com": {
+                "password": "2001",
+                "name1": "select",
+                "name2": "user2001"
+            },
+            "2002@test3.test-eng.com": {
+                "password": "2002",
+                "name1": "select",
+                "name2": "user2002"
+            },
+            "2003@test3.test-eng.com": {
+                "password": "2003",
+                "name1": "select",
+                "name2": "user2003"
+            },
+            "2004@test3.test-eng.com": {
+                "password": "2004",
+                "name1": "select",
+                "name2": "user2004"
+            },
+            "2005@test3.test-eng.com": {
+                "password": "2005",
+                "name1": "select",
+                "name2": "user2005"
+            },
+            "2006@test3.test-eng.com": {
+                "password": "2006",
+                "name1": "premier",
+                "name2": "user2006"
+            },
+            "2007@test3.test-eng.com": {
+                "password": "2007",
+                "name1": "premier",
+                "name2": "user2007"
+            },
+            "2008@test3.test-eng.com": {
+                "password": "2008",
+                "name1": "premier",
+                "name2": "user2008"
+            },
+            "2009@test3.test-eng.com": {
+                "password": "2009",
+                "name1": "premier",
+                "name2": "user2009"
+            },
+            "2010@test3.test-eng.com": {
+                "password": "2010",
+                "name1": "premier",
+                "name2": "user2010"
+            },
+            "2011@test3.test-eng.com": {
+                "password": "2011",
+                "name1": "premier",
+                "name2": "user2011"
+            },
+            "2012@test3.test-eng.com": {
+                "password": "2012",
+                "name1": "office_mgr",
+                "name2": "user2012"
+            },
+            "2013@test3.test-eng.com": {
+                "password": "2013",
+                "name1": "office_mgr",
+                "name2": "user2013"
+            }
+        },
+        "office_manager": "2012@test3.test-eng.com",
+        "screenshot_folder": "/home/mmccrorey/mtaf/eConsole/screenshots",
+        "default_user": {
+            "select": "2000@test3.test-eng.com",
+            "premier": "2006@test3.test-eng.com",
+            "office_mgr": "2012@test3.test-eng.com"
         },
         "portal_url": {
             "production": "http://econsole.esihs.net",
