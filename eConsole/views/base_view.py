@@ -19,6 +19,8 @@ class BaseView(AngularActions):
         "Banner": {"by": "class name", "value": "esi-header"},
         "BannerText": {"by": "class name", "value": "esi-header-text"},
         "CallHistoryTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(3)"},
+        "ContactsPullout": {"by": "id", "value": "cwContainer"},
+        "ContactsPulloutValues": {"by": "css selector", "value": "#cwContainer .conNumber"},
         "ContactsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(4)"},
         "HomeTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(1)"},
         "LoadingGif": {"by": "class name", "value": "loadingoverlay"},
