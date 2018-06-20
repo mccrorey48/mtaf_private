@@ -18,8 +18,7 @@ Feature: As a user I want to make calls by directly entering all or part of a co
 
   Scenario: I want to find a Coworker contact using a partial number search and call it
     Given [dial] I enter part of a Coworker contact number using the keypad
-    Then  [dial] A list of contacts containing the partial number appears above the keypad
-    When  [dial] I touch the contact listing I want to call
+    Then  [dial] A list of Coworker contacts containing the partial name appears above the keypad
     Then  [dial] Only the contact I touched is listed
     When  [dial] I touch the Call button
     Then  My phone calls the number

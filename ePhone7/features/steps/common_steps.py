@@ -720,15 +720,18 @@ def my_new_voicemails_are_listed(context):
 @fake
 def my_phone_calls_back_the_caller(context):
     context.run_substep('[active_call] an "Active Call" window appears')
-    # should verify caller information?
-    context.run_substep("[active_call] I end the call")
+    context.run_substep('[active_call] a correct name appears in the Active Call window')
+    context.run_substep('[active_call] I end the call')
     context.run_substep('[active_call] an "Active Call" window disappears')
 
 
 @step("my phone calls the number")
 @fake
 def my_phone_calls_the_number(context):
-    pass
+    context.run_substep('[active_call] an "Active Call" window appears')
+    context.run_substep('[active_call] a correct number appears in the Active Call window')
+    context.run_substep('[active_call] I end the call')
+    context.run_substep('[active_call] an "Active Call" window disappears')
 
 
 @step("my saved voicemails are listed")

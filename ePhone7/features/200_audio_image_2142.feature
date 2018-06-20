@@ -1,5 +1,4 @@
-#@regression
-  @wip
+@regression
 Feature: As a user I want the current audio path indicated on the in-call screen (R2D2-2142)
 
   Background: the wired headset is enabled in Preferences

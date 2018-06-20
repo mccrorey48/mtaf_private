@@ -43,6 +43,18 @@ def activecall__an_active_call_window_disappears(context):
     assert active_call_view.becomes_not_present(), 'Active call window did not disappear'
 
 
+@step("[active_call] a correct number appears in the Active Call window")
+@fake
+def activecall__a_correct_number_appears_in_the_active_call_window(context):
+    return context.active_screen_number == active_call_view.find_named_element('PrimaryCallNumber')
+
+
+@step("[active_call] a correct name appears in the Active Call window")
+@fake
+def activecall__a_correct_name_appears_in_the_active_call_window(context):
+    return context.caller_name == active_call_view.find_named_element('PrimaryCallName')
+
+
 @step("[active_call] I end the call")
 @fake
 def activecall__i_end_the_call(context):

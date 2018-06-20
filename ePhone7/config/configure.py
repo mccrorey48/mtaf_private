@@ -74,7 +74,6 @@ class Cfg(object):
             raise Ux('site name %s not found in config file' % self.site_tag)
 
 
-
 cfg = Cfg()
 
 if __name__ == '__main__':
