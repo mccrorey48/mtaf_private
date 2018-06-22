@@ -53,6 +53,8 @@ def before_scenario(context, scenario):
     mtaf_logging.push_msg_src('  scenario')
     log.info('scenario.name: %s' % scenario.name)
     base_view.get_url(cfg['portal_url'][context.config.userdata['portal_server']])
+    if not login_view.element_is_present('LoginButton'):
+        base_view.logout()
     if not context.app_version:
         context.app_version = base_view.find_named_element("AppVersion").text.split('eConsole Version: ')[1]
         with open('app_version.txt', 'w') as f:
