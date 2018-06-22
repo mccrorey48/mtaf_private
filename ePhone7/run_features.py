@@ -458,7 +458,7 @@ if __name__ == '__main__':
             installed_aosp = now.strftime("%d")
             installed_app = now.strftime("%H-%M-%S")
         else:
-            installed_aosp, installed_app = get_current_versions(args.ota_server)
+            installed_aosp, installed_app = get_installed_versions(args.ota_server)
         report_configuration = {
             "site_tag": cfg.site_tag,
             "run_tags": args.run_tags,
