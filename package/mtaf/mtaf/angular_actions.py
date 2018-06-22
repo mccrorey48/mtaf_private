@@ -16,11 +16,9 @@ class AngularActions(SeleniumActions):
 
     cfg = None
     driver = None
-    ex2lib = None
 
     def __init__(self):
         super(AngularActions, self).__init__()
-        self.ex2lib = ExtendedSelenium2Library()
         self.ng_wrapper = '%(prefix)s' \
                           'var $inj;try{$inj=angular.element(document.querySelector(' \
                           '\'[data-ng-app],[ng-app],.ng-scope\')||document).injector()||' \
