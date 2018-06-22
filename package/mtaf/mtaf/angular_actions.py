@@ -7,7 +7,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from mtaf.user_exception import UserException as Ux
 from mtaf.selenium_actions import SeleniumActions
-from ExtendedSelenium2Library import ExtendedSelenium2Library
 
 log = logging.get_logger('mtaf.angular_actions')
 
