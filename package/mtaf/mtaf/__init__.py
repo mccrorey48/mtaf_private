@@ -1,4 +1,3 @@
-from inspector import run_inspector
 import sys
 from os import getenv, path
 from user_exception import UserException as Ux
@@ -24,6 +23,7 @@ def start_inspector():
     #    Darwin - /tmp
     #
     # note: log directory is set in mtaf_logging module from MTAF_LOG_DIR environment variable, defaults to ./log
+    from inspector import run_inspector
     parser.add_argument('-c', '--config_file', type=str, default='./inspector_config.yml',
                         help='YAML configuration file (default "./inspector_config.yml")')
     parser.add_argument('-p', '--plugin_dir', type=str, default='.',
