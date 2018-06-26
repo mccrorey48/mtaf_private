@@ -5,7 +5,7 @@ Feature: As a user I want to use and manage my contact lists
     Given I go to the home screen
     Given I touch the "Contacts" button
     Then  the "Contacts" view is present
-    When  I touch the "Coworkers" tab
+    When  [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are shown on the display
     When  [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
@@ -16,26 +16,24 @@ Feature: As a user I want to use and manage my contact lists
     Then  [contacts] my Coworker contacts are each shown with a handset icon
 
   Scenario: I want to call a contact from my Coworkers list
-    Given I touch the "Coworkers" tab
+    Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are each shown with a handset icon
     And   [contacts] the contact I want to call is online
     When  [contacts] I touch the handset icon next to the contact I want to call
     Then  [contacts] my phone calls the contact
 
-
   Scenario: I want to add a Coworker contact to my Favorites list
-    Given I touch the "Coworkers" tab
+    Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are shown on the display
     When  [contacts] I touch the name of a Coworker contact that is not a Favorite
     Then  [contacts] a contact detail screen appears with a white star icon
     When  [contacts] I touch the star icon
     Then  [contacts] the star turns yellow
-    When  I touch the "Favorites" tab
+    When  [contacts] I touch the Favorites tab
     Then  [contacts] the new favorite contact is shown on the display
 
-
-  Scenario: I want to set the Favorites status of multiple Coworker contacts
-    Given I touch the "Coworkers" tab
+    Scenario: I want to set the Favorites status of multiple Coworker contacts
+    Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are shown on the display
     When  [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
@@ -44,9 +42,9 @@ Feature: As a user I want to use and manage my contact lists
     And   [contacts] I touch the star icons so Favorites are yellow and others are white
     When  [contacts] I long-press a contact list item
     Then  [contacts] my Coworker contacts are each shown with a handset icon
-    When  I touch the "Favorites" tab
+    When  [contacts] I touch the Favorites tab
     Then  [contacts] my Favorite contacts are shown on the display
-    When  I touch the "Coworkers" tab
+    When  [contacts] I touch the Coworkers tab
     And   [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
     When  I touch "OK"
@@ -54,7 +52,7 @@ Feature: As a user I want to use and manage my contact lists
     When  [contacts] I touch the star icons so all are white
     And   [contacts] I long-press a contact list item
     Then  [contacts] my Coworker contacts are each shown with a handset icon
-    When  I touch the "Favorites" tab
+    When  [contacts] I touch the Favorites tab
     Then  [contacts] no Coworker contacts are shown on the favorites display
 
 #  Scenario: I want to set the Favorites status of multiple Personal contacts

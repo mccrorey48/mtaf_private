@@ -237,5 +237,9 @@ class UserView(BaseView):
             self.set_dnd(on=False)
         softphone.end_call()
 
+    @Trace(log)
+    def verify_caller_name(self, caller):
+        record_name = self.find_named_element('IncomingCallCallerName').text
+        return record_name == caller
 
 user_view = UserView()

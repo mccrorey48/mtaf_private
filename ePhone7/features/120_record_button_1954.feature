@@ -15,6 +15,9 @@ Feature: As a user I want to have a Record button available during an active cal
     And   [advanced] I check the Call Record Enable checkbox
     And   I touch the Back button
     Then  the Advanced Options view disappears
+      #work around NO PERMANENT
+    Then  I go to the home screen
+
     When  I receive a call
     And   I answer the call
     Then  [active_call] an "Active Call" window appears
