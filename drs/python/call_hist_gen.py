@@ -1,5 +1,5 @@
 from mtaf.simple_pj import SoftphoneManager
-from time import sleep
+from time import sleep, time
 import os
 from six import print_
 import csv
@@ -37,14 +37,14 @@ def get_softphone(uri, password):
 
 
 passwords={}
-with open(os.path.join('drs', 'python', 'users.csv')) as f:
+with open(os.path.join('drs', 'python', 'test2_tigerteam_users.csv')) as f:
     reader = csv.DictReader(f, quotechar="'")
     for row in reader:
         uri = row['aor']
         if uri.split('@')[0][-1] != 'a':
             passwords[uri] = row['authentication_key']
 uris = sorted(passwords.keys())
-max_user_count = 50
+max_user_count = 2
 softphone_pairs = []
 for index in range(0, max_user_count, 2):
     if index > len(uris):
@@ -56,17 +56,18 @@ for index in range(0, max_user_count, 2):
     called = get_softphone(called_uri, passwords[called_uri])
     softphone_pairs.append({"caller": caller, "called": called})
 sleep(2)
-# # for pair in softphone_pairs:
-# #     pair["called"].set_incoming_response(200)
-# #     pair["caller"].make_call(pair["called"].uri)
-sleep(10)
-# # for pair in softphone_pairs:
-# #     print_("caller %s call time: %s" % (pair["caller"].account_info.uri,
-# #                                           time() - pair["caller"].account_info.call_start_time))
-# #     print_("called %s call time: %s" % (pair["called"].account_info.uri,
-# #                                           time() - pair["called"].account_info.call_start_time))
-# #     pair["caller"].end_call()
-# #     pair["called"].wait_for_call_status('idle', 15)
+for i in range(1000):
+    for pair in softphone_pairs:
+        pair["called"].set_incoming_response(200)
+        pair["caller"].make_call(pair["called"].uri)
+        sleep(5)
+        # # for pair in softphone_pairs:
+        print_("caller %s call time: %s" % (pair["caller"].account_info.uri,
+                                            time() - pair["caller"].account_info.call_start_time))
+        print_("called %s call time: %s" % (pair["called"].account_info.uri,
+                                            time() - pair["called"].account_info.call_start_time))
+        pair["caller"].end_call()
+        pair["called"].wait_for_call_status('idle', 15)
 for pair in softphone_pairs:
     pair["caller"].unregister()
     pair["called"].unregister()
