@@ -23,7 +23,7 @@ def i_touch_the_ptextptail(context, text, tail):
     # matches: I touch <optional> "<text>" <optional>
     # where <optional> and <text> are any text not including a double quote
     # then looks for an element with full text content matching <text>
-    if tail == 'tab':
+    if tail == ' tab':
         all_views.user.goto_tab(text)
     else:
         all_views.base.touch_element_with_text(text)

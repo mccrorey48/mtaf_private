@@ -132,7 +132,7 @@ def contacts__i_touch_the_name_of_a_contact(context):
 @step("[contacts] I touch the name of a Coworker contact that is not a Favorite")
 @fake
 def contacts__i_touch_the_name_of_a_coworker_contact_that_is_not_a_favorite(context):
-    coworker_contacts = cfg.site["Users"]["R2d2User"]["CoworkerContacts"]
+    coworker_contacts = [elem['number'] for elem in cfg.site["Users"]["R2d2User"]["CoworkerContacts"]]
     favorite_contacts = cfg.site["Users"]["R2d2User"]["FavoriteContacts"]
     other_contacts = [contact for contact in coworker_contacts if contact not in favorite_contacts]
     context.new_favorite = other_contacts[0]
@@ -218,13 +218,26 @@ def contacts__my_group_lists_are_shown_on_the_display(context):
     pass
 
 
+@step("[contacts] I touch the Coworkers tab")
+def contacts_i_touch_the_coworkers_tab(context):
+    contacts_view.goto_tab('Coworkers')
+
+
+@step("[contacts] I touch the Favorites tab")
+def contacts_i_touch_the_favorites_tab(context):
+    contacts_view.goto_tab('Favorites')
+
+
 @step("[contacts] my {group_name} contacts are shown on the display")
 @fake
 def contacts__my_groupname_contacts_are_shown_on_the_display(context, group_name):
     valid_groups = ['Coworker', 'Favorite']
     if group_name not in valid_groups:
         raise Ux("expected group name in %s, got %s" % (valid_groups, group_name))
-    contacts_group = cfg.site['Users']['R2d2User']['%sContacts' % group_name]
+    if group_name == 'Coworker':
+        contacts_group = [elem['number'] for elem in cfg.site["Users"]["R2d2User"]["CoworkerContacts"]]
+    else:
+        contacts_group = cfg.site['Users']['R2d2User']['FavoriteContacts']
     numbers = contacts_view.get_all_group_contacts(contacts_group)
     assert set(numbers) == set(contacts_group), "expected %s, got %s" % (contacts_group, numbers)
 

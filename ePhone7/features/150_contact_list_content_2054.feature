@@ -8,11 +8,11 @@ Feature: As a user I want to see my contact lists (R2D2-2054)
     Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
 
   Scenario: I want to see my Coworkers list
-    Given I touch the "Coworkers" tab
+    Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are shown on the display
 
   Scenario: I want to see favorite Coworker contacts on the Favorites list
-    Given I touch the "Coworkers" tab
+    Given [contacts] I touch the Coworkers tab
     Then  [contacts] my Coworker contacts are shown on the display
     When  [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
@@ -21,9 +21,9 @@ Feature: As a user I want to see my contact lists (R2D2-2054)
     And   [contacts] I touch the star icons so Favorites are yellow and others are white
     When  [contacts] I long-press a contact list item
     Then  [contacts] my Coworker contacts are each shown with a handset icon
-    When  I touch the "Favorites" tab
+    When  [contacts] I touch the Favorites tab
     Then  [contacts] my Favorite contacts are shown on the display
-    When  I touch the "Coworkers" tab
+    When  [contacts] I touch the Coworkers tab
     And   [contacts] I long-press a contact list item
     Then  [contacts] An "Add Multiple Favorites" confirmation dialog appears
     When  I touch "OK"
@@ -31,7 +31,7 @@ Feature: As a user I want to see my contact lists (R2D2-2054)
     When  [contacts] I touch the star icons so all are white
     And   [contacts] I long-press a contact list item
     Then  [contacts] my Coworker contacts are each shown with a handset icon
-    When  I touch the "Favorites" tab
+    When  [contacts] I touch the Favorites tab
     Then  [contacts] no Coworker contacts are shown on the favorites display
 
 #  Scenario: I want to see my Group lists

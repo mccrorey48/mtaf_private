@@ -358,25 +358,6 @@ def i_enter_my_email_address(context):
 def i_enter_my_password(context):
     pass
 
-
-@step("I enter part of a Coworker contact name using the keypad")
-@fake
-def i_enter_part_of_a_coworker_contact_name_using_the_keypad(context):
-    pass
-
-
-@step("I enter part of a Personal contact name using the keypad")
-@fake
-def i_enter_part_of_a_personal_contact_name_using_the_keypad(context):
-    pass
-
-
-@step("I enter part of a Personal contact number using the keypad")
-@fake
-def i_enter_part_of_a_personal_contact_number_using_the_keypad(context):
-    pass
-
-
 @step("I go to the Contacts view")
 @fake
 def i_go_to_the_contacts_view(context):
@@ -725,11 +706,20 @@ def my_phone_calls_back_the_caller(context):
     context.run_substep('[active_call] an "Active Call" window disappears')
 
 
-@step("my phone calls the number")
+@step("my phone calls back the contacts number")
+@fake
+def my_phone_calls_back_the_caller(context):
+    context.run_substep('[active_call] an "Active Call" window appears')
+    context.run_substep('[active_call] a correct number appears in the Active Call window')
+    context.run_substep('[active_call] I end the call')
+    context.run_substep('[active_call] an "Active Call" window disappears')
+
+
+@step("my phone calls back the contacts name")
 @fake
 def my_phone_calls_the_number(context):
     context.run_substep('[active_call] an "Active Call" window appears')
-    context.run_substep('[active_call] a correct number appears in the Active Call window')
+    context.run_substep('[active_call] a correct name appears in the Active Call window')
     context.run_substep('[active_call] I end the call')
     context.run_substep('[active_call] an "Active Call" window disappears')
 

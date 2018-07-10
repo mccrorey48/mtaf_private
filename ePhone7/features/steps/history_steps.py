@@ -22,6 +22,16 @@ def i_see_the_call_at_the_top_of_the_missed_history_view(context):
     history_view.get_top_call_record()
 
 
+@step("[history] I touch the All tab")
+def contacts_i_touch_the_coworkers_tab(context):
+    history_view.goto_tab('All')
+
+
+@step("[history] I touch the Missed tab")
+def contacts_i_touch_the_coworkers_tab(context):
+    history_view.goto_tab('Missed')
+
+
 @step("[history] I touch the handset icon")
 @fake
 def history__i_touch_the_handset_icon(context):

@@ -17,8 +17,10 @@ class DialView(UserView):
         "CurrentOtaPopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server"},
         "CurrentOtaPopupContent": {"by": "id", "value": "com.esi_estech.ditto:id/content_text"},
         "DialButton": {"by": "id", "value": "com.esi_estech.ditto:id/dial_call_button_view"},
+        "DialedNumberTextView": {"by": "id", "value": "com.esi_estech.ditto:id/dialed_number_text_view"},
         "DialPad": {"by": "id", "value": "com.esi_estech.ditto:id/dialpad_sliding_panel"},
         "DialPadContactName": {"by": "id", "value": "com.esi_estech.ditto:id/contact_name"},
+        "DialPadContactNumber": {"by": "id", "value": "com.esi_estech.ditto:id/contact_number"},
         "Delete": {"by": "id", "value": "com.esi_estech.ditto:id/deleteButton"},
         "Digits": {"by": "id", "value": "com.esi_estech.ditto:id/digits"},
         "FuncKeyAll": {"by": "zpath", "value": "//tl/tr/ll"},
@@ -39,9 +41,9 @@ class DialView(UserView):
         "NumKeyStar": {"by": "id", "value": "dial_star"},
         "NumKey0": {"by": "id", "value": "dial_zero"},
         "NumKeyPound": {"by": "id", "value": "dial_pound"},
-        "OtaUpdatePopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server Update" },
-        "OtaUpdatePopupContent": {"by": "id", "value": "com.esi_estech.ditto:id/content_text"}
-
+        "OtaUpdatePopup": {"by": "id", "value": "com.esi_estech.ditto:id/title_text", "text": "OTA Server Update"},
+        "OtaUpdatePopupContent": {"by": "id", "value": "com.esi_estech.ditto:id/content_text"},
+        "SearchResultItem1": {"by": "zpath", "value": "//rv/rl[1]"}
     }
 
     digit_names = {

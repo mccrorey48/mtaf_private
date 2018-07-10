@@ -323,6 +323,7 @@
             "ApksHome": "/home/mmccrorey/apks",
             "DefaultForwardAccount": "Auto TesterH",
             "DefaultSoftphoneUser": "Auto TesterG",
+            "10DigitNumber" : "2147272447",
             "Users": {
                 "R2d2User": {
                     "AccountPassword": "2016",
@@ -334,15 +335,17 @@
                         "2204"
                     ],
                     "CoworkerContacts": [
-                        "2200",
-                        "2201",
-                        "2202",
-                        "2203",
-                        "2204",
-                        "2205",
-                        "2206",
-                        "2207"
+                        {"number":"2200", "name":"Auto TesterA"},
+                        {"number":"2201", "name":"Auto TesterB"},
+                        {"number":"2202", "name":"Auto TesterC"},
+                        {"number":"2203", "name":"Auto TesterD"},
+                        {"number":"2204", "name":"Auto TesterE"},
+                        {"number":"2205", "name":"Auto TesterF"},
+                        {"number":"2206", "name":"Auto TesterG"},
+                        {"number":"2207", "name":"Auto TesterH"}
                     ],
+                    "CoworkerContactsDialPadNumber": "220",
+                    "CoworkerContactsDialPadName": "8372",
                     "DomainName": "test2.test-eng.com",
                     "FavoriteContacts": [
                         "2205",
@@ -396,7 +399,7 @@
             "ApksHome": "/home/jsabugo/apks",
             "DefaultForwardAccount": "Auto TesterF",
             "DefaultSoftphoneUser": "Auto TesterE",
-            "10DigitNumber" : "9728762953",
+            "10DigitNumber" : "2147272447",
             "Users": {
                 "R2d2User": {
                     "AccountPassword": "2012",
@@ -408,26 +411,17 @@
                         "2204"
                     ],
                     "CoworkerContacts": [
-                        "2200",
-                        "2201",
-                        "2202",
-                        "2203",
-                        "2204",
-                        "2205",
-                        "2206",
-                        "2207"
+                        {"number":"2200", "name":"Auto TesterA"},
+                        {"number":"2201", "name":"Auto TesterB"},
+                        {"number":"2202", "name":"Auto TesterC"},
+                        {"number":"2203", "name":"Auto TesterD"},
+                        {"number":"2204", "name":"Auto TesterE"},
+                        {"number":"2205", "name":"Auto TesterF"},
+                        {"number":"2206", "name":"Auto TesterG"},
+                        {"number":"2207", "name":"Auto TesterH"}
                     ],
-                    "CoworkerContactsDialPadNumber": "8372",
-                    "CoworkerContactsName":[
-                        "Auto TesterA",
-                        "Auto TesterB",
-                        "Auto TesterC",
-                        "Auto TesterD",
-                        "Auto TesterE",
-                        "Auto TesterF",
-                        "Auto TesterG",
-                        "Auto TesterH"
-                    ],
+                    "CoworkerContactsDialPadNumber": "220",
+                    "CoworkerContactsDialPadName": "8372",
                     "DomainName": "test2.test-eng.com",
                     "FavoriteContacts": [
                         "2205",

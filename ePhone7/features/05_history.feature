@@ -8,19 +8,19 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Scenario: I want to see a missed call indicated on the All History view
     Given I receive and ignore a call
-    When  I touch the "All" tab
+    When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a red handset icon
 
   Scenario: I want to see an answered call indicated on the All History view
     Given I receive and answer a call
-    When  I touch the "All" tab
+    When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a blue handset icon
 
   Scenario: I want to see a missed call indicated on the Missed History view
     Given I receive and ignore a call
-    When  I touch the "Missed" tab
+    When  [history] I touch the Missed tab
     Then  [history] I see the call at the top of the Missed History view
     And   [history] the call has a red handset icon
 
@@ -33,13 +33,14 @@ Feature: As a user I want to see my call history and make calls from the listed 
     Given I go to the home screen
     When  I touch the "History" button
     Then  the "History" view is present
-    When  I touch the "All" tab
+    When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a green handset icon
 
+
   Scenario: I want to call back a missed call indicated on the All History view
     Given I receive and ignore a call
-    When  I touch the "All" tab
+    When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a red handset icon
     When  [history] I touch the handset icon
@@ -52,7 +53,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
     Then  [active_call] an "Active Call" window appears
     When  [active_call] I end the call
     Then  the incoming call window disappears
-    When  I touch the "All" tab
+    When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a blue handset icon
     When  [history] I touch the handset icon
@@ -60,7 +61,7 @@ Feature: As a user I want to see my call history and make calls from the listed 
 
   Scenario: I want to call back a missed call indicated on the Missed History view
     Given I receive and ignore a call
-    When  I touch the "Missed" tab
+    When  [history] I touch the Missed tab
     Then  [history] I see the call at the top of the Missed History view
     And   [history] the call has a red handset icon
     When  [history] I touch the handset icon
@@ -76,8 +77,8 @@ Feature: As a user I want to see my call history and make calls from the listed 
     Given I go to the home screen
     When  I touch the "History" button
     Then  the "History" view is present
-    When  I touch the "All" tab
+    When  [history] I touch the All tab
     Then  [history] I see the call at the top of the All History view
     And   [history] the call has a green handset icon
     When  [history] I touch the handset icon
-    Then  My phone calls back the caller
+    Then  my phone calls back the contacts number

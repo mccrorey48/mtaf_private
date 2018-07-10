@@ -106,7 +106,7 @@ class HistoryView(UserView):
     @Trace(log)
     def get_expect_icon_color(self, handset_color):
         self.wait_for_condition_true((lambda: self.the_expect_icon_is_displayed(handset_color)),
-                                     lambda: 'no correct icon color')
+                                     lambda: 'no correct icon color', timeout=60)
 
     @Trace(log)
     def touch_handset(self):

@@ -86,8 +86,11 @@ def after_scenario(context, scenario):
             context._config.stop = True
         if scenario.status == 'failed':
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            screenshot_path = base_view.get_screenshot_as_png('exception-%s' % timestamp, scale=0.5)
-            substeps += 'screenshot = %s\n' % screenshot_path
+            try:
+                screenshot_path = base_view.get_screenshot_as_png('exception-%s' % timestamp, scale=0.5)
+                substeps += 'screenshot = %s\n' % screenshot_path
+            except Ux:
+                pass
     mtaf_logging.pop_msg_src()
 
 

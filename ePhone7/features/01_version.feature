@@ -1,4 +1,4 @@
-@regression @critical
+# @regression @critical
 Feature: The version of the software should be correct
 
   Background: I am at the Home screen

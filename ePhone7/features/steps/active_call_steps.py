@@ -18,10 +18,10 @@ def active_call__i_touch_dial(context):
     active_call_view.click_named_element('ActiveCallDial')
 
 
-@step("[active call] the active call screen appears")
-@fake
-def active_call__the_active_call_screen_appears(context):
-    assert active_call_view.becomes_present(), 'Active call screen not present'
+# @step("[active call] the active call screen appears")
+# @fake
+# def active_call__the_active_call_screen_appears(context):
+#     assert active_call_view.becomes_present(), 'Active call screen not present'
 
 
 @step("[active_call] a Record button is visible")
@@ -46,7 +46,7 @@ def activecall__an_active_call_window_disappears(context):
 @step("[active_call] a correct number appears in the Active Call window")
 @fake
 def activecall__a_correct_number_appears_in_the_active_call_window(context):
-    return context.active_screen_number == active_call_view.find_named_element('PrimaryCallNumber')
+    return context.caller_number == active_call_view.find_named_element('PrimaryCallNumber')
 
 
 @step("[active_call] a correct name appears in the Active Call window")
@@ -162,7 +162,7 @@ def activecall__the_coworkers_tab_is_selected(context):
 @step("[active_call] the {expect_icon} icon is displayed")
 @fake
 def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
-    white_counts = {'speaker': 714, 'handset': 580, 'headset': 618}
+    white_counts = {'speaker': 2272, 'handset': 1351, 'headset': 681}
     if expect_icon not in white_counts:
         raise Ux("Unexpected expect_icon value: %s" % expect_icon)
     call_icon = active_call_view.find_named_element('AudioPathIcon')
@@ -187,7 +187,7 @@ def activecall__the_incall_contacts_screen_appears(context):
 @fake
 def activecall__the_record_button_is_gray(context):
     user_view.get_screenshot_as_png('record_button')
-    expected_color = [119, 120, 122]
+    expected_color = [38, 40, 43]
     actual_color = active_call_view.get_element_color_and_count('record_button', context.record_button)[:3]
     assert actual_color == expected_color, "expected color %s, got %s" % (expected_color, actual_color)
 
