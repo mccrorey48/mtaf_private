@@ -3,6 +3,7 @@ import mtaf.mtaf_logging as logging
 from mtaf.trace import Trace
 from selenium.webdriver import Chrome, Firefox
 from eConsole.config.configure import cfg
+from eConsole.utils.process_chrome_log import process_log
 from mtaf.angular_actions import AngularActions
 from mtaf.user_exception import UserException as Ux
 from selenium.webdriver.support.ui import WebDriverWait
@@ -26,6 +27,7 @@ class BaseView(AngularActions):
         "LoadingGif": {"by": "class name", "value": "loadingoverlay"},
         "Logout": {"by": "id", "value": "logout"},
         "MainButton": {"by": "id", "value": "mainButton"},
+        "ManageOrganization": {"by": "id", "value": "org-view"},
         "MessageSettings": {"by": "css selector", "value": ".dropdown-item.ng-scope", "text": "Message Settings"},
         "MessagesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(2)"},
         "NavTabs": {"by": "css selector", "value": ".navbar-nav .nav-item"},
@@ -43,9 +45,12 @@ class BaseView(AngularActions):
         self.page_title = 'ESI'
         self.current_browser = None
         self.log_file = None
+        self.service_log_path = None
+        self.webdriver_log_path = None
         self.presence_element_names = ["ShowContacts"]
         self.nav_tab_names = []
         self.banner_texts = []
+        self.view_name = 'base'
         super(BaseView, self).__init__()
 
     @Trace(log)
@@ -120,7 +125,7 @@ class BaseView(AngularActions):
             locator = self.get_locator('NavTabs')
             driver_locator = (locator["by"], locator["value"])
             if len(WebDriverWait(self.driver, 15).until(
-                    expected_conditions.visibility_of_any_elements_located(driver_locator))) == 0:
+                    expected_conditions.visibility_of_all_elements_located(driver_locator))) != len(self.nav_tab_names):
                 return False
         return True
 
@@ -136,7 +141,10 @@ class BaseView(AngularActions):
             log.debug('browser is already open')
         else:
             if browser.lower() == 'chrome':
-                AngularActions.driver = Chrome()
+                mtaf_log_dir = os.getenv('MTAF_LOG_DIR', './log')
+                self.service_log_path = os.path.join(mtaf_log_dir, 'service.log')
+                self.webdriver_log_path = os.path.join(mtaf_log_dir, 'webdriver.log')
+                AngularActions.driver = Chrome(service_log_path=self.service_log_path)
             elif browser.lower() == 'firefox':
                 self.log_file = open('/home/mmccrorey/firefox.log', 'w')
                 AngularActions.driver = Firefox()
@@ -154,6 +162,8 @@ class BaseView(AngularActions):
             self.current_browser = None
             if self.log_file is not None:
                 self.log_file.close()
+            if self.service_log_path is not None:
+                process_log(self.service_log_path, self.webdriver_log_path)
 
 
 base_view = BaseView()

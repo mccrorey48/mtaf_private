@@ -17,6 +17,7 @@ class MessagesView(BaseView):
         self.presence_element_names = ["NewTab", "SavedTab", "TrashTab"]
         self.banner_texts = ['Messages']
         self.nav_tab_names = ["HOME", "MESSAGES", "CONTACTS", "PHONES", "CALL HISTORY", "SETTINGS"]
+        self.view_name = 'messages'
 
 
 messages_view = MessagesView()

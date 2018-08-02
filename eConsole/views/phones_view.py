@@ -19,6 +19,7 @@ class PhonesView(BaseView):
         self.presence_element_names = ['DeviceStatus', 'DeviceName', 'DeviceType', 'Line', 'Actions']
         self.banner_texts = ['Phones']
         self.nav_tab_names = ["HOME", "MESSAGES", "CONTACTS", "PHONES", "CALL HISTORY", "SETTINGS"]
+        self.view_name = 'phones'
 
 
 phones_view = PhonesView()

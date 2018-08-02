@@ -6,4 +6,6 @@ from .contacts_view import contacts_view
 from .phones_view import phones_view
 from .call_history_view import call_history_view
 from .message_settings_view import message_settings_view
+from .auto_attendants_view import auto_attendants_view
+from .manage_home_view import manage_home_view
 

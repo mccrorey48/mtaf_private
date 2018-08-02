@@ -1,6 +1,5 @@
 import mtaf.mtaf_logging as logging
 
-from eConsole.config.configure import cfg
 from eConsole.views.base_view import BaseView
 from mtaf.trace import Trace
 
@@ -19,6 +18,7 @@ class LoginView(BaseView):
         super(LoginView, self).__init__()
         self.page_title = "ESI"
         self.presence_element_names = ["LoginButton", "Password", "UserName"]
+        self.view_name = 'login'
 
     @Trace(log)
     def input_username(self, username):

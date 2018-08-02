@@ -14,6 +14,7 @@ class MessageSettingsView(BaseView):
         super(MessageSettingsView, self).__init__()
         self.presence_element_names = ["Greetings"]
         self.nav_tab_names = ["HOME", "MESSAGES", "CONTACTS", "PHONES", "CALL HISTORY", "SETTINGS"]
+        self.view_name = 'message_settings'
 
 
 message_settings_view = MessageSettingsView()

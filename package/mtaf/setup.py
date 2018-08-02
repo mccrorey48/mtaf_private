@@ -36,17 +36,21 @@ setup(
     ],
     install_requires=[
         'Appium-Python-Client==0.25',
+        'babel==2.6.0',
         'behave==1.2.6',
         'ipaddress==1.0.22',
         'olefile==0.44',
         'requests==2.18.4',
         'Pillow==4.3.0',
+        'psutil==5.4.6',
         'pymongo==3.3.1',
         'pyserial==3.3',
         'PyYAML==3.12',
         'selenium==3.8.0',
         'six==1.11.0',
-        'spur==0.3.20'
+        'spur==0.3.20',
+        'spur==0.3.20',
+        'tkfilebrowser==2.2.2'
     ],
     long_description=readme(),
     zip_safe=False,

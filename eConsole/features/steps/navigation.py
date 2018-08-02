@@ -31,3 +31,10 @@ def the_viewname_page_appears(context, view_name):
     assert base_view.element_becomes_not_present('LoadingGif', 10), "loading GIF present after 10 sec" % view_name
 
 
+@step("I navigate to the Manage Organization/Inventory Page")
+@fake
+def i_navigate_to_the_manage_organization_inventory_page(context):
+    base_view.ManageOrganization.click()
+
+
+

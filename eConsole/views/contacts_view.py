@@ -18,6 +18,7 @@ class ContactsView(BaseView):
         self.presence_element_names = ["TypeLabel", "PresenceLabel", "GroupsLabel", "SearchLabel"]
         self.banner_texts = ['Contacts']
         self.nav_tab_names = ["HOME", "MESSAGES", "CONTACTS", "PHONES", "CALL HISTORY", "SETTINGS"]
+        self.view_name = 'contacts'
 
 
 contacts_view = ContactsView()

@@ -10,7 +10,7 @@ def i_click_the_login_button(context):
     login_view.click_login_button()
 
 
-@step('I enter a {user_scope} password')
+@step('I enter a valid {user_scope} password')
 @fake
 def i_enter_a_password(context, user_scope):
     user = cfg.default_user[user_scope]
@@ -18,7 +18,7 @@ def i_enter_a_password(context, user_scope):
     login_view.input_password(password)
 
 
-@step('I enter a {user_scope} user ID')
+@step('I enter a valid {user_scope} user ID')
 @fake
 def i_enter_a_user_id(context, user_scope):
     user = cfg.default_user[user_scope]

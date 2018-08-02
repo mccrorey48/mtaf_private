@@ -149,8 +149,15 @@ class SeleniumActions(object):
             text, x, w, xw, xc, y, h, yh, yc))
         self.click_element(elem)
 
+    @Trace(log)
+    def click_link_text(self,text):
+        loc = {"by": "link text", "value": text}
+        elem = self.find_element_by_locator(loc)
+        self.click_element(elem)
+
     @Trace(log, log_level='debug')
     def find_elements_by_locator(self, locator):
+        self.wait_until_page_ready()
         elems = self.driver.find_elements(locator['by'], locator['value'])
         if 'text' in locator:
             return [elem for elem in elems if elem.text == locator['text']]
@@ -159,15 +166,16 @@ class SeleniumActions(object):
 
     @Trace(log, log_level='debug')
     def find_sub_element_by_locator(self, parent, locator, timeout=10):
+        self.wait_until_page_ready()
         elem = self.find_element_by_locator(locator, timeout=timeout, parent=parent)
         if elem is None:
             raise Ux("no unique matching element found with locator = %s" % locator)
         else:
             return elem
 
-    @staticmethod
     @Trace(log, log_level='debug')
-    def find_sub_elements_by_locator(parent, locator):
+    def find_sub_elements_by_locator(self, parent, locator):
+        self.wait_until_page_ready()
         elems = parent.find_elements(locator['by'], locator['value'])
         if 'text' in locator:
             return [elem for elem in elems if elem.text == locator['text']]
@@ -176,6 +184,7 @@ class SeleniumActions(object):
 
     @Trace(log)
     def find_named_element(self, name, timeout=30):
+        self.wait_until_page_ready()
         locator = self.get_locator(name)
         if 'parent_key' in locator:
             parent = self.find_named_element(locator['parent_key'])
@@ -235,6 +244,7 @@ class SeleniumActions(object):
 
     @Trace(log)
     def find_named_sub_element(self, parent, name, timeout=20):
+        self.wait_until_page_ready()
         locator = self.get_locator(name)
         try:
             return self.find_sub_element_by_locator(parent, locator, timeout)
@@ -243,6 +253,7 @@ class SeleniumActions(object):
 
     @Trace(log)
     def find_named_elements(self, name, filter_fn=None):
+        self.wait_until_page_ready()
         locator = self.get_locator(name)
         try:
             if 'parent_key' in locator:
@@ -298,6 +309,7 @@ class SeleniumActions(object):
     def find_element_by_locator(self, locator, timeout=10, parent=None):
         # calls find_named_elements until exactly one element is returned, and returns that element
         # or times out and returns None
+        self.wait_until_page_ready()
         if parent is None and "parent" in locator:
             parent = locator["parent"]
         start_time = time()

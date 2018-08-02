@@ -20,6 +20,7 @@ class CallHistoryView(BaseView):
         self.presence_element_names = ["RecentCallHistory"]
         self.banner_texts = ['Call History']
         self.nav_tab_names = ["HOME", "MESSAGES", "CONTACTS", "PHONES", "CALL HISTORY", "SETTINGS"]
+        self.view_name = 'call_history'
 
 
 call_history_view = CallHistoryView()

@@ -298,6 +298,7 @@ class Inspector(Frame):
         self.keycode_name = None
         self.locator_by_values = ['uia_text', 'zpath', 'xpath', 'id', '-android uiautomator']
         self.locators = {}
+        self.log_frame = None
         self.menu = None
         self.new_drag_polygon_x1 = None
         self.new_drag_polygon_y1 = None
@@ -316,7 +317,7 @@ class Inspector(Frame):
         self.text_to_send = None
         self.top_frames = []
         self.use_parent = None
-        self.views = []
+        self.views = {}
         self.within_frame = None
         self.worker_thread = None
         self.zpath_frame_btns = {}
