@@ -397,7 +397,7 @@ class Inspector(Frame):
         self.update_script_state('changing')
         filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
                                                  initialfile=os.path.basename(self.script_file.get()),
-                                                 title="Select file",
+                                                 title="Select current script",
                                                  filetypes=(
                                                      (".txt files", "*.txt"),
                                                      ("all files", "*.*"))
@@ -410,27 +410,28 @@ class Inspector(Frame):
         self.update_script_state('printing')
         filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
                                                  initialfile=os.path.basename(self.script_file.get()),
-                                                 title="Select file",
+                                                 title="Select script to print",
                                                  filetypes=(
                                                      (".txt files", "*.txt"),
                                                      ("all files", "*.*"))
                                                  )
         if filename:
             self.script_file.set(filename)
-            six.print_('>> contents of %s:' % self.script_file.get())
+            six.print_('>> Printing contents of %s:' % self.script_file.get())
             try:
                 with open(self.script_file.get(), 'r') as f:
                     for line in f:
                         six.print_(line, end="")
             except BaseException as e:
                 six.print_('got exception: %s' % e)
+            six.print_('>> Done')
         self.update_script_state('stopped')
 
-    def play_script(self):
-        self.update_script_state('playing')
+    def run_script(self):
+        self.update_script_state('running')
         filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
                                                  initialfile=os.path.basename(self.script_file.get()),
-                                                 title="Select file",
+                                                 title="Select script to run",
                                                  filetypes=(
                                                      (".txt files", "*.txt"),
                                                      ("all files", "*.*"))
@@ -440,7 +441,7 @@ class Inspector(Frame):
             self.update_idletasks()
             self.script_running = True
             self.script_file.set(filename)
-            six.print_("playing script file %s" % self.script_file.get())
+            six.print_(">> Running script file %s" % self.script_file.get())
             try:
                 with open(self.script_file.get(), 'r') as f:
                     try:
@@ -458,6 +459,7 @@ class Inspector(Frame):
                 six.print_("open(%s, 'r') got exception: %s" % e)
             self.script_running = False
             self.enable_buttons()
+            six.print_(">> Done")
         self.update_script_state('stopped')
 
     def record_script(self):
@@ -465,14 +467,14 @@ class Inspector(Frame):
         filename = tkfilebrowser.asksaveasfilename(initialdir=os.path.join(self.cfg['tmp_dir'],
                                                                            'web_inspector_scripts'),
                                                    initialfile=os.path.basename(self.script_file.get()),
-                                                   title="Select file",
+                                                   title="Select exising file, or enter filename to save recording",
                                                    filetypes=(
                                                        (".txt files", "*.txt"),
                                                        ("all files", "*.*"))
                                                    )
         if filename:
             self.script_file.set(filename)
-            six.print_("recording script file %s" % self.script_file.get())
+            six.print_(">> Recording script file %s" % self.script_file.get())
             self.script_fd = open(self.script_file.get(), 'w')
         else:
             self.update_script_state('stopped')
@@ -481,14 +483,14 @@ class Inspector(Frame):
         self.update_script_state('recording')
         filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
                                                  initialfile=os.path.basename(self.script_file.get()),
-                                                 title="Select file",
+                                                 title="Select script to add new commands",
                                                  filetypes=(
                                                      (".txt files", "*.txt"),
                                                      ("all files", "*.*"))
                                                  )
         if filename:
             self.script_file.set(filename)
-            six.print_("recording to end of script file %s" % self.script_file.get())
+            six.print_(">> Recording to end of script file %s" % self.script_file.get(), end='')
             self.script_fd = open(self.script_file.get(), 'a')
         else:
             self.update_script_state('stopped')
@@ -506,19 +508,21 @@ class Inspector(Frame):
             if filename == self.script_file.get():
                 six.print_("not copying %s to same filename")
             else:
-                six.print_("copying %s to %s" % (self.script_file.get(), filename))
+                six.print_("copying %s to %s... " % (self.script_file.get(), filename), end='')
                 shutil.copyfile(self.script_file.get(), filename)
                 self.script_file.set(filename)
+                six.print_("Done")
         self.update_script_state('stopped')
 
     def stop_script(self):
-        # if playing, stop executing script lines
+        # if running, stop executing script lines
         self.script_running = False
         # if recording or adding, stop
         if self.script_fd is not None:
             self.script_fd.close()
             self.script_fd = None
         self.update_script_state('stopped')
+        six.print_(">> Done")
 
     def record(self, txt):
         self.rec_frame.write(txt + '\n')
@@ -578,7 +582,8 @@ class Inspector(Frame):
         bottom_frame.script_frame.record_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
-        btn = Button(bottom_frame.script_frame, text="Stop Recording", bg=btn_default_bg, command=self.stop_script)
+        btn = Button(bottom_frame.script_frame, text="Stop Recording", bg=btn_default_bg, command=self.stop_script,
+                     state=DISABLED)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         bottom_frame.script_frame.stop_script = btn
         self.script_btn_enable_states[btn] = "recording"
@@ -588,9 +593,9 @@ class Inspector(Frame):
         bottom_frame.script_frame.print_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
-        btn = Button(bottom_frame.script_frame, text="Play", bg=btn_default_bg, command=self.play_script)
+        btn = Button(bottom_frame.script_frame, text="Run", bg=btn_default_bg, command=self.run_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
-        bottom_frame.script_frame.play_script = btn
+        bottom_frame.script_frame.run_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
         btn = Button(bottom_frame.script_frame, text="Add to Script", bg=btn_default_bg, command=self.add_to_script)
