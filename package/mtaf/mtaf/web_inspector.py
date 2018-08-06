@@ -11,6 +11,7 @@ from time import strftime, localtime
 import six
 from mtaf.trace import Trace
 from eConsole import views
+import shutil
 if six.PY3:
     from tkinter import filedialog
     from tkinter import *
@@ -289,7 +290,8 @@ class Inspector(Frame):
         self.im_height = None
         self.im_width = None
         self.keycode_name = None
-        self.locator_by_values = ['id', 'xpath', 'link text']
+        self.locator_by_values = ['id', 'xpath', 'link text',"partial link text", "name", "tag name", "class name",
+                                  "css selector"]
         self.locators = {}
         self.log_frame = None
         self.menu = None
@@ -297,9 +299,15 @@ class Inspector(Frame):
         self.new_drag_polygon_y1 = None
         self.parent_element = None
         self.polygons = []
+        self.script_btn_enable_states = {}
         self.script_fd = None
-        self.script_file = os.path.join(self.cfg['tmp_dir'], 'web_inspector_script.txt')
-        self.script_running = True
+        self.script_file = StringVar()
+        self.script_file.set(os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts', 'web_inspector_script.txt'))
+        self.script_recording = False
+        self.script_rec_btns = []
+        self.script_running = False
+        self.script_run_btns = []
+        self.script_state = 'stopped'
         self.rec_file = os.path.join(self.cfg['tmp_dir'], 'web_inspector_recording.txt')
         self.loc_file = os.path.join(self.cfg['tmp_dir'], 'web_inspector_locators.json')
         self.rec_frame = None
@@ -385,83 +393,132 @@ class Inspector(Frame):
             top_frame.grid(row=top_frame_row, column=0, padx=4, pady=2, sticky='news')
             top_frame_row += 1
 
-    def print_script(self):
-        if self.script_fd is not None:
-            six.print_("script is recording, stop before playing")
-            return
-        filename = tkfilebrowser.askopenfilename(initialdir=self.cfg['tmp_dir'],
-                                                 initialfile=os.path.basename(self.script_file),
+    def change_script(self):
+        self.update_script_state('changing')
+        filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
+                                                 initialfile=os.path.basename(self.script_file.get()),
                                                  title="Select file",
                                                  filetypes=(
                                                      (".txt files", "*.txt"),
                                                      ("all files", "*.*"))
                                                  )
-        if not filename:
-            return
-        self.script_file = filename
-        try:
-            with open(self.script_file, 'r') as f:
-                for line in f:
-                    six.print_(line, end="")
-        except BaseException as e:
-            six.print_('got exception: %s' % e)
+        if filename:
+            self.script_file.set(filename)
+        self.update_script_state('stopped')
+
+    def print_script(self):
+        self.update_script_state('printing')
+        filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
+                                                 initialfile=os.path.basename(self.script_file.get()),
+                                                 title="Select file",
+                                                 filetypes=(
+                                                     (".txt files", "*.txt"),
+                                                     ("all files", "*.*"))
+                                                 )
+        if filename:
+            self.script_file.set(filename)
+            six.print_('>> contents of %s:' % self.script_file.get())
+            try:
+                with open(self.script_file.get(), 'r') as f:
+                    for line in f:
+                        six.print_(line, end="")
+            except BaseException as e:
+                six.print_('got exception: %s' % e)
+        self.update_script_state('stopped')
 
     def play_script(self):
-        if self.script_fd is not None:
-            six.print_("script is recording, stop before playing")
-            return
-        filename = tkfilebrowser.askopenfilename(initialdir=self.cfg['tmp_dir'],
-                                                 initialfile=os.path.basename(self.script_file),
+        self.update_script_state('playing')
+        filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
+                                                 initialfile=os.path.basename(self.script_file.get()),
                                                  title="Select file",
                                                  filetypes=(
                                                      (".txt files", "*.txt"),
                                                      ("all files", "*.*"))
                                                  )
-        if not filename:
-            return
-        self.update_idletasks()
-        self.script_running = True
-        self.script_file = filename
-        six.print_("playing script file %s" % self.script_file)
-        try:
-            with open(self.script_file, 'r') as f:
-                try:
-                    for line in f:
-                        line = line.strip()
-                        if line[0] == '#' or line[0] == '"':
-                            continue
-                        if not self.script_running:
-                            break
-                        six.print_("exec: %s" % line.strip())
-                        six.exec_(line.strip())
-                except Exception as _e:
-                    six.print_("exec raised exception: %s" % _e)
-        except BaseException as e:
-            six.print_("open(%s, 'r') got exception: %s" % e)
+        if filename:
+            self.disable_buttons()
+            self.update_idletasks()
+            self.script_running = True
+            self.script_file.set(filename)
+            six.print_("playing script file %s" % self.script_file.get())
+            try:
+                with open(self.script_file.get(), 'r') as f:
+                    try:
+                        for line in f:
+                            line = line.strip()
+                            if line[0] == '#' or line[0] == '"':
+                                continue
+                            if not self.script_running:
+                                break
+                            six.print_("exec: %s" % line.strip())
+                            six.exec_(line.strip())
+                    except Exception as _e:
+                        six.print_("exec raised exception: %s" % _e)
+            except BaseException as e:
+                six.print_("open(%s, 'r') got exception: %s" % e)
+            self.script_running = False
+            self.enable_buttons()
+        self.update_script_state('stopped')
 
     def record_script(self):
-        if self.script_fd is not None:
-            six.print_("script is recording, stop before playing")
-            return
-        filename = tkfilebrowser.asksaveasfilename(initialdir=self.cfg['tmp_dir'],
-                                                   initialfile=os.path.basename(self.script_file),
+        self.update_script_state('recording')
+        filename = tkfilebrowser.asksaveasfilename(initialdir=os.path.join(self.cfg['tmp_dir'],
+                                                                           'web_inspector_scripts'),
+                                                   initialfile=os.path.basename(self.script_file.get()),
                                                    title="Select file",
                                                    filetypes=(
                                                        (".txt files", "*.txt"),
                                                        ("all files", "*.*"))
                                                    )
-        if not filename:
-            return
-        self.script_file = filename
-        six.print_("recording script file %s" % self.script_file)
-        self.script_fd = open(self.script_file, 'w')
+        if filename:
+            self.script_file.set(filename)
+            six.print_("recording script file %s" % self.script_file.get())
+            self.script_fd = open(self.script_file.get(), 'w')
+        else:
+            self.update_script_state('stopped')
+
+    def add_to_script(self):
+        self.update_script_state('recording')
+        filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
+                                                 initialfile=os.path.basename(self.script_file.get()),
+                                                 title="Select file",
+                                                 filetypes=(
+                                                     (".txt files", "*.txt"),
+                                                     ("all files", "*.*"))
+                                                 )
+        if filename:
+            self.script_file.set(filename)
+            six.print_("recording to end of script file %s" % self.script_file.get())
+            self.script_fd = open(self.script_file.get(), 'a')
+        else:
+            self.update_script_state('stopped')
+
+    def copy_script(self):
+        self.update_script_state('recording')
+        filename = tkfilebrowser.asksaveasfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
+                                                   initialfile=os.path.basename(self.script_file.get()),
+                                                   title="Copy current script to file: ",
+                                                   filetypes=(
+                                                       (".txt files", "*.txt"),
+                                                       ("all files", "*.*"))
+                                                   )
+        if filename:
+            if filename == self.script_file.get():
+                six.print_("not copying %s to same filename")
+            else:
+                six.print_("copying %s to %s" % (self.script_file.get(), filename))
+                shutil.copyfile(self.script_file.get(), filename)
+                self.script_file.set(filename)
+        self.update_script_state('stopped')
 
     def stop_script(self):
-        # stops recording or playing
+        # if playing, stop executing script lines
         self.script_running = False
+        # if recording or adding, stop
         if self.script_fd is not None:
             self.script_fd.close()
             self.script_fd = None
+        self.update_script_state('stopped')
 
     def record(self, txt):
         self.rec_frame.write(txt + '\n')
@@ -484,36 +541,78 @@ class Inspector(Frame):
             log.debug("worker thread done: %s" % self.worker_thread.name)
             self.worker_thread = None
             # if do_cmd thread is done, re-enable the menubar dropdowns
-            for i in range(len(self.menu.items)):
-                self.menu.entryconfig(i + 1, state=NORMAL)
-            if self.browser_is_open:
-                for btn in self.browser_btns:
-                    btn.configure(state=NORMAL)
-            if len(self.elems):
-                for btn in self.elems_btns:
-                    btn.configure(state=NORMAL)
-            # depending on self.browser_is_enabled value, enable/disable dropdown menu items
-            self.menu.enable_items(self.browser_is_open)
+            self.enable_buttons()
+
+    def enable_buttons(self):
+        for i in range(len(self.menu.items)):
+            self.menu.entryconfig(i + 1, state=NORMAL)
+        if self.browser_is_open:
+            for btn in self.browser_btns:
+                btn.configure(state=NORMAL)
+        if len(self.elems):
+            for btn in self.elems_btns:
+                btn.configure(state=NORMAL)
+        # depending on self.browser_is_enabled value, enable/disable dropdown menu items
+        self.menu.enable_items(self.browser_is_open)
+
+    def update_script_state(self, state):
+        self.script_state = state
+        for btn in self.script_btn_enable_states:
+            if state in self.script_btn_enable_states[btn]:
+                btn.configure(state=NORMAL)
+            else:
+                btn.configure(state=DISABLED)
 
     def create_bottom_frame(self):
         ai = AutoIncrementer()
         bottom_frame = BottomFrame(self, bg="tan")
-        bottom_frame.record_script = Button(bottom_frame, text="Start script", bg=btn_default_bg,
-                                            command=self.record_script)
-        bottom_frame.record_script.grid(row=0, column=ai.col, sticky='w', padx=2, pady=2)
-        bottom_frame.stop_script = Button(bottom_frame, text="Stop script", bg=btn_default_bg,
-                                          command=self.stop_script)
-        bottom_frame.stop_script.grid(row=0, column=ai.col, sticky='w', padx=2, pady=2)
-        bottom_frame.print_script = Button(bottom_frame, text="Print script", bg=btn_default_bg,
-                                           command=self.print_script)
-        bottom_frame.print_script.grid(row=0, column=ai.col, sticky='w', padx=2, pady=2)
-        bottom_frame.play_script = Button(bottom_frame, text="Play script", bg=btn_default_bg,
-                                          command=self.play_script)
-        bottom_frame.play_script.grid(row=0, column=ai.col, sticky='w', padx=2, pady=2)
-        bottom_frame.grid_columnconfigure(ai.last_count, weight=1)
+        bottom_frame.script_frame = Frame(bottom_frame, bg="brown")
+        bottom_frame.script_frame.script_label = Label(bottom_frame.script_frame, text="Current Script:")
+        bottom_frame.script_frame.script_label.grid(row=0, column=0, sticky='e', padx=0, pady=2)
+        bottom_frame.script_frame.script_name = Entry(bottom_frame.script_frame, textvariable=self.script_file,
+                                                      width=75, state='readonly')
+        bottom_frame.script_frame.script_name.grid(row=0, column=1, padx=4, pady=2, columnspan=6, sticky='news')
+
+        btn = Button(bottom_frame.script_frame, text="Record New", bg=btn_default_bg, command=self.record_script)
+        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        bottom_frame.script_frame.record_script = btn
+        self.script_btn_enable_states[btn] = "stopped"
+
+        btn = Button(bottom_frame.script_frame, text="Stop Recording", bg=btn_default_bg, command=self.stop_script)
+        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        bottom_frame.script_frame.stop_script = btn
+        self.script_btn_enable_states[btn] = "recording"
+
+        btn = Button(bottom_frame.script_frame, text="Print", bg=btn_default_bg, command=self.print_script)
+        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        bottom_frame.script_frame.print_script = btn
+        self.script_btn_enable_states[btn] = "stopped"
+
+        btn = Button(bottom_frame.script_frame, text="Play", bg=btn_default_bg, command=self.play_script)
+        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        bottom_frame.script_frame.play_script = btn
+        self.script_btn_enable_states[btn] = "stopped"
+
+        btn = Button(bottom_frame.script_frame, text="Add to Script", bg=btn_default_bg, command=self.add_to_script)
+        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        bottom_frame.script_frame.add_to_script = btn
+        self.script_btn_enable_states[btn] = "stopped"
+
+        btn = Button(bottom_frame.script_frame, text="Copy", bg=btn_default_bg, command=self.copy_script)
+        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        bottom_frame.script_frame.copy_script = btn
+        self.script_btn_enable_states[btn] = "stopped"
+
+        btn = Button(bottom_frame.script_frame, text="Change Current", bg=btn_default_bg, command=self.change_script)
+        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        bottom_frame.script_frame.change_script = btn
+        self.script_btn_enable_states[btn] = "stopped"
+
+        bottom_frame.script_frame.grid(row=0, column=0, sticky='w')
+        bottom_frame.grid_columnconfigure(0, weight=1)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", bg=btn_default_bg,
                                    command=self.close_and_quit)
-        bottom_frame.Quit.grid(row=0, column=ai.col, sticky='e', padx=2, pady=2)
+        bottom_frame.Quit.grid(row=0, column=1, sticky='se', padx=2, pady=2)
         return bottom_frame
 
     @Trace(log)
@@ -712,20 +811,21 @@ class Inspector(Frame):
         if self.worker_thread is not None:
             six.print_("worker thread busy: %s" % cmd.__name__)
         else:
-            for btn in self.browser_btns:
-                btn.configure(state=DISABLED)
-            for btn in self.elems_btns:
-                btn.configure(state=DISABLED)
-            # disable the menubar dropdowns while thread is running
-            for i in range(len(self.menu.items)):
-                    self.menu.entryconfig(i + 1, state=DISABLED)
-            pass
+            # disable the menubar dropdowns and action buttons while thread is running
+            self.disable_buttons()
             self.update_idletasks()
-            # sleep(5)
             self.worker_thread = threading.Thread(target=cmd, name=cmd.__name__)
             self.worker_thread.start()
             log.debug("worker thread started: %s" % cmd.__name__)
             self.after(100, self.check_thread)
+
+    def disable_buttons(self):
+        for btn in self.browser_btns:
+            btn.configure(state=DISABLED)
+        for btn in self.elems_btns:
+            btn.configure(state=DISABLED)
+        for i in range(len(self.menu.items)):
+            self.menu.entryconfig(i + 1, state=DISABLED)
 
     def update_find_widgets(self, event):
         find_by = self.find_by_var.get()
