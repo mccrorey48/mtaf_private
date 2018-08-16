@@ -1,6 +1,5 @@
 from behave import *
 from eConsole.views import *
-from mtaf.decorators import fake
 import re
 
 
@@ -13,7 +12,6 @@ def camel_case(text):
 
 
 @step("I click the {tab_text} tab")
-@fake
 def i_click_the_tabtext_tab(context, tab_text):
     tab_prefix = tab_text.lower()
     tab_prefix = tab_prefix[0].upper() + tab_prefix[1:]
@@ -21,9 +19,10 @@ def i_click_the_tabtext_tab(context, tab_text):
 
 
 @step("I log in to the dashboard")
-@fake
 def i_log_in_to_the_dashboard(context):
     context.run_substep("I enter a valid %s user ID" % context.config.userdata['user_scope'])
     context.run_substep("I enter a valid %s password" % context.config.userdata['user_scope'])
     context.run_substep("I click the Login button")
     context.run_substep("the Home page appears")
+
+

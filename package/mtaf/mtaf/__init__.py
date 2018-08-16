@@ -91,11 +91,15 @@ def start_web_inspector():
                         help='YAML configuration file (default "./web_inspector_config.yml")')
     parser.add_argument('-p', '--plugin_dir', type=str, default='.',
                         help='plugin directory (default="." or set in configuration file)')
+    parser.add_argument('-t', '--screenshot_dir', type=str, default='.',
+                        help='screenshot directory (default="." or set in configuration file)')
     parser.add_argument('opts', type=str, nargs='*', metavar='key=value',
                         help='key=value pairs will be added to configuration')
     parser.add_argument('-s', '--show_config_only', action='store_true',
                         help='show configuration without calling run_inspector')
-    parser.add_argument('-l', '--log_window_height', default=10,
+    parser.add_argument('-l', '--log_window_height', default=20,
+                        help='text height of standard output and recorded output windows')
+    parser.add_argument('-r', '--rec_window_height', default=5,
                         help='text height of standard output and recorded output windows')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='print debug messages')
@@ -113,8 +117,10 @@ def start_web_inspector():
         six.print_("tmp_dir = %s" % default_tmp_dir)
     cfg = {
         'tmp_dir': default_tmp_dir,
-        'plugin_dir': args.plugin_dir,
-        'log_window_height': args.log_window_height}
+        'screenshot_dir': args.screenshot_dir,
+        'log_window_height': args.log_window_height,
+        'rec_window_height': args.rec_window_height
+    }
     # if args.config_file is the path of a YAML configuration file, update
     # configuration to the default
     try:

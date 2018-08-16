@@ -1,6 +1,5 @@
 from behave import *
 # from ePhone7.views import all_views
-from mtaf.trace import fake
 from mtaf import mtaf_logging
 # from ePhone7.lib.utils.e7_microservices import *
 
@@ -39,7 +38,6 @@ log = mtaf_logging.get_logger('mtaf.features_dev')
 
 
 @step("I send the (?P<name>\S+) keycode")
-@fake
 def step_impl(context, name):
     log.info("I send the %s keycode" % name)
     # all_views.base.send_keycode('KEYCODE_%s' % name.upper())

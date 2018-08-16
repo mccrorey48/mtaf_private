@@ -1,8 +1,6 @@
 from behave import *
-from ePhone7.views import all_views
-from mtaf.trace import fake
+from eConsole.views import all_views
 from mtaf import mtaf_logging
-# from ePhone7.lib.utils.e7_microservices import *
 
 use_step_matcher("re")
 log = mtaf_logging.get_logger('mtaf.features_dev')
@@ -16,13 +14,15 @@ log = mtaf_logging.get_logger('mtaf.features_dev')
 #         assert all_views[view][name], '%s view element "%s" is not present' % (view, name)
 #
 #
+
+
 @step("the (?P<view>\S+) view is (?P<mode>\S*)\s?present")
 def step_impl(context, view, mode):
     log.info("the %s view is %s present" % (view, mode))
-    # if mode.lower() == 'not':
-    #     assert all_views[view].becomes_not_present(), "%s view is present"
-    # else:
-    #     assert all_views[view].becomes_present(), "%s view is not present"
+    if mode.lower() == 'not':
+        assert all_views[view].becomes_not_present(), "%s view is present"
+    else:
+        assert all_views[view].becomes_present(), "%s view is not present"
 
 
 # # @step('I touch (?:[^"]*)?"(?P<text>[^"]+)"(?P<tail>[^"]*)')
@@ -41,7 +41,7 @@ def step_impl(context, view, mode):
 @step("I send the (?P<name>\S+) keycode")
 def step_impl(context, name):
     log.info("I send the %s keycode" % name)
-    # all_views.base.send_keycode('KEYCODE_%s' % name.upper())
+    all_views.base.send_keycode('KEYCODE_%s' % name.upper())
 
 
 # @step('a (?:[^"]+) with (?:[^"]* )"(?P<text>[^"]+)"(?: [^"]*) appears')

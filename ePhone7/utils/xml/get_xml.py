@@ -4,9 +4,9 @@ from selenium.common.exceptions import NoSuchElementException
 
 from ePhone7.config.configure import cfg
 
-from ePhone7.lib.utils.get_softphone import get_softphone
+from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views import *
-from ePhone7.lib.utils.csv.xml_to_csv import xml_folder_to_csv
+from ePhone7.utils.csv import xml_folder_to_csv
 from time import sleep
 from mtaf import mtaf_logging
 from mtaf.trace import Trace

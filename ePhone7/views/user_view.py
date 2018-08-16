@@ -3,7 +3,7 @@ from mtaf.trace import Trace
 from mtaf.user_exception import UserException as Ux
 
 from ePhone7.config.configure import cfg
-from ePhone7.lib.utils.get_softphone import get_softphone
+from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.base_view import BaseView
 from ePhone7.views.prefs_view import prefs_view
 

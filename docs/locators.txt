@@ -1,0 +1,113 @@
+Locators are descriptors used by Selenium to locate elements in the tested application's graphical user interface.
+
+A locator consists of two parts:
+
+    "by" - a string which specifies the method used to locate one or more elements. There are several methods available.
+
+           For web applications, these methods are specified in selenium.webdriver.common.by:
+                ID = "id"
+                XPATH = "xpath"
+                LINK_TEXT = "link text"
+                PARTIAL_LINK_TEXT = "partial link text"
+                NAME = "name"
+                TAG_NAME = "tag name"
+                CLASS_NAME = "class name"
+                CSS_SELECTOR = "css selector"
+
+           For mobile applications, the Appium module adds these methods from appium.webdriver.common.mobileby:
+                IOS_PREDICATE = '-ios predicate string'
+                IOS_UIAUTOMATION = '-ios uiautomation'
+                IOS_CLASS_CHAIN = '-ios class chain'
+                ANDROID_UIAUTOMATOR = '-android uiautomator'
+                ACCESSIBILITY_ID = 'accessibility id'
+
+    "value" - a string containing the value for the locator, such as the actual id or xpath used to locate an element
+
+Selenium uses two basic "find" methods to locate elements:
+
+    selenium.webdriver.remote.webdriver.find_element(by, value)
+
+        finds one element on the page
+        raises an exception if there is not exactly one element that matches
+        returns one "webelement" value
+
+    - selenium.webdriver.remote.webdriver.find_elements(by, value)
+
+        finds zero or more elements on the page
+        returns an array of "webelement" values (length can be zero)
+
+    - selenium.webdriver.remote.webelement.find_element(by, value)
+
+        finds one element that is a subelement of the calling webelement instance
+        raises an exception if there is not exactly one element that matches
+        returns one "webelement" value
+
+    - selenium.webdriver.remote.webelement.find_elements(by, value)
+
+        finds zero or more elements that are subelements of the calling webelement instance
+        returns an array of "webelement" values (length can be zero)
+
+Not all methods work in all circumstances. For example, Appium's webelement.find_element works if the subelement is
+searched for by ID, but not by XPATH.
+
+MTAF Locator Conventions:
+
+    MTAF locators are kept in dictionaries, indexed by "convenient" names that designate the element's function in a
+    particular view.  Each visible view is represented by a "view" class, which has a dictionary of locators for
+    elements appearing in that view.
+
+    View classes may inherit locators from a superclass; for example, navigation tabs that stay visible for several
+    tabbed views would typically belong to a superclass representing the tabs, plus other elements common to all of
+    the tabbed views.
+
+    The structure of an MTAF locator dictionary is:
+
+        <view name>.locators = {
+           <locator name>: {"parent": <parent locator name>, "by": <by string value>, "value": <locator string value>
+               [, "text": "element text value"},
+           ...
+        }
+
+    MTAF methods that find "named" elements are called as member methods of the currently displayed view. They accept
+    the <locator name> as an argument, and look up the locator in the locator dictionary of the calling view.
+    View superclasses that have locator dictionaries are also searched, from the bottom up (displayed view first, then
+    superclasses). To minimized exceptions and give the programmer more control over various timeouts and time delays,
+    MTAF element finder methods use the "find_elements" methods of the webdriver or webelement classes. For example,
+    the MTAF "find_named_element" method is used to locate exactly one element as follows:
+
+        elem = <current view>.find_named_element(<locator name>)
+
+        procedure:
+            - look up locator in <current_view>.locators dictionary
+            - if not found, look in <superclass>.locators until a superclass is encountered that has no locators
+              dictionary
+            - if locator is found:
+
+                - if locator["parent"] exists,
+                    look up parent locator in current view and superclasses
+                    parent_elem = <current_view>.find_named_element(<parent locator name>)
+                    lookup_method = parent_elem.find_elements(<locator "by" string>, <locator "value" string>
+                  else:
+                    lookup_method = = webdriver.find_elements(<locator "by" string>, <locator "value" string>
+
+                - repeat until timeout:
+                    - element_list = lookup_method()
+                    - if locator <element text value> is specified, filter elem_list, including only elements for which
+                      element text is equal to <element text value"
+                    - if length of elem_list is exactly one, return elem_list[0]
+
+                - if timeout reached, raise timeout exception
+
+Example web app locator methods for eConsole web app (tested with web_inspector):
+    view                   by              value
+    ---------------------  -----------     -------------------------------------------------------------
+    login                  'id'            'username'
+    office mgr home        'link text'     'Auto Attendants'
+    auto attendants        'css selector'  "button[ng-click='createAutoAttendantModal()']"
+    create AA modal        'css selector'  "input[name='name']"
+    create AA modal        'css selector'  "option[value='Default (all the time)']"
+    create AA modal        'css selector'  "button[ng-click='validateAutoAttendant(newAutoAttendant)']"
+
+
+
+

@@ -4,7 +4,7 @@ from mtaf.filters import get_filter
 from mtaf.user_exception import UserException as Ux
 
 from ePhone7.config.configure import cfg
-from ePhone7.lib.utils.e7_microservices import *
+from ePhone7.utils.e7_microservices import *
 from ePhone7.views.user_view import UserView
 
 import re
@@ -59,7 +59,7 @@ class VoicemailView(UserView):
 
     @Trace(log)
     def call_first_vm_caller(self):
-        from ePhone7.lib.utils.get_softphone import get_softphone
+        from ePhone7.utils.get_softphone import get_softphone
         # expects the current display to be the detail screen for a voicemail from cfg.site['DefaultSoftphoneUser']
         softphone = get_softphone()
         softphone.account_info.incoming_response = 200

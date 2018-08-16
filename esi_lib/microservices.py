@@ -1,7 +1,6 @@
 from mtaf import mtaf_logging
 from mtaf.trace import Trace
 from mtaf.user_exception import UserException as Ux
-
 import requests
 from time import time
 
@@ -58,7 +57,7 @@ class Microservices(object):
             "Content-Type": "application/json"
         }
         req = requests.post(path, data=data, headers=headers)
-        print "POST %s data=%s headers=%s status_code=%s" % (path, data, headers, req.status_code)
+        log.debug("POST %s data=%s headers=%s status_code=%s" % (path, data, headers, req.status_code))
         if req.status_code == 200:
             self.oauth_tokens = req.json()
             log.debug("got oauth tokens: %s" % self.oauth_tokens)
