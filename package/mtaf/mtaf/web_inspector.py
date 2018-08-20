@@ -439,9 +439,9 @@ class Inspector(Frame):
             y1 = int(location['y'])
             x2 = x1 + int(size['width'])
             y2 = y1 + int(size['height'])
+            # only add elem to self.processor_elems[tag] if it isn't already there (with another index number)
             if x1 * self.cwin.scale < self.im_width and y1 * self.cwin.scale < self.im_height:
-                self.processor_elems[tag].append(
-                    {
+                new_processor_elem = {
                         'tag': tag,
                         'index': tag_index,
                         'by': by,
@@ -450,7 +450,13 @@ class Inspector(Frame):
                         'partial_values': partial_values,
                         'text': required_text
                     }
-                )
+                elem_attrs = sorted([new_processor_elem[attr] for attr in new_processor_elem.keys() if attr != 'index'])
+                for p_elem in self.processor_elems[tag]:
+                    p_elem_attrs = sorted([p_elem[attr] for attr in p_elem.keys() if attr != 'index'])
+                    if p_elem_attrs == elem_attrs:
+                        break
+                else:
+                    self.processor_elems[tag].append(new_processor_elem)
 
 
     def open_browser(self):
@@ -1170,12 +1176,18 @@ class Inspector(Frame):
         ]
         self.processor_elems = {}
         for tag_info in tag_infos:
+            old_num_proc_elems = 0
             elems = self.soup(tag_info.name)
             print "number of %s elements: %d" % (tag_info.name, len(elems))
             for i, elem in enumerate (elems):
                 self.process_attrs(tag_info.name, i, elem.attrs, elem.text.strip())
-            self.draw_outlines(self.processor_elems[tag_info.name], color=tag_info.color, clear=False,
-                               width=tag_info.width)
+                num_proc_elems = len(self.processor_elems[tag_info.name])
+                if num_proc_elems != old_num_proc_elems:
+                    print "added element %d: %s" % (i, elem)
+                    old_num_proc_elems = num_proc_elems
+            if tag_info.name in self.processor_elems:
+                self.draw_outlines(self.processor_elems[tag_info.name], color=tag_info.color, clear=False,
+                                   width=tag_info.width)
 
     def get_screenshot(self):
         print "Getting Screenshot ...",
@@ -1220,9 +1232,10 @@ class Inspector(Frame):
         self.im_canvas.bind('<Button-5>', self.mouse_btn)
         self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
         self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
-        self.cwin.btn_frame = Frame(self.cwin)
-        self.cwin.btn_frame.grid(row=1, column=0)
-        self.cwin.rowconfigure(0, weight=1)
+        self.cwin.loc_frame = LabelFrame(self.cwin, width=300, height=100, text='Locator Options')
+        self.cwin.loc_frame.type_frame = Frame(self.cwin.loc_frame)
+        self.cwin.loc_frame.type_frame.grid(row=0, column=0)
+        self.cwin.loc_frame.grid(row=1, column=0, sticky='e')
 
     def mouse_btn(self, event):
         # print "mouse event (%s, %s)" % (event.type, event.num)
@@ -1230,10 +1243,21 @@ class Inspector(Frame):
             x = self.descale(event.x)
             y = self.descale(event.y)
             print "mouse click at (%s, %s)" % (x, y)
-            clicked_elems = {}
-            for key in self.processor_elems:
-                clicked_elems[key] = filter(self.point_in_elem_outline(x, y), self.processor_elems[key])
-                print "%d clicked %s elements" % (len(clicked_elems[key]), key)
+            self.show_locator_options(x, y)
+
+    def show_locator_options(self, x, y):
+        clicked_elems = {}
+        for child in self.cwin.loc_frame.type_frame.winfo_children():
+            child.grid_forget()
+        self.cwin.loc_frame.type_frame.types = {}
+        for (i, key) in enumerate(self.processor_elems):
+            clicked_elems[key] = filter(self.point_in_elem_outline(x, y), self.processor_elems[key])
+            print "clicked %d %s elements" % (len(clicked_elems[key]), key)
+            if len(clicked_elems[key]) == 1:
+                Radiobutton(self.cwin.loc_frame.type_frame, text=key).grid(row=0, column=i)
+                elem = clicked_elems[key][0]
+                for attr in elem:
+                    print "  %s: %s" % (attr, elem[attr])
 
     def on_canvas_closing(self):
         self.im_canvas = None
