@@ -30,6 +30,7 @@ class AngularActions(SeleniumActions):
                                 'var b=document.createElement(\'script\');' \
                                 'b.type=\'text/javascript\';b.src=document.location.' \
                                 'protocol+\'%(jquery_url)s\';a.appendChild(b);'
+        self.element_filter = lambda x: x.is_displayed()
 
     @Trace(log)
     def wait_until_angular_ready(self, timeout=20):

@@ -102,54 +102,36 @@ class MyDialog(tk_simple_dialog.Dialog):
         self.devices = {0: self.devices[key]}
 
 
-class VerticalScrolledFrame(Frame):
-    """A pure Tkinter scrollable frame that actually works!
-    * Use the 'interior' attribute to place widgets inside the scrollable frame
-    * Construct and pack/place/grid normally
-    * This frame only allows vertical scrolling
-    """
-    def __init__(self, parent, *_args):
-        Frame.__init__(self, parent, *_args)
-
-        # create a canvas object and a vertical scrollbar for scrolling it
-        vscrollbar = Scrollbar(self, orient=VERTICAL)
-
+class ScrolledFrame(Frame):
+    def __init__(self, parent, hsb=True, vsb=True, frame_label=''):
+        Frame.__init__(self, parent, bg='green')
+        self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
-        vscrollbar.grid(sticky='ns', row=0, column=1)
+        self.canvas = Canvas(self, borderwidth=0, background="#ffffff")
+        if len(frame_label):
+            self.frame = LabelFrame(self.canvas, background="#ffffff", text=frame_label)
+        else:
+            self.frame = Frame(self.canvas, background="#ffffff")
+        if hsb:
+            self.hsb = Scrollbar(self, orient="horizontal", command=self.canvas.xview)
+            self.canvas.configure(xscrollcommand=self.hsb.set)
+        if vsb:
+            self.vsb = Scrollbar(self, orient="vertical", command=self.canvas.yview)
+            self.canvas.configure(yscrollcommand=self.vsb.set)
 
-        canvas = Canvas(self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
+        if hsb:
+            self.hsb.grid(row=1, column=0, sticky='ew')
+        if vsb:
+            self.vsb.grid(row=0, column=1, sticky='ns')
+        self.canvas.grid(row=0, column=0, sticky='nsew')
+        self.canvas.create_window((4,4), window=self.frame, anchor="nw",
+                                  tags="self.frame")
+        self.frame.bind("<Configure>", self.onFrameConfigure)
 
-        canvas.grid(sticky='nsew', row=0, column=0)
+    def onFrameConfigure(self, event):
+        '''Reset the scroll region to encompass the inner frame'''
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-        vscrollbar.config(command=canvas.yview)
-
-        # reset the view
-        canvas.xview_moveto(0)
-        canvas.yview_moveto(0)
-
-        # create a frame inside the canvas which will be scrolled with it
-        self.interior = interior = Frame(canvas)
-        interior_id = canvas.create_window(0, 0, window=interior, anchor=NW)
-
-        # track changes to the canvas and frame width and sync them,
-        # also updating the scrollbar
-        def _configure_interior(event):
-            # update the scrollbars to match the size of the inner frame
-            size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
-            canvas.config(scrollregion="0 0 %s %s" % size)
-            if interior.winfo_reqwidth() != canvas.winfo_width():
-                # update the canvas's width to fit the inner frame
-                canvas.config(width=interior.winfo_reqwidth())
-            if interior.winfo_reqheight() != canvas.winfo_height():
-                # update the canvas's height to fit the inner frame
-                canvas.config(height=interior.winfo_reqheight())
-        interior.bind('<Configure>', _configure_interior)
-
-        def _configure_canvas(event):
-            if interior.winfo_reqwidth() != canvas.winfo_width():
-                # update the inner frame's width to fill the canvas
-                canvas.itemconfigure(interior_id, width=canvas.winfo_width())
-        canvas.bind('<Configure>', _configure_canvas)
 
 
 class ScrolledLogwin(Frame):
@@ -271,6 +253,7 @@ class Inspector(Frame):
         self.add_cmd_btn = None
         self.automation_name = None
         self.clickable_element = None
+        self.clicked_elems = {}
         self.cwin = None
         self.cwin_x = None
         self.cwin_y = None
@@ -299,6 +282,11 @@ class Inspector(Frame):
         self.locator_by_values = ['id', 'xpath', 'link text', "partial link text", "name", "tag name", "class name",
                                   "css selector"]
         self.locators = {}
+        self.locator_css_type = StringVar()
+        self.locator_part_cbs = []
+        self.locator_full_cb = {}
+        self.locator_text_cb = {}
+        self.locator_text_val = StringVar()
         self.log_frame = None
         self.menu = None
         self.parent_element = None
@@ -317,6 +305,7 @@ class Inspector(Frame):
         self.cmd_file = os.path.join(self.cfg['tmp_dir'], 'web_inspector_commands.json')
         self.loc_file = os.path.join(self.cfg['tmp_dir'], 'web_inspector_locators.json')
         self.rec_frame = None
+        self.locator_req_text = IntVar()
         self.screenshot_file_name = 'web_inspector.png'
         self.swipe_ms_var = StringVar()
         self.swipe_y1_var = StringVar()
@@ -328,7 +317,7 @@ class Inspector(Frame):
         self.top_frame_row = 0
         self.use_parent = IntVar(name='use_parent')
         self.views = {key[:-5]: val for (key, val) in views.__dict__.items() if key[-5:] == '_view'}
-        self.within_frame = None
+        self.within_frame = IntVar()
         self.worker_thread = None
         parent.bind_all("<Button-4>", self.mouse_btn)
         parent.bind_all("<Button-5>", self.mouse_btn)
@@ -381,7 +370,7 @@ class Inspector(Frame):
         # convert attrs dict to an array of css selector qualifiers
         for key in attrs:
             if key == "href" and attrs[key] == "":
-                continue
+                return
             if type(attrs[key]) == list:
                 try:
                     css_selectors.append('[%s="%s"]' % (key, ' '.join(attrs[key])))
@@ -394,6 +383,7 @@ class Inspector(Frame):
             value = tag + selector
             try:
                 elems = angular_actions.driver.find_elements(by, value)
+                elems = filter(lambda x: x.is_displayed(), elems)
             except InvalidSelectorException:
                 log.debug("removing invalid css selector %s" % selector)
                 css_selectors.remove(selector)
@@ -405,34 +395,37 @@ class Inspector(Frame):
         all_elems = []
         try:
             all_elems = angular_actions.driver.find_elements(by, value)
+            all_elems = filter(lambda x: x.is_displayed(), all_elems)
         except InvalidSelectorException as e:
             print "got exception %s: by = %s, value = %s" % (e, by, value)
         # all qualifiers together should return at least one element
-        if len(all_elems) == 0:
-            raise RuntimeError('no elements returned with css selector %s' % value)
+        # if len(all_elems) == 0:
+        #     raise RuntimeError('no elements returned with css selector %s' % value)
         # filter out elements with zero size
-        elems = []
-        for elem in all_elems:
-            if int(elem.size['width']) * int(elem.size['height']) > 0:
-                elems.append(elem)
+        # elems = []
+        # for elem in all_elems:
+        #     if int(elem.size['width']) * int(elem.size['height']) > 0:
+        #         elems.append(elem)
         required_text = None
         # if there are still multiple elements, narrow down the list to those that have the specified text value
-        if len(elems) > 1:
-            for elem in elems[:]:
-                if text is not None and elem.text != text:
-                    elems.remove(elem)
+        if len(all_elems) > 1:
+            # print "multiple elements found, trying filter by text"
+            for elem in all_elems[:]:
+                if text and elem.text != text:
+                    # print "removing element with text != %s" % text
+                    all_elems.remove(elem)
             # if the text match reduces the count to one, save as "required_text"
             # if there are still multiple elements, print a notification and figure out how to deal with that later
-            if len(elems) > 1:
-                print 'expected one element, got %d using css value "%s"' % (len(elems), value)
-            elif len(elems) == 1:
+            if len(all_elems) > 1:
+                print 'expected one element, got %d using css value "%s"' % (len(all_elems), value)
+            elif len(all_elems) == 1:
                 required_text = text
             # raise RuntimeError('expected one element, got %d using css value "%s"' % (len(elems), value))
         # save characteristics of remaining elements in self.elems
         if tag not in self.processor_elems:
             self.processor_elems[tag] = []
-        for elem in elems:
-            location = elems[0].location
+        for elem in all_elems:
+            location = all_elems[0].location
             size = elem.size
             area = int(size['width']) * int(size['height'])
             x1 = int(location['x'])
@@ -747,7 +740,11 @@ class Inspector(Frame):
         cb_col = ai.exec_col
         self.exec_cb.grid(row=0, column=cb_col, sticky='news')
         self.exec_text.trace('w', self.trace_callback)
-        exec_frame.soup = Button(exec_frame, text="make soup", command=self.make_soup, bg=btn_default_bg, state=NORMAL)
+        exec_frame.soup = Button(exec_frame, text="make soup", command=lambda: self.do_cmd(self.capture_view),
+                                 bg=btn_default_bg, state=NORMAL)
+        exec_frame.soup.grid(row=0, column=ai.exec_col)
+        exec_frame.soup = Button(exec_frame, text="make cframe", command=lambda: self.create_cwin(reuse=True),
+                                 bg=btn_default_bg, state=NORMAL)
         exec_frame.soup.grid(row=0, column=ai.exec_col)
         exec_frame.last_cmd = Button(exec_frame, text="get last cmd", command=self.get_last_cmd,
                                      bg=btn_default_bg, state=NORMAL)
@@ -814,7 +811,7 @@ class Inspector(Frame):
         btn_frame.find_frame.cbs.grid(row=0, column=ai.ffr, padx=2, pady=2, sticky='n')
 
         btn_frame.find_frame.loc = Frame(btn_frame.find_frame)
-        btn_frame.find_frame.loc.grid_columnconfigure(0, weight=1)
+        btn_frame.find_frame.loc.grid_columnconfigure(1, weight=1)
         loc_column = ai.ffr
         btn_frame.find_frame.loc.grid(row=0, column=loc_column, padx=2, pady=2, sticky='new')
         btn_frame.find_frame.grid_columnconfigure(loc_column, weight=1)
@@ -825,7 +822,6 @@ class Inspector(Frame):
                                                           variable=self.use_parent, state=DISABLED)
         btn_frame.find_frame.cbs.use_parent.grid(row=0, column=0, padx=2, pady=2, sticky='ew')
 
-        self.within_frame = IntVar()
         self.within_frame.set(0)
         btn_frame.find_frame.cbs.within_frame = Checkbutton(btn_frame.find_frame.cbs, text='within frame',
                                                             variable=self.within_frame, state=DISABLED)
@@ -841,8 +837,17 @@ class Inspector(Frame):
         btn_frame.find_frame.loc.hsb = Scrollbar(btn_frame.find_frame.loc, orient=HORIZONTAL,
                                                  command=btn_frame.find_frame.loc.value.xview)
         btn_frame.find_frame.loc.value["xscrollcommand"] = btn_frame.find_frame.loc.hsb.set
-        btn_frame.find_frame.loc.value.grid(row=0, column=0, padx=2, pady=0, sticky='ew')
-        btn_frame.find_frame.loc.hsb.grid(row=1, column=0, sticky='ew')
+        btn_frame.find_frame.loc.value.grid(row=0, column=0, padx=2, pady=0, sticky='ew', columnspan=2)
+        btn_frame.find_frame.loc.hsb.grid(row=1, column=0, sticky='ew', columnspan=2)
+
+        self.locator_req_text.set(0)
+        btn_frame.find_frame.loc.req_text = Checkbutton(btn_frame.find_frame.loc, variable=self.locator_req_text,
+                                                        text='Require text:', state=DISABLED)
+        btn_frame.find_frame.loc.req_text.grid(row=2, column=0, padx=2, pady=2, sticky='w')
+        self.browser_btns.append(btn_frame.find_frame.loc.req_text)
+        btn_frame.find_frame.loc.text_val = Entry(btn_frame.find_frame.loc, textvariable=self.locator_text_val)
+        btn_frame.find_frame.loc.text_val.grid(row=2, column=1, padx=2, pady=2, sticky='ew')
+        self.browser_btns.append(btn_frame.find_frame.loc.text_val)
 
         btn_frame.attr_frame = AttrFrame(btn_frame, bg='tan')
         btn_frame.attr_frame.grid(row=ai.bf_row, column=0, sticky='ew', padx=2, pady=2)
@@ -916,7 +921,7 @@ class Inspector(Frame):
 
     def create_menus(self, parent):
         menu_items = {
-            'Brower Actions': [
+            'Browser Actions': [
                 {'label': 'Open Browser', 'uses_browser': False},
                 {'label': 'Go To eConsole URL', 'uses_browser': True},
                 {'label': 'Get Current Page Title', 'uses_browser': True},
@@ -1002,9 +1007,11 @@ class Inspector(Frame):
             by = locator['by']
             value = locator['value']
             if self.use_parent.get():
-                return self.parent_element.find_elements(by, value)
+                elems = self.parent_element.find_elements(by, value)
             else:
-                return angular_actions.driver.find_elements(by, value)
+                elems = angular_actions.driver.find_elements(by, value)
+            elems = filter(lambda x: x.is_displayed(), elems)
+            return elems
         except InvalidSelectorException as e:
             print 'got exception %s' % e
 
@@ -1037,6 +1044,8 @@ class Inspector(Frame):
             'value': self.find_value_var.get(),
             'use_parent': bool(self.use_parent.get())
         }
+        if self.locator_req_text.get():
+            locator['text'] = self.locator_text_val.get()
         self.update_locator_list(locator)
         if locator['by'][-7:] == 'locator' or locator['by'][-11:] == 'locator_all':
             self.elems = self.find_elements_by_locator_name(locator)
@@ -1049,6 +1058,8 @@ class Inspector(Frame):
         # keep frame element setting if using "by" value ending in '*_locator'
         self.frame_element = None
         self.within_frame.set(0)
+        if self.locator_req_text.get():
+            self.elems = filter(get_filter('text_all', text=self.locator_text_val.get()), self.elems)
         _msg = "%s element%s found" % (len(self.elems), '' if len(self.elems) == 1 else 's')
         print _msg
         elem_indices = [str(i) for i in range(len(self.elems))]
@@ -1159,7 +1170,7 @@ class Inspector(Frame):
             print "got exception %s" % _e
         self.update_find_widgets(None)
 
-    def make_soup(self):
+    def capture_view(self):
         self.soup = BeautifulSoup(angular_actions.driver.page_source, 'html.parser')
         self.create_cwin()
 
@@ -1178,12 +1189,12 @@ class Inspector(Frame):
         for tag_info in tag_infos:
             old_num_proc_elems = 0
             elems = self.soup(tag_info.name)
-            print "number of %s elements: %d" % (tag_info.name, len(elems))
+            # print "number of %s elements: %d" % (tag_info.name, len(elems))
             for i, elem in enumerate (elems):
                 self.process_attrs(tag_info.name, i, elem.attrs, elem.text.strip())
                 num_proc_elems = len(self.processor_elems[tag_info.name])
                 if num_proc_elems != old_num_proc_elems:
-                    print "added element %d: %s" % (i, elem)
+                    # print "added element %d: %s" % (i, elem)
                     old_num_proc_elems = num_proc_elems
             if tag_info.name in self.processor_elems:
                 self.draw_outlines(self.processor_elems[tag_info.name], color=tag_info.color, clear=False,
@@ -1206,14 +1217,16 @@ class Inspector(Frame):
             log.debug(' '*7 + line.encode('string_escape'))
 
     @Trace(log)
-    def create_cwin(self):
+    def create_cwin(self, reuse=False):
         if self.cwin is not None:
             self.cwin.destroy()
-        self.cwin = Frame(self)
-        self.cwin.grid(row=0, column=1, rowspan=self.top_frame_row)
-        self.get_screenshot()
+        self.cwin = Frame(self.parent, bg='brown')
+        self.cwin.grid(row=0, column=1, sticky='ns')
+        self.cwin.rowconfigure(1, weight=1)
+        if not reuse:
+            self.get_screenshot()
         image = PIL_Image.open(os.path.join(self.cfg['screenshot_dir'], self.screenshot_file_name))
-        self.cwin.scale = 800.0 / max(image.height, image.width)
+        self.cwin.scale = 700.0 / max(image.height, image.width)
         self.im_width = int(image.width * self.cwin.scale)
         self.im_height = int(image.height * self.cwin.scale)
         small = image.resize((self.im_width, self.im_height))
@@ -1224,7 +1237,7 @@ class Inspector(Frame):
         self.im_canvas.create_image(self.im_width/2 + self.cwin.canvas_borderwidth,
                                     self.im_height/2 + self.cwin.canvas_borderwidth,
                                     image=self.im_canvas.photo)
-        self.im_canvas.grid(column=0, row=0)
+        self.im_canvas.grid(row=0, column=0, sticky='n')
         self.im_canvas.bind('<Button-1>', self.mouse_btn)
         self.im_canvas.bind('<Button-2>', self.mouse_btn)
         self.im_canvas.bind('<Button-3>', self.mouse_btn)
@@ -1232,32 +1245,121 @@ class Inspector(Frame):
         self.im_canvas.bind('<Button-5>', self.mouse_btn)
         self.im_canvas.bind('<B1-Motion>', self.mouse_btn)
         self.im_canvas.bind('<ButtonRelease-1>', self.mouse_btn)
-        self.cwin.loc_frame = LabelFrame(self.cwin, width=300, height=100, text='Locator Options')
-        self.cwin.loc_frame.type_frame = Frame(self.cwin.loc_frame)
-        self.cwin.loc_frame.type_frame.grid(row=0, column=0)
-        self.cwin.loc_frame.grid(row=1, column=0, sticky='e')
+        # self.cwin.loc_frame = LabelFrame(self.cwin, width=600, height=300, text='Locator Options')
+        self.cwin.loc_frame = ScrolledFrame(self.cwin, frame_label='Locator Options')
+        # self.cwin.loc_frame.type_frame = Frame(self.cwin.loc_frame)
+        # self.cwin.loc_frame.type_frame.grid(row=0, column=0, sticky='w')
+        # self.cwin.loc_frame.attr_frame = Frame(self.cwin.loc_frame)
+        # self.cwin.loc_frame.attr_frame.grid(row=1, column=0)
+        # # self.cwin.loc_frame.grid(row=1, column=0, sticky='nsew')
+        # self.cwin.scroll_frame.grid(row=0, column=0)
+        # self.cwin.loc_frame.grid(row=0, column=0, sticky='nsew')
+        self.cwin.loc_frame.grid(row=1, column=0, sticky='nsew')
+        self.populate(self.cwin.loc_frame)
+
+    def populate(self, sf):
+        Label(sf.frame, text='Tag Options', anchor='w').grid(row=0, column=0, sticky='ew')
+        # frame = Frame(sf.frame, bg='blue').grid(row=0, column=0)
+        self.cwin.loc_frame.type_frame = Frame(sf.frame)
+        self.cwin.loc_frame.type_frame.grid(row=1, column=0, sticky='ew')
+        Label(sf.frame, text='Attribute Options', anchor='w').grid(row=2, column=0, sticky='ew')
+        self.cwin.loc_frame.attr_frame = Frame(sf.frame)
+        self.cwin.loc_frame.attr_frame.grid(row=3, column=0, sticky='ew')
+        # '''Put in some fake data'''
+        # for row in range(0, 100):
+        #     Label(sf.frame, text="%s" % row, width=3, borderwidth="1",
+        #           relief="solid").grid(row=row, column=0)
+        #     t="this is the second column for row %s" %row
+        #     Label(sf.frame, text=t).grid(row=row, column=1)
 
     def mouse_btn(self, event):
         # print "mouse event (%s, %s)" % (event.type, event.num)
         if (event.type, event.num) == ('4', 1):
             x = self.descale(event.x)
             y = self.descale(event.y)
-            print "mouse click at (%s, %s)" % (x, y)
+            # print "mouse click at (%s, %s)" % (x, y)
             self.show_locator_options(x, y)
 
     def show_locator_options(self, x, y):
-        clicked_elems = {}
+        # clicking on an outlined element in the browser image should correlate (by position) with at least one
+        # of self.processor_elems, but possibly more. When multiple css types ("input", "a", "button", etc.) are
+        # matched, use radiobuttons to choose the desired css options
         for child in self.cwin.loc_frame.type_frame.winfo_children():
             child.grid_forget()
-        self.cwin.loc_frame.type_frame.types = {}
+        default = None
         for (i, key) in enumerate(self.processor_elems):
-            clicked_elems[key] = filter(self.point_in_elem_outline(x, y), self.processor_elems[key])
-            print "clicked %d %s elements" % (len(clicked_elems[key]), key)
-            if len(clicked_elems[key]) == 1:
-                Radiobutton(self.cwin.loc_frame.type_frame, text=key).grid(row=0, column=i)
-                elem = clicked_elems[key][0]
-                for attr in elem:
-                    print "  %s: %s" % (attr, elem[attr])
+            self.clicked_elems[key] = filter(self.point_in_elem_outline(x, y), self.processor_elems[key])
+            if len(self.clicked_elems[key]):
+                print "clicked %d %s elements" % (len(self.clicked_elems[key]), key)
+            if len(self.clicked_elems[key]) == 1:
+                # print "geom = %s" % self.clicked_elems[key][0]['geom']
+                rb = Radiobutton(self.cwin.loc_frame.type_frame, text=key, variable=self.locator_css_type, value=key,
+                                 command=self.show_radio_btn)
+                rb.grid(row=0, column=i)
+                if default is None:
+                    default = key
+                    rb.select()
+                    rb.invoke()
+                    # self.locator_css_type.set(default)
+                    # self.show_radio_btn()
+
+    def show_radio_btn(self):
+        key = self.locator_css_type.get()
+        print "radiobutton value %s" % key
+        elem = self.clicked_elems[key][0]
+        self.locator_part_cbs = []
+        frame = self.cwin.loc_frame.attr_frame
+        for child in frame.winfo_children():
+            child.grid_forget()
+        ai = AutoIncrementer()
+        if len(elem['partial_values']) > 0:
+            Label(frame, text='(matches) Partial Values:').grid(row=ai.row, column=0, sticky='w')
+            for p_attr in elem['partial_values']:
+                matches = "(%d)" % p_attr['matches']
+                cb_val = p_attr['selector']
+                cb_text = "%4s %s%s" % (matches, elem['tag'], cb_val)
+                intvar = IntVar()
+                cb = Checkbutton(self.cwin.loc_frame.attr_frame, variable=intvar, text=cb_text,
+                                 command=lambda: self.set_locator_part(elem['tag']))
+                cb.grid(row=ai.row, column=0, sticky='w')
+                self.locator_part_cbs.append({'cb': cb, 'var': intvar, 'val': cb_val})
+        Label(frame, text='Complete css locator:').grid(row=ai.row, column=0, sticky='w')
+        intvar = IntVar()
+        cb = Checkbutton(self.cwin.loc_frame.attr_frame, variable = intvar, text=elem['value'],
+                         command=self.set_locator_full)
+        cb.grid(row=ai.row, column=0, sticky='w')
+        self.locator_full_cb = {'cb': cb, 'var': intvar, 'val': elem['value']}
+        if elem['text'] is not None:
+            intvar = IntVar()
+            Label(frame, text='Required text:').grid(row=ai.row, column=0, sticky='w')
+            cb = Checkbutton(self.cwin.loc_frame.attr_frame, variable = intvar, text=elem['text'],
+                             command=self.set_locator_text)
+            cb.grid(row=ai.row, column=0, sticky='w')
+            self.locator_text_cb = {'cb': cb, 'var': intvar, 'val': elem['text']}
+
+    def set_locator_text(self):
+        if self.locator_text_cb['var'].get():
+            self.locator_req_text.set(1)
+            self.locator_text_val.set(self.locator_text_cb['val'])
+        else:
+            self.locator_req_text.set(0)
+            self.locator_text_val.set('')
+
+    def set_locator_part(self, tag):
+        self.locator_full_cb['var'].set(0)
+        attrs = []
+        for cb in self.locator_part_cbs:
+            if cb['var'].get():
+                attrs.append(cb['val'])
+        self.find_by_var.set('css selector')
+        self.find_value_var.set("%s%s" % (tag, ''.join(attrs)))
+
+    def set_locator_full(self):
+        if self.locator_full_cb['var'].get():
+            for cb in self.locator_part_cbs:
+                cb['var'].set(0)
+            self.find_by_var.set('css selector')
+            self.find_value_var.set(self.locator_full_cb['val'])
 
     def on_canvas_closing(self):
         self.im_canvas = None
@@ -1286,9 +1388,9 @@ class Inspector(Frame):
                 while len(self.polygons):
                     self.im_canvas.delete(self.polygons.pop())
             for elem in elems:
-                print "%s[%s]: creating polygon from geom: (%s, %s), (%s, %s)" % (
-                    elem["tag"], elem["index"], elem["geom"]["x1"], elem["geom"]["y1"], elem["geom"]["x2"],
-                    elem["geom"]["y2"])
+                # print "%s[%s]: creating polygon from geom: (%s, %s), (%s, %s)" % (
+                #     elem["tag"], elem["index"], elem["geom"]["x1"], elem["geom"]["y1"], elem["geom"]["x2"],
+                #     elem["geom"]["y2"])
                 x1 = self.scale(elem["geom"]["x1"]) + (width / 2.0)
                 y1 = self.scale(elem["geom"]["y1"]) + (width / 2.0)
                 y2 = self.scale(elem["geom"]["y2"]) - (width / 2.0)
