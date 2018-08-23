@@ -5,8 +5,12 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver import Chrome, Firefox
 from mtaf.user_exception import UserException as Ux
 from mtaf.selenium_actions import SeleniumActions
+import re
+import os
+from time import localtime, strftime
 
 log = logging.get_logger('mtaf.angular_actions')
 
@@ -31,6 +35,79 @@ class AngularActions(SeleniumActions):
                                 'b.type=\'text/javascript\';b.src=document.location.' \
                                 'protocol+\'%(jquery_url)s\';a.appendChild(b);'
         self.element_filter = lambda x: x.is_displayed()
+        self.driver = None
+        self.current_browser = None
+        self.service_log_path = None
+        self.webdriver_log_path = None
+
+    def get_url(self, url):
+        if self.driver is None:
+            raise Ux('remote is not open')
+        log.debug('getting url %s' % url)
+        self.driver.get(url)
+
+    def open_browser(self, browser='chrome'):
+        if self.current_browser is not None:
+            log.debug('browser is already open')
+        else:
+            mtaf_log_dir = os.getenv('MTAF_LOG_DIR', './log')
+            if browser.lower() == 'chrome':
+                self.service_log_path = os.path.join(mtaf_log_dir, 'service.log')
+                self.webdriver_log_path = os.path.join(mtaf_log_dir, 'webdriver.log')
+                self.driver = Chrome(service_log_path=self.service_log_path)
+            elif browser.lower() == 'firefox':
+                self.driver = Firefox()
+            else:
+                raise Ux('Unknown browser %s' % browser)
+            self.driver.set_window_size(1280, 1024)
+            self.current_browser = browser
+
+    def close_browser(self):
+        if self.current_browser is None:
+            log.debug('browser is already closed')
+        else:
+            self.driver.quit()
+            self.driver = None
+            self.current_browser = None
+            if self.service_log_path is not None and self.webdriver_log_path is not None:
+                self.process_log(self.service_log_path, self.webdriver_log_path)
+
+    @Trace(log)
+    def process_log(self, srcpath="log/service.log", destpath="log/webdriver.log", verbose=False):
+        re_time = re.compile('\[(\d+)\.(\d+)')
+        with open(srcpath) as src:
+            with open(destpath, 'w') as dest:
+                lines = src.readlines()
+                in_cmd = False
+                in_resp = False
+                last = False
+                for line in lines:
+                    line = line.rstrip()
+                    if line.find('COMMAND') != -1:
+                        in_cmd = True
+                        first = True
+                        if verbose:
+                            print
+                        dest.write('\n')
+                    elif line.find('RESPONSE') != -1:
+                        in_resp = True
+                        first = True
+                    else:
+                        first = False
+                    if first:
+                        sec, ms = re_time.match(line).groups()
+                        timestamp = strftime('%m/%d/%y %H:%M:%S', localtime(int(sec))) + '.' + ms
+                        line = re_time.sub(timestamp, line)
+                    if in_cmd or in_resp:
+                        if len(line) > 0 and ((line[0] != ' ' and line[-1] != '{') or line[0] == '}'):
+                            last = True
+                        if verbose:
+                            print line
+                        dest.write(line + '\n')
+                    if last:
+                        in_cmd = False
+                        in_resp = False
+                        last = False
 
     @Trace(log)
     def wait_until_angular_ready(self, timeout=20):

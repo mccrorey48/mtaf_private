@@ -1,6 +1,5 @@
 import os
 from time import sleep, time
-from user_exception import UserException as Ux
 from selenium.common.exceptions import InvalidSelectorException
 import mtaf_logging
 from angular_actions import AngularActions
@@ -9,7 +8,6 @@ import json
 from filters import get_filter
 import errno
 from mtaf.trace import Trace
-from eConsole import views
 import shutil
 from bs4 import BeautifulSoup
 from Tkinter import *
@@ -307,6 +305,7 @@ class Inspector(Frame):
         self.rec_frame = None
         self.locator_req_text = IntVar()
         self.screenshot_file_name = 'web_inspector.png'
+        self.script_btns = []
         self.swipe_ms_var = StringVar()
         self.swipe_y1_var = StringVar()
         self.swipe_y2_var = StringVar()
@@ -316,7 +315,6 @@ class Inspector(Frame):
         self.top_frames = []
         self.top_frame_row = 0
         self.use_parent = IntVar(name='use_parent')
-        self.views = {key[:-5]: val for (key, val) in views.__dict__.items() if key[-5:] == '_view'}
         self.within_frame = IntVar()
         self.worker_thread = None
         parent.bind_all("<Button-4>", self.mouse_btn)
@@ -451,10 +449,12 @@ class Inspector(Frame):
                 else:
                     self.processor_elems[tag].append(new_processor_elem)
 
+    def get_url(self, url):
+        angular_actions.get_url(url)
 
     def open_browser(self):
         self.save_last_cmd("self.open_browser()")
-        self.views['base'].open_browser()
+        angular_actions.open_browser()
         self.browser_is_open = True
         self.menu.enable_items(self.browser_is_open)
         self.elems = []
@@ -462,15 +462,15 @@ class Inspector(Frame):
 
     def goto_econsole(self):
         url = "http://staging-econsole.esihs.net"
-        self.save_last_cmd("self.views['base'].get_url('%s')" % url)
-        self.views['base'].get_url(url)
+        self.save_last_cmd("angular_actions.driver.get_url('%s')" % url)
+        angular_actions.get_url(url)
         self.menu.enable_items(self.browser_is_open)
         self.elems = []
         print ">> go to eConsole done"
 
     def close_browser(self):
         self.save_last_cmd("self.close_browser()")
-        self.views['base'].close_browser()
+        angular_actions.close_browser()
         self.browser_is_open = False
         self.menu.enable_items(self.browser_is_open)
         # self.configure_find_button()
@@ -650,11 +650,13 @@ class Inspector(Frame):
                 btn.configure(state=NORMAL)
         # depending on self.browser_is_enabled value, enable/disable dropdown menu items
         self.menu.enable_items(self.browser_is_open)
+        self.update_script_state()
 
-    def update_script_state(self, state):
-        self.script_state = state
+    def update_script_state(self, state=None):
+        if state is not None:
+            self.script_state = state
         for btn in self.script_btn_enable_states:
-            if state in self.script_btn_enable_states[btn]:
+            if self.script_state in self.script_btn_enable_states[btn]:
                 btn.configure(state=NORMAL)
             else:
                 btn.configure(state=DISABLED)
@@ -671,37 +673,44 @@ class Inspector(Frame):
 
         btn = Button(bottom_frame.script_frame, text="Record New", bg=btn_default_bg, command=self.record_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        self.script_btns.append(btn)
         bottom_frame.script_frame.record_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
         btn = Button(bottom_frame.script_frame, text="Stop Recording", bg=btn_default_bg, command=self.stop_script,
                      state=DISABLED)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        self.script_btns.append(btn)
         bottom_frame.script_frame.stop_script = btn
         self.script_btn_enable_states[btn] = "recording"
 
         btn = Button(bottom_frame.script_frame, text="Print", bg=btn_default_bg, command=self.print_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        self.script_btns.append(btn)
         bottom_frame.script_frame.print_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
         btn = Button(bottom_frame.script_frame, text="Run", bg=btn_default_bg, command=self.run_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        self.script_btns.append(btn)
         bottom_frame.script_frame.run_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
         btn = Button(bottom_frame.script_frame, text="Add to Script", bg=btn_default_bg, command=self.add_to_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        self.script_btns.append(btn)
         bottom_frame.script_frame.add_to_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
         btn = Button(bottom_frame.script_frame, text="Copy", bg=btn_default_bg, command=self.copy_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        self.script_btns.append(btn)
         bottom_frame.script_frame.copy_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
         btn = Button(bottom_frame.script_frame, text="Change Current", bg=btn_default_bg, command=self.change_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        self.script_btns.append(btn)
         bottom_frame.script_frame.change_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
@@ -740,12 +749,10 @@ class Inspector(Frame):
         cb_col = ai.exec_col
         self.exec_cb.grid(row=0, column=cb_col, sticky='news')
         self.exec_text.trace('w', self.trace_callback)
-        exec_frame.soup = Button(exec_frame, text="make soup", command=lambda: self.do_cmd(self.capture_view),
+        exec_frame.capture = Button(exec_frame, text="capture view", command=lambda: self.do_cmd(self.capture_view),
                                  bg=btn_default_bg, state=NORMAL)
-        exec_frame.soup.grid(row=0, column=ai.exec_col)
-        exec_frame.soup = Button(exec_frame, text="make cframe", command=lambda: self.create_cwin(reuse=True),
-                                 bg=btn_default_bg, state=NORMAL)
-        exec_frame.soup.grid(row=0, column=ai.exec_col)
+        self.browser_btns.append(exec_frame.capture)
+        exec_frame.capture.grid(row=0, column=ai.exec_col)
         exec_frame.last_cmd = Button(exec_frame, text="get last cmd", command=self.get_last_cmd,
                                      bg=btn_default_bg, state=NORMAL)
         exec_frame.last_cmd.grid(row=0, column=ai.exec_col)
@@ -966,6 +973,8 @@ class Inspector(Frame):
             btn.configure(state=DISABLED)
         for i in range(len(self.menu.items)):
             self.menu.entryconfig(i + 1, state=DISABLED)
+        for btn in self.script_btns:
+            btn.configure(state=DISABLED)
 
     def update_find_widgets(self, event):
         find_by = self.find_by_var.get()
@@ -979,27 +988,6 @@ class Inspector(Frame):
             self.btn_frame.find_frame.cbs.within_frame.configure(state=NORMAL)
         else:
             self.btn_frame.find_frame.cbs.within_frame.configure(state=DISABLED)
-
-    def find_elements_by_locator_name(self, locator):
-        self.save_last_cmd("self.find_elements_by_locator_name(%s)" % locator)
-        by = locator['by']
-        value = locator['value']
-        elems = []
-        try:
-            if by[-3:] == 'all':
-                view_name = by[:-12]
-                elems = getattr(self.views[view_name].all, value)
-            else:
-                view_name = by[:-8]
-                elems = [getattr(self.views[view_name], value)]
-        except Ux as _e:
-            print _e.message
-        if self.within_frame.get():
-            return filter(get_filter('within_frame', frame=self.frame_element), elems)
-        else:
-            if elems == [None]:
-                return []
-            return elems
 
     def find_elements_with_driver(self, locator):
         try:
@@ -1047,10 +1035,10 @@ class Inspector(Frame):
         if self.locator_req_text.get():
             locator['text'] = self.locator_text_val.get()
         self.update_locator_list(locator)
-        if locator['by'][-7:] == 'locator' or locator['by'][-11:] == 'locator_all':
-            self.elems = self.find_elements_by_locator_name(locator)
-        else:
-            self.find_elements_by_locator(locator)
+        # if locator['by'][-7:] == 'locator' or locator['by'][-11:] == 'locator_all':
+        #     self.elems = self.find_elements_by_locator_name(locator)
+        # else:
+        self.find_elements_by_locator(locator)
 
     def find_elements_by_locator(self, locator):
         self.save_last_cmd("self.find_elements_by_locator(%s)" % locator)
@@ -1196,6 +1184,7 @@ class Inspector(Frame):
                 if num_proc_elems != old_num_proc_elems:
                     # print "added element %d: %s" % (i, elem)
                     old_num_proc_elems = num_proc_elems
+        for tag_info in tag_infos:
             if tag_info.name in self.processor_elems:
                 self.draw_outlines(self.processor_elems[tag_info.name], color=tag_info.color, clear=False,
                                    width=tag_info.width)
