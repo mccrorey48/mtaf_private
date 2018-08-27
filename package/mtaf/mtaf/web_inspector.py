@@ -155,7 +155,8 @@ class ScrolledLogwin(Frame):
         self.sb.grid(row=1, column=1, sticky='ns', padx=0, pady=0)
         self.rowconfigure(1, weight=1)
         self.print_buf = ''
-        self.read_q()
+        # self.read_q()
+        self.log_prefix = '> '
 
     def clear(self):
         self.txt.configure(state=NORMAL)
@@ -163,30 +164,30 @@ class ScrolledLogwin(Frame):
         self.txt.configure(state=DISABLED)
 
     def write(self, _txt):
-        self.log_q.put(_txt)
-
-    def read_q(self):
-        while not self.log_q.empty():
-            _txt = self.log_q.get()
+    #     self.log_q.put(_txt)
+    #
+    # def read_q(self):
+    #     while not self.log_q.empty():
+    #         _txt = self.log_q.get()
             # old_stdout.write(">>%s<<" % _txt)
-            log.debug("write: _txt = [%s], len=%d" % (repr(_txt), len(_txt)))
-            if len(_txt) > 0 and _txt[-1] == '\n':
-                eol = True
-            else:
-                eol = False
-            lines = _txt.strip().split('\n')
-            self.txt.configure(state=NORMAL)
-            for line in lines[:-1]:
-                self.txt.insert('end', line + '\n')
-            if len(lines):
-                self.txt.insert('end', lines[-1])
-            if eol:
-                self.txt.insert('end', '\n')
-            # self.delete('0.0', 'end - %d lines' % self.scrollback)
-            self.txt.see('end')
-            # self.update_idletasks()
-            self.txt.configure(state=DISABLED)
-        self.after(100, self.read_q)
+        log.debug("write: _txt = [%s], len=%d" % (repr(_txt), len(_txt)))
+        if len(_txt) > 0 and _txt[-1] == '\n':
+            eol = True
+        else:
+            eol = False
+        lines = _txt.strip().split('\n')
+        self.txt.configure(state=NORMAL)
+        for line in lines[:-1]:
+            self.txt.insert('end', line + '\n' + self.log_prefix)
+        if len(lines):
+            self.txt.insert('end', lines[-1])
+        if eol:
+            self.txt.insert('end', '\n' + self.log_prefix)
+        # self.delete('0.0', 'end - %d lines' % self.scrollback)
+        self.txt.see('end')
+        # self.update_idletasks()
+        self.txt.configure(state=DISABLED)
+        # self.after(100, self.read_q)
 
 
 class MenuItem(object):
@@ -458,7 +459,6 @@ class Inspector(Frame):
         self.browser_is_open = True
         self.menu.enable_items(self.browser_is_open)
         self.elems = []
-        print ">> open browser done"
 
     def goto_econsole(self):
         url = "http://staging-econsole.esihs.net"
@@ -466,7 +466,6 @@ class Inspector(Frame):
         angular_actions.get_url(url)
         self.menu.enable_items(self.browser_is_open)
         self.elems = []
-        print ">> go to eConsole done"
 
     def close_browser(self):
         self.save_last_cmd("self.close_browser()")
@@ -475,7 +474,6 @@ class Inspector(Frame):
         self.menu.enable_items(self.browser_is_open)
         # self.configure_find_button()
         self.elems = []
-        print ">> close browser done"
 
     def get_title(self):
         self.save_last_cmd("self.get_title()")
@@ -509,14 +507,16 @@ class Inspector(Frame):
     def print_script(self):
         self.update_script_state('printing')
         filename = self.script_file.get()
-        print '>> Printing contents of %s:' % self.script_file.get()
+        self.log_frame.log_prefix = '>>> '
+        print 'Printing contents of %s:' % self.script_file.get()
         try:
             with open(filename, 'r') as f:
                 for line in f:
-                    print line,
+                    print line.strip()
         except BaseException as e:
             print 'got exception: %s' % e
-        print '>> print script done'
+        self.log_frame.log_prefix = '> '
+        print
         self.update_script_state('stopped')
 
     def run_script(self):
@@ -525,7 +525,8 @@ class Inspector(Frame):
         self.update_idletasks()
         self.script_running = True
         filename = self.script_file.get()
-        print ">> Running script file %s" % filename
+        self.log_frame.log_prefix = '>>> '
+        print "Running script file %s" % filename
         try:
             with open(filename, 'r') as f:
                 try:
@@ -545,7 +546,8 @@ class Inspector(Frame):
             print "open(%s, 'r') got exception: %s" % e
         self.script_running = False
         self.enable_buttons()
-        print '>> script file "%s" done' % filename
+        self.log_frame.log_prefix = '> '
+        print
         self.update_script_state('stopped')
 
     def record_script(self):
@@ -560,7 +562,7 @@ class Inspector(Frame):
                                                    )
         if filename:
             self.script_file.set(filename)
-            print ">> Recording commands to %s" % self.script_file.get()
+            print "Recording commands to %s" % self.script_file.get()
             self.script_fd = open(self.script_file.get(), 'w')
             if len(self.exec_text.get().strip()) > 0:
                 self.add_cmd_btn.configure(state=NORMAL)
@@ -569,21 +571,13 @@ class Inspector(Frame):
 
     def add_to_script(self):
         self.update_script_state('recording')
-        filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
-                                                 initialfile=os.path.basename(self.script_file.get()),
-                                                 title="Select script to add new commands",
-                                                 filetypes=(
-                                                     (".txt files", "*.txt"),
-                                                     ("all files", "*.*"))
-                                                 )
-        if filename:
-            self.script_file.set(filename)
-            print ">> Adding commands to %s" % self.script_file.get()
-            self.script_fd = open(self.script_file.get(), 'a')
-            if len(self.exec_text.get().strip()) > 0:
-                self.add_cmd_btn.configure(state=NORMAL)
+        filename = self.script_file.get()
+        print "Adding commands to %s" % self.script_file.get()
+        self.script_fd = open(filename, 'a')
+        if len(self.exec_text.get().strip()) > 0:
+            self.add_cmd_btn.configure(state=NORMAL)
         else:
-            self.update_script_state('stopped')
+            self.add_cmd_btn.configure(state=DISABLED)
 
     def copy_script(self):
         self.update_script_state('recording')
@@ -601,7 +595,6 @@ class Inspector(Frame):
                 print "copying %s to %s... " % (self.script_file.get(), fname),
                 shutil.copyfile(self.script_file.get(), fname)
                 self.script_file.set(fname)
-                print ">> script copy done"
         self.update_script_state('stopped')
 
     def stop_script(self):
@@ -613,7 +606,7 @@ class Inspector(Frame):
             self.script_fd = None
         self.add_cmd_btn.configure(state=DISABLED)
         self.update_script_state('stopped')
-        print ">> Stopped recording to %s" % self.script_file.get()
+        print "Stopped recording to %s" % self.script_file.get()
 
     def add_cmd_to_script(self):
         cmd = self.exec_text.get().strip()
@@ -634,7 +627,7 @@ class Inspector(Frame):
             self.after(100, self.check_thread)
             return
         else:
-            log.debug(">> worker thread done: %s" % self.worker_thread.name)
+            log.debug("worker thread done: %s" % self.worker_thread.name)
             self.worker_thread = None
             # if do_cmd thread is done, re-enable the menubar dropdowns
             self.enable_buttons()
@@ -677,6 +670,12 @@ class Inspector(Frame):
         bottom_frame.script_frame.record_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
+        btn = Button(bottom_frame.script_frame, text="Add to Script", bg=btn_default_bg, command=self.add_to_script)
+        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
+        self.script_btns.append(btn)
+        bottom_frame.script_frame.add_to_script = btn
+        self.script_btn_enable_states[btn] = "stopped"
+
         btn = Button(bottom_frame.script_frame, text="Stop Recording", bg=btn_default_bg, command=self.stop_script,
                      state=DISABLED)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
@@ -694,12 +693,6 @@ class Inspector(Frame):
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         self.script_btns.append(btn)
         bottom_frame.script_frame.run_script = btn
-        self.script_btn_enable_states[btn] = "stopped"
-
-        btn = Button(bottom_frame.script_frame, text="Add to Script", bg=btn_default_bg, command=self.add_to_script)
-        btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
-        self.script_btns.append(btn)
-        bottom_frame.script_frame.add_to_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
         btn = Button(bottom_frame.script_frame, text="Copy", bg=btn_default_bg, command=self.copy_script)
@@ -756,7 +749,7 @@ class Inspector(Frame):
         exec_frame.last_cmd = Button(exec_frame, text="get last cmd", command=self.get_last_cmd,
                                      bg=btn_default_bg, state=NORMAL)
         exec_frame.last_cmd.grid(row=0, column=ai.exec_col)
-        self.add_cmd_btn = Button(exec_frame, text="add to script", command=self.add_cmd_to_script,
+        self.add_cmd_btn = Button(exec_frame, text="add cmd to script", command=self.add_cmd_to_script,
                                   bg=btn_default_bg, state=DISABLED)
         self.add_cmd_btn.grid(row=0, column=ai.exec_col)
         exec_frame.columnconfigure(cb_col, weight=1)
@@ -1090,7 +1083,7 @@ class Inspector(Frame):
     def save_last_cmd(self, cmd):
         if cmd != self.last_cmd:
             self.last_cmd = cmd
-            print "last_cmd = %s" % cmd
+            print "last_cmd = %s..." % cmd
 
     def click_element_by_index(self, index):
         self.save_last_cmd('self.click_element_by_index(%s)' % index)
@@ -1190,11 +1183,10 @@ class Inspector(Frame):
                                    width=tag_info.width)
 
     def get_screenshot(self):
-        print "Getting Screenshot ...",
+        print "Getting Screenshot"
         img_path = os.path.join(self.cfg["screenshot_dir"], self.screenshot_file_name)
         log.debug("saving screenshot to %s" % img_path)
         angular_actions.driver.get_screenshot_as_file(img_path)
-        print ">> get screenshot done"
 
     @staticmethod
     def log_action(spud_serial, action):
@@ -1294,7 +1286,7 @@ class Inspector(Frame):
 
     def show_radio_btn(self):
         key = self.locator_css_type.get()
-        print "radiobutton value %s" % key
+        # print "radiobutton value %s" % key
         elem = self.clicked_elems[key][0]
         self.locator_part_cbs = []
         frame = self.cwin.loc_frame.attr_frame
