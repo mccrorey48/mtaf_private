@@ -41,6 +41,7 @@ class BaseView(AngularActions):
     }
 
     def __init__(self):
+        super(BaseView, self).__init__()
         self.cfg = cfg
         self.page_title = 'ESI'
         self.current_browser = None
@@ -51,7 +52,6 @@ class BaseView(AngularActions):
         self.nav_tab_names = []
         self.banner_texts = []
         self.view_name = 'base'
-        super(BaseView, self).__init__()
 
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder=None, scale=None):

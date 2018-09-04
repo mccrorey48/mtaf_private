@@ -35,6 +35,7 @@ class SeleniumActions(object):
     selenium_server = 'localhost'
     driver = None
     locator_timeout = 10
+    element_filter = None
 
     class All(object):
         def __init__(self, view):
@@ -319,6 +320,8 @@ class SeleniumActions(object):
                 elems = parent.find_elements(locator['by'], locator['value'])
             else:
                 elems = self.driver.find_elements(locator['by'], locator['value'])
+            if self.element_filter is not None:
+                elems = filter(self.elem_filter, elems)
             if 'text' in locator:
                 elems = [elem for elem in elems if elem.text == locator['text']]
             elif 'partial text' in locator:
