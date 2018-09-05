@@ -4,9 +4,9 @@ from selenium.common.exceptions import NoSuchElementException
 
 from ePhone7.config.configure import cfg
 
-from ePhone7.lib.utils.get_softphone import get_softphone
+from ePhone7.utils import get_softphone
 from ePhone7.views import *
-from ePhone7.lib.utils.csv.xml_to_csv import xml_folder_to_csv
+from ePhone7.utils.csv.xml_to_csv import xml_folder_to_csv
 from time import sleep
 from mtaf import mtaf_logging
 from mtaf.trace import Trace
@@ -30,7 +30,7 @@ def save_xml_and_screenshot(basename, version):
         log.info("saving xml %s" % xml_fullpath)
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
-        base_view.get_screenshot_as_png(basename, cfg.site.XmlFolder)
+        base_view.get_screenshot_as_png(basename, cfg.site.ScreenshotFolder)
 
 
 @Trace(log)

@@ -165,7 +165,7 @@ class BaseView(SeleniumActions):
 
     @Trace(log)
     def wait_for_activity(self, activity, timeout=30):
-        if not self.driver.wait_activity(activity, timeout):
+        if not self.get_driver().wait_activity(activity, timeout):
             raise Ux('current activity is not %s' % activity)
 
 base_view = BaseView()

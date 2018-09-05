@@ -1,6 +1,6 @@
 from mtaf.trace import Trace
 from ePhone7.config.configure import cfg
-from ePhone7.lib.microservices import get_microservices
+from microservices.microservices import get_microservices
 from mtaf import mtaf_logging
 
 log = mtaf_logging.get_logger('mtaf.vvm_usvc')

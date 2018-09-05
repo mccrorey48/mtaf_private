@@ -5,8 +5,8 @@ from mtaf.user_exception import UserException as Ux, UserTimeoutException as Tx,
 from mtaf.trace import Trace
 
 from ePhone7.config.configure import cfg
-from ePhone7.lib.utils.spud_serial import SpudSerial
-from ePhone7.lib.utils.usb_enable import usb_enable
+from ePhone7.utils import SpudSerial
+from ePhone7.utils import usb_enable
 
 import os
 from time import sleep, time

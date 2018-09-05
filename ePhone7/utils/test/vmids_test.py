@@ -1,5 +1,4 @@
 from mtaf.user_exception import UserException as Ux
-from ePhone7.lib.utils.e7_microservices import *
 from time import sleep
 
 e7_microservices = get_e7_microservices('R2d2User')

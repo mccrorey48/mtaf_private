@@ -1,5 +1,5 @@
 import re
-from ePhone7.lib.utils.spud_serial import SpudSerial
+from ePhone7.utils import SpudSerial
 from ePhone7.config.configure import cfg
 import spur
 from mtaf.user_exception import UserException as Ux

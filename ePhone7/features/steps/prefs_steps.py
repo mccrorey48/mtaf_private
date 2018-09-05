@@ -1,6 +1,6 @@
 from behave import *
 
-from ePhone7.lib.utils.versions import *
+from ePhone7.utils.versions import *
 from ePhone7.views import *
 from mtaf.trace import fake
 from mtaf import mtaf_logging

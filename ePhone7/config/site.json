@@ -306,7 +306,7 @@
         "OtaBetaUrl": "http://52.36.62.239/aus/beta/",
         "OtaProdUrl": "http://52.36.62.239/aus/beta/",
         "Quiet": true,
-        "ScreenshotFolder": "ePhone7/lib/utils/screenshots",
+        "ScreenshotFolder": "ePhone7/screenshots",
         "SeleniumUrl": "http://127.0.0.1:4723/wd/hub",
         "SerialDev": "/dev/ttyUSB0",
         "UseTcp": false,

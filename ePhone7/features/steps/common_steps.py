@@ -1,11 +1,9 @@
-from behave import *
-from ePhone7.views import *
 from time import sleep
 from prefs_steps import *
 from advanced_steps import *
 from mtaf.user_exception import UserException as Ux, UserFailException as Fx
-from ePhone7.lib.utils.get_softphone import get_softphone
-from ePhone7.lib.utils.versions import *
+from ePhone7.utils import get_softphone
+from ePhone7.utils.versions import *
 from mtaf.trace import fake
 import six
 

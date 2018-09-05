@@ -3,7 +3,7 @@ from ePhone7.views import *
 from ePhone7.config.configure import cfg
 from mtaf.trace import fake
 from mtaf.user_exception import UserException as Ux
-from ePhone7.lib.utils.get_softphone import get_softphone
+from ePhone7.utils import get_softphone
 from time import sleep
 
 

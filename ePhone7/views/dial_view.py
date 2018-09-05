@@ -2,7 +2,7 @@ from mtaf import mtaf_logging
 from mtaf.trace import Trace
 
 from ePhone7.config.configure import cfg
-from ePhone7.lib.utils.get_softphone import get_softphone
+from ePhone7.utils import get_softphone
 from ePhone7.views.user_view import UserView
 
 from appium.webdriver.common.touch_action import TouchAction
@@ -154,7 +154,7 @@ class DialView(UserView):
                 x, y = self.digit_centers_old_keyboard[digit]
             else:
                 x, y = self.digit_centers[digit]
-            TouchAction(self.driver).press(None, x, y).release().wait(250).perform()
+            TouchAction(self.get_driver()).press(None, x, y).release().wait(250).perform()
 
     @Trace(log)
     def dial_named_number(self, name, old_keyboard=False):
@@ -166,7 +166,7 @@ class DialView(UserView):
 
     @Trace(log)
     def touch_call_button(self):
-        TouchAction(self.driver).press(None, 301, 821).release().perform()
+        TouchAction(self.get_driver()).press(None, 301, 821).release().perform()
 
 
 dial_view = DialView()

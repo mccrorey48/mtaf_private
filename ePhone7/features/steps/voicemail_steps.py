@@ -2,8 +2,7 @@ from behave import *
 from ePhone7.views import *
 from ePhone7.config.configure import cfg
 from mtaf.trace import fake
-from ePhone7.lib.utils.get_softphone import get_softphone
-from ePhone7.lib.utils.e7_microservices import *
+from ePhone7.utils import get_softphone
 from time import time
 from mtaf import mtaf_logging
 from mtaf.filters import get_filter

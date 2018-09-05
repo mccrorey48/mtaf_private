@@ -104,7 +104,7 @@ def after_step(context, step):
         log.info("EXCEPTION in step %s" % step.name)
         context._config.stop = True
     mtaf_logging.pop_msg_src()
-    log_items = base_view.driver.get_log('browser')
+    log_items = base_view.get_driver().get_log('browser')
     for log_item in log_items:
         log_item['step'] = step.name
         log_item['scenario'] = context.scenario.name

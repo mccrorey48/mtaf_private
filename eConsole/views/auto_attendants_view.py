@@ -15,6 +15,7 @@ class AutoAttendantsView(BaseView):
         super(AutoAttendantsView, self).__init__()
         self.presence_element_names = ["eConsoleHelp"]
         self.nav_tab_names = ["HOME", "USERS", "CONFERENCES", "CALL QUEUES", "INVENTORY", "CALL HISTORY", "SETTINGS"]
+        self.view_name = 'auto_attendants'
 
     @Trace(log)
     def goto_tab(self, tab_name, banner_title):
