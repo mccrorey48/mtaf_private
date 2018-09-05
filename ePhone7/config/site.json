@@ -1642,7 +1642,83 @@
                     "type": "drs_test_user"
                 }
             }
+        },
+	"sl": {
+            "AospsHome": "/home/mobile/aosps",
+            "ApksHome": "/home/mobile/apks",
+            "DefaultForwardAccount": "Auto TesterE",
+            "DefaultSoftphoneUser": "Auto TesterF",
+            "10DigitNumber" : "2147272447",
+            "Users": {
+                "R2d2User": {
+                    "AccountPassword": "6000",
+                    "AllContacts": [
+                        "601",
+                        "602",
+                        "603",
+                        "700",
+                        "701"
+                    ],
+                    "CoworkerContacts": [
+                        {"number":"601", "name":"Albedo Overseer"},
+                        {"number":"602", "name":"Aura BellaFiora"},
+                        {"number":"603", "name":"Mare BellaFiora"},
+                        {"number":"700", "name":"Mobile Dev 700"},
+                        {"number":"701", "name":"Mobile Dev 701"},
+                        {"number":"702", "name":"Mobile Dev 702"},
+                        {"number":"703", "name":"Mobile Dev 703"},
+                        {"number":"603", "name":"Auto TesterH"},
+                        {"number":"603", "name":"Auto TesterH"}
+                    ],
+                    "CoworkerContactsDialPadNumber": "60",
+                    "CoworkerContactsDialPadName": "2872",
+                    "DomainName": "pm.esihs.net",
+                    "FavoriteContacts": [
+                        "601",
+                        "602",
+                        "603"
+                    ],
+                    "PhonePassword": "6000",
+                    "UserId": "600",
+                    "UserName": "Shalltear Bloodfallen"
+                },
+                "R2d2AltUser": {
+                    "AccountPassword": "",
+                    "DomainName": "pm.esihs.net",
+                    "PhonePassword": "hDFv8i3V",
+                    "Proxy": "nr4.cpbx.esihs.net",
+                    "UserId": "600a",
+                    "UserNameIncoming": "Shalltear Bloodfallen",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2012.wav"
+                },
+                "Auto TesterE": {
+                    "AccountPassword": "6001",
+                    "DomainName": "pm.esihs.net",
+                    "PhonePassword": "9fzsB2XD",
+                    "Proxy": "nr4.cpbx.esihs.net",
+                    "UserId": "601",
+                    "UserNameIncoming": "Albedo Overseer",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2204.wav"
+                },
+                "Auto TesterF": {
+                    "AccountPassword": "6002",
+                    "DomainName": "pm.esihs.net",
+                    "PhonePassword": "z495Ui62",
+                    "Proxy": "nr4.cpbx.esihs.net",
+                    "UserId": "602",
+                    "UserNameIncoming": "Aura BellaFiora",
+                    "dns_list": [
+                        "10.0.50.156"
+                    ],
+                    "pbfile": "wav/2205.wav"
+                }
+            }
         }
-
     }
 }
