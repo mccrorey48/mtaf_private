@@ -2,7 +2,7 @@ from mtaf import mtaf_logging
 from mtaf.trace import Trace
 
 from ePhone7.config.configure import cfg
-from ePhone7.utils import get_softphone
+from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.user_view import UserView
 
 from appium.webdriver.common.touch_action import TouchAction

@@ -1,7 +1,7 @@
 from os import path, makedirs
 
 from mtaf import mtaf_logging
-from ePhone7.utils import get_vmids
+from ePhone7.utils.e7_microservices import get_vmids
 
 mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
 log = mtaf_logging.get_logger('mtaf.smoke')

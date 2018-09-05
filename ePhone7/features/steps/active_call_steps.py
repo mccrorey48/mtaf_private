@@ -6,63 +6,52 @@ from mtaf import mtaf_logging
 from ePhone7.config.configure import cfg
 from ePhone7.views import *
 from mtaf.user_exception import UserException as Ux
-from mtaf.trace import fake
 from ePhone7.utils.e7_microservices import get_vmids
 
 log = mtaf_logging.get_logger('mtaf.active_steps')
 
 
 @step('[active call] I touch "Dial"')
-@fake
 def active_call__i_touch_dial(context):
     active_call_view.click_named_element('ActiveCallDial')
-
-
 # @step("[active call] the active call screen appears")
 # @fake
 # def active_call__the_active_call_screen_appears(context):
 #     assert active_call_view.becomes_present(), 'Active call screen not present'
 
 
+@step("[active_call] a correct name appears in the Active Call window")
+def activecall__a_correct_name_appears_in_the_active_call_window(context):
+    return context.caller_name == active_call_view.find_named_element('PrimaryCallName')
+
+
+@step("[active_call] a correct number appears in the Active Call window")
+def activecall__a_correct_number_appears_in_the_active_call_window(context):
+    return context.caller_number == active_call_view.find_named_element('PrimaryCallNumber')
+
+
 @step("[active_call] a Record button is visible")
-@fake
 def activecall__a_record_button_is_visible(context):
     assert active_call_view.element_is_present('CallRecordButton')
     context.record_button = active_call_view.find_named_element('CallRecordButton')
 
 
 @step('[active_call] an "Active Call" window appears')
-@fake
 def activecall__an_active_call_window_appears(context):
     assert active_call_view.becomes_present(), 'Active call window did not appear'
 
 
 @step('[active_call] an "Active Call" window disappears')
-@fake
 def activecall__an_active_call_window_disappears(context):
     assert active_call_view.becomes_not_present(), 'Active call window did not disappear'
 
 
-@step("[active_call] a correct number appears in the Active Call window")
-@fake
-def activecall__a_correct_number_appears_in_the_active_call_window(context):
-    return context.caller_number == active_call_view.find_named_element('PrimaryCallNumber')
-
-
-@step("[active_call] a correct name appears in the Active Call window")
-@fake
-def activecall__a_correct_name_appears_in_the_active_call_window(context):
-    return context.caller_name == active_call_view.find_named_element('PrimaryCallName')
-
-
 @step("[active_call] I end the call")
-@fake
 def activecall__i_end_the_call(context):
     active_call_view.touch_end_call_button()
 
 
 @step("[active_call] I see a green banner with the coworker's name")
-@fake
 def activecall__i_see_a_green_banner_with_the_coworkers_name(context):
     assert active_call_view.vm_xfer_dest_banner_present(), "vm transfer destination banner not present"
     expect_name = cfg.site['DefaultForwardAccount']
@@ -71,7 +60,6 @@ def activecall__i_see_a_green_banner_with_the_coworkers_name(context):
 
 
 @step("[active_call] I see an orange banner with the caller's name")
-@fake
 def activecall__i_see_an_orange_banner_with_the_callers_name(context):
     assert active_call_view.vm_xfer_caller_banner_present()
     expect_name = cfg.site['DefaultSoftphoneUser']
@@ -80,13 +68,11 @@ def activecall__i_see_an_orange_banner_with_the_callers_name(context):
 
 
 @step("[active_call] I see the keypad")
-@fake
 def activecall__i_see_the_keypad(context):
     assert active_call_view.element_is_present('ActiveCallDialpad')
 
 
 @step("[active_call] I select a coworker's mailbox")
-@fake
 def activecall__i_select_a_coworkers_mailbox(context):
     # before forwarding the call to the coworker, count the voicemails in that mailbox
     # so we can verify later that a new one has been added
@@ -95,19 +81,16 @@ def activecall__i_select_a_coworkers_mailbox(context):
 
 
 @step("[active_call] I select the Favorites tab")
-@fake
 def activecall__i_select_the_favorites_tab(context):
     pass
 
 
 @step('[active_call] I tap "Transfer to VM"')
-@fake
 def activecall__i_tap_transfer_to_vm(context):
     active_call_view.touch_transfer_to_vm()
 
 
 @step('[active_call] I touch the "end call" button')
-@fake
 def activecall__i_touch_the_end_call_button(context):
     # this has a 5 second sleep because it is used after a transfer-to-voicemail
     # and the button is not immediately responsive
@@ -116,19 +99,16 @@ def activecall__i_touch_the_end_call_button(context):
 
 
 @step("[active_call] my Coworker contacts are listed on the contacts screen")
-@fake
 def activecall__my_coworker_contacts_are_listed_on_the_contacts_screen(context):
     pass
 
 
 @step("[active_call] my favorite Coworker contacts are listed")
-@fake
 def activecall__my_favorite_coworker_contacts_are_listed(context):
     pass
 
 
 @step("[active_call] the buttons are {w} pixels wide and {h} pixels high")
-@fake
 def activecall__the_buttons_are_w_pixels_wide_and_h_pixels_high(context, w, h):
     elems = active_call_view.find_named_elements('ActiveCallDialKeys')
     # location = elems[0].location
@@ -140,7 +120,6 @@ def activecall__the_buttons_are_w_pixels_wide_and_h_pixels_high(context, w, h):
 
 
 @step("[active_call] the caller leaves a message and hangs up")
-@fake
 def activecall__the_caller_leaves_a_message_and_hangs_up(context):
     user_view.caller_leaves_voicemail()
     user_view.caller_ends_received_call()
@@ -154,13 +133,11 @@ def activecall__the_caller_leaves_a_message_and_hangs_up(context):
 
 
 @step("[active_call] the Coworkers tab is selected")
-@fake
 def activecall__the_coworkers_tab_is_selected(context):
     pass
 
 
 @step("[active_call] the {expect_icon} icon is displayed")
-@fake
 def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
     white_counts = {'speaker': 2272, 'handset': 1351, 'headset': 681}
     if expect_icon not in white_counts:
@@ -178,13 +155,11 @@ def activecall__the_expecticon_icon_is_displayed(context, expect_icon):
 
 
 @step("[active_call] the in-call contacts screen appears")
-@fake
 def activecall__the_incall_contacts_screen_appears(context):
     pass
 
 
 @step("[active_call] the Record button is gray")
-@fake
 def activecall__the_record_button_is_gray(context):
     user_view.get_screenshot_as_png('record_button')
     expected_color = [38, 40, 43]
@@ -193,7 +168,6 @@ def activecall__the_record_button_is_gray(context):
 
 
 @step("[active_call] the Record button is white")
-@fake
 def activecall__the_record_button_is_white(context):
     user_view.get_screenshot_as_png('record_button')
     expected_color = [255, 255, 255]
@@ -202,7 +176,6 @@ def activecall__the_record_button_is_white(context):
 
 
 @step('[active_call] the transfer dialog appears')
-@fake
 def activecall__the_transfer_dialog_appears(context):
     assert active_call_view.transfer_dialog_is_present()
 

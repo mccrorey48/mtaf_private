@@ -1,8 +1,8 @@
 from mtaf import mtaf_logging
 from ePhone7.views import base_view
-from ePhone7.utils import softphone_manager
-from ePhone7.utils import usb_enable
-from ePhone7.utils import get_e7_microservices
+from ePhone7.utils.get_softphone import softphone_manager
+from ePhone7.utils.usb_enable import usb_enable
+from ePhone7.utils.e7_microservices import get_e7_microservices
 from mtaf.user_exception import UserException as Ux
 import datetime
 

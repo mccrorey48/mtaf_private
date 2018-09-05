@@ -175,12 +175,3 @@ class SkipTrace(Trace):
         return f
 
 
-def fake(func):
-    def wrapper(context, *args, **kwargs):
-        if 'fake' in str(context._config.tags).split(','):
-            pass
-            # sleep(0.1)
-        else:
-            func(context, *args, **kwargs)
-    return wrapper
-

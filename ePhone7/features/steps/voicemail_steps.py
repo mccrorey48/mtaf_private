@@ -1,8 +1,8 @@
 from behave import *
 from ePhone7.views import *
 from ePhone7.config.configure import cfg
-from mtaf.trace import fake
-from ePhone7.utils import get_softphone
+from ePhone7.utils.get_softphone import get_softphone
+from ePhone7.utils.e7_microservices import *
 from time import time
 from mtaf import mtaf_logging
 from mtaf.filters import get_filter
@@ -11,38 +11,32 @@ log = mtaf_logging.get_logger('mtaf.vm_steps')
 
 
 @step("[voicemail] a keypad appears")
-@fake
 def voicemail__a_keypad_appears(context):
     assert voicemail_view.RootFrameLayout.size['height'] == 610
 
 
 @step("[voicemail] a list of Coworker contacts appears")
-@fake
 def voicemail__a_list_of_coworker_contacts_appears(context):
     assert voicemail_view.ForwardDialogTitle is not None, '"ForwardDialogTitle" element not present after 10 seconds'
 
 
 @step("[voicemail] a voicemail detail window appears")
-@fake
 def voicemail__a_voicemail_detail_window_appears(context):
     assert voicemail_view.PlaybackStartStop is not None, '"PlaybackStartStop" element not present after 10 seconds'
 
 
 @step("[voicemail] I can choose Cancel or OK by touching the corresponding button")
-@fake
 def voicemail__i_can_choose_cancel_or_ok_by_touching_the_corresponding_button(context):
     assert voicemail_view.OkForwardButton is not None, '"OkForwardButton" element not present after 10 seconds'
     assert voicemail_view.CancelForwardButton is not None, '"CancelForwardButton" element not present after 10 seconds'
 
 
 @step("[voicemail] I close the voicemail detail window")
-@fake
 def voicemail__i_close_the_voicemail_detail_window(context):
     voicemail_view.VmDetailHeader.click()
 
 
 @step("[voicemail] I see my existing {category} voicemails")
-@fake
 def voicemail__i_see_my_existing_category_voicemails(context, category):
     vm_displayed_texts = voicemail_view.get_top_vm_texts()
     metadata = context.existing_vm_metadata[category.lower()]
@@ -51,7 +45,6 @@ def voicemail__i_see_my_existing_category_voicemails(context, category):
 
 
 @step("[voicemail] I see the New, Saved and Trash tabs at the top of the screen")
-@fake
 def voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(context):
     assert voicemail_view.NewTab, "voicemail_view.New element not present"
     assert voicemail_view.SavedTab, "voicemail_view.Saved element not present"
@@ -59,25 +52,21 @@ def voicemail__i_see_the_new_saved_and_trash_tabs_at_the_top_of_the_screen(conte
 
 
 @step("[voicemail] I touch a contact element")
-@fake
 def voicemail__i_touch_a_contact_element(context):
     voicemail_view.all.SearchNumber[0].click()
 
 
 @step("[voicemail] I touch the Delete icon")
-@fake
 def voicemail__i_touch_the_delete_icon(context):
     voicemail_view.DeleteButton.click()
 
 
 @step("[voicemail] I touch the Forward icon")
-@fake
 def voicemail__i_touch_the_forward_icon(context):
     voicemail_view.ForwardButton.click()
 
 
 @step("[voicemail] I touch the handset icon")
-@fake
 def voicemail__i_touch_the_handset_icon(context):
     context.softphone = get_softphone()
     context.softphone.set_incoming_response(200)
@@ -85,13 +74,11 @@ def voicemail__i_touch_the_handset_icon(context):
 
 
 @step("[voicemail] I touch the Save icon")
-@fake
 def voicemail__i_touch_the_save_icon(context):
     voicemail_view.SaveButton.click()
 
 
 @step("[voicemail] I touch the top voicemail element")
-@fake
 def voicemail__i_touch_the_top_voicemail_element(context):
     parents = voicemail_view.get_top_vm_parents()
     assert len(parents) > 0, "No VM parents found"
@@ -99,7 +86,6 @@ def voicemail__i_touch_the_top_voicemail_element(context):
 
 
 @step("[voicemail] I use the keypad to filter the list of contacts")
-@fake
 def voicemail__i_use_the_keypad_to_filter_the_list_of_contacts(context):
     frame = voicemail_view.all.ForwardList[0]
     items = filter(get_filter('within_frame', frame=frame), voicemail_view.all.SearchItem)
@@ -111,13 +97,11 @@ def voicemail__i_use_the_keypad_to_filter_the_list_of_contacts(context):
 
 
 @step("[voicemail] my phone calls the voicemail sender")
-@fake
 def voicemail__my_phone_calls_the_voicemail_sender(context):
     context.softphone.wait_for_call_status('call', user_view.call_status_wait)
 
 
 @step('[voicemail] the new voicemail is no longer listed as "{category}"')
-@fake
 def voicemail__the_new_voicemail_is_no_longer_listed_as_category(context, category):
     category = category.lower()
     if category == 'trash':
@@ -141,7 +125,6 @@ def voicemail__the_new_voicemail_is_no_longer_listed_as_category(context, catego
 
 
 @step("[voicemail] the new voicemail is the first \"{category}\" item listed")
-@fake
 def voicemail__the_new_voicemail_is_the_first_category_item_listed(context, category):
     category = category.lower()
     if category == 'trash':
@@ -166,7 +149,6 @@ def voicemail__the_new_voicemail_is_the_first_category_item_listed(context, cate
 
 
 @step("[voicemail] the voicemail audio plays back")
-@fake
 def voicemail__the_voicemail_audio_plays_back(context):
     elem = voicemail_view.find_named_element("PlaybackStartStop")
     voicemail_view.get_screenshot_as_png('playback')
@@ -179,14 +161,12 @@ def voicemail__the_voicemail_audio_plays_back(context):
 
 
 @step("[voicemail] the voicemail detail window disappears")
-@fake
 def voicemail__the_voicemail_detail_window_disappears(context):
     fail_msg = '"PlaybackStartStop" element present after %s seconds' % voicemail_view.locator_timeout
     assert voicemail_view.missing.PlaybackStartStop is True, fail_msg
 
 
 @step("[voicemail] the voicemail is also available in the destination contact's new voicemails list")
-@fake
 def voicemail__the_voicemail_is_also_available_in_the_destination_contacts_new_voicemails_list(context):
     start_time = time()
     api_timeout = 60
@@ -198,7 +178,6 @@ def voicemail__the_voicemail_is_also_available_in_the_destination_contacts_new_v
 
 
 @step("[voicemail] the voicemail is still the first item in the view")
-@fake
 def voicemail__the_voicemail_is_still_the_first_item_in_the_view(context):
     metadata = get_e7_microservices('R2d2User').get_vm_metadata('new')
     assert metadata[0]['vmid'] == context.new_vmid, "first VM in list changed, expected it to stay the same"
@@ -213,7 +192,7 @@ def voicemail__the_voicemail_is_still_the_first_item_in_the_view(context):
 
 
 @step("[voicemail] the Voicemail view appears")
-@fake
 def voicemail__the_voicemail_view_appears(context):
     pass
+
 

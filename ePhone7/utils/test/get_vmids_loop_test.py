@@ -56,6 +56,7 @@ def vmid_count_incremented(username, type, old_vmid_count, timeout=60):
     else:
         return False
 
+
 if __name__ == "__main__":
     while True:
         vmids = get_vmids(cfg.site['DefaultForwardAccount'], 'new')
