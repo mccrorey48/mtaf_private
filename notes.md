@@ -6,7 +6,7 @@ Sometimes errors in running Python's "behave" module don't get reported by the r
   - Make sure the right virtualenv is active
   - cd to the mtaf directory 
   - run: 
-      ```bash
+      ```
 	 behave -D ota_server=alpha --tags=regression --stop -k -f plain ePhone7/features
       ```
 - To set up a "behave" run configuration in Pycharm, 
