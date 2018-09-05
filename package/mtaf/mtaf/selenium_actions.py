@@ -73,6 +73,10 @@ class SeleniumActions(object):
             raise Ux("self.PresenceOfElementsByName(%s) returned %s elements" % (attr_name, len(elements)))
         return elements[0]
 
+    @staticmethod
+    def wait_until_page_ready():
+        pass
+
     def open_browser(self, browser='chrome'):
         # site.json can specify selenium_url as a remote webdriver server
         # e.g. "selenium_server": "<fqdn or IP address of remote server>"
