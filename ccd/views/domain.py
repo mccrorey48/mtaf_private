@@ -3,7 +3,7 @@ from time import sleep
 from mtaf import mtaf_logging
 
 from ccd.views.base import BaseView
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 
 log = mtaf_logging.get_logger('mtaf.domain_view')
 

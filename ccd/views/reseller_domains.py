@@ -1,5 +1,5 @@
 from mtaf import mtaf_logging
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 
 from ccd.utils.configure import cfg
 from ccd.views.reseller import ResellerView

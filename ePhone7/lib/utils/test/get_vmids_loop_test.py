@@ -1,6 +1,6 @@
 import sys
 sys.path = sys.path[1:]
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from mtaf import mtaf_logging
 from mtaf.user_exception import UserException as Ux
 import requests

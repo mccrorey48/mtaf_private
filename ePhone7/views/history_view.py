@@ -1,9 +1,9 @@
 from mtaf import mtaf_logging
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from mtaf.user_exception import UserException as Ux
 
 from ePhone7.config.configure import cfg
-from ePhone7.lib.utils.get_softphone import get_softphone
+from ePhone7.utils.get_softphone import get_softphone
 from ePhone7.views.user_view import UserView
 
 from time import sleep

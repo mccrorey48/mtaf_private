@@ -1,5 +1,5 @@
 from mtaf import mtaf_logging
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from mtaf.user_exception import UserException as Ux, UserTimeoutException as Tx
 from mtaf.wav_audio import create_wav_file
 import re

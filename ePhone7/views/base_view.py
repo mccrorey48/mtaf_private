@@ -2,11 +2,11 @@ from mtaf import mtaf_logging
 from mtaf.android_zpath import expand_zpath
 from mtaf.android_actions import AndroidActions
 from mtaf.user_exception import UserException as Ux, UserTimeoutException as Tx, UserFailException as Fx
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 
 from ePhone7.config.configure import cfg
-from ePhone7.lib.utils.spud_serial import SpudSerial
-from ePhone7.lib.utils.usb_enable import usb_enable
+from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.utils.usb_enable import usb_enable
 
 import os
 from time import sleep, time

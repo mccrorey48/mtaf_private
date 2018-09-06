@@ -9,7 +9,7 @@ from ePhone7.views import *
 from ePhone7.lib.utils.csv.xml_to_csv import xml_folder_to_csv
 from time import sleep
 from mtaf import mtaf_logging
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from mtaf.user_exception import UserException as Ux
 log = mtaf_logging.get_logger('mtaf.get_xml')
 mtaf_logging.console_handler.setLevel(mtaf_logging.TRACE)

@@ -8,7 +8,7 @@ from pymongo import MongoClient
 from mtaf import mtaf_logging
 from mtaf.fake_detector import FakeDetector
 from mtaf.user_exception import UserException as Ux
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from mtaf.prune_db import prune_db
 import argparse
 from os import path, getenv, mkdir

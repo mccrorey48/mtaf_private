@@ -1,4 +1,4 @@
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from ePhone7.config.configure import cfg
 from ePhone7.lib.microservices import get_microservices
 from mtaf import mtaf_logging

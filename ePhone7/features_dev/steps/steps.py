@@ -1,6 +1,5 @@
 from behave import *
 # from ePhone7.views import all_views
-from mtaf.trace import fake
 from mtaf import mtaf_logging
 # from ePhone7.lib.utils.e7_microservices import *
 
@@ -8,7 +7,6 @@ use_step_matcher("re")
 log = mtaf_logging.get_logger('mtaf.features_dev')
 
 # @step("the (?P<view>\S+) view (?P<name>\S+) element is (?P<mode>\S*)\s?present")
-# @fake
 # def step_impl(context, view, name, mode):
 #     if mode.lower() == 'not':
 #         assert all_views[view][name] is None, '%s view element "%s" is present' % (view, name)
@@ -17,7 +15,6 @@ log = mtaf_logging.get_logger('mtaf.features_dev')
 #
 #
 # @step("the (?P<view>\S+) view is (?P<mode>\S*)\s?present")
-# @fake
 # def step_impl(context, view, mode):
 #     if mode.lower() == 'not':
 #         assert all_views[view].becomes_not_present(), "%s view is present"
@@ -27,7 +24,6 @@ log = mtaf_logging.get_logger('mtaf.features_dev')
 #
 # # @step('I touch (?:[^"]*)?"(?P<text>[^"]+)"(?P<tail>[^"]*)')
 # @step('I touch (?:the )?"(?P<text>[^"]+)"(?P<tail>[^"]*)')
-# @fake
 # def i_touch_ptextptail(context, text, tail):
 #     # matches: I touch <optional> "<text>" <optional>
 #     # where <optional> and <text> are any text not including a double quote
@@ -39,20 +35,17 @@ log = mtaf_logging.get_logger('mtaf.features_dev')
 
 
 @step("I send the (?P<name>\S+) keycode")
-@fake
 def step_impl(context, name):
     log.info("I send the %s keycode" % name)
     # all_views.base.send_keycode('KEYCODE_%s' % name.upper())
 
 
 # @step('a (?:[^"]+) with (?:[^"]* )"(?P<text>[^"]+)"(?: [^"]*) appears')
-# @fake
 # def a__with__ptext__appears(context, text):
 #     assert all_views.base.element_with_text_is_present(text)
 #
 #
 # @step("I see my existing (?P<category>\S+) voicemails")
-# @fake
 # def step_impl(context, category):
 #     displayed_texts = all_views.voicemail.get_top_vm_texts()
 #     metadata_all = context.vvm_microservice.get_vm_metadata('new', ['callerName', 'callerNumber', 'duration',

@@ -1,16 +1,12 @@
 from ePhone7.views import *
-from ePhone7.lib.utils.usb_enable import usb_enable
-from ePhone7.lib.utils.versions import get_installed_versions
+from ePhone7.utils.usb_enable import usb_enable
+from ePhone7.utils.versions import get_installed_versions
 from ePhone7.config.configure import cfg
-from ePhone7.lib.utils.spud_serial import SpudSerial
-from ePhone7.lib.utils.get_softphone import get_softphone
-import six
+from ePhone7.utils.spud_serial import SpudSerial
+from ePhone7.utils.get_softphone import get_softphone
 import os
-if six.PY3:
-    from tkinter import *
-else:
-    from Tkinter import Frame, IntVar, StringVar, Label, Checkbutton, Button
-    from Tkconstants import DISABLED, NORMAL
+from Tkinter import Frame, IntVar, StringVar, Label, Checkbutton, Button
+from Tkconstants import DISABLED, NORMAL
 
 
 class AccountFrame(Frame):

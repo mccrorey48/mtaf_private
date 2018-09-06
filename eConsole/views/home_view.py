@@ -1,7 +1,7 @@
 import mtaf.mtaf_logging as logging
 
 from eConsole.views.base_view import BaseView
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 
 log = logging.get_logger('mtaf.home')
 

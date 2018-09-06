@@ -1,6 +1,6 @@
 from time import time
 import mtaf_logging
-from trace import Trace
+from mtaf.decorators import Trace
 from selenium_actions import SeleniumActions
 from appium import webdriver
 from appium.webdriver.common.touch_action import TouchAction
@@ -63,18 +63,18 @@ class AndroidActions(SeleniumActions):
 
     @Trace(log)
     def close_appium(self):
-        if self.driver is None:
+        if self.get_driver() is None:
             log.debug('appium is already closed')
         else:
             log.debug('closing appium')
             try:
-                logcat = self.driver.get_log('logcat')
+                logcat = self.get_driver().get_log('logcat')
                 timestamp = strftime('%m_%d_%y-%H_%M_%S', localtime())
                 logdir = os.getenv('MTAF_LOG_DIR', 'log')
                 with open('%s/logcat_%s.log' % (logdir, timestamp), 'w') as f:
                     for line in [item['message'] for item in logcat]:
                         f.write(line.encode('utf-8') + '\n')
-                # self.driver.quit()
+                # self.get_driver().quit()
             except WebDriverException:
                 log.debug("got WebDriverException, assuming appium already closed")
             AndroidActions.driver = None
@@ -124,39 +124,39 @@ class AndroidActions(SeleniumActions):
     @Trace(log)
     def keyevent(self, code):
         log.debug("sending keyevent(%s)" % code)
-        self.driver.keyevent(code)
+        self.get_driver().keyevent(code)
 
     @Trace(log)
     def hide_keyboard(self):
-        self.driver.hide_keyboard()
+        self.get_driver().hide_keyboard()
 
     @Trace(log)
     def long_press(self, element=None, x=None, y=None, duration=1000):
-        TouchAction(self.driver).long_press(element, x, y, duration).perform()
+        TouchAction(self.get_driver()).long_press(element, x, y, duration).perform()
 
     @Trace(log)
     def long_press_scroll(self, origin_el, destination_el):
-        TouchAction(self.driver).long_press(origin_el).move_to(destination_el).release().perform()
+        TouchAction(self.get_driver()).long_press(origin_el).move_to(destination_el).release().perform()
 
     @Trace(log)
     def short_press_scroll(self, origin_el, destination_el):
-        TouchAction(self.driver).press(origin_el).move_to(destination_el).release().perform()
+        TouchAction(self.get_driver()).press(origin_el).move_to(destination_el).release().perform()
 
     @Trace(log)
     def swipe(self, origin_x, origin_y, destination_x, destination_y, duration_ms=500):
-        self.driver.swipe(origin_x, origin_y, destination_x, destination_y, duration_ms)
+        self.get_driver().swipe(origin_x, origin_y, destination_x, destination_y, duration_ms)
 
     @Trace(log)
     def long_press_swipe(self, x1, y1, x2, y2, duration=500):
-        TouchAction(self.driver).long_press(x=x1, y=y1, duration=duration).move_to(x=x2, y=y2).release().perform()
+        TouchAction(self.get_driver()).long_press(x=x1, y=y1, duration=duration).move_to(x=x2, y=y2).release().perform()
 
     @Trace(log)
     def tap(self, positions, duration=200):
-        self.driver.tap(positions, duration)
+        self.get_driver().tap(positions, duration)
 
     @Trace(log)
     def get_screenshot_as_file(self, filepath, scale=None):
-        self.driver.get_screenshot_as_file(filepath)
+        self.get_driver().get_screenshot_as_file(filepath)
         im = Image.open(filepath)
         if im.getbbox()[2] == 1024:
             log.debug("rotating screenshot -90 degrees")
@@ -170,11 +170,11 @@ class AndroidActions(SeleniumActions):
 
     @Trace(log)
     def get_current_activity(self):
-        return self.driver.current_activity
+        return self.get_driver().current_activity
 
     @Trace(log)
     def wait_activity(self, activity, timeout):
-        return self.driver.wait_activity(activity, timeout)
+        return self.get_driver().wait_activity(activity, timeout)
 
 #
 #

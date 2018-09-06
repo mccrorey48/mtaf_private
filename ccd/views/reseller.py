@@ -1,6 +1,6 @@
 import re
 from mtaf import mtaf_logging
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from ccd.views.base import BaseView
 from lib.user_exception import UserException as Ux
 

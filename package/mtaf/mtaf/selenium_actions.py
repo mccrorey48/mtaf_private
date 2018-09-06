@@ -1,6 +1,7 @@
 from time import time, sleep
 import mtaf_logging
-from trace import Trace
+import os
+from mtaf.decorators import Trace
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import WebDriverException, TimeoutException
@@ -30,11 +31,49 @@ desired_capabilities = {
     'phantomjs': DesiredCapabilities.PHANTOMJS,
 }
 
+driver_type = 'browser'
+
+
+class DriverCheck(object):
+    def __init__(self, name=driver_type):
+        self.name = name
+
+    def __call__(self, f):
+
+        def wrapped(*args, **kwargs):
+            if SeleniumActions.get_instance().driver is None:
+                print "SeleniumActions: no %s!" % self.name
+            else:
+                f(*args, **kwargs)
+
+        return wrapped
+
 
 class SeleniumActions(object):
-    selenium_server = 'localhost'
     driver = None
     locator_timeout = 10
+    element_filter = None
+    service_log_path = None
+    webdriver_log_path = None
+    __instance = None
+
+    def __init__(self):
+        if SeleniumActions.__instance is None:
+            SeleniumActions.__instance = self
+
+    @staticmethod
+    def get_instance():
+        if SeleniumActions.__instance is None:
+            SeleniumActions()
+        return SeleniumActions.__instance
+
+    @staticmethod
+    def set_driver(driver):
+        SeleniumActions.driver = driver
+
+    @staticmethod
+    def get_driver():
+        return SeleniumActions.driver
 
     class All(object):
         def __init__(self, view):
@@ -73,25 +112,48 @@ class SeleniumActions(object):
             raise Ux("self.PresenceOfElementsByName(%s) returned %s elements" % (attr_name, len(elements)))
         return elements[0]
 
-    @staticmethod
-    def wait_until_page_ready():
-        pass
+    @DriverCheck()
+    def get_url(self, url):
+        log.debug('getting url %s' % url)
+        self.get_driver().get(url)
 
-    def open_browser(self, browser='chrome'):
-        # site.json can specify selenium_url as a remote webdriver server
-        # e.g. "selenium_server": "<fqdn or IP address of remote server>"
+    @DriverCheck()
+    def get_title(self):
+        log.debug('getting page title')
+        return self.get_driver().title
 
-        if self.selenium_server == 'localhost':
-            SeleniumActions.driver = browsers[browser]()
+    @DriverCheck()
+    def get_current_url(self,):
+        log.debug('getting current_url')
+        return self.get_driver().current_url
+
+    @Trace(log)
+    def open_browser(self, browser_name='chrome'):
+        if self.get_driver() is not None:
+            log.debug('browser is already open')
         else:
-            SeleniumActions.driver = webdriver.Remote(
-                command_executor='http://%s:4444/wd/hub' % self.selenium_server,
-                desired_capabilities=desired_capabilities[browser])
+            browser_name = browser_name.lower()
+            if browser_name in browsers.keys():
+                if browser_name == 'chrome':
+                    mtaf_log_dir = os.getenv('MTAF_LOG_DIR', './log')
+                    self.service_log_path = os.path.join(mtaf_log_dir, 'service.log')
+                    self.webdriver_log_path = os.path.join(mtaf_log_dir, 'webdriver.log')
+                    self.set_driver(browsers[browser_name](service_log_path=self.service_log_path))
+                else:
+                    self.set_driver(browsers[browser_name]())
+                self.get_driver().set_window_size(1280, 1024)
+            else:
+                raise Ux('Unknown browser %s' % browser_name)
 
     @Trace(log)
     def close_browser(self):
-        SeleniumActions.driver.close()
-        SeleniumActions.driver = None
+        if self.get_driver() is None:
+            log.debug('browser is already closed')
+        else:
+            self.get_driver().quit()
+            self.set_driver(None)
+            if self.service_log_path is not None and self.webdriver_log_path is not None:
+                self.process_log(self.service_log_path, self.webdriver_log_path)
 
     class PresenceOfElementsByName(object):
         def __init__(self, name):
@@ -99,15 +161,6 @@ class SeleniumActions(object):
 
         def __call__(self, actions):
             return actions.find_named_elements(self.name)
-
-    # def get_short_locator(self, name):
-    #     cls = self.__class__
-    #     while True:
-    #         if not hasattr(cls, 'locators'):
-    #             raise Ux("Unknown locator %s" % name)
-    #         if name in cls.locators:
-    #             return cls.locators[name]
-    #         cls = cls.__base__
 
     def get_locator(self, name):
         cls = self.__class__
@@ -127,14 +180,14 @@ class SeleniumActions(object):
 
     @Trace(log)
     def get_source(self):
-        return self.driver.page_source
+        return self.get_driver().page_source
 
     @Trace(log)
     def click_element(self, elem):
         elem.click()
 
     @Trace(log)
-    def send_keys(self, elem, val ):
+    def send_keys(self, elem, val):
         elem.send_keys(val)
 
     @Trace(log)
@@ -154,7 +207,7 @@ class SeleniumActions(object):
         self.click_element(elem)
 
     @Trace(log)
-    def click_link_text(self,text):
+    def click_link_text(self, text):
         loc = {"by": "link text", "value": text}
         elem = self.find_element_by_locator(loc)
         self.click_element(elem)
@@ -162,7 +215,7 @@ class SeleniumActions(object):
     @Trace(log, log_level='debug')
     def find_elements_by_locator(self, locator):
         self.wait_until_page_ready()
-        elems = self.driver.find_elements(locator['by'], locator['value'])
+        elems = self.get_driver().find_elements(locator['by'], locator['value'])
         if 'text' in locator:
             return [elem for elem in elems if elem.text == locator['text']]
         else:
@@ -214,14 +267,13 @@ class SeleniumActions(object):
         return self.element_is_present_by_locator(locator, timeout)
 
     @Trace(log)
-    def wait_for_no_elements_by_locator(self, locator, timeout):
+    def wait_for_no_elements_by_locator(self, locator, timeout, poll_interval=2):
         # waits 'timeout' seconds for zero elements with the indicated locator to be present
         # and returns True if that happens before timeout, False otherwise
         # Note:
         # - "not element_is_present()" is true when timeout expires before exactly one matching element is found;
         # - "element_becomes_not_present()" is true when zero matching elements are found before timeout expires
         start_time = time()
-        poll_interval = 2
         while True:
             if 'parent_key' in locator:
                 parent = self.find_named_element(locator['parent_key'])
@@ -234,7 +286,7 @@ class SeleniumActions(object):
             if time() - start_time > timeout:
                 log.debug("timed out after %d seconds" % timeout)
                 return False
-            sleep(2)
+            sleep(poll_interval)
 
     @Trace(log)
     def element_becomes_not_present(self, name, timeout=1):
@@ -273,27 +325,27 @@ class SeleniumActions(object):
             raise Ux('WebDriverException ' + e.message)
 
     @Trace(log)
-    def test_named_element_text(self, name, expected_text):
-        try:
-            self.actual_text = self.find_named_element(name, 10).text
-        except Ux:
-            self.actual_text = 'not found'
-            return False
-        return self.actual_text == expected_text
-
-    @Trace(log)
     def wait_for_named_element_text(self, name, expected_text, seconds=30):
         start_time = time()
         while time() < start_time + seconds:
-            if self.test_named_element_text(name, expected_text):
-                return
+            try:
+                elem = self.find_named_element(name, 10)
+            except Ux as e:
+                raise Ux("could not locate element named %s: %s" % (name, e))
+            try:
+                if elem.text == expected_text:
+                    return
+            except WebDriverException as e:
+                raise Ux("could not get text of element named %s: %s", (name, e))
+
             sleep(1.0)
-        raise Ux('actual element text = "%s", expected "%s" after %d seconds' %
-                 (self.actual_text, expected_text, seconds))
+        else:
+            raise Ux('actual element text = "%s", expected "%s" after %d seconds' %
+                     (self.actual_text, expected_text, seconds))
 
     @Trace(log)
     def wait_for_title(self, title, timeout=20):
-        WebDriverWait(self.driver, timeout).until(EC.title_is(title))
+        WebDriverWait(self.get_driver(), timeout).until(EC.title_is(title))
 
     @staticmethod
     @Trace(log, log_level='debug')
@@ -322,7 +374,9 @@ class SeleniumActions(object):
             if parent:
                 elems = parent.find_elements(locator['by'], locator['value'])
             else:
-                elems = self.driver.find_elements(locator['by'], locator['value'])
+                elems = self.get_driver().find_elements(locator['by'], locator['value'])
+            if self.element_filter is not None:
+                elems = filter(self.elem_filter, elems)
             if 'text' in locator:
                 elems = [elem for elem in elems if elem.text == locator['text']]
             elif 'partial text' in locator:
@@ -332,4 +386,4 @@ class SeleniumActions(object):
         return None
 
 
-selenium_actions = SeleniumActions()
+selenium_actions = SeleniumActions.get_instance()

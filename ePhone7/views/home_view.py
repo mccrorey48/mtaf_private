@@ -1,6 +1,6 @@
 from mtaf import mtaf_logging
 from ePhone7.views.user_view import UserView
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 
 log = mtaf_logging.get_logger('mtaf.contacts_view')
 

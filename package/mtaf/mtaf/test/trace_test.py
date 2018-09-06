@@ -1,11 +1,10 @@
 # import unittest
 from mtaf import mtaf_logging
 from mtaf.user_exception import UserException as Ux, UserFailException as Fx
-from mtaf.trace import Trace, TestCase, SkipTrace
+from mtaf.decorators import TestCase, Trace
 
 log = mtaf_logging.get_logger('mtaf.wrapper_test')
 mtaf_logging.console_handler.setLevel(mtaf_logging.INFO)
-# Trace = SkipTrace
 
 
 @Trace(log)

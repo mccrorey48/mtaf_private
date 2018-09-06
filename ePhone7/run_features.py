@@ -9,11 +9,11 @@ from mtaf import mtaf_logging
 from ePhone7.config.configure import cfg
 from mtaf.fake_detector import FakeDetector
 from mtaf.user_exception import UserException as Ux
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from mtaf.prune_db import prune_db
 import argparse
 from os import path, getenv, mkdir
-from ePhone7.lib.utils.versions import *
+from ePhone7.utils.versions import *
 from shutil import copyfile
 from bson.binary import Binary
 import six

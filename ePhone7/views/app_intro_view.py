@@ -1,5 +1,5 @@
 from mtaf import mtaf_logging
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 
 from ePhone7.views.base_view import BaseView
 

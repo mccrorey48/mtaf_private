@@ -1,16 +1,13 @@
 from behave import *
-from lib.wrappers import fake
 
 
 @step('A fake step')
-@fake
 def step_impl(context):
     """a triple-quoted docstring of one line"""
     pass
 
 
 @step('A real step')
-@fake
 def step_impl(context):
     """ a triple-quoted docstring
     of two lines """
@@ -18,7 +15,6 @@ def step_impl(context):
 
 
 @step('A step with a {parameter} in the name')
-@fake
 def step_impl(context, parameter):
     """ a triple-quoted docstring
     of two lines """
@@ -27,7 +23,6 @@ def step_impl(context, parameter):
 
 
 @step('A step with a "{quoted_parameter}" in the name')
-@fake
 def step_impl(context, quoted_parameter):
     """ a triple-quoted docstring
     of two lines """
@@ -36,7 +31,6 @@ def step_impl(context, quoted_parameter):
 
 
 @step('Another real step')
-@fake
 def step_impl(context):
     """ a triple-quoted docstring
     of two lines """

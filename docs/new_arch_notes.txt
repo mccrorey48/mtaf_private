@@ -1,41 +1,49 @@
 Before the new_arch revision, MTAF code for testing a given application (e.g., ePhone7, eConsole, etc.) was located
 in the mtaf/<app name> directory, using additional code from the shared mtaf/lib directory.
 
-With the new_arch revision, shared files are now kept in the "mtaf/package/mtaf/mtaf" directory. These files are not
-executed at runtime.  Instead, they are installed in the Python library environment, preferably a virtualenv.
-(See "install_notes.txt" for details about setting up Python virtual environments.)
+With the new_arch revision, shared files are now kept in the package directory "mtaf/package/mtaf/mtaf", in the
+MTAF repository at "https://bitbucket.org/estech/mtaf". The repository should be cloned to run the MTAF test scripts,
+but the files in the package are not executed at runtime.  Instead, they need to be installed in the Python library
+environment, preferably a virtualenv. (See "install_notes.txt" for details about setting up and using Python virtual
+environments.)
 
-This requires some special procedures for developing and debugging:
+To install the MTAF python libraries and dependencies into a new virtualenv, there are three possible methods.
+First, create a new virtualenv that does not inherit user-installed packages from the system Python installation.
+Activate this virtualenv and do one on the following:
 
-1. Using the procedure outlined for the new_arch revision in the file "install_notes.txt", the MTAF shared files are
-   installed in a new virtualenv by running the command "pip install mtaf".
+1. Run the command "pip install mtaf".
     - This downloads MTAF files from PyPi and installs them into the virtualenv's Python library environment.
     - The version downloaded from PyPi will be the latest build version that has been uploaded.
-    - At a command prompt, activate the runtime virtualenv by running "workon <virtualenv name>". The prompt will be
-      prefixed with <virtualenv name> to show that the virtualenv is active.
-    - In Pycharm, the virtualenv is specified by setting the project interpreter to be the python27.exe file in the
-      virtualenv directory tree.
-    - Along with the other setup steps outlined in "install_notes.txt", this will allow running MTAF tests from the
-      command line, or within PyCharm for debugging and development. However, stepping into shared library functions
-      will go into the virtualenv's library, not the local files in "mtaf/package/mtaf/mtaf".
+    - To run MTAF-dependent scripts from a command prompt, the new virtualenv must have been activated (usually by
+    _ running "workon <virtualenv name>", or as a side effect of creating the virtualenv using "mkvirtualenv");
+      the prompt will be prefixed with <virtualenv name> to show that the virtualenv is active.
+    - To run in Pycharm, the virtualenv is specified by setting the project interpreter to be the python27.exe file in
+      the current user's virtualenv directory tree (I use ~/virtualenvs to hold my virtualenvs).
+
+    This method is not recommended for stepping into MTAF package code while debugging, for these reasons:
+
+    - If debugging in PyCharm with this installation method, stepping into shared library functions
+      will go into the virtualenv's library, not the local files in "mtaf/package/mtaf/mtaf". This can be
+      confusing, especially if changes are made to the MTAF package code.
     - Exceptions in the libraries will produce tracebacks that indicate line numbers where the error occurred. In
       Pycharm, you can click on the traceback output to go to the indicated line and set breakpoints there. However,
-      any edits will be outside of the project repo and will be overwritten by subsequent MTAF installs. This can
-      cause a lot of confusion when debugging.
+      any edits to the MTAF package code will be outside of the project repo and will be overwritten by subsequent
+      MTAF installs. This can cause a lot of confusion when debugging.
 
-2. To make changes in the shared library code and install the changes in the current virtualenv, you can edit the
-   files in "mtaf/package/mtaf/mtaf", then install them from a command prompt in the "mtaf/package/mtaf" directory by
-   running ". build_script".
-    - This will cause the changes to take effect in the runtime environment (in Pycharm or at the command line),
-    - Exception tracebacks will still take you to the virtualenv library code; even though this code will now include
-      any edits that were installed by running ". build_script", this can still cause a lot of confusion, since
-      making changes directly in these files will only last until the next time ". build_script" is run.
+2. The files in "mtaf/package/mtaf/mtaf" can be installed into the active virtualenv from a command prompt in the
+   "mtaf/package/mtaf" directory by running ". build_script".
+    - This will cause the current MTAF package files, including any changes made to the cloned repository, to be
+      installed into the active virtualenv. It does not change the package version that resides on PyPi.
+    - This is also not the best method to use while debugging because you have to make any changes to the package files
+      in the local repository and then run ". build_script" to copy the changes to the virtualenv installation so
+      the take effect at runtime. Exception tracebacks will still take you to the virtualenv library code, so you
+      have to be careful to make any changes to the repository file or they will be overwritten by subsequent installs
 
 3. To work directly from the project files so that changes immediately affect the runtime environment, and so that
    tracebacks and stepping into library functions will keep you in the project files rather than the virtualenv
    library directories, go to the command prompt in "mtaf/package/mtaf" and run ". develop".
 
-4. To update the PyPi version:
+To update the PyPi version:
     - bump the version number in "mtaf/package/mtaf/setup.py"
     - go to the command prompt in "mtaf/package/mtaf/setup.py" and run ". build_script"
     - you may need to install twine in the current virtualenv using "pip install twine"

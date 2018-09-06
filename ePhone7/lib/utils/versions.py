@@ -3,7 +3,7 @@ from ePhone7.lib.utils.spud_serial import SpudSerial
 from ePhone7.config.configure import cfg
 import spur
 from mtaf.user_exception import UserException as Ux
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from mtaf import mtaf_logging
 from mtaf.ADB import ADB
 from mtaf.Fastboot import Fastboot

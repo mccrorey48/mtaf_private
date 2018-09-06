@@ -12,7 +12,7 @@ setup(
     name='mtaf',
     packages=find_packages(),
     author='Martin McCrorey',
-    version='1.0.44',
+    version='1.0.48',
     license='MIT',
     url='https://github.com/mccrorey48/mtaf',
     description='Mobile Test Automation Framework with Appium Inspector GUI for Android Applications',
@@ -20,6 +20,7 @@ setup(
     entry_points={
         'console_scripts': [
             'mtaf-inspector=mtaf:start_inspector',
+            'mtaf-web-inspector=mtaf:start_web_inspector',
         ],
     },
     keywords=['python', 'android', 'appium', 'selenium', 'adb', 'uiautomator', 'viewer', 'inspector', 'gui', 'locator', 'screenshot',
@@ -37,6 +38,7 @@ setup(
     install_requires=[
         'Appium-Python-Client==0.25',
         'babel==2.6.0',
+        'beautifulsoup4==4.6.1',
         'behave==1.2.6',
         'ipaddress==1.0.22',
         'olefile==0.44',

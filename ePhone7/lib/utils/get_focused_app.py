@@ -2,7 +2,8 @@ from ePhone7.lib.utils.spud_serial import SpudSerial
 from ePhone7.config.configure import cfg
 from mtaf import mtaf_logging
 from mtaf.user_exception import UserException as Ux
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
+
 log = mtaf_logging.get_logger('mtaf.get_focused_app')
 
 

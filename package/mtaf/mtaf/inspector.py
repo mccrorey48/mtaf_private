@@ -16,17 +16,10 @@ import importlib
 from operator import xor
 from time import strftime, localtime
 import traceback
-import six
-if six.PY3:
-    from tkinter import *
-    from tkinter import simpledialog as tk_simple_dialog
-    from tkinter.ttk import Combobox
-else:
-    from Tkinter import *
-    import tk_simple_dialog
-    from ttk import Combobox
-from mtaf.trace import Trace
-
+from Tkinter import *
+import tk_simple_dialog
+from ttk import Combobox
+from mtaf.decorators import Trace
 
 mtaf_logging.disable_console()
 log = mtaf_logging.get_logger('mtaf.inspector')
@@ -83,7 +76,7 @@ class AutoIncrementer(object):
             self.__dict__['counts'][name] = 0
         prev_count = self.__dict__['counts'][name]
         self.__dict__['counts'][name] += 1
-        # six.print_("AutoIncrementer returning %s for name %s" % (prev_count, name))
+        # print "AutoIncrementer returning %s for name %s" % (prev_count, name)
         return prev_count
 
 
@@ -520,7 +513,7 @@ class Inspector(Frame):
             destroy_existing_cwin()
             create_new_cwin()
         except Ux as _e:
-            six.print_("error creating screenshot window: %s" % _e)
+            print "error creating screenshot window: %s" % _e
             # traceback.print_exc()
         finally:
             enable_screenshot_button()
@@ -610,8 +603,8 @@ class Inspector(Frame):
 
     def mouse_btn(self, event):
         # (event.type, event.num) values: (4,1)=press, 6=motion, 5=release, (4,3)=right-press
-        # six.print_("type,num = %s(%s),%s(%s)   x = %d,  y = %d" % (event.type, type(event.type),
-        #                                     event.num, type(event.num), event.x, event.y))
+        # print "type,num = %s(%s),%s(%s)   x = %d,  y = %d" % (event.type, type(event.type),
+        #                                     event.num, type(event.num), event.x, event.y)
         if event.type == '4':
             if event.num == 1:
                 self.new_drag_polygon_x1 = event.x
@@ -655,11 +648,11 @@ class Inspector(Frame):
             else:
                 # click/release with no drag, select and outline smallest element and put its zpath in the value
                 # combobox
-                six.print_("clicked: (image) %s,%s  (device) %s,%s" % (x1, y1, self.descale(x1), self.descale(y1)))
+                print "clicked: (image) %s,%s  (device) %s,%s" % (x1, y1, self.descale(x1), self.descale(y1))
                 zpath_key = self.select_smallest(x1, y1)
                 if zpath_key is None:
-                    six.print_("No element reported at location: (image) %s,%s  (device) %s,%s" %
-                               (x1, y1, self.descale(x1), self.descale(y1)))
+                    print "No element reported at location: (image) %s,%s  (device) %s,%s" % (
+                        x1, y1, self.descale(x1), self.descale(y1))
                 else:
                     self.get_zpath_outline_fn(zpath_key)()
         elif event.type == '6':
@@ -735,9 +728,9 @@ class Inspector(Frame):
     def exec_code(self):
         text = self.exec_text.get()
         try:
-            six.exec_(text)
+            exec text
         except Exception as _e:
-            six.print_("exec raised exception: %s" % _e)
+            print "exec raised exception: %s" % _e
 
     def callback(self, *_args):
         self.find_button.configure(bg=btn_select_bg, activebackground=btn_select_bg)
@@ -973,7 +966,7 @@ class Inspector(Frame):
 
     def do_cmd(self, cmd):
         if self.worker_thread is not None:
-            six.print_("worker thread busy: %s" % cmd.__name__)
+            print "worker thread busy: %s" % cmd.__name__
         else:
             for btn in self.appium_btns:
                 btn.configure(state=DISABLED)
@@ -990,7 +983,7 @@ class Inspector(Frame):
 
     def close_appium_and_quit(self):
         if self.appium_is_open:
-            six.print_("trying to close appium")
+            print "trying to close appium"
             self.close_appium()
         try:
             os.mkdir(os.path.dirname(self.loc_file))
@@ -1005,11 +998,11 @@ class Inspector(Frame):
             x = int(self.tap_x_var.get())
             y = int(self.tap_y_var.get())
         except (ValueError, TypeError):
-            six.print_("Can't execute tap with x='%s', y='%s'" % (self.tap_x_var.get(), self.tap_y_var.get()))
+            print "Can't execute tap with x='%s', y='%s'" % (self.tap_x_var.get(), self.tap_y_var.get())
         else:
-            six.print_("Executing tap([(%d, %d)])..." % (x, y), end='')
+            print "Executing tap([(%d, %d)])..." % (x, y),
             android_actions.tap([(x, y)])
-            six.print_("Done")
+            print "Done"
 
     def swipe(self):
         try:
@@ -1017,23 +1010,23 @@ class Inspector(Frame):
             y2 = int(self.swipe_y2_var.get())
             ms = int(self.swipe_ms_var.get())
         except (ValueError, TypeError):
-            six.print_("Can't execute swipe with y1='%s', y2='%s'" % (self.swipe_y1_var.get(), self.swipe_y2_var.get()))
+            print "Can't execute swipe with y1='%s', y2='%s'" % (self.swipe_y1_var.get(), self.swipe_y2_var.get())
         else:
-            six.print_("Executing swipe([(300, %d, 300, %d, %d)])..." % (y1, y2, ms), end='')
+            print "Executing swipe([(300, %d, 300, %d, %d)])..." % (y1, y2, ms),
             android_actions.swipe(300, y1, 300, y2, ms)
-            six.print_("Done")
+            print "Done"
 
     def scroll(self):
         try:
             elem1 = int(self.scroll_elem1_var.get())
             elem2 = int(self.scroll_elem2_var.get())
         except (ValueError, TypeError):
-            six.print_("Can't execute scroll with elem1='%s', elem2='%s'" % (self.scroll_elem1_var.get(),
-                                                                             self.scroll_elem1_var.get()))
+            print "Can't execute scroll with elem1='%s', elem2='%s'" % (self.scroll_elem1_var.get(),
+                                                                             self.scroll_elem1_var.get())
         else:
-            six.print_("Executing scroll from elem %s to elem %s..." % (elem1, elem2), end='')
+            print "Executing scroll from elem %s to elem %s..." % (elem1, elem2)
             android_actions.short_press_scroll(self.elems[elem1], self.elems[elem2])
-            six.print_("Done")
+            print "Done"
 
     def update_find_widgets(self, event):
         find_by = self.find_by_var.get()
@@ -1061,7 +1054,7 @@ class Inspector(Frame):
                 # self.record("finding elements in view %s using locator %s" % (view_name, value))
                 elems = [getattr(self.views[view_name], value)]
         except Ux as _e:
-            six.print_(_e.message)
+            print _e.message
         if self.within_frame.get():
             return filter(get_filter('within_frame', frame=self.frame_element), elems)
         else:
@@ -1075,7 +1068,7 @@ class Inspector(Frame):
         if by == 'zpath':
             value = expand_zpath(value)
             by = 'xpath'
-            six.print_("xpath = %s" % value)
+            print "xpath = %s" % value
         elif by == 'uia_text':
             by = '-android uiautomator'
             value = 'new UiSelector().text("%s")' % value
@@ -1109,7 +1102,7 @@ class Inspector(Frame):
         self.btn_frame.find_frame.loc.value.configure(value=self.get_filtered_locator_keys())
 
     def find_elements(self):
-        six.print_("finding elements...", end='')
+        print "finding elements...",
         self.find_button.configure(bg=btn_default_bg)
         locator = {
             'by': self.find_by_var.get(),
@@ -1124,13 +1117,13 @@ class Inspector(Frame):
             try:
                 self.elems = self.find_elements_with_driver(locator)
             except WebDriverException as _e:
-                six.print_(str(_e).strip())
+                print str(_e).strip()
                 return
             # keep frame element setting if using "by" value ending in '*_locator'
             self.frame_element = None
             self.within_frame.set(0)
         _msg = "%s element%s found" % (len(self.elems), '' if len(self.elems) == 1 else 's')
-        six.print_(_msg)
+        print _msg
         self.record(_msg)
         elem_indices = [str(i) for i in range(len(self.elems))]
         self.btn_frame.attr_frame.index.configure(values=elem_indices)
@@ -1154,10 +1147,10 @@ class Inspector(Frame):
         index = int(text_index)
         elem = self.elems[index]
         self.record('getting element %d attributes' % index)
-        six.print_("\nattributes for element %d" % index)
-        six.print_("  %10s: %s" % ("location_in_view", elem.location_in_view))
-        six.print_("  %10s: %s" % ("location", elem.location))
-        six.print_("  %10s: %s" % ("size", elem.size))
+        print "\nattributes for element %d" % index
+        print "  %10s: %s" % ("location_in_view", elem.location_in_view)
+        print "  %10s: %s" % ("location", elem.location)
+        print "  %10s: %s" % ("size", elem.size)
         for attr in ['name', 'contentDescription', 'text', 'className', 'resourceId', 'enabled', 'checkable', 'checked',
                      'clickable', 'focusable', 'focused', 'longClickable', 'scrollable', 'selected', 'displayed']:
             try:
@@ -1165,7 +1158,7 @@ class Inspector(Frame):
             except NoSuchElementException:
                 _msg = "NoSuchElementException running elem.get_attribute(%s)" % attr
                 log.debug(_msg)
-            six.print_(_msg)
+            print _msg
             self.record(_msg)
         self.draw_outlines([{
             "x1": int(elem.location['x']),
@@ -1195,7 +1188,7 @@ class Inspector(Frame):
                 locator = self.ids[locator_name]
                 geoms = locator['geoms']
                 if len(locator['zpath']) > 1:
-                    six.print_("id %s matched %d elements" % (locator_name, len(locator['zpath'])))
+                    print "id %s matched %d elements" % (locator_name, len(locator['zpath']))
                 for zpath in self.zpath_frame_btns:
                     btn = self.zpath_frame_btns[zpath]
                     if zpath in locator['zpath']:
@@ -1219,8 +1212,8 @@ class Inspector(Frame):
                 y1 = self.scale(geom["y1"]) + 2
                 y2 = self.scale(geom["y2"]) - 1
                 x2 = self.scale(geom["x2"]) - 1
-                # six.print_("calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" %
-                #            (x1, y1, x1, y2, x2, y2, x2, y1))
+                # print "calling create_polygon(%d, %d, %d, %d, %d, %d, %d, %d)" %
+                #            (x1, y1, x1, y2, x2, y2, x2, y1)
                 self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline='red',
                                                                    fill='', width=2))
 
@@ -1233,11 +1226,11 @@ class Inspector(Frame):
         android_actions.get_screenshot_as_file('inspector.png')
         color = android_actions.get_element_color_and_count_using_folder(self.cfg['tmp_dir'], 'inspector', elem,
                                                                          cropped_suffix='', color_list_index=0)
-        six.print_("first color and count: %s" % color)
+        print "first color and count: %s" % color
         self.record("first color and count: %s" % color)
         color = android_actions.get_element_color_and_count_using_folder(self.cfg['tmp_dir'], 'inspector', elem,
                                                                          cropped_suffix='', color_list_index=1)
-        six.print_("second color and count: %s" % color)
+        print "second color and count: %s" % color
         self.record("second color and count: %s" % color)
         color = android_actions.get_element_color_and_count_using_folder(self.cfg['tmp_dir'], 'inspector', elem,
                                                                          cropped_suffix='', color_list_index=2)
@@ -1294,7 +1287,7 @@ class Inspector(Frame):
                 if len(terms):
                     elem.send_keys('\n')
         except BaseException as _e:
-            six.print_("got exception %s" % _e)
+            print "got exception %s" % _e
         self.update_find_widgets(None)
 
     def input_enter(self):
@@ -1306,41 +1299,41 @@ class Inspector(Frame):
         try:
             self.elems[index].send_keys('\n')
         except BaseException as _e:
-            six.print_("got exception %s" % _e)
+            print "got exception %s" % _e
         self.update_find_widgets(None)
 
     def open_appium(self, max_attempts=1, retry_seconds=5, automation_name="Appium"):
         attempts = 0
-        six.print_("Opening Appium (%s)..." % automation_name, end='')
+        print "Opening Appium (%s)..." % automation_name,
         while attempts < max_attempts:
             try:
                 if attempts > 0:
-                    six.print_("\n(retrying) Opening Appium...", end='')
+                    print "\n(retrying) Opening Appium...",
                 self.update_idletasks()
                 android_actions.open_appium(automation_name=automation_name)
                 self.appium_is_open = True
                 self.automation_name = automation_name
                 self.update_find_widgets(None)
-                six.print_("Done")
+                print "Done"
                 break
             except BaseException as _e:
-                six.print_("Error trying to open Appium: %s" % _e)
+                print "Error trying to open Appium: %s" % _e
             finally:
                 attempts += 1
             if attempts < max_attempts:
                 sleep(retry_seconds)
         else:
-            six.print_("attempted to open_appium %d time(s)\n" % attempts)
+            print "attempted to open_appium %d time(s)\n" % attempts
 
     def close_appium(self):
-        six.print_("Closing Appium...", end='')
+        print "Closing Appium...",
         try:
             android_actions.close_appium()
             self.appium_is_open = False
             self.automation_name = None
-            six.print_("Done")
+            print "Done"
         except Ux as e:
-            six.print_(e)
+            print e
 
     @staticmethod
     def log_action(spud_serial, action):
@@ -1352,18 +1345,18 @@ class Inspector(Frame):
             log.debug(' '*7 + line.encode('string_escape'))
 
     def restart_appium(self):
-        six.print_("--> Restarting Appium")
+        print "--> Restarting Appium"
         if not self.appium_is_open:
             raise Ux("called restart_appium when appium was not open")
         # calling close_appium will set self.automation_name to none, so save it
         automation_name = self.automation_name
         self.close_appium()
         self.open_appium(automation_name=automation_name)
-        six.print_("--> Done")
+        print "--> Done"
 
     def get_focused_app(self, quiet=False):
         if not quiet:
-            six.print_("Getting Focused App...", end='')
+            print "Getting Focused App...",
         package = 'Unknown'
         activity = 'Unknown'
         apk = 'Unknown'
@@ -1371,7 +1364,7 @@ class Inspector(Frame):
         if len(self.devices) > 0:
             if len(self.devices) > 1:
                 id = MyDialog(self)
-                six.print_("MyDialog returned %s" % id)
+                print "MyDialog returned %s" % id
                 android_actions.adb.set_target_by_id(id)
             output = android_actions.adb.run_cmd('shell dumpsys window windows')
             if re_dumpsys.match(output):
@@ -1381,15 +1374,15 @@ class Inspector(Frame):
                 if re_apk.match(output):
                     apk = re_apk.match(output).group(1)
         if not quiet:
-            six.print_()
-            six.print_("Package: " + package)
-            six.print_("Activity: " + activity)
-            six.print_("apk: " + apk)
-            six.print_("Done")
+            print
+            print "Package: " + package
+            print "Activity: " + activity
+            print "apk: " + apk
+            print "Done"
         return package
 
     def get_xml_appium(self):
-        six.print_("Getting XML and CSV...", end='')
+        print "Getting XML and CSV...",
         xml = android_actions.driver.page_source
         xml_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.xml')
         csv_fullpath = os.path.join(self.cfg['tmp_dir'], 'inspector.csv')
@@ -1397,10 +1390,10 @@ class Inspector(Frame):
         with open(xml_fullpath, 'w') as _f:
             _f.write(xml.encode('utf8'))
         xml_to_csv(xml_fullpath, csv_fullpath)
-        six.print_("Done")
+        print "Done"
 
     def get_xml_adb(self):
-        six.print_("Getting XML and CSV...", end='')
+        print "Getting XML and CSV..."
         xml_path = os.path.join(self.cfg['tmp_dir'], 'inspector.xml')
         csv_path = os.path.join(self.cfg['tmp_dir'], 'inspector.csv')
         try:
@@ -1419,22 +1412,22 @@ class Inspector(Frame):
         else:
             xml_to_csv(xml_path, csv_path)
 
-        six.print_("Done")
+        print "Done"
 
     def get_screenshot_appium(self):
-        six.print_("Getting Screenshot using Appium...", end='')
+        print "Getting Screenshot using Appium...",
         img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
         log.debug("saving screenshot to %s" % img_path)
         android_actions.get_screenshot_as_file(img_path)
-        six.print_("Done")
+        print "Done"
 
     def get_screenshot_adb(self):
-        six.print_("Getting Screenshot using ADB...", end='')
+        print "Getting Screenshot using ADB...",
         devices = android_actions.adb.get_devices()
         if len(devices) == 0:
-            six.print_("no device found")
+            print "no device found"
         else:
-            six.print_("%d devices found" % len(devices))
+            print "%d devices found" % len(devices)
             img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
             try:
                 os.remove(img_path)
@@ -1447,32 +1440,32 @@ class Inspector(Frame):
             try:
                 os.rename('screencap.png', img_path)
             except OSError as _e:
-                six.print_("Error")
+                print "Error"
                 if _e.errno == errno.ENOENT:
                     raise Ux("ADB did not supply screenshot image")
                 else:
                     raise Ux("could not rename 'screencap.png': %s" % _e)
-            six.print_("Done")
+            print "Done"
 
     def rotate_image(self):
-        six.print_("Rotating screenshot...", end='')
+        print "Rotating screenshot...",
         img_path = os.path.join(self.cfg['tmp_dir'], 'inspector.png')
         im = PIL_Image.open(img_path)
         im = im.rotate(-90, expand=True)
         im.save(img_path)
         self.create_cwin(reuse_image=True)
-        six.print_("Done")
+        print "Done"
 
     def __del__(self):
-        six.print_("Closing Appium...", end='')
+        print "Closing Appium...",
         self.update_idletasks()
         self.after(500, android_actions.close_appium)
         sleep(1)
-        six.print_("Done")
+        print "Done"
 
     @staticmethod
     def get_current_activity():
-        six.print_("current activity: " + android_actions.driver.current_activity)
+        print "current activity: " + android_actions.driver.current_activity
 
     def set_zpath_tag(self, abbrev, zpath):
         set_zpath_tag(abbrev, zpath)
@@ -1517,8 +1510,8 @@ def run_inspector(cfg):
         except ImportError as e:
             tb = sys.exc_info()[2]
             path, line_no = traceback.extract_tb(tb)[-1][:2]
-            six.print_("no plugin loaded for package %s\n  -->[%s:%s] %s" % (package, path, line_no, e))
+            print "no plugin loaded for package %s\n  -->[%s:%s] %s" % (package, path, line_no, e)
         else:
-            six.print_("plugin loaded for package %s" % package)
+            print "plugin loaded for package %s" % package
     root.protocol("WM_DELETE_WINDOW", _app.close_appium_and_quit)
     _app.mainloop()

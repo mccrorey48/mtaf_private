@@ -75,7 +75,7 @@ Python installation, beyond installing virtualenv and virtualenvwrapper:
     workon mtaf
     (NEW_ARCH: To set up for running tests, install the mtaf shared library code in the Python library environment,
                skip the following steps and go to section 6. See "new_arch_notes.txt" for ways to install the mtaf
-               shared library code.n)
+               shared library code.)
     pip install selenium
     pip install numpy
     pip install matplotlib

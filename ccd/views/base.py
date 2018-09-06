@@ -1,5 +1,5 @@
 from mtaf import mtaf_logging
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from selenium.webdriver import Chrome, Firefox
 from selenium.webdriver.common.keys import Keys
 

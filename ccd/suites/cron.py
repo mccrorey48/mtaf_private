@@ -4,7 +4,7 @@ log = mtaf_logging.get_logger('mtaf.cron')
 with mtaf_logging.msg_src_cm('importing modules'):
     import unittest
     from ccd.views import *
-    from mtaf.trace import TestCase
+    from mtaf.decorators import TestCase
 
 debug = False
 browser = 'chrome'

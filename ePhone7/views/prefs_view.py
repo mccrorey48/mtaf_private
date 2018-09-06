@@ -1,7 +1,7 @@
 import re
 
 from mtaf import mtaf_logging
-from mtaf.trace import Trace
+from mtaf.decorators import Trace
 from mtaf.user_exception import UserException as Ux
 
 from ePhone7.views.base_view import BaseView

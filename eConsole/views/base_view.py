@@ -1,9 +1,7 @@
 import os
 import mtaf.mtaf_logging as logging
-from mtaf.trace import Trace
-from selenium.webdriver import Chrome, Firefox
+from mtaf.decorators import Trace
 from eConsole.config.configure import cfg
-from eConsole.utils.process_chrome_log import process_log
 from mtaf.angular_actions import AngularActions
 from mtaf.user_exception import UserException as Ux
 from selenium.webdriver.support.ui import WebDriverWait
@@ -41,9 +39,9 @@ class BaseView(AngularActions):
     }
 
     def __init__(self):
+        super(BaseView, self).__init__()
         self.cfg = cfg
         self.page_title = 'ESI'
-        self.current_browser = None
         self.log_file = None
         self.service_log_path = None
         self.webdriver_log_path = None
@@ -51,7 +49,6 @@ class BaseView(AngularActions):
         self.nav_tab_names = []
         self.banner_texts = []
         self.view_name = 'base'
-        super(BaseView, self).__init__()
 
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder=None, scale=None):
@@ -63,7 +60,7 @@ class BaseView(AngularActions):
             pass
         fullpath = os.path.join(screenshot_folder, filebase + '.png')
         log.debug("saving screenshot to %s" % fullpath)
-        self.driver.get_screenshot_as_file(fullpath)
+        self.get_driver().get_screenshot_as_file(fullpath)
         im = Image.open(fullpath)
         if im.getbbox()[2] == 1024:
             log.debug("rotating screenshot -90 degrees")
@@ -91,7 +88,7 @@ class BaseView(AngularActions):
     def click_named_element(self, name, timeout=5):
         elem = self.find_named_element(name)
         try:
-            WebDriverWait(self.driver, timeout).until(lambda driver: self.element_is_clickable(elem))
+            WebDriverWait(self.get_driver(), timeout).until(lambda driver: self.element_is_clickable(elem))
         except TimeoutException:
             raise Ux("element named \"%s\" not clickable in %s seconds" % (name, timeout))
         log.debug('element "%s" is clickable' % name)
@@ -124,46 +121,10 @@ class BaseView(AngularActions):
         if len(self.nav_tab_names) > 0:
             locator = self.get_locator('NavTabs')
             driver_locator = (locator["by"], locator["value"])
-            if len(WebDriverWait(self.driver, 15).until(
+            if len(WebDriverWait(self.get_driver(), 15).until(
                     expected_conditions.visibility_of_all_elements_located(driver_locator))) != len(self.nav_tab_names):
                 return False
         return True
-
-    @staticmethod
-    def get_url(url):
-        if AngularActions.driver is None:
-            raise Ux('remote is not open')
-        log.debug('getting url %s' % url)
-        AngularActions.driver.get(url)
-
-    def open_browser(self, browser='chrome'):
-        if self.current_browser is not None:
-            log.debug('browser is already open')
-        else:
-            if browser.lower() == 'chrome':
-                mtaf_log_dir = os.getenv('MTAF_LOG_DIR', './log')
-                self.service_log_path = os.path.join(mtaf_log_dir, 'service.log')
-                self.webdriver_log_path = os.path.join(mtaf_log_dir, 'webdriver.log')
-                AngularActions.driver = Chrome(service_log_path=self.service_log_path)
-            elif browser.lower() == 'firefox':
-                self.log_file = open('/home/mmccrorey/firefox.log', 'w')
-                AngularActions.driver = Firefox()
-            else:
-                raise Ux('Unknown browser %s' % browser)
-            AngularActions.driver.set_window_size(1280, 1024)
-            self.current_browser = browser
-
-    def close_browser(self):
-        if self.current_browser is None:
-            log.debug('browser is already closed')
-        else:
-            AngularActions.driver.quit()
-            AngularActions.driver = None
-            self.current_browser = None
-            if self.log_file is not None:
-                self.log_file.close()
-            if self.service_log_path is not None:
-                process_log(self.service_log_path, self.webdriver_log_path)
 
 
 base_view = BaseView()
