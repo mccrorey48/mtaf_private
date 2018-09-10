@@ -247,6 +247,7 @@ class Inspector(Frame):
         Frame.__init__(self, parent, bg="brown")
         self.parent = parent
         self.cfg = gui_cfg
+        self.breakpoint = None
         self.browser_btns = []
         self.browser_is_open = False
         self.add_cmd_btn = None
@@ -294,7 +295,8 @@ class Inspector(Frame):
         self.script_btn_enable_states = {}
         self.script_fd = None
         self.script_file = StringVar()
-        self.script_file.set(os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts', 'web_inspector_script.txt'))
+        self.script_file.set(os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts', 'misc',
+                                          'web_inspector_script.txt'))
         self.script_recording = False
         self.script_rec_btns = []
         self.script_running = False
@@ -381,7 +383,7 @@ class Inspector(Frame):
         for selector in css_selectors[:]:
             value = tag + selector
             try:
-                elems = angular_actions.driver.find_elements(by, value)
+                elems = angular_actions.get_driver().find_elements(by, value)
                 elems = filter(lambda x: x.is_displayed(), elems)
             except InvalidSelectorException:
                 log.debug("removing invalid css selector %s" % selector)
@@ -393,7 +395,7 @@ class Inspector(Frame):
         value = tag + ''.join(css_selectors)
         all_elems = []
         try:
-            all_elems = angular_actions.driver.find_elements(by, value)
+            all_elems = angular_actions.get_driver().find_elements(by, value)
             all_elems = filter(lambda x: x.is_displayed(), all_elems)
         except InvalidSelectorException as e:
             print "got exception %s: by = %s, value = %s" % (e, by, value)
@@ -493,6 +495,7 @@ class Inspector(Frame):
 
     def change_script(self):
         self.update_script_state('changing')
+        self.bottom_frame.script_frame.bp_frame.bp.configure(values=[])
         filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
                                                  initialfile=os.path.basename(self.script_file.get()),
                                                  title="Select current script",
@@ -509,13 +512,19 @@ class Inspector(Frame):
         filename = self.script_file.get()
         self.log_frame.log_prefix = '>>> '
         print 'Printing contents of %s:' % self.script_file.get()
+        bp_list = ['']
         try:
             with open(filename, 'r') as f:
-                for line in f:
-                    print line.strip()
+                for lnum, line in enumerate(f):
+                    line = line.strip()
+                    if len(line) > 0:
+                        print "%3d: %s" % (lnum + 1, line)
+                        if line[0] != '#':
+                            bp_list.append(lnum + 1)
         except BaseException as e:
             print 'got exception: %s' % e
         self.log_frame.log_prefix = '> '
+        self.bottom_frame.script_frame.bp_frame.bp.configure(values=bp_list)
         print
         self.update_script_state('stopped')
 
@@ -530,10 +539,12 @@ class Inspector(Frame):
         try:
             with open(filename, 'r') as f:
                 try:
-                    for line in f:
+                    for lnum, line in enumerate(f):
                         line = line.strip()
                         if line[0] == '#' or line[0] == '"':
                             continue
+                        if self.breakpoint.get() != '' and int(self.breakpoint.get()) == lnum + 1:
+                            break
                         if not self.script_running:
                             break
                         print "exec: %s" % line
@@ -552,6 +563,7 @@ class Inspector(Frame):
 
     def record_script(self):
         self.update_script_state('recording')
+        self.bottom_frame.script_frame.bp_frame.bp.configure(values=[])
         filename = tkfilebrowser.asksaveasfilename(initialdir=os.path.join(self.cfg['tmp_dir'],
                                                                            'web_inspector_scripts'),
                                                    initialfile=os.path.basename(self.script_file.get()),
@@ -571,6 +583,7 @@ class Inspector(Frame):
 
     def add_to_script(self):
         self.update_script_state('recording')
+        self.bottom_frame.script_frame.bp_frame.bp.configure(values=[])
         filename = self.script_file.get()
         print "Adding commands to %s" % self.script_file.get()
         self.script_fd = open(filename, 'a')
@@ -581,6 +594,7 @@ class Inspector(Frame):
 
     def copy_script(self):
         self.update_script_state('recording')
+        self.bottom_frame.script_frame.bp_frame.bp.configure(values=[])
         fname = tkfilebrowser.asksaveasfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
                                                 initialfile=os.path.basename(self.script_file.get()),
                                                 title="Copy current script to file: ",
@@ -658,56 +672,71 @@ class Inspector(Frame):
         ai = AutoIncrementer()
         bottom_frame = BottomFrame(self, bg="tan")
         bottom_frame.script_frame = Frame(bottom_frame, bg="brown")
-        bottom_frame.script_frame.script_label = Label(bottom_frame.script_frame, text="Current Script:")
-        bottom_frame.script_frame.script_label.grid(row=0, column=0, sticky='e', padx=0, pady=2)
-        bottom_frame.script_frame.script_name = Entry(bottom_frame.script_frame, textvariable=self.script_file,
+        sf = bottom_frame.script_frame
+        sf.script_label = Label(bottom_frame.script_frame, text="Current Script:")
+        sf.script_label.grid(row=0, column=0, sticky='e', padx=0, pady=2)
+        sf.script_name = Entry(bottom_frame.script_frame, textvariable=self.script_file,
                                                       width=75, state='readonly')
-        bottom_frame.script_frame.script_name.grid(row=0, column=1, padx=4, pady=2, columnspan=6, sticky='news')
+        sf.script_name.grid(row=0, column=1, padx=4, pady=2, columnspan=6, sticky='news')
 
-        btn = Button(bottom_frame.script_frame, text="Record New", bg=btn_default_bg, command=self.record_script)
+        btn = Button(sf, text="Record New", bg=btn_default_bg, command=self.record_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         self.script_btns.append(btn)
-        bottom_frame.script_frame.record_script = btn
+        sf.record_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
-        btn = Button(bottom_frame.script_frame, text="Add to Script", bg=btn_default_bg, command=self.add_to_script)
+        btn = Button(sf, text="Add to Script", bg=btn_default_bg, command=self.add_to_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         self.script_btns.append(btn)
-        bottom_frame.script_frame.add_to_script = btn
+        sf.add_to_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
-        btn = Button(bottom_frame.script_frame, text="Stop Recording", bg=btn_default_bg, command=self.stop_script,
+        btn = Button(sf, text="Stop Recording", bg=btn_default_bg, command=self.stop_script,
                      state=DISABLED)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         self.script_btns.append(btn)
-        bottom_frame.script_frame.stop_script = btn
+        sf.stop_script = btn
         self.script_btn_enable_states[btn] = "recording"
 
-        btn = Button(bottom_frame.script_frame, text="Print", bg=btn_default_bg, command=self.print_script)
+        btn = Button(sf, text="Print", bg=btn_default_bg, command=self.print_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         self.script_btns.append(btn)
-        bottom_frame.script_frame.print_script = btn
+        sf.print_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
-        btn = Button(bottom_frame.script_frame, text="Run", bg=btn_default_bg, command=self.run_script)
+        btn = Button(sf, text="Run", bg=btn_default_bg,
+                     command=lambda: self.do_cmd(self.run_script))
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         self.script_btns.append(btn)
-        bottom_frame.script_frame.run_script = btn
+        sf.run_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
-        btn = Button(bottom_frame.script_frame, text="Copy", bg=btn_default_bg, command=self.copy_script)
+        btn = Button(sf, text="Copy", bg=btn_default_bg, command=self.copy_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         self.script_btns.append(btn)
-        bottom_frame.script_frame.copy_script = btn
+        sf.copy_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
-        btn = Button(bottom_frame.script_frame, text="Change Current", bg=btn_default_bg, command=self.change_script)
+        btn = Button(sf, text="Change Current", bg=btn_default_bg, command=self.change_script)
         btn.grid(row=1, column=ai.col, sticky='ew', padx=4, pady=2)
         self.script_btns.append(btn)
-        bottom_frame.script_frame.change_script = btn
+        sf.change_script = btn
         self.script_btn_enable_states[btn] = "stopped"
 
-        bottom_frame.script_frame.grid(row=0, column=0, sticky='w')
+        sf.bp_frame = AttrFrame(sf, bg='tan')
+        bpf = sf.bp_frame
+        bpf.grid(row=1, column=ai.col, sticky='ew', padx=2, pady=2)
+        bpf.index_label = Label(bpf, text="breakpoint", bg="tan")
+        self.elems_btns.append(bpf.index_label)
+        bpf.index_label.grid(row=0, column=0, padx=2, pady=2, sticky='e')
+        self.breakpoint = StringVar()
+        self.breakpoint.set('')
+        bpf.bp = Combobox(bpf, width=6, values=[], textvariable=self.breakpoint)
+        bpf.bp.grid(row=1, column=0)
+        self.script_btns.append(bpf.bp)
+        self.script_btn_enable_states[bpf.bp] = "stopped"
+
+        sf.grid(row=0, column=0, sticky='w')
         bottom_frame.grid_columnconfigure(0, weight=1)
         bottom_frame.Quit = Button(bottom_frame, text="Quit", bg=btn_default_bg,
                                    command=self.close_and_quit)
@@ -990,7 +1019,7 @@ class Inspector(Frame):
             if self.use_parent.get():
                 elems = self.parent_element.find_elements(by, value)
             else:
-                elems = angular_actions.driver.find_elements(by, value)
+                elems = angular_actions.get_driver().find_elements(by, value)
             elems = filter(lambda x: x.is_displayed(), elems)
             return elems
         except InvalidSelectorException as e:
@@ -1064,8 +1093,8 @@ class Inspector(Frame):
             + 'for (index = 0; index < arguments[0].attributes.length; ++index) ' \
             + '{ items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value };' \
             + 'return items;'
-        self.save_last_cmd('angular_actions.driver.execute_script(%s, self.elems(%s)' % (script, index))
-        attrs = angular_actions.driver.execute_script(script, elem)
+        self.save_last_cmd('angular_actions.get_driver().execute_script(%s, self.elems(%s)' % (script, index))
+        attrs = angular_actions.get_driver().execute_script(script, elem)
         print "\nattributes for element %d:" % index
         for key in attrs.keys():
             print "%s: %s" % (key, attrs[key])
@@ -1083,7 +1112,7 @@ class Inspector(Frame):
     def save_last_cmd(self, cmd):
         if cmd != self.last_cmd:
             self.last_cmd = cmd
-            print "last_cmd = %s..." % cmd
+            print "last_cmd = %s" % cmd
 
     def click_element_by_index(self, index):
         self.save_last_cmd('self.click_element_by_index(%s)' % index)
@@ -1152,7 +1181,7 @@ class Inspector(Frame):
         self.update_find_widgets(None)
 
     def capture_view(self):
-        self.soup = BeautifulSoup(angular_actions.driver.page_source, 'html.parser')
+        self.soup = BeautifulSoup(angular_actions.get_driver().page_source, 'html.parser')
         self.create_cwin()
 
         class TagInfo(object):
@@ -1186,7 +1215,7 @@ class Inspector(Frame):
         print "Getting Screenshot"
         img_path = os.path.join(self.cfg["screenshot_dir"], self.screenshot_file_name)
         log.debug("saving screenshot to %s" % img_path)
-        angular_actions.driver.get_screenshot_as_file(img_path)
+        angular_actions.get_driver().get_screenshot_as_file(img_path)
 
     @staticmethod
     def log_action(spud_serial, action):

@@ -145,6 +145,7 @@ class SeleniumActions(object):
             else:
                 raise Ux('Unknown browser %s' % browser_name)
 
+    @DriverCheck()
     @Trace(log)
     def close_browser(self):
         if self.get_driver() is None:
@@ -155,6 +156,7 @@ class SeleniumActions(object):
             if self.service_log_path is not None and self.webdriver_log_path is not None:
                 self.process_log(self.service_log_path, self.webdriver_log_path)
 
+    @DriverCheck()
     class PresenceOfElementsByName(object):
         def __init__(self, name):
             self.name = name
@@ -178,18 +180,22 @@ class SeleniumActions(object):
         if a != b:
             raise AssertionError(msg)
 
+    @DriverCheck()
     @Trace(log)
     def get_source(self):
         return self.get_driver().page_source
 
+    @DriverCheck()
     @Trace(log)
     def click_element(self, elem):
         elem.click()
 
+    @DriverCheck()
     @Trace(log)
     def send_keys(self, elem, val):
         elem.send_keys(val)
 
+    @DriverCheck()
     @Trace(log)
     def click_named_element(self, name):
         elem = self.find_named_element(name)
@@ -206,12 +212,14 @@ class SeleniumActions(object):
             text, x, w, xw, xc, y, h, yh, yc))
         self.click_element(elem)
 
+    @DriverCheck()
     @Trace(log)
     def click_link_text(self, text):
         loc = {"by": "link text", "value": text}
         elem = self.find_element_by_locator(loc)
         self.click_element(elem)
 
+    @DriverCheck()
     @Trace(log, log_level='debug')
     def find_elements_by_locator(self, locator):
         self.wait_until_page_ready()
@@ -221,6 +229,7 @@ class SeleniumActions(object):
         else:
             return elems
 
+    @DriverCheck()
     @Trace(log, log_level='debug')
     def find_sub_element_by_locator(self, parent, locator, timeout=10):
         self.wait_until_page_ready()
@@ -230,6 +239,7 @@ class SeleniumActions(object):
         else:
             return elem
 
+    @DriverCheck()
     @Trace(log, log_level='debug')
     def find_sub_elements_by_locator(self, parent, locator):
         self.wait_until_page_ready()
@@ -239,6 +249,7 @@ class SeleniumActions(object):
         else:
             return elems
 
+    @DriverCheck()
     @Trace(log)
     def find_named_element(self, name, timeout=30):
         self.wait_until_page_ready()
@@ -252,20 +263,24 @@ class SeleniumActions(object):
         else:
             return elem
 
+    @DriverCheck()
     @Trace(log)
     def element_is_present_by_locator(self, locator, timeout):
         return self.find_element_by_locator(locator, timeout) is not None
 
+    @DriverCheck()
     @Trace(log)
     def element_is_present(self, name, timeout=10):
         locator = self.get_locator(name)
         return self.element_is_present_by_locator(locator, timeout)
 
+    @DriverCheck()
     @Trace(log)
     def element_with_text_is_present(self, text, timeout=10):
         locator = {"by": "-android uiautomator", "value": 'new UiSelector().text("%s")' % text}
         return self.element_is_present_by_locator(locator, timeout)
 
+    @DriverCheck()
     @Trace(log)
     def wait_for_no_elements_by_locator(self, locator, timeout, poll_interval=2):
         # waits 'timeout' seconds for zero elements with the indicated locator to be present
@@ -288,16 +303,19 @@ class SeleniumActions(object):
                 return False
             sleep(poll_interval)
 
+    @DriverCheck()
     @Trace(log)
     def element_becomes_not_present(self, name, timeout=1):
         locator = self.get_locator(name)
         return self.wait_for_no_elements_by_locator(locator, timeout)
 
+    @DriverCheck()
     @Trace(log)
     def element_with_text_is_not_present(self, text, timeout=1):
         locator = {"by": "-android uiautomator", "value": 'new UiSelector().text("%s")' % text}
         return self.wait_for_no_elements_by_locator(locator, timeout)
 
+    @DriverCheck()
     @Trace(log)
     def find_named_sub_element(self, parent, name, timeout=20):
         self.wait_until_page_ready()
@@ -307,6 +325,7 @@ class SeleniumActions(object):
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
+    @DriverCheck()
     @Trace(log)
     def find_named_elements(self, name, filter_fn=None):
         self.wait_until_page_ready()
@@ -324,6 +343,7 @@ class SeleniumActions(object):
         except WebDriverException as e:
             raise Ux('WebDriverException ' + e.message)
 
+    @DriverCheck()
     @Trace(log)
     def wait_for_named_element_text(self, name, expected_text, seconds=30):
         start_time = time()
@@ -343,6 +363,7 @@ class SeleniumActions(object):
             raise Ux('actual element text = "%s", expected "%s" after %d seconds' %
                      (self.actual_text, expected_text, seconds))
 
+    @DriverCheck()
     @Trace(log)
     def wait_for_title(self, title, timeout=20):
         WebDriverWait(self.get_driver(), timeout).until(EC.title_is(title))
@@ -361,6 +382,7 @@ class SeleniumActions(object):
                 return True
             sleep(poll_time)
 
+    @DriverCheck()
     @Trace(log, log_level='debug')
     def find_element_by_locator(self, locator, timeout=10, parent=None):
         # calls find_named_elements until exactly one element is returned, and returns that element

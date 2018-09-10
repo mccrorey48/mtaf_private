@@ -50,6 +50,7 @@ class BaseView(AngularActions):
         self.banner_texts = []
         self.view_name = 'base'
 
+
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder=None, scale=None):
         if screenshot_folder is None:
