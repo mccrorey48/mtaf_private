@@ -1,10 +1,10 @@
 import mtaf.mtaf_logging as logging
-from eConsole.views.base_view import BaseView
+from eConsole.views.logged_in_view import LoggedInView
 
 log = logging.get_logger('mtaf.contacts')
 
 
-class ContactsView(BaseView):
+class ContactsView(LoggedInView):
 
     locators = {
         "TypeLabel": {"by": "css selector", "value": "div + form label", "text": "Type"},

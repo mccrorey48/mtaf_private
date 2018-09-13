@@ -1,10 +1,10 @@
 import mtaf.mtaf_logging as logging
-from eConsole.views.base_view import BaseView
+from eConsole.views.logged_in_view import LoggedInView
 
 log = logging.get_logger('mtaf.phones')
 
 
-class PhonesView(BaseView):
+class PhonesView(LoggedInView):
 
     locators = {
         "DeviceStatus": {"by": "css selector", "value": "th span", "text": "Device Status"},

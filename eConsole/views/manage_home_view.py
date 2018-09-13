@@ -1,12 +1,12 @@
 import mtaf.mtaf_logging as logging
 
-from eConsole.views.base_view import BaseView
+from eConsole.views.logged_in_view import LoggedInView
 from mtaf.decorators import Trace
 
 log = logging.get_logger('mtaf.manage_home')
 
 
-class ManageHomeView(BaseView):
+class ManageHomeView(LoggedInView):
 
     locators = {
         "AutoAttendants": {"by": "link text", "value": "Auto Attendants"},

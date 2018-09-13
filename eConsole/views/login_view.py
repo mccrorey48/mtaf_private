@@ -11,7 +11,8 @@ class LoginView(BaseView):
     locators = {
         "LoginButton": {"by": "id", "value": "loginButton"},
         "Password": {"by": "id", "value": "password"},
-        "UserName": {"by": "id", "value": "username"}
+        "UserName": {"by": "id", "value": "username"},
+        "AppVersion": {"by": "css selector", "value": ".mt-auto"}
     }
 
     def __init__(self):

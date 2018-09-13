@@ -1,10 +1,10 @@
 import mtaf.mtaf_logging as logging
-from eConsole.views.base_view import BaseView
+from eConsole.views.logged_in_view import LoggedInView
 
 log = logging.get_logger('mtaf.msg_settings')
 
 
-class MessageSettingsView(BaseView):
+class MessageSettingsView(LoggedInView):
 
     locators = {
         "Greetings": {"by": "css selector", "value": "p", "text": "Greetings"},

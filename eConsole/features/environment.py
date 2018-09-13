@@ -54,9 +54,9 @@ def before_scenario(context, scenario):
     log.info('scenario.name: %s' % scenario.name)
     base_view.get_url(cfg['portal_url'][context.config.userdata['portal_server']])
     if not login_view.element_is_present('LoginButton'):
-        base_view.logout()
+        logged_in_view.logout()
     if not context.app_version:
-        context.app_version = base_view.find_named_element("AppVersion").text.split('eConsole Version: ')[1]
+        context.app_version = login_view.find_named_element("AppVersion").text.split('eConsole Version: ')[1]
         with open('app_version.txt', 'w') as f:
             f.write(context.app_version)
 
@@ -71,7 +71,7 @@ def after_scenario(context, scenario):
             screenshot_path = base_view.get_screenshot_as_png('exception-%s' % timestamp, scale=0.5)
             substeps += 'screenshot = %s\n' % screenshot_path
     try:
-        base_view.logout()
+        logged_in_view.logout()
     except Ux:
         log.info("got user exception attempting to log out")
         context._config.stop = True
@@ -104,7 +104,7 @@ def after_step(context, step):
         log.info("EXCEPTION in step %s" % step.name)
         context._config.stop = True
     mtaf_logging.pop_msg_src()
-    log_items = base_view.driver.get_log('browser')
+    log_items = base_view.get_driver().get_log('browser')
     for log_item in log_items:
         log_item['step'] = step.name
         log_item['scenario'] = context.scenario.name

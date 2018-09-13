@@ -1,12 +1,12 @@
-@regression @wip
+@regression
 Feature: Log in only allowed with valid user ID and password
 
-  @select
+  @select @wip
   Scenario: Log in with valid select user ID and password
     When I enter a valid select user ID
     And I enter a valid select password
     And I click the Login button
-    Then the Home page appears
+    Then the "Home" page appears
     And the HOME tab is selected
     And my name is displayed in the upper right corner
 
@@ -15,7 +15,7 @@ Feature: Log in only allowed with valid user ID and password
     When I enter a valid premier user ID
     And I enter a valid premier password
     And I click the Login button
-    Then the Home page appears
+    Then the "Home" page appears
     And the HOME tab is selected
     And my name is displayed in the upper right corner
 
@@ -24,7 +24,7 @@ Feature: Log in only allowed with valid user ID and password
     When I enter a valid office_mgr user ID
     And I enter a valid office_mgr password
     And I click the Login button
-    Then the Home page appears
+    Then the "Home" page appears
     And the HOME tab is selected
     And my name is displayed in the upper right corner
 

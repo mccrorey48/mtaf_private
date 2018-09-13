@@ -29,15 +29,15 @@ def i_go_to_the_portal_login_page(context):
 @step("my name is displayed in the upper right corner")
 def my_name_is_displayed_in_the_upper_right_corner(context):
     user = cfg.accounts[cfg.default_user[context.config.userdata['user_scope']]]
-    expect_text = ' '.join([user[key] for key in ['name1', 'name2', 'password']])
-    main_button_text = base_view.MainButton.text
+    expect_text = ' '.join([user[key] for key in ['name1', 'name2', 'number']])
+    main_button_text = logged_in_view.MainButton.text
     assert main_button_text == expect_text, "main button text is %s, expected %s" % (
         main_button_text, expect_text)
 
 
 @step("the {expected_name} tab is selected")
 def the_expectedname_tab_is_selected(context, expected_name):
-    selected_tab_text = base_view.SelectedTab.text
+    selected_tab_text = logged_in_view.SelectedTab.text
     assert selected_tab_text == expected_name, "selected tab text is %s, expected %s" % (
         selected_tab_text, expected_name)
 

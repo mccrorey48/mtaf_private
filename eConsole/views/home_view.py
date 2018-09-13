@@ -1,20 +1,27 @@
 import mtaf.mtaf_logging as logging
 
-from eConsole.views.base_view import BaseView
+from eConsole.views.logged_in_view import LoggedInView
 from mtaf.decorators import Trace
 
 log = logging.get_logger('mtaf.home')
 
 
-class HomeView(BaseView):
+class HomeView(LoggedInView):
 
     locators = {
         "eConsoleHelp": {"by": "link text", "value": "eConsole Help"},
+        "QuickLinks": {"by": "css selector", "value": "div[class='card-header']", "text": "Quick Links"},
+        "RecentCallActivity": {"by": "css selector", "value": "div[class='card-header']", "text": "Recent Call Activity"},
     }
 
     def __init__(self):
         super(HomeView, self).__init__()
         self.presence_element_names = ["eConsoleHelp"]
+        self.content_scopes.update({
+            "eConsoleHelp": self.all_scopes,
+            "RecentCallActivity": self.all_scopes,
+            "QuickLinks": self.all_scopes,
+        })
         self.nav_tab_names = ["HOME", "MESSAGES", "CALL HISTORY", "CONTACTS", "PHONES", "SETTINGS"]
         self.view_name = 'home'
 

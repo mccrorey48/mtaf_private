@@ -1,12 +1,12 @@
 import mtaf.mtaf_logging as logging
 
-from eConsole.views.base_view import BaseView
+from eConsole.views.logged_in_view import LoggedInView
 from mtaf.decorators import Trace
 
 log = logging.get_logger('mtaf.auto_attn')
 
 
-class AutoAttendantsView(BaseView):
+class AutoAttendantsView(LoggedInView):
 
     locators = {
     }

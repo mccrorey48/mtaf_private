@@ -89,6 +89,6 @@ def after_all(context):
     tags = str(context._config.tags).split(',')
 #     if 'fake' not in tags and 'json' not in tags:
 #         base_view.close_appium()
-    with open('tmp/steps.txt', 'w') as f:
-        f.write(substeps)
+#     with open('tmp/steps.txt', 'w') as f:
+#         f.write(substeps)
 

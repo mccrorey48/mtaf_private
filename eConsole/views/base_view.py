@@ -9,34 +9,10 @@ from selenium.webdriver.support import expected_conditions
 from selenium.common.exceptions import WebDriverException, TimeoutException
 from PIL import Image
 
-log = logging.get_logger('mtaf.base_view')
+log = logging.get_logger('mtaf.base')
 
 
 class BaseView(AngularActions):
-
-    locators = {
-        "Banner": {"by": "class name", "value": "esi-header"},
-        "BannerText": {"by": "class name", "value": "esi-header-text"},
-        "CallHistoryTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(3)"},
-        "ContactsPullout": {"by": "id", "value": "cwContainer"},
-        "ContactsPulloutValues": {"by": "css selector", "value": "#cwContainer .conNumber"},
-        "ContactsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(4)"},
-        "HomeTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(1)"},
-        "LoadingGif": {"by": "class name", "value": "loadingoverlay"},
-        "Logout": {"by": "id", "value": "logout"},
-        "MainButton": {"by": "id", "value": "mainButton"},
-        "ManageOrganization": {"by": "id", "value": "org-view"},
-        "MessageSettings": {"by": "css selector", "value": ".dropdown-item.ng-scope", "text": "Message Settings"},
-        "MessagesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(2)"},
-        "NavTabs": {"by": "css selector", "value": ".navbar-nav .nav-item"},
-        "PhonesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(5)"},
-        "SettingsTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(6)"},
-        "SelectedTab": {"by": "css selector", "value": ".navbar-nav .nav-item .active"},
-        "ShowContacts": {"by": "id", "value": "showContacts"},
-        "AppVersion": {"by": "css selector", "value": ".mt-auto"}
-        # only thing saved from the now-deleted "econs" branch was this locator:
-        # "MessageSettings": {"by": "css selector", "value": "li.nav-item.dropdown.show > div > a:nth-child(2)"}
-    }
 
     def __init__(self):
         super(BaseView, self).__init__()
@@ -45,11 +21,12 @@ class BaseView(AngularActions):
         self.log_file = None
         self.service_log_path = None
         self.webdriver_log_path = None
-        self.presence_element_names = ["ShowContacts"]
+        self.presence_element_names = []
+        self.all_scopes = ['select', 'premier', 'office_mgr']
+        self.content_scopes = {}
         self.nav_tab_names = []
         self.banner_texts = []
         self.view_name = 'base'
-
 
     @Trace(log)
     def get_screenshot_as_png(self, filebase, screenshot_folder=None, scale=None):
@@ -73,11 +50,6 @@ class BaseView(AngularActions):
         log.debug("saving rotated screenshot to %s" % fullpath)
         im.save(fullpath)
         return fullpath
-
-    @Trace(log)
-    def logout(self):
-        self.click_named_element("MainButton")
-        self.click_named_element("Logout")
 
     @Trace(log)
     def input_text(self, text, locator_name):
@@ -124,6 +96,18 @@ class BaseView(AngularActions):
             driver_locator = (locator["by"], locator["value"])
             if len(WebDriverWait(self.get_driver(), 15).until(
                     expected_conditions.visibility_of_all_elements_located(driver_locator))) != len(self.nav_tab_names):
+                return False
+        return True
+
+    @Trace(log)
+    def has_scope_content(self, scope):
+        self.wait_until_angular_ready()
+        # if len(self.content_scopes.keys()) == 0:
+        #     raise Ux("has_scope_content() not implemented here")
+        for element_name in self.content_scopes.keys():
+            if scope not in self.content_scopes[element_name]:
+                continue
+            if not self.element_is_present(element_name):
                 return False
         return True
 

@@ -1,4 +1,3 @@
-@premier @wip
 Feature: Manage Organization - Auto Attendants
 
 #  Background: Log in as Office Manager

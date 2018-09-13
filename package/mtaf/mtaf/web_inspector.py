@@ -3,6 +3,7 @@ from time import sleep, time
 from selenium.common.exceptions import InvalidSelectorException
 import mtaf_logging
 from angular_actions import AngularActions
+from eConsole.views import *
 import threading
 import json
 from filters import get_filter
@@ -131,11 +132,11 @@ class ScrolledFrame(Frame):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
 
-
 class ScrolledLogwin(Frame):
-    def __init__(self, parent, height=20, label='', clear_button=False):
+    def __init__(self, parent, height=20, label='', clear_button=False, log_prefix='> '):
         Frame.__init__(self, parent)
         self.log_q = Queue()
+        self.log_prefixes = [log_prefix]
         self.parent = parent
         self.title_bar = Frame(self)
         self.title_bar.label = Label(self.title_bar, text=label)
@@ -155,8 +156,15 @@ class ScrolledLogwin(Frame):
         self.sb.grid(row=1, column=1, sticky='ns', padx=0, pady=0)
         self.rowconfigure(1, weight=1)
         self.print_buf = ''
+        self.eol = False
         # self.read_q()
-        self.log_prefix = '> '
+
+    def push_log_prefix(self, log_prefix):
+        self.log_prefixes.append(log_prefix)
+
+    def pop_log_prefix(self):
+        if len(self.log_prefixes) > 1:
+            self.log_prefixes.pop()
 
     def clear(self):
         self.txt.configure(state=NORMAL)
@@ -169,24 +177,18 @@ class ScrolledLogwin(Frame):
     # def read_q(self):
     #     while not self.log_q.empty():
     #         _txt = self.log_q.get()
-            # old_stdout.write(">>%s<<" % _txt)
-        log.debug("write: _txt = [%s], len=%d" % (repr(_txt), len(_txt)))
-        if len(_txt) > 0 and _txt[-1] == '\n':
-            eol = True
-        else:
-            eol = False
-        lines = _txt.strip().split('\n')
-        self.txt.configure(state=NORMAL)
-        for line in lines[:-1]:
-            self.txt.insert('end', line + '\n' + self.log_prefix)
-        if len(lines):
-            self.txt.insert('end', lines[-1])
-        if eol:
-            self.txt.insert('end', '\n' + self.log_prefix)
-        # self.delete('0.0', 'end - %d lines' % self.scrollback)
-        self.txt.see('end')
-        # self.update_idletasks()
-        self.txt.configure(state=DISABLED)
+        _txt = _txt.rstrip()
+        if len(_txt) > 0:
+            self.txt.configure(state=NORMAL)
+            lines = _txt.split('\n')
+            if len(lines):
+                self.txt.configure(state=NORMAL)
+                for line in lines:
+                    # old_stdout.write(r"""self.txt.insert('end', '\n' + self.log_prefixes[-1] + line)""" + '\n')
+                    self.txt.insert('end', '\n' + self.log_prefixes[-1] + line)
+            self.txt.see('end')
+            self.update_idletasks()
+            self.txt.configure(state=DISABLED)
         # self.after(100, self.read_q)
 
 
@@ -268,6 +270,7 @@ class Inspector(Frame):
         self.find_button = None
         self.find_by_var = None
         self.find_value_var = StringVar(name='find')
+        self.found_polygons = []
         self.frame_element = None
         self.id_frame_btns = {}
         self.id_frame = None
@@ -291,7 +294,7 @@ class Inspector(Frame):
         self.menu = None
         self.parent_element = None
         self.polygons = []
-        self.processor_elems = {}
+        self.processed_elems = {}
         self.script_btn_enable_states = {}
         self.script_fd = None
         self.script_file = StringVar()
@@ -370,7 +373,8 @@ class Inspector(Frame):
         partial_values = []
         # convert attrs dict to an array of css selector qualifiers
         for key in attrs:
-            if key == "href" and attrs[key] == "":
+            if key == 'href' and attrs[key] == '' and 'id' not in attrs:
+                # print "removing element because of empty href, text='%s', attrs='%s'" % (text, attrs)
                 return
             if type(attrs[key]) == list:
                 try:
@@ -423,34 +427,39 @@ class Inspector(Frame):
                 required_text = text
             # raise RuntimeError('expected one element, got %d using css value "%s"' % (len(elems), value))
         # save characteristics of remaining elements in self.elems
-        if tag not in self.processor_elems:
-            self.processor_elems[tag] = []
+        if tag not in self.processed_elems:
+            self.processed_elems[tag] = []
         for elem in all_elems:
-            location = all_elems[0].location
-            size = elem.size
-            area = int(size['width']) * int(size['height'])
-            x1 = int(location['x'])
-            y1 = int(location['y'])
-            x2 = x1 + int(size['width'])
-            y2 = y1 + int(size['height'])
-            # only add elem to self.processor_elems[tag] if it isn't already there (with another index number)
-            if x1 * self.cwin.scale < self.im_width and y1 * self.cwin.scale < self.im_height:
+            geom = self.get_elem_geom(elem)
+            # only add elem to self.processed_elems[tag] if it isn't already there (with another index number)
+            if geom['x1'] * self.cwin.scale < self.im_width and geom['y1'] * self.cwin.scale < self.im_height:
                 new_processor_elem = {
                         'tag': tag,
                         'index': tag_index,
                         'by': by,
                         'value': value,
-                        'geom': {'area': area, 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2},
+                        'geom': geom,
                         'partial_values': partial_values,
                         'text': required_text
                     }
                 elem_attrs = sorted([new_processor_elem[attr] for attr in new_processor_elem.keys() if attr != 'index'])
-                for p_elem in self.processor_elems[tag]:
+                for p_elem in self.processed_elems[tag]:
                     p_elem_attrs = sorted([p_elem[attr] for attr in p_elem.keys() if attr != 'index'])
                     if p_elem_attrs == elem_attrs:
                         break
                 else:
-                    self.processor_elems[tag].append(new_processor_elem)
+                    self.processed_elems[tag].append(new_processor_elem)
+
+    def get_elem_geom(self, elem):
+        location = elem.location
+        size = elem.size
+        area = int(size['width']) * int(size['height'])
+        x1 = int(location['x'])
+        y1 = int(location['y'])
+        x2 = x1 + int(size['width'])
+        y2 = y1 + int(size['height'])
+        geom = {'area': area, 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2}
+        return geom
 
     def get_url(self, url):
         angular_actions.get_url(url)
@@ -510,8 +519,8 @@ class Inspector(Frame):
     def print_script(self):
         self.update_script_state('printing')
         filename = self.script_file.get()
-        self.log_frame.log_prefix = '>>> '
         print 'Printing contents of %s:' % self.script_file.get()
+        self.log_frame.push_log_prefix('>>> ')
         bp_list = ['']
         try:
             with open(filename, 'r') as f:
@@ -523,7 +532,7 @@ class Inspector(Frame):
                             bp_list.append(lnum + 1)
         except BaseException as e:
             print 'got exception: %s' % e
-        self.log_frame.log_prefix = '> '
+        self.log_frame.pop_log_prefix()
         self.bottom_frame.script_frame.bp_frame.bp.configure(values=bp_list)
         print
         self.update_script_state('stopped')
@@ -534,8 +543,8 @@ class Inspector(Frame):
         self.update_idletasks()
         self.script_running = True
         filename = self.script_file.get()
-        self.log_frame.log_prefix = '>>> '
         print "Running script file %s" % filename
+        self.log_frame.push_log_prefix('>>> ')
         try:
             with open(filename, 'r') as f:
                 try:
@@ -549,6 +558,7 @@ class Inspector(Frame):
                             break
                         print "exec: %s" % line
                         exec line
+                        self.update_idletasks()
                 except Exception as _e:
                     print "exec raised exception: %s" % _e
                     if self.browser_is_open:
@@ -557,7 +567,7 @@ class Inspector(Frame):
             print "open(%s, 'r') got exception: %s" % e
         self.script_running = False
         self.enable_buttons()
-        self.log_frame.log_prefix = '> '
+        self.log_frame.pop_log_prefix()
         print
         self.update_script_state('stopped')
 
@@ -652,6 +662,11 @@ class Inspector(Frame):
         if self.browser_is_open:
             for btn in self.browser_btns:
                 btn.configure(state=NORMAL)
+            find_value = self.find_value_var.get().strip()
+            if len(find_value):
+                self.find_button.configure(bg=btn_select_bg, activebackground=btn_select_bg, state=NORMAL)
+            else:
+                self.find_button.configure(bg=btn_default_bg, activebackground=btn_default_bg, state=DISABLED)
         if self.elems is not None and len(self.elems) > 0:
             for btn in self.elems_btns:
                 btn.configure(state=NORMAL)
@@ -794,6 +809,7 @@ class Inspector(Frame):
                 self.exec_cb.configure(values=self.exec_history['values'])
             try:
                 exec text
+                self.update_idletasks()
             except Exception as _e:
                 print "exec raised exception: %s" % _e
                 if self.browser_is_open:
@@ -1024,6 +1040,7 @@ class Inspector(Frame):
             return elems
         except InvalidSelectorException as e:
             print 'got exception %s' % e
+            return []
 
     def get_filtered_locator_keys(self):
         sorted_keys = sorted(self.locators.keys(), key=lambda x: self.locators[x]['time'], reverse=True)
@@ -1061,6 +1078,8 @@ class Inspector(Frame):
         #     self.elems = self.find_elements_by_locator_name(locator)
         # else:
         self.find_elements_by_locator(locator)
+        if self.cwin is not None:
+            self.draw_found_polygons(self.elems)
 
     def find_elements_by_locator(self, locator):
         self.save_last_cmd("self.find_elements_by_locator(%s)" % locator)
@@ -1096,8 +1115,14 @@ class Inspector(Frame):
         self.save_last_cmd('angular_actions.get_driver().execute_script(%s, self.elems(%s)' % (script, index))
         attrs = angular_actions.get_driver().execute_script(script, elem)
         print "\nattributes for element %d:" % index
+        self.log_frame.push_log_prefix('>>> ')
         for key in attrs.keys():
-            print "%s: %s" % (key, attrs[key])
+            print "  %s: %s" % (key, attrs[key])
+        print "  text: '%s'" % elem.text
+        print "  location: '%s'" % elem.location
+        print "  size: '%s'" % elem.size
+        self.log_frame.pop_log_prefix()
+
 
     def click_element(self):
         text_index = self.elem_index.get()
@@ -1182,34 +1207,46 @@ class Inspector(Frame):
 
     def capture_view(self):
         self.soup = BeautifulSoup(angular_actions.get_driver().page_source, 'html.parser')
+        self.log_frame.push_log_prefix('>>> ')
         self.create_cwin()
 
         class TagInfo(object):
-            def __init__(self, name, color, width):
+            def __init__(self, name, color, width, require_text=False, require_id=False):
                 self.name = name
                 self.color = color
                 self.width = width
+                self.require_text = require_text
+                self.require_id = require_id
 
         tag_infos = [
+            TagInfo('div', 'brown', 2, True, True),
+            TagInfo('span', 'magenta', 2, True, True),
+            TagInfo('label', 'green', 4, True),
             TagInfo('input', 'orange', 3),
             TagInfo('button', 'purple', 2),
             TagInfo('a', 'yellow', 1)
         ]
-        self.processor_elems = {}
+        self.processed_elems = {}
         for tag_info in tag_infos:
+            print "Processing %s elements (%s)" % (tag_info.name, tag_info.color)
             old_num_proc_elems = 0
             elems = self.soup(tag_info.name)
             # print "number of %s elements: %d" % (tag_info.name, len(elems))
             for i, elem in enumerate (elems):
+                if tag_info.require_text and elem.text.strip() == '':
+                    continue
+                if tag_info.require_id and 'id' not in elem.attrs:
+                    continue
                 self.process_attrs(tag_info.name, i, elem.attrs, elem.text.strip())
-                num_proc_elems = len(self.processor_elems[tag_info.name])
+                num_proc_elems = len(self.processed_elems[tag_info.name])
                 if num_proc_elems != old_num_proc_elems:
                     # print "added element %d: %s" % (i, elem)
                     old_num_proc_elems = num_proc_elems
-        for tag_info in tag_infos:
-            if tag_info.name in self.processor_elems:
-                self.draw_outlines(self.processor_elems[tag_info.name], color=tag_info.color, clear=False,
+            if tag_info.name in self.processed_elems:
+                self.draw_outlines(self.processed_elems[tag_info.name], color=tag_info.color, clear=False,
                                    width=tag_info.width)
+        print "Done"
+        self.log_frame.pop_log_prefix()
 
     def get_screenshot(self):
         print "Getting Screenshot"
@@ -1292,13 +1329,15 @@ class Inspector(Frame):
 
     def show_locator_options(self, x, y):
         # clicking on an outlined element in the browser image should correlate (by position) with at least one
-        # of self.processor_elems, but possibly more. When multiple css types ("input", "a", "button", etc.) are
+        # of self.processed_elems, but possibly more. When multiple css types ("input", "a", "button", etc.) are
         # matched, use radiobuttons to choose the desired css options
         for child in self.cwin.loc_frame.type_frame.winfo_children():
             child.grid_forget()
+        for child in self.cwin.loc_frame.attr_frame.winfo_children():
+            child.grid_forget()
         default = None
-        for (i, key) in enumerate(self.processor_elems):
-            self.clicked_elems[key] = filter(self.point_in_elem_outline(x, y), self.processor_elems[key])
+        for (i, key) in enumerate(self.processed_elems):
+            self.clicked_elems[key] = filter(self.point_in_elem_outline(x, y), self.processed_elems[key])
             if len(self.clicked_elems[key]):
                 print "clicked %d %s elements" % (len(self.clicked_elems[key]), key)
             if len(self.clicked_elems[key]) == 1:
@@ -1310,8 +1349,8 @@ class Inspector(Frame):
                     default = key
                     rb.select()
                     rb.invoke()
-                    # self.locator_css_type.set(default)
-                    # self.show_radio_btn()
+                    self.locator_css_type.set(default)
+                    self.show_radio_btn()
 
     def show_radio_btn(self):
         key = self.locator_css_type.get()
@@ -1363,6 +1402,8 @@ class Inspector(Frame):
                 attrs.append(cb['val'])
         self.find_by_var.set('css selector')
         self.find_value_var.set("%s%s" % (tag, ''.join(attrs)))
+        self.locator_req_text.set(False)
+        self.locator_text_val.set('')
 
     def set_locator_full(self):
         if self.locator_full_cb['var'].get():
@@ -1370,6 +1411,8 @@ class Inspector(Frame):
                 cb['var'].set(0)
             self.find_by_var.set('css selector')
             self.find_value_var.set(self.locator_full_cb['val'])
+            self.locator_req_text.set(False)
+            self.locator_text_val.set('')
 
     def on_canvas_closing(self):
         self.im_canvas = None
@@ -1392,21 +1435,33 @@ class Inspector(Frame):
 
         return fn
 
-    def draw_outlines(self, elems, color='red', clear=True, width=2):
+    def draw_outlines(self, processed_elems, color='blue', clear=True, width=2):
         if self.im_canvas is not None:
             if clear:
                 while len(self.polygons):
                     self.im_canvas.delete(self.polygons.pop())
-            for elem in elems:
+            for processed_elem in processed_elems:
                 # print "%s[%s]: creating polygon from geom: (%s, %s), (%s, %s)" % (
-                #     elem["tag"], elem["index"], elem["geom"]["x1"], elem["geom"]["y1"], elem["geom"]["x2"],
-                #     elem["geom"]["y2"])
-                x1 = self.scale(elem["geom"]["x1"]) + (width / 2.0)
-                y1 = self.scale(elem["geom"]["y1"]) + (width / 2.0)
-                y2 = self.scale(elem["geom"]["y2"]) - (width / 2.0)
-                x2 = self.scale(elem["geom"]["x2"]) - (width / 2.0)
+                #     processed_elem["tag"], processed_elem["index"], processed_elem["geom"]["x1"],
+                #     processed_elem["geom"]["y1"], processed_elem["geom"]["x2"], processed_elem["geom"]["y2"])
+                x1 = self.scale(processed_elem["geom"]["x1"]) + (width / 2.0)
+                y1 = self.scale(processed_elem["geom"]["y1"]) + (width / 2.0)
+                y2 = self.scale(processed_elem["geom"]["y2"]) - (width / 2.0)
+                x2 = self.scale(processed_elem["geom"]["x2"]) - (width / 2.0)
                 self.polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline=color,
                                                                    fill='', width=width))
+
+    def draw_found_polygons(self, elems, color='red', width=2):
+        while len(self.found_polygons):
+            self.im_canvas.delete(self.found_polygons.pop())
+        for elem in elems:
+            geom = self.get_elem_geom(elem)
+            x1 = self.scale(geom["x1"]) + (width / 2.0)
+            y1 = self.scale(geom["y1"]) + (width / 2.0)
+            y2 = self.scale(geom["y2"]) - (width / 2.0)
+            x2 = self.scale(geom["x2"]) - (width / 2.0)
+            self.found_polygons.append(self.im_canvas.create_polygon(x1, y1, x1, y2, x2, y2, x2, y1, outline=color,
+                                                                     fill='', width=width))
 
 
 def run_web_inspector(cfg):

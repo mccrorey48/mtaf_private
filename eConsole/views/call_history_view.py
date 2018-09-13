@@ -1,10 +1,10 @@
 import mtaf.mtaf_logging as logging
-from eConsole.views.base_view import BaseView
+from eConsole.views.logged_in_view import LoggedInView
 
 log = logging.get_logger('mtaf.call_history')
 
 
-class CallHistoryView(BaseView):
+class CallHistoryView(LoggedInView):
 
     locators = {
         "RecentCallHistory": {"by": "id", "value": "recent-call-history"},
