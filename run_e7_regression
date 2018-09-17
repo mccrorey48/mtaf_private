@@ -1,0 +1,10 @@
+#!/bin/bash
+export MTAF_SITE=ds
+export MTAF_DB_HOST=vqda1
+export HOME=/home/mmccrorey
+export PATH=$PATH:$HOME/android-sdk-linux/platform-tools
+export MTAF_DIR=$HOME/mtaf
+export PYTHONPATH=$MTAF_DIR
+export MTAF_LOG_DIR=$MTAF_DIR/log
+cd $MTAF_DIR
+$HOME/.virtualenvs/mtaf/bin/python $HOME/mtaf/ePhone7/run_features.py -f $MTAF_DIR/ePhone7/features -r regression > $MTAF_LOG_DIR/e7_regression.log 2>&1
