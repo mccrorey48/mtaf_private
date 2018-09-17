@@ -1,3 +1,4 @@
+from behave import *
 from time import sleep
 from prefs_steps import *
 from advanced_steps import *
