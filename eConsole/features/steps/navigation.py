@@ -23,6 +23,7 @@ def the_content_is_correct_for_the_user_scope(context):
     err_msg = "Incorrect content for %s scope" % user_scope
     assert logged_in_view.has_scope_content(context.config.userdata['user_scope']), err_msg
 
+
 @step("the Settings Menu appears")
 def the_settings_menu_appears(context):
     assert logged_in_view.element_is_present('MessageSettings'), "Message Settings menu item not found"
