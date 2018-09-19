@@ -34,24 +34,6 @@ desired_capabilities = {
 driver_type = 'browser'
 
 
-class DriverCheck(object):
-    def __init__(self, name=driver_type):
-        self.name = name
-
-    def __call__(self, f):
-
-        def wrapped(*args, **kwargs):
-            if SeleniumActions.get_instance().driver is None:
-                print "SeleniumActions: no %s!" % self.name
-            else:
-                try:
-                    return f(*args, **kwargs)
-                except TypeError as e:
-                    pass
-
-        return wrapped
-
-
 class SeleniumActions(object):
     driver = None
     locator_timeout = 10
@@ -73,6 +55,10 @@ class SeleniumActions(object):
     @staticmethod
     def set_driver(driver):
         SeleniumActions.driver = driver
+
+    @staticmethod
+    def wait_until_page_ready():
+        pass
 
     @staticmethod
     def get_driver():

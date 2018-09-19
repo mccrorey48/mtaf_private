@@ -51,7 +51,7 @@ class AndroidActions(SeleniumActions):
         start_time = time()
         while time() - start_time < connect_timeout:
             try:
-                AndroidActions.driver = webdriver.Remote(selenium_url, caps)
+                self.set_driver(webdriver.Remote(selenium_url, caps))
                 break
             except WebDriverException:
                 log.info("retrying webdriver.Remote(%s, %s)" % (selenium_url, caps))
