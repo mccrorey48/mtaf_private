@@ -1,7 +1,6 @@
 from eConsole.views import *
 from eConsole.config.configure import cfg
 from time import sleep
-# from bs4 import BeautifulSoup
 from mtaf import mtaf_logging
 import six
 log = mtaf_logging.get_logger('mtaf.get_view_elems')
