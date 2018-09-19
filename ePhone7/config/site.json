@@ -479,7 +479,7 @@
             "apkshome": "/home/mmccrorey/apks",
             "Users": {
                 "R2d2User": {
-                    "AccountPassword": "2016",
+                    "AccountPassword": "2012",
                     "AllContacts": [
                         "2200",
                         "2201",
@@ -501,9 +501,9 @@
                         "2201",
                         "2202"
                     ],
-                    "PhonePassword": "2016",
-                    "UserId": "2016",
-                    "UserName": "David ePhone7"
+                    "PhonePassword": "2012",
+                    "UserId": "2012",
+                    "UserName": "Martin McCrorey"
                 },
                 "R2d2AltUser": {
                     "AccountPassword": "2016",
