@@ -121,7 +121,6 @@ class PrefsView(BaseView):
         if m is None:
             return "Unknown Version"
         version = re.sub('\.', '_', m.group(1))
-        # make the xml and csv directories for this version (or if it already exists, ignore the resulting exception)
         return version
 
     @Trace(log)

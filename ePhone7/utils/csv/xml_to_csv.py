@@ -70,11 +70,6 @@ def xml_to_csv(xml_file_path, csv_file_path):
 
 
 def visit(arg, dirname, names):
-    # print "dirname = %s" % dirname
-    # for name in names:
-    #     print "  name = %s" % name
-    # csv_dir = cfg.site.CsvFolder + '/csv' + re.sub(cfg.XmlFolder + '/xml', '', dirname)
-    # print '"%s"' % cfg.site.CsvFolder + '/csv' + re.sub(cfg.XmlFolder + '/xml', '', dirname)
     subdir = re.sub(cfg.site.XmlFolder, '', dirname)
     six.print_("    subdir = %s" % subdir)
     sp = subdir.split('/xml')
@@ -91,7 +86,8 @@ def visit(arg, dirname, names):
     for name in names:
         if name[-4:] == '.xml':
             _xml_file_path = os.path.join(dirname, name)
-            _csv_file_path = "csv".join(_xml_file_path.rsplit('xml', 3))
+            _csv_file_path = cfg.site.CsvFolder.join(_xml_file_path.split(cfg.site.XmlFolder))
+            _csv_file_path = 'csv'.join(_csv_file_path.split('xml'))
             # six.print_("calling xml_to_csv(%s, %s)" % (_xml_file_path, _csv_file_path))
             xml_to_csv(_xml_file_path, _csv_file_path)
 
@@ -101,4 +97,4 @@ def xml_folder_to_csv():
 
 if __name__ == '__main__':
     xml_folder_to_csv()
-    # os.path.walk('ePhone7/lib/utils/xml/xml_appium_gui/', visit, '')
+    # os.path.walk('ePhone7/lib/utils/e7_xml/xml_appium_gui/', visit, '')

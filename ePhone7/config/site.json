@@ -289,7 +289,7 @@
         "BuildImageServer": "10.3.1.164",
         "BuildPropServer": "ec2-52-36-62-239.us-west-2.compute.amazonaws.com",
         "ColorsFolder": "ePhone7/lib/utils",
-        "CsvFolder": "ePhone7/lib/utils/csv",
+        "CsvFolder": "ePhone7/utils/csv",
         "DefaultTimeout": 1,
         "DnsList": [
             "10.0.50.156",
@@ -315,7 +315,7 @@
             "Content-Type": "application/json"
         },
         "VVMURL": "https://pro.esiapi.io/vvm/v2/vm/metadata",
-        "XmlFolder": "ePhone7/lib/utils/xml"
+        "XmlFolder": "ePhone7/utils/e7_xml"
     },
     "sites": {
         "ds": {
