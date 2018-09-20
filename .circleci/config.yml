@@ -1,0 +1,63 @@
+# Python CirclieCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs: 
+  build:
+    docker:
+        - image: circleci/python:2.7-browsers           
+    #machine: True
+    enviroment: 
+        PYTHONPATH=/mtaf
+        MTAF_SITE=mm
+        MTAF_DB_HOST=10.0.12.42
+    working_directory: ~/mtaf
+
+    steps:
+    - add_ssh_keys:
+        fingerprints:
+            - "72:62:66:48:cb:ea:26:06:10:97:15:49:6a:25:b5:c3"    
+    - checkout
+
+    - run:
+       name: Install apt packages
+       command: |
+        sudo apt-get update
+        sudo apt-get install vim-gtk
+        sudo apt-get install libasound2-dev
+        sudo apt-get install python-pip
+    - run:
+        name: Install the required python modules using a virtual enviroment
+        command: |
+            virtualenv venv
+            . venv/bin/activate
+            cd package/mtaf/
+            . build_script
+        when: on_success
+    - run:
+        name: Build pjsip libraries
+        working_directory: ~/
+        command: |
+            virtualenv venv
+            . venv/bin/activate
+            git clone git@bitbucket.org:esi-tau/pjproject.git
+            cd pjproject/
+            ./configure CFLAGS=-fPIC CCFLAGS=-fPIC
+            make dep
+            make
+            cd pjsip-apps/src/python
+            python setup.py install
+    - run:
+        name: run Regression test
+        when: always
+        command: |
+            virtualenv venv
+            . venv/bin/activate
+            MTAF_SITE=mm_ro PYTHONPATH=~/mtaf  behave -D portal_server=staging -D user_scope=premier --tags=premier --tags=regression -k eConsole/features
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
