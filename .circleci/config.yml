@@ -54,7 +54,9 @@ jobs:
         command: |
             virtualenv venv
             . venv/bin/activate
+            MTAF_SITE=mm_ro PYTHONPATH=~/mtaf  behave -D portal_server=staging -D user_scope=select --tags=select --tags=regression -k eConsole/features
             MTAF_SITE=mm_ro PYTHONPATH=~/mtaf  behave -D portal_server=staging -D user_scope=premier --tags=premier --tags=regression -k eConsole/features
+            MTAF_SITE=mm_ro PYTHONPATH=~/mtaf  behave -D portal_server=staging -D user_scope=office_mgr --tags=office_mgr --tags=regression -k eConsole/features
 
 workflows:
   version: 2
