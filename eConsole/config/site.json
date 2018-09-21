@@ -87,7 +87,7 @@
             }
         },
         "office_manager": "1012@test1.test-eng.com",
-        "screenshot_folder": "/home/mmccrorey/mtaf/eConsole/screenshots",
+        "screenshot_folder": "eConsole/screenshots",
         "default_user": {
             "select": "1000@test1.test-eng.com",
             "premier": "1006@test1.test-eng.com",
@@ -809,7 +809,7 @@
             }
         },
         "office_manager": "1100@econs-ro.com",
-        "screenshot_folder": "/home/mmccrorey/mtaf/eConsole/screenshots",
+        "screenshot_folder": "eConsole/screenshots",
         "default_user": {
             "select": "1000@econs-ro.com",
             "premier": "1010@econs-ro.com",
@@ -908,7 +908,7 @@
             }
         },
         "office_manager": "2012@test3.test-eng.com",
-        "screenshot_folder": "/home/mmccrorey/mtaf/eConsole/screenshots",
+        "screenshot_folder": "eConsole/screenshots",
         "default_user": {
             "select": "2000@test3.test-eng.com",
             "premier": "2006@test3.test-eng.com",
