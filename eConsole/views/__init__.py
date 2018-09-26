@@ -14,6 +14,7 @@ from .messages_view import messages_view
 from .music_on_hold_view import music_on_hold_view
 from .phones_view import phones_view
 from .time_frames_view import time_frames_view
+import re
 
 all_views = {
     'allow_block_numbers_view': allow_block_numbers_view,
@@ -34,6 +35,11 @@ all_views = {
     'time_frames_view': time_frames_view
 }
 
+
+def snake_case(name):
+    name = re.sub('([a-z])([A-Z])', '\g<1> \g<2>', name)
+    name = ' '.join(name.split('/'))
+    return '_'.join(name.lower().split()) + '_view'
 
 # class AllViews(object):
 #     def __getitem__(self, view_name):

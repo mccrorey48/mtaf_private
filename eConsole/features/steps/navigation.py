@@ -17,11 +17,12 @@ def i_navigate_to_the_manage_organizationinventory_page(context):
     logged_in_view.ManageOrganization.click()
 
 
-@step("the content is correct for the user scope")
-def the_content_is_correct_for_the_user_scope(context):
+@step('the content is correct for the "{page}" page')
+def the_content_is_correct_for_the_user_scope(context, page):
     user_scope = context.config.userdata['user_scope']
+    view = all_views[snake_case(page)]
     err_msg = "Incorrect content for %s scope" % user_scope
-    assert logged_in_view.has_scope_content(context.config.userdata['user_scope']), err_msg
+    assert view.has_scope_content(context.config.userdata['user_scope']), err_msg
 
 
 @step("the Settings Menu appears")
