@@ -298,8 +298,7 @@ class Inspector(Frame):
         self.script_btn_enable_states = {}
         self.script_fd = None
         self.script_file = StringVar()
-        self.script_file.set(os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts', 'misc',
-                                          'web_inspector_script.txt'))
+        self.script_file.set(os.path.join(self.cfg['script_dir'], 'web_inspector_script.txt'))
         self.script_recording = False
         self.script_rec_btns = []
         self.script_running = False
@@ -564,7 +563,7 @@ class Inspector(Frame):
                     if self.browser_is_open:
                         self.close_browser()
         except BaseException as e:
-            print "open(%s, 'r') got exception: %s" % e
+            print "open(%s, 'r') got exception: %s" % (filename, e)
         self.script_running = False
         self.enable_buttons()
         self.log_frame.pop_log_prefix()
@@ -1474,15 +1473,17 @@ def run_web_inspector(cfg):
         'tmp_dir': cfg.get('tmp_dir', './tmp'),
         'log_window_height': cfg.get('log_window_height', 20),
         'rec_window_height': cfg.get('rec_window_height', 5),
-        'screenshot_dir': cfg.get('screenshot_dir', '.')
+        'screenshot_dir': cfg.get('screenshot_dir', '.'),
+        'script_dir': cfg.get('script_dir', os.path.join('tmp', 'web_inspector_scripts'))
     }
-    try:
-        os.makedirs(gui_cfg['tmp_dir'])
-    except OSError as e:
-        if e.errno == errno.EEXIST and os.path.isdir(cfg['tmp_dir']):
-            pass
-        else:
-            raise
+    for dir in (gui_cfg['tmp_dir'], gui_cfg['script_dir']):
+        try:
+            os.makedirs(dir)
+        except OSError as e:
+            if e.errno == errno.EEXIST and os.path.isdir(cfg['tmp_dir']):
+                pass
+            else:
+                raise
 
     _app = Inspector(root, gui_cfg)
     _app.mainloop()
