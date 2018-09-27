@@ -12,6 +12,8 @@ class PhonesView(LoggedInView):
         "DeviceType": {"by": "css selector", "value": "th span", "text": "Device Type"},
         "Line": {"by": "css selector", "value": "th span", "text": "Line"},
         "Actions": {"by": "css selector", "value": "th span", "text": "Actions"},
+        "ButtonProgramming": {"by": "css selector", "value": "button[ng-click='goToButtonProgramming()']",
+                              "text": "Button Programming"},
     }
 
     def __init__(self):
@@ -20,6 +22,9 @@ class PhonesView(LoggedInView):
         self.banner_texts = ['Phones']
         self.nav_tab_names = ["HOME", "MESSAGES", "CONTACTS", "PHONES", "CALL HISTORY", "SETTINGS"]
         self.view_name = 'phones'
+        self.content_scopes.update({
+            "ButtonProgramming": self.all_scopes,
+        })
 
 
 phones_view = PhonesView()

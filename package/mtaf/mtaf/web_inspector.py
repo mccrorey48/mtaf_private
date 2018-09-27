@@ -253,6 +253,7 @@ class Inspector(Frame):
         self.browser_btns = []
         self.browser_is_open = False
         self.add_cmd_btn = None
+        self.add_last_cmd_btn = None
         self.automation_name = None
         self.clickable_element = None
         self.clicked_elems = {}
@@ -504,7 +505,7 @@ class Inspector(Frame):
     def change_script(self):
         self.update_script_state('changing')
         self.bottom_frame.script_frame.bp_frame.bp.configure(values=[])
-        filename = tkfilebrowser.askopenfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
+        filename = tkfilebrowser.askopenfilename(initialdir=self.cfg['script_dir'],
                                                  initialfile=os.path.basename(self.script_file.get()),
                                                  title="Select current script",
                                                  filetypes=(
@@ -573,8 +574,7 @@ class Inspector(Frame):
     def record_script(self):
         self.update_script_state('recording')
         self.bottom_frame.script_frame.bp_frame.bp.configure(values=[])
-        filename = tkfilebrowser.asksaveasfilename(initialdir=os.path.join(self.cfg['tmp_dir'],
-                                                                           'web_inspector_scripts'),
+        filename = tkfilebrowser.asksaveasfilename(initialdir=self.cfg['script_dir'],
                                                    initialfile=os.path.basename(self.script_file.get()),
                                                    title="Select exising file, or enter filename to save recording",
                                                    filetypes=(
@@ -587,6 +587,7 @@ class Inspector(Frame):
             self.script_fd = open(self.script_file.get(), 'w')
             if len(self.exec_text.get().strip()) > 0:
                 self.add_cmd_btn.configure(state=NORMAL)
+            self.add_last_cmd_btn.configure(state=NORMAL)
         else:
             self.update_script_state('stopped')
 
@@ -600,11 +601,12 @@ class Inspector(Frame):
             self.add_cmd_btn.configure(state=NORMAL)
         else:
             self.add_cmd_btn.configure(state=DISABLED)
+        self.add_last_cmd_btn.configure(state=NORMAL)
 
     def copy_script(self):
         self.update_script_state('recording')
         self.bottom_frame.script_frame.bp_frame.bp.configure(values=[])
-        fname = tkfilebrowser.asksaveasfilename(initialdir=os.path.join(self.cfg['tmp_dir'], 'web_inspector_scripts'),
+        fname = tkfilebrowser.asksaveasfilename(initialdir=self.cfg['script_dir'],
                                                 initialfile=os.path.basename(self.script_file.get()),
                                                 title="Copy current script to file: ",
                                                 filetypes=(
@@ -628,8 +630,12 @@ class Inspector(Frame):
             self.script_fd.close()
             self.script_fd = None
         self.add_cmd_btn.configure(state=DISABLED)
+        self.add_last_cmd_btn.configure(state=DISABLED)
         self.update_script_state('stopped')
         print "Stopped recording to %s" % self.script_file.get()
+
+    def get_last_cmd(self):
+        self.exec_text.set(self.last_cmd)
 
     def add_cmd_to_script(self):
         cmd = self.exec_text.get().strip()
@@ -639,6 +645,10 @@ class Inspector(Frame):
             else:
                 self.script_fd.write(cmd + '\n')
                 print 'added "%s" to current script' % cmd
+
+    def add_last_cmd_to_script(self):
+        self.exec_text.set(self.last_cmd)
+        self.add_cmd_to_script()
 
     def check_thread(self):
         if self.worker_thread is None:
@@ -795,6 +805,9 @@ class Inspector(Frame):
         self.add_cmd_btn = Button(exec_frame, text="add cmd to script", command=self.add_cmd_to_script,
                                   bg=btn_default_bg, state=DISABLED)
         self.add_cmd_btn.grid(row=0, column=ai.exec_col)
+        self.add_last_cmd_btn = Button(exec_frame, text="add last cmd to script", command=self.add_last_cmd_to_script,
+                                  bg=btn_default_bg, state=DISABLED)
+        self.add_last_cmd_btn.grid(row=0, column=ai.exec_col)
         exec_frame.columnconfigure(cb_col, weight=1)
         return exec_frame
 
@@ -1080,6 +1093,7 @@ class Inspector(Frame):
         if self.cwin is not None:
             self.draw_found_polygons(self.elems)
 
+    @Trace(log)
     def find_elements_by_locator(self, locator):
         self.save_last_cmd("self.find_elements_by_locator(%s)" % locator)
         self.elems = self.find_elements_with_driver(locator)
@@ -1130,9 +1144,6 @@ class Inspector(Frame):
         index = int(text_index)
         self.click_element_by_index(index)
 
-    def get_last_cmd(self):
-        self.exec_text.set(self.last_cmd)
-
     def save_last_cmd(self, cmd):
         if cmd != self.last_cmd:
             self.last_cmd = cmd
@@ -1174,7 +1185,7 @@ class Inspector(Frame):
             return
         index = int(text_index)
         text = self.text_to_send.get()
-        self.save_last_cmd('self.input_text_to_element_index(%s, %d)' % (text, index))
+        self.save_last_cmd('self.input_text_to_element_index("%s", %d)' % (text, index))
         self.input_text_to_element_index(text, index)
 
     def input_text_to_element_index(self, text, index):

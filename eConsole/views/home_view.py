@@ -12,6 +12,11 @@ class HomeView(LoggedInView):
         "eConsoleHelp": {"by": "link text", "value": "eConsole Help"},
         "QuickLinks": {"by": "css selector", "value": "div[class='card-header']", "text": "Quick Links"},
         "RecentCallActivity": {"by": "css selector", "value": "div[class='card-header']", "text": "Recent Call Activity"},
+        "RecentName": {"by": "css selector", "value": "div[class='ng-table-header ng-scope']", "text": "Name"},
+        "RecentNumber": {"by": "css selector", "value": "div[class='ng-table-header ng-scope']", "text": "Number"},
+        "RecentDate": {"by": "css selector", "value": "div[class='ng-table-header ng-scope']", "text": "Date"},
+        "RecentDuration": {"by": "css selector", "value": "div[class='ng-table-header ng-scope']", "text": "Duration"},
+        "RecentActions": {"by": "css selector", "value": "div[class='ng-table-header ng-scope']", "text": "Actions"},
     }
 
     def __init__(self):
@@ -21,6 +26,11 @@ class HomeView(LoggedInView):
             "eConsoleHelp": self.all_scopes,
             "RecentCallActivity": self.all_scopes,
             "QuickLinks": self.all_scopes,
+            "RecentName": self.all_scopes,
+            "RecentNumber": self.all_scopes,
+            "RecentDate": self.all_scopes,
+            "RecentDuration": self.all_scopes,
+            "RecentActions": self.all_scopes,
         })
         self.nav_tab_names = ["HOME", "MESSAGES", "CALL HISTORY", "CONTACTS", "PHONES", "SETTINGS"]
         self.view_name = 'home'

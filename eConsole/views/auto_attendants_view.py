@@ -13,7 +13,7 @@ class AutoAttendantsView(LoggedInView):
 
     def __init__(self):
         super(AutoAttendantsView, self).__init__()
-        self.presence_element_names = ["eConsoleHelp"]
+        self.presence_element_names = []
         self.nav_tab_names = ["HOME", "USERS", "CONFERENCES", "CALL QUEUES", "INVENTORY", "CALL HISTORY", "SETTINGS"]
         self.view_name = 'auto_attendants'
 
