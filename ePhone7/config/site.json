@@ -477,6 +477,7 @@
             "DefaultSoftphoneUser": "Auto TesterC",
             "aospshome": "/home/mmccrorey/aosps",
             "apkshome": "/home/mmccrorey/apks",
+            "10DigitNumber" : "2147272447",
             "Users": {
                 "R2d2User": {
                     "AccountPassword": "2012",
@@ -488,13 +489,17 @@
                         "2204"
                     ],
                     "CoworkerContacts": [
-                        "2200",
-                        "2201",
-                        "2202",
-                        "2203",
-                        "2204",
-                        "2205"
+                        {"number":"2200", "name":"Auto TesterA"},
+                        {"number":"2201", "name":"Auto TesterB"},
+                        {"number":"2202", "name":"Auto TesterC"},
+                        {"number":"2203", "name":"Auto TesterD"},
+                        {"number":"2204", "name":"Auto TesterE"},
+                        {"number":"2205", "name":"Auto TesterF"},
+                        {"number":"2206", "name":"Auto TesterG"},
+                        {"number":"2207", "name":"Auto TesterH"}
                     ],
+                    "CoworkerContactsDialPadNumber": "220",
+                    "CoworkerContactsDialPadName": "8372",
                     "DomainName": "test2.test-eng.com",
                     "FavoriteContacts": [
                         "2200",
@@ -506,11 +511,11 @@
                     "UserName": "Martin McCrorey"
                 },
                 "R2d2AltUser": {
-                    "AccountPassword": "2016",
+                    "AccountPassword": "2012",
                     "DomainName": "test2.test-eng.com",
-                    "PhonePassword": "yafK8HPF",
+                    "PhonePassword": "8iTNfBdS",
                     "Proxy": "nr5.cpbx.esihs.net",
-                    "UserId": "2016b",
+                    "UserId": "2012a",
                     "UserNameIncoming": "Martin Two",
                     "dns_list": [
                         "10.0.50.156"
