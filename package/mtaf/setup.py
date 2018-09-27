@@ -40,6 +40,7 @@ setup(
         'babel==2.6.0',
         'beautifulsoup4==4.6.1',
         'behave==1.2.6',
+        'behave2cucumber==1.0.3',
         'ipaddress==1.0.22',
         'olefile==0.44',
         'requests==2.18.4',
