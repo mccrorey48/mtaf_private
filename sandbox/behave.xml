@@ -1,0 +1,43 @@
+<testsuites>
+    <testsuite name="1" tests="3" failures="0" errors="0" skipped="0" timestamp="Tue, 25 Sep 2018 16:31:55 GMT" time="1.1718273162841796e-12">
+        <testcase name="GivenI run a step with no substeps" classname="1" time="2.86102294921875e-13">
+        </testcase>
+        <testcase name="AndI run a step with a passing substep" classname="1" time="6.40869140625e-13">
+        </testcase>
+        <testcase name="Thenthis happens" classname="1" time="2.448558807373047e-13">
+        </testcase>
+    </testsuite>
+    <testsuite name="2" tests="5" failures="1" errors="0" skipped="4" timestamp="Tue, 25 Sep 2018 16:31:55 GMT" time="1.135110855102539e-12">
+        <testcase name="GivenI run a step with a failing substep" classname="2" time="1.135110855102539e-12">
+            <failure message="[u&apos;Assertion Failed: FAILED SUB-STEP: Then failing substep&apos;, u&apos;Substep info: Assertion Failed: failed this one&apos;, u&apos;Traceback (of failed substep):&apos;, u&apos;  File /home/mmccrorey/virtualenv/new_arch/local/lib/python2.7/site-packages/behave-1.2.6-py2.7.egg/behave/model.py, line 1329, in run&apos;, u&apos;    match.run(runner.context)&apos;, u&apos;  File /home/mmccrorey/virtualenv/new_arch/local/lib/python2.7/site-packages/behave-1.2.6-py2.7.egg/behave/matchers.py, line 98, in run&apos;, u&apos;    self.func(context, *args, **kwargs)&apos;, u&apos;  File features/steps/steps.py, line 40, in failing_substep&apos;, u&apos;    assert False, failed this one&apos;, u&apos;&apos;, u&apos;Captured logging:&apos;, u&apos;INFO:mtaf.environment:step.name: I run a step with a failing substep&apos;, u&apos;INFO:mtaf.environment:step.name: failing substep&apos;, u&apos;INFO:mtaf.environment:EXCEPTION in step failing substep&apos;, u&apos;INFO:mtaf.environment:EXCEPTION in step I run a step with a failing substep&apos;]">[u&apos;Assertion Failed: FAILED SUB-STEP: Then failing substep&apos;, u&apos;Substep info: Assertion Failed: failed this one&apos;, u&apos;Traceback (of failed substep):&apos;, u&apos;  File /home/mmccrorey/virtualenv/new_arch/local/lib/python2.7/site-packages/behave-1.2.6-py2.7.egg/behave/model.py, line 1329, in run&apos;, u&apos;    match.run(runner.context)&apos;, u&apos;  File /home/mmccrorey/virtualenv/new_arch/local/lib/python2.7/site-packages/behave-1.2.6-py2.7.egg/behave/matchers.py, line 98, in run&apos;, u&apos;    self.func(context, *args, **kwargs)&apos;, u&apos;  File features/steps/steps.py, line 40, in failing_substep&apos;, u&apos;    assert False, failed this one&apos;, u&apos;&apos;, u&apos;Captured logging:&apos;, u&apos;INFO:mtaf.environment:step.name: I run a step with a failing substep&apos;, u&apos;INFO:mtaf.environment:step.name: failing substep&apos;, u&apos;INFO:mtaf.environment:EXCEPTION in step failing substep&apos;, u&apos;INFO:mtaf.environment:EXCEPTION in step I run a step with a failing substep&apos;]</failure>
+        </testcase>
+        <testcase name="GivenI run a step with a passing substep" classname="2" time="0">
+            <skipped message="">
+            </skipped>
+        </testcase>
+        <testcase name="AndI run a step with a fake substep" classname="2" time="0">
+            <skipped message="">
+            </skipped>
+        </testcase>
+        <testcase name="GivenI run a step with substeps that have substeps" classname="2" time="0">
+            <skipped message="">
+            </skipped>
+        </testcase>
+        <testcase name="Thenthis happens" classname="2" time="0">
+            <skipped message="">
+            </skipped>
+        </testcase>
+    </testsuite>
+    <testsuite name="3" tests="5" failures="0" errors="0" skipped="0" timestamp="Tue, 25 Sep 2018 16:31:55 GMT" time="3.668069839477539e-12">
+        <testcase name="GivenI run a step with no substeps" classname="3" time="2.498626708984375e-13">
+        </testcase>
+        <testcase name="GivenI run a step with a passing substep" classname="3" time="5.841255187988281e-13">
+        </testcase>
+        <testcase name="AndI run a step with a fake substep" classname="3" time="7.550716400146484e-13">
+        </testcase>
+        <testcase name="GivenI run a step with substeps that have substeps" classname="3" time="1.820087432861328e-12">
+        </testcase>
+        <testcase name="Thenthis happens" classname="3" time="2.589225769042969e-13">
+        </testcase>
+    </testsuite>
+</testsuites>
