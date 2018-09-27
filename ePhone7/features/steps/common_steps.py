@@ -755,7 +755,7 @@ def the_ephone7_and_softphone_simultaneously_receive_a_call(context):
 def the_ephone7_app_should_not_crash(context):
     sleep(5)
     try:
-        activity = base_view.driver.current_activity
+        activity = base_view.get_driver().current_activity
     except BaseException:
         assert False, "could not read current activity"
     assert activity == '.activities.MainViewActivity', 'Expected .activities.MainViewActivity, got %s' % activity
