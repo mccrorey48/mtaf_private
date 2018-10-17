@@ -920,6 +920,10 @@ class Inspector(Frame):
                      state=DISABLED, padx=1)
         self.elems_btns.append(btn)
         btn.grid(row=0, column=ai.atf_r1, padx=2, pady=2)
+        btn = Button(btn_frame.attr_frame, text="get all elem text", bg=btn_default_bg, command=self.get_all_elem_text,
+                     state=DISABLED, padx=1)
+        self.elems_btns.append(btn)
+        btn.grid(row=0, column=ai.atf_r1, padx=2, pady=2)
         btn = Button(btn_frame.attr_frame, text="click elem", bg=btn_default_bg, command=self.click_element,
                      state=DISABLED, padx=1)
         self.elems_btns.append(btn)
@@ -1114,6 +1118,10 @@ class Inspector(Frame):
         self.btn_frame.find_frame.cbs.use_parent.configure(state=DISABLED)
         self.use_parent.set(0)
         self.update_find_widgets(None)
+
+    def get_all_elem_text(self):
+        for i, elem in enumerate(self.elems):
+            print "element %d text: %s" % (i, elem.text)
 
     def get_elem_attrs(self):
         text_index = self.elem_index.get()

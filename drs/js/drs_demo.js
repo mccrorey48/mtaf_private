@@ -18,10 +18,8 @@ var lab = false;
 var start = Date.now();
 
 // test configuration values
-// var option_type = 'presence';
-// var option_type = 'corpCon';
-var option_type = 'callhistory';
-// var option_type = 'google';
+var option_types = ['corpCon', 'callhistory', 'google'];
+// var option_types = ['corpCon'];
 var user_count = 0;
 var max_user_count = 100;
 
@@ -31,7 +29,7 @@ if (lab) {
   api_url = '10.3.1.5';
   csv_file = 'drs/csv/lab_users_concurrent.csv';
 } else {
-  api_url = 'pro.esiapi.io';
+  api_url = 'dev.esiapi.io';
   csv_file = 'drs/csv/pro_users_concurrent.csv';
 }
 
@@ -61,10 +59,10 @@ function log(s) {
   log_stdout.write(msg);
 }
 
-function startWebsocket(accessToken, user) {
+function startWebsocket(accessToken, user, option_type) {
   var socket;
   var last_blf = null;
-  log("starting websocket for user " + user.name + '@' + user.domain);
+  log("starting " + option_type + " websocket for user " + user.name + "@" + user.domain);
   socket = io.connect('http://' + api_url, {
     query: { auth: accessToken },
     path: drs_path,
@@ -79,9 +77,9 @@ function startWebsocket(accessToken, user) {
   socket.on('connect', function() {
     if (startup) {
       startup = false;
-      log('socket connect');
+      log(option_type + ' socket connect');
     } else {
-      log('socket connect (reconnection)');
+      log(option_type + ' socket connect (reconnection)');
     }
 
     var options = {
@@ -150,7 +148,9 @@ function go(user) {
         var bodyObject = JSON.parse(body);
         var accessToken = bodyObject.accessToken;
         log("accessToken = " + accessToken);
-        startWebsocket(accessToken, user);
+        option_types.forEach(function(option_type) {
+          startWebsocket(accessToken, user, option_type);
+        });
       })
     }
   }

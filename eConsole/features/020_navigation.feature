@@ -51,7 +51,7 @@ Feature: Home Page Navigation
     When I click the "Allow/Block Numbers" menu item
     Then the "Allow/Block Numbers" page appears
     And the SETTINGS tab is selected
-    And the content is correct for the "Allow/Block Numbers Page
+    And the content is correct for the "Allow/Block Numbers" Page
 
   @premier @office_mgr
   Scenario: I want to see my Answering Rules page
@@ -71,9 +71,9 @@ Feature: Home Page Navigation
     When I click the "Music on Hold" menu item
     Then the "Music on Hold" page appears
     And the SETTINGS tab is selected
-    And the content is correct for the "Nusic on Hold" page
+    And the content is correct for the "Music on Hold" page
 
-  @premier @office_mgr
+  @premier @office_mgr @wip
   Scenario: I want to see my Time Frames page
     Given I log in to the dashboard
     When I click the SETTINGS tab

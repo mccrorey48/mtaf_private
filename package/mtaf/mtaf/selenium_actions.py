@@ -348,7 +348,7 @@ class SeleniumActions(object):
             sleep(poll_time)
 
     @Trace(log, log_level='debug')
-    def find_element_by_locator(self, locator, timeout=10, parent=None):
+    def find_element_by_locator(self, locator, timeout=10, parent=None, displayed_only=True):
         # calls find_named_elements until exactly one element is returned, and returns that element
         # or times out and returns None
         self.wait_until_page_ready()
@@ -367,6 +367,8 @@ class SeleniumActions(object):
                 elems = [elem for elem in elems if elem.text == locator['text']]
             elif 'partial text' in locator:
                 elems = [elem for elem in elems if elem.text.find(locator['partial text']) != -1]
+            if displayed_only:
+                elems = filter(lambda x: x.is_displayed(), elems)
             if len(elems) == 1:
                 return elems[0]
         return None

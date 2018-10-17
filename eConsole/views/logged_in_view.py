@@ -10,8 +10,7 @@ class LoggedInView(BaseView):
 
     locators = {
         "AllowBlockNumbers": {"by": "css selector", "value": "a[href='#!/settings/blockNumbers']"},
-        "Banner": {"by": "class name", "value": "esi-header"},
-        "BannerText": {"by": "class name", "value": "esi-header-text"},
+        "Banner": {"by": "css selector", "value": "span[class='esi-header-text']"},
         "BrandImage": {"by": "id", "value": "brand-image"},
         "CallHistoryTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(3)"},
         "ContactsPullout": {"by": "id", "value": "cwContainer"},
@@ -39,7 +38,7 @@ class LoggedInView(BaseView):
     def __init__(self):
         super(LoggedInView, self).__init__()
         self.page_title = "ESI"
-        self.presence_element_names = ["ShowContacts"],
+        self.presence_element_names = ["ShowContacts"]
         self.content_scopes = {
             "BrandImage": self.all_scopes,
             "eHelp": self.all_scopes,

@@ -144,7 +144,9 @@ class Trace(object):
                         for val in retval:
                             if type(val) == appium_webdriver.webelement.WebElement:
                                 val_reprs.append('WebElement<%s>' % val._id)
-                            elif type(val) == selenium_webdriver.remote.webdriver.WebElement:
+                            elif (type(val) == selenium_webdriver.remote.webdriver.WebElement
+                                  or type(val) == selenium_webdriver.remote.webelement.WebElement
+                                  or type(val) == appium_webdriver.webelement.WebElement):
                                 arg_reprs.append('remote WebElement<%s>' % val._id)
                             else:
                                 val_reprs.append(repr(val))
