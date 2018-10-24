@@ -5,11 +5,12 @@ export HOME=/home/mmccrorey
 export MTAF_DIR=$HOME/mtaf
 export PYTHONPATH=$MTAF_DIR
 export MTAF_LOG_DIR=$MTAF_DIR/log
+export PATH=/usr/local/bin:$PATH
 cd $MTAF_DIR
 for scope in select premier office_mgr
 do
-    CMD="$HOME/virtualenv/new_arch/bin/python $HOME/mtaf/eConsole/run_features.py -f $MTAF_DIR/eConsole/features -p staging -u $scope -r regression"
+    CMD="$HOME/virtualenv/mtaf/bin/python $HOME/mtaf/eConsole/run_features.py -f $MTAF_DIR/eConsole/features -p staging -u $scope -r regression"
     echo $(/bin/date) $CMD
-    /usr/bin/xvfb-run -e $MTAF_LOG_DIR/xvfb.log -s "-screen 0 1024x768x8" $CMD
+    /usr/bin/xvfb-run -s "-screen 0 1024x768x8" $CMD
     # $CMD
 done > $MTAF_LOG_DIR/econsole_regression.log 2>&1

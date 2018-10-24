@@ -27,7 +27,7 @@ class LoggedInView(BaseView):
         "NavTabs": {"by": "css selector", "value": ".navbar-nav .nav-item"},
         "PhonesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(5)"},
         "ProvideFeedback": {"by": "link text", "value": "Provide feedback"},
-        "SettingsDropdownItems": {"by": "css selector", "value": "a[class='dropdown-item ng-scope']"},
+        "SettingsDropdownItems": {"by": "css selector", "value": """a[ng-click="selectOnMenu('settings')"]"""},
         "SettingsTab": {"by": "id", "value": "navbarDropdown"},
         "SelectedTab": {"by": "css selector", "value": ".navbar-nav .nav-item .active"},
         "ShowContacts": {"by": "id", "value": "showContacts"},

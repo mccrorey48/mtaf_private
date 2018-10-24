@@ -7,12 +7,12 @@ log = logging.get_logger('mtaf.allow_blk_num')
 class AllowBlockNumbersView(LoggedInView):
 
     locators = {
-        "AddAllowedNumber": {"by": "id", "value": "allowed-number-btn"},
-        "AddBlockedNumber": {"by": "id", "value": "block-number-btn"},
+        "AddAllowedNumber": {"by": "css selector", "value": """button[ng-click="addNumber('allow')"]"""},
+        "AddBlockedNumber": {"by": "css selector", "value": """button[ng-click="addNumber('block')"]"""},
         "AllowedNumber": {"by": "id", "value": "allowedNumber"},
         "AllowedNumbers": {"by": "css selector", "value": "label", "text": "Allowed Numbers"},
         "AnonBlock": {"by": "id", "value": "anon-block"},
-        "AnonBlockLabel": {"by": "css selector", "value": "label", "text": "Block anonymous or unknown"},
+        "AnonBlockLabel": {"by": "css selector", "value": "span", "text": "Block anonymous or unknown"},
         "BlockedNumber": {"by": "id", "value": "blockedNumber"},
         "BlockedNumbers": {"by": "css selector", "value": "label", "text": "Blocked Numbers"},
     }

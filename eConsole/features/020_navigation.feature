@@ -73,7 +73,7 @@ Feature: Home Page Navigation
     And the SETTINGS tab is selected
     And the content is correct for the "Music on Hold" page
 
-  @premier @office_mgr @wip
+  @premier @office_mgr
   Scenario: I want to see my Time Frames page
     Given I log in to the dashboard
     When I click the SETTINGS tab
