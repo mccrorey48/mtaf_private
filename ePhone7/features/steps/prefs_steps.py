@@ -11,17 +11,17 @@ log = mtaf_logging.get_logger('mtaf.prefs')
 
 @step("[prefs] A popup informs me that help email has been sent to my email address")
 def prefs__a_popup_informs_me_that_help_email_has_been_sent_to_my_email_address(context):
-    pass
+    assert prefs_view.element_is_present('eHelpEmailSent', timeout=20)
 
 
 @step('[prefs] A submenu appears with a "Call Forwarding Options" option')
 def prefs__a_submenu_appears_with_a_call_forwarding_options_option(context):
-    pass
+    assert prefs_view.element_with_text_is_present('CallForwardingOptions')
 
 
 @step('[prefs] A submenu appears with a "Network" option')
 def prefs__a_submenu_appears_with_a_network_option(context):
-    prefs_view.element_is_present('MenuItemNetworkText')
+    assert prefs_view.element_with_text_is_present('WelcometoePhone7')
 
 
 @step('[prefs] A submenu appears with an "Auto-Answer Calls" toggle')
@@ -31,7 +31,7 @@ def prefs__a_submenu_appears_with_an_autoanswer_calls_toggle(context):
 
 @step("[prefs] A submenu opens with an eHelp option")
 def prefs__a_submenu_opens_with_an_ehelp_option(context):
-    pass
+    assert prefs_view.element_is_present('eHelp')
 
 
 @step('[prefs] A window appears with a list of contacts')
@@ -46,7 +46,7 @@ def prefs__a_window_appears_with_a_section_labeled_call_forward_busy(context):
 
 @step('[prefs] an upgrade is found and an "Upgrade" button appears')
 def prefs__an_upgrade_is_found_and_an_upgrade_button_appears(context):
-    prefs_view.element_is_present('UpgradeButton')
+    assert prefs_view.element_is_present('UpgradeButton')
 
 
 @step("[prefs] I close all open submenus")
@@ -76,7 +76,9 @@ def prefs__i_read_the_displayed_versions_for_the_app_and_aosp(context):
 
 @step("[prefs] I see the Need Help, Personal, Phone and System category elements")
 def prefs__i_see_the_need_help_personal_phone_and_system_category_elements(context):
-    pass
+    assert prefs_view.element_is_present('Personal')
+    assert prefs_view.element_is_present('Phone')
+    assert prefs_view.element_is_present('System')
 
 
 @step("[prefs] I swipe the Wired Headset switch to the {direction}")
@@ -121,7 +123,7 @@ def prefs__only_the_contact_i_touched_is_listed(context):
 
 @step("[prefs] the email notification popup disappears")
 def prefs__the_email_notification_popup_disappears(context):
-    pass
+    assert prefs_view.element_becomes_not_present('eHelpEmailSent')
 
 
 @step("[prefs] the installed versions are displayed correctly")

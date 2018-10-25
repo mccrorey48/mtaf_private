@@ -35,6 +35,7 @@ class BaseView(AndroidActions):
         "RegRetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertCancelButton"},
         "ReleaseNotes": {"by": "id", "value": "com.esi_estech.ditto:id/release_notes"},
         "ReleaseNotesOK": {"by": "id", "value": "android:id/button1"},
+        "RetryButton": {"by": "id", "value": "com.esi_estech.ditto:id/e7AlertMajorButton"},
         "RootFrameLayout": {"by": "zpath", "value": "/h/fl"}
     }
 
@@ -229,6 +230,7 @@ class BaseView(AndroidActions):
                 log.debug(e.msg)
                 self.close_appium()
                 self.open_appium()
+                current_activity = None
             except WebDriverException as e:
                 log.debug('WebDriverException: %s, closing appium until reboot detected' % e.message)
                 self.close_appium_until_reboot()

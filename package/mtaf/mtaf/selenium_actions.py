@@ -7,7 +7,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import WebDriverException, TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from user_exception import UserException as Ux
+from user_exception import UserException as Ux, UserFailException as Fx
 log = mtaf_logging.get_logger('mtaf.selenium_actions')
 
 
@@ -340,7 +340,7 @@ class SeleniumActions(object):
         while True:
             elapsed_time = time() - start_time
             if elapsed_time > timeout:
-                raise Ux("%s after %.1f seconds" % (failmsg_fn(), elapsed_time))
+                raise Fx("%s after %.1f seconds" % (failmsg_fn(), elapsed_time))
             if elapsed_time > warn_time:
                 log.warn("%s after %.1f seconds" % (failmsg_fn(), elapsed_time))
             if condition_fn():

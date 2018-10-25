@@ -1,5 +1,7 @@
 from behave import *
 from mtaf import mtaf_logging
+from mtaf.user_exception import UserException as Ux
+from mtaf.decorators import Trace
 log = mtaf_logging.get_logger('mtaf.test')
 
 
@@ -49,10 +51,14 @@ def passing_substep(context):
 def fake_substep(context):
     pass
 
+@Trace(log)
+def throw():
+    raise Ux("raised User Exception")
 
 @step("this happens")
 def this_happens(context):
     log.info("nothing to see here")
+    throw()
 
 
 @step("and also this")

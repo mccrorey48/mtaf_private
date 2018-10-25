@@ -36,6 +36,8 @@ setup(
         'Topic :: Software Development :: Quality Assurance',
     ],
     install_requires=[
+        'allure-behave==2.5.1',
+        'allure-python-commons==2.5.1',
         'Appium-Python-Client==0.25',
         'babel==2.6.0',
         'beautifulsoup4==4.6.1',

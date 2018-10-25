@@ -15,7 +15,7 @@ def a_call_between_two_other_accounts_has_been_parked_by_the_called_account(cont
 
 @step('A "Call History" window appears')
 def a_call_history_window_appears(context):
-    pass
+    assert prefs_view.element_is_present('CallHistory')
 
 
 @step('A "Clear All User Data" confirmation dialog appears')
@@ -30,12 +30,12 @@ def a_confirmation_dialog_appears(context):
 
 @step('A "Contact Management" window appears')
 def a_contact_management_window_appears(context):
-    pass
+    assert prefs_view.element_is_present('ContactManagement')
 
 
 @step('A "Dialpad Screen" window appears')
 def a_dialpad_screen_window_appears(context):
-    pass
+    assert prefs_view.element_is_present('DialpadScreen')
 
 
 @step('A "Factory Reset" confirmation dialog appears')
@@ -78,6 +78,11 @@ def a_message_indicates_that_calls_are_being_forwarded_to_voicemail(context):
     pass
 
 
+@step('A "Preference Screen" window appears')
+def a_dialpad_screen_window_appears(context):
+    assert prefs_view.element_is_present('PreferencesScreen')
+
+
 @step('A "Select Ringtone" window appears with options for various ringtones')
 def a_select_ringtone_window_appears_with_options_for_various_ringtones(context):
     pass
@@ -105,7 +110,7 @@ def a_submenu_appears_with_a_datetime_options_option(context):
 
 @step('A submenu appears with a "Default Contacts Tab" option')
 def a_submenu_appears_with_a_default_contacts_tab_option(context):
-    pass
+    assert prefs_view.element_with_text_is_present('Default Contacts Tab')
 
 
 @step('A submenu appears with a "Manage Accounts" option')
@@ -140,22 +145,22 @@ def a_submenu_appears_with_a_volume_control_option(context):
 
 @step('A submenu opens with a "Walkthrough" option')
 def a_submenu_opens_with_a_walkthrough_option(context):
-    pass
+    assert prefs_view.element_is_present('Walkthrough')
 
 
 @step('A "Visual Voicemail" window appears')
 def a_visual_voicemail_window_appears(context):
-    pass
+    assert prefs_view.element_is_present('VisualVoicemail')
 
 
 @step('A "Voicemail Playback" window appears')
 def a_voicemail_playback_window_appears(context):
-    pass
+    assert prefs_view.element_is_present('VoicemailPlayback')
 
 
 @step('A "Welcome to ePhone7!" window appears')
 def a_welcome_to_ephone7_window_appears(context):
-    pass
+    assert prefs_view.element_is_present('WelcometoePhone7')
 
 
 @step("A window appears with a button for each Contacts tab")
@@ -215,12 +220,12 @@ def an_account_deleted_popup_appears(context):
 
 @step('an "Active Call Dialpad" window appears')
 def an_active_call_dialpad_window_appears(context):
-    pass
+    assert prefs_view.element_is_present('ActiveCallDialpad')
 
 
 @step('an "Active Call Screen" window appears')
 def an_active_call_screen_window_appears(context):
-    base_view.find_named_element('ActiveCallScreen')
+    assert prefs_view.element_is_present('ActiveCallScreen')
 
 
 @step("Both windows disappear")
@@ -436,7 +441,7 @@ def i_swipe_down_twice(context):
 
 @step("I swipe the screen from right to left")
 def i_swipe_the_screen_from_right_to_left(context):
-    pass
+    prefs_view.swipefromrighttoleft()
 
 
 @step("I touch a new time zone choice")
