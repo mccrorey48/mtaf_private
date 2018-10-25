@@ -9,7 +9,6 @@ log = logging.get_logger('mtaf.login')
 class LoggedInView(BaseView):
 
     locators = {
-        "AllowBlockNumbers": {"by": "css selector", "value": "a[href='#!/settings/blockNumbers']"},
         "Banner": {"by": "css selector", "value": "span[class='esi-header-text']"},
         "BrandImage": {"by": "id", "value": "brand-image"},
         "CallHistoryTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(3)"},
