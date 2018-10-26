@@ -820,6 +820,728 @@
             "staging": "http://staging-econsole.esihs.net"
         }
     },
+    "mm_ro_docker": {
+        "accounts": {
+            "1000@econs-ro.com": {
+                "password": "1000",
+                "number": "1000",
+                "name1": "select",
+                "name2": "user000",
+                "group": "QA01"
+            },
+            "1001@econs-ro.com": {
+                "password": "1001",
+                "number": "1001",
+                "name1": "select",
+                "name2": "user001",
+                "group": "QA01"
+            },
+            "1002@econs-ro.com": {
+                "password": "1002",
+                "number": "1002",
+                "name1": "select",
+                "name2": "user002",
+                "group": "QA01"
+            },
+            "1003@econs-ro.com": {
+                "password": "1003",
+                "number": "1003",
+                "name1": "select",
+                "name2": "user003",
+                "group": "QA01"
+            },
+            "1004@econs-ro.com": {
+                "password": "1004",
+                "number": "1004",
+                "name1": "select",
+                "name2": "user004",
+                "group": "QA01"
+            },
+            "1005@econs-ro.com": {
+                "password": "1005",
+                "number": "1005",
+                "name1": "select",
+                "name2": "user005",
+                "group": "QA01"
+            },
+            "1006@econs-ro.com": {
+                "password": "1006",
+                "number": "1006",
+                "name1": "select",
+                "name2": "user006",
+                "group": "QA01"
+            },
+            "1007@econs-ro.com": {
+                "password": "1007",
+                "number": "1007",
+                "name1": "select",
+                "name2": "user007",
+                "group": "QA01"
+            },
+            "1008@econs-ro.com": {
+                "password": "1008",
+                "number": "1008",
+                "name1": "select",
+                "name2": "user008",
+                "group": "QA01"
+            },
+            "1009@econs-ro.com": {
+                "password": "1009",
+                "number": "1009",
+                "name1": "select",
+                "name2": "user009",
+                "group": "QA01"
+            },
+            "1010@econs-ro.com": {
+                "password": "1010",
+                "number": "1010",
+                "name1": "premier",
+                "name2": "user010",
+                "group": "QA01"
+            },
+            "1011@econs-ro.com": {
+                "password": "1011",
+                "number": "1011",
+                "name1": "premier",
+                "name2": "user011",
+                "group": "QA01"
+            },
+            "1012@econs-ro.com": {
+                "password": "1012",
+                "number": "1012",
+                "name1": "premier",
+                "name2": "user012",
+                "group": "QA01"
+            },
+            "1013@econs-ro.com": {
+                "password": "1013",
+                "number": "1013",
+                "name1": "premier",
+                "name2": "user013",
+                "group": "QA01"
+            },
+            "1014@econs-ro.com": {
+                "password": "1014",
+                "number": "1014",
+                "name1": "premier",
+                "name2": "user014",
+                "group": "QA01"
+            },
+            "1015@econs-ro.com": {
+                "password": "1015",
+                "number": "1015",
+                "name1": "premier",
+                "name2": "user015",
+                "group": "QA01"
+            },
+            "1016@econs-ro.com": {
+                "password": "1016",
+                "number": "1016",
+                "name1": "premier",
+                "name2": "user016",
+                "group": "QA01"
+            },
+            "1017@econs-ro.com": {
+                "password": "1017",
+                "number": "1017",
+                "name1": "premier",
+                "name2": "user017",
+                "group": "QA01"
+            },
+            "1018@econs-ro.com": {
+                "password": "1018",
+                "number": "1018",
+                "name1": "premier",
+                "name2": "user018",
+                "group": "QA01"
+            },
+            "1019@econs-ro.com": {
+                "password": "1019",
+                "number": "1019",
+                "name1": "premier",
+                "name2": "user019",
+                "group": "QA01"
+            },
+            "1020@econs-ro.com": {
+                "password": "1020",
+                "number": "1020",
+                "name1": "select",
+                "name2": "user020",
+                "group": "QA02"
+            },
+            "1021@econs-ro.com": {
+                "password": "1021",
+                "number": "1021",
+                "name1": "select",
+                "name2": "user021",
+                "group": "QA02"
+            },
+            "1022@econs-ro.com": {
+                "password": "1022",
+                "number": "1022",
+                "name1": "select",
+                "name2": "user022",
+                "group": "QA02"
+            },
+            "1023@econs-ro.com": {
+                "password": "1023",
+                "number": "1023",
+                "name1": "select",
+                "name2": "user023",
+                "group": "QA02"
+            },
+            "1024@econs-ro.com": {
+                "password": "1024",
+                "number": "1024",
+                "name1": "select",
+                "name2": "user024",
+                "group": "QA02"
+            },
+            "1025@econs-ro.com": {
+                "password": "1025",
+                "number": "1025",
+                "name1": "select",
+                "name2": "user025",
+                "group": "QA02"
+            },
+            "1026@econs-ro.com": {
+                "password": "1026",
+                "number": "1026",
+                "name1": "select",
+                "name2": "user026",
+                "group": "QA02"
+            },
+            "1027@econs-ro.com": {
+                "password": "1027",
+                "number": "1027",
+                "name1": "select",
+                "name2": "user027",
+                "group": "QA02"
+            },
+            "1028@econs-ro.com": {
+                "password": "1028",
+                "number": "1028",
+                "name1": "select",
+                "name2": "user028",
+                "group": "QA02"
+            },
+            "1029@econs-ro.com": {
+                "password": "1029",
+                "number": "1029",
+                "name1": "select",
+                "name2": "user029",
+                "group": "QA02"
+            },
+            "1030@econs-ro.com": {
+                "password": "1030",
+                "number": "1030",
+                "name1": "premier",
+                "name2": "user030",
+                "group": "QA02"
+            },
+            "1031@econs-ro.com": {
+                "password": "1031",
+                "number": "1031",
+                "name1": "premier",
+                "name2": "user031",
+                "group": "QA02"
+            },
+            "1032@econs-ro.com": {
+                "password": "1032",
+                "number": "1032",
+                "name1": "premier",
+                "name2": "user032",
+                "group": "QA02"
+            },
+            "1033@econs-ro.com": {
+                "password": "1033",
+                "number": "1033",
+                "name1": "premier",
+                "name2": "user033",
+                "group": "QA02"
+            },
+            "1034@econs-ro.com": {
+                "password": "1034",
+                "number": "1034",
+                "name1": "premier",
+                "name2": "user034",
+                "group": "QA02"
+            },
+            "1035@econs-ro.com": {
+                "password": "1035",
+                "number": "1035",
+                "name1": "premier",
+                "name2": "user035",
+                "group": "QA02"
+            },
+            "1036@econs-ro.com": {
+                "password": "1036",
+                "number": "1036",
+                "name1": "premier",
+                "name2": "user036",
+                "group": "QA02"
+            },
+            "1037@econs-ro.com": {
+                "password": "1037",
+                "number": "1037",
+                "name1": "premier",
+                "name2": "user037",
+                "group": "QA02"
+            },
+            "1038@econs-ro.com": {
+                "password": "1038",
+                "number": "1038",
+                "name1": "premier",
+                "name2": "user038",
+                "group": "QA02"
+            },
+            "1039@econs-ro.com": {
+                "password": "1039",
+                "number": "1039",
+                "name1": "premier",
+                "name2": "user039",
+                "group": "QA02"
+            },
+            "1040@econs-ro.com": {
+                "password": "1040",
+                "number": "1040",
+                "name1": "select",
+                "name2": "user040",
+                "group": "QA03"
+            },
+            "1041@econs-ro.com": {
+                "password": "1041",
+                "number": "1041",
+                "name1": "select",
+                "name2": "user041",
+                "group": "QA03"
+            },
+            "1042@econs-ro.com": {
+                "password": "1042",
+                "number": "1042",
+                "name1": "select",
+                "name2": "user042",
+                "group": "QA03"
+            },
+            "1043@econs-ro.com": {
+                "password": "1043",
+                "number": "1043",
+                "name1": "select",
+                "name2": "user043",
+                "group": "QA03"
+            },
+            "1044@econs-ro.com": {
+                "password": "1044",
+                "number": "1044",
+                "name1": "select",
+                "name2": "user044",
+                "group": "QA03"
+            },
+            "1045@econs-ro.com": {
+                "password": "1045",
+                "number": "1045",
+                "name1": "select",
+                "name2": "user045",
+                "group": "QA03"
+            },
+            "1046@econs-ro.com": {
+                "password": "1046",
+                "number": "1046",
+                "name1": "select",
+                "name2": "user046",
+                "group": "QA03"
+            },
+            "1047@econs-ro.com": {
+                "password": "1047",
+                "number": "1047",
+                "name1": "select",
+                "name2": "user047",
+                "group": "QA03"
+            },
+            "1048@econs-ro.com": {
+                "password": "1048",
+                "number": "1048",
+                "name1": "select",
+                "name2": "user048",
+                "group": "QA03"
+            },
+            "1049@econs-ro.com": {
+                "password": "1049",
+                "number": "1049",
+                "name1": "select",
+                "name2": "user049",
+                "group": "QA03"
+            },
+            "1050@econs-ro.com": {
+                "password": "1050",
+                "number": "1050",
+                "name1": "premier",
+                "name2": "user050",
+                "group": "QA03"
+            },
+            "1051@econs-ro.com": {
+                "password": "1051",
+                "number": "1051",
+                "name1": "premier",
+                "name2": "user051",
+                "group": "QA03"
+            },
+            "1052@econs-ro.com": {
+                "password": "1052",
+                "number": "1052",
+                "name1": "premier",
+                "name2": "user052",
+                "group": "QA03"
+            },
+            "1053@econs-ro.com": {
+                "password": "1053",
+                "number": "1053",
+                "name1": "premier",
+                "name2": "user053",
+                "group": "QA03"
+            },
+            "1054@econs-ro.com": {
+                "password": "1054",
+                "number": "1054",
+                "name1": "premier",
+                "name2": "user054",
+                "group": "QA03"
+            },
+            "1055@econs-ro.com": {
+                "password": "1055",
+                "number": "1055",
+                "name1": "premier",
+                "name2": "user055",
+                "group": "QA03"
+            },
+            "1056@econs-ro.com": {
+                "password": "1056",
+                "number": "1056",
+                "name1": "premier",
+                "name2": "user056",
+                "group": "QA03"
+            },
+            "1057@econs-ro.com": {
+                "password": "1057",
+                "number": "1057",
+                "name1": "premier",
+                "name2": "user057",
+                "group": "QA03"
+            },
+            "1058@econs-ro.com": {
+                "password": "1058",
+                "number": "1058",
+                "name1": "premier",
+                "name2": "user058",
+                "group": "QA03"
+            },
+            "1059@econs-ro.com": {
+                "password": "1059",
+                "number": "1059",
+                "name1": "premier",
+                "name2": "user059",
+                "group": "QA03"
+            },
+            "1060@econs-ro.com": {
+                "password": "1060",
+                "number": "1060",
+                "name1": "select",
+                "name2": "user060",
+                "group": "QA04"
+            },
+            "1061@econs-ro.com": {
+                "password": "1061",
+                "number": "1061",
+                "name1": "select",
+                "name2": "user061",
+                "group": "QA04"
+            },
+            "1062@econs-ro.com": {
+                "password": "1062",
+                "number": "1062",
+                "name1": "select",
+                "name2": "user062",
+                "group": "QA04"
+            },
+            "1063@econs-ro.com": {
+                "password": "1063",
+                "number": "1063",
+                "name1": "select",
+                "name2": "user063",
+                "group": "QA04"
+            },
+            "1064@econs-ro.com": {
+                "password": "1064",
+                "number": "1064",
+                "name1": "select",
+                "name2": "user064",
+                "group": "QA04"
+            },
+            "1065@econs-ro.com": {
+                "password": "1065",
+                "number": "1065",
+                "name1": "select",
+                "name2": "user065",
+                "group": "QA04"
+            },
+            "1066@econs-ro.com": {
+                "password": "1066",
+                "number": "1066",
+                "name1": "select",
+                "name2": "user066",
+                "group": "QA04"
+            },
+            "1067@econs-ro.com": {
+                "password": "1067",
+                "number": "1067",
+                "name1": "select",
+                "name2": "user067",
+                "group": "QA04"
+            },
+            "1068@econs-ro.com": {
+                "password": "1068",
+                "number": "1068",
+                "name1": "select",
+                "name2": "user068",
+                "group": "QA04"
+            },
+            "1069@econs-ro.com": {
+                "password": "1069",
+                "number": "1069",
+                "name1": "select",
+                "name2": "user069",
+                "group": "QA04"
+            },
+            "1070@econs-ro.com": {
+                "password": "1070",
+                "number": "1070",
+                "name1": "premier",
+                "name2": "user070",
+                "group": "QA04"
+            },
+            "1071@econs-ro.com": {
+                "password": "1071",
+                "number": "1071",
+                "name1": "premier",
+                "name2": "user071",
+                "group": "QA04"
+            },
+            "1072@econs-ro.com": {
+                "password": "1072",
+                "number": "1072",
+                "name1": "premier",
+                "name2": "user072",
+                "group": "QA04"
+            },
+            "1073@econs-ro.com": {
+                "password": "1073",
+                "number": "1073",
+                "name1": "premier",
+                "name2": "user073",
+                "group": "QA04"
+            },
+            "1074@econs-ro.com": {
+                "password": "1074",
+                "number": "1074",
+                "name1": "premier",
+                "name2": "user074",
+                "group": "QA04"
+            },
+            "1075@econs-ro.com": {
+                "password": "1075",
+                "number": "1075",
+                "name1": "premier",
+                "name2": "user075",
+                "group": "QA04"
+            },
+            "1076@econs-ro.com": {
+                "password": "1076",
+                "number": "1076",
+                "name1": "premier",
+                "name2": "user076",
+                "group": "QA04"
+            },
+            "1077@econs-ro.com": {
+                "password": "1077",
+                "number": "1077",
+                "name1": "premier",
+                "name2": "user077",
+                "group": "QA04"
+            },
+            "1078@econs-ro.com": {
+                "password": "1078",
+                "number": "1078",
+                "name1": "premier",
+                "name2": "user078",
+                "group": "QA04"
+            },
+            "1079@econs-ro.com": {
+                "password": "1079",
+                "number": "1079",
+                "name1": "premier",
+                "name2": "user079",
+                "group": "QA04"
+            },
+            "1080@econs-ro.com": {
+                "password": "1080",
+                "number": "1080",
+                "name1": "select",
+                "name2": "user080",
+                "group": "QA05"
+            },
+            "1081@econs-ro.com": {
+                "password": "1081",
+                "number": "1081",
+                "name1": "select",
+                "name2": "user081",
+                "group": "QA05"
+            },
+            "1082@econs-ro.com": {
+                "password": "1082",
+                "number": "1082",
+                "name1": "select",
+                "name2": "user082",
+                "group": "QA05"
+            },
+            "1083@econs-ro.com": {
+                "password": "1083",
+                "number": "1083",
+                "name1": "select",
+                "name2": "user083",
+                "group": "QA05"
+            },
+            "1084@econs-ro.com": {
+                "password": "1084",
+                "number": "1084",
+                "name1": "select",
+                "name2": "user084",
+                "group": "QA05"
+            },
+            "1085@econs-ro.com": {
+                "password": "1085",
+                "number": "1085",
+                "name1": "select",
+                "name2": "user085",
+                "group": "QA05"
+            },
+            "1086@econs-ro.com": {
+                "password": "1086",
+                "number": "1086",
+                "name1": "select",
+                "name2": "user086",
+                "group": "QA05"
+            },
+            "1087@econs-ro.com": {
+                "password": "1087",
+                "number": "1087",
+                "name1": "select",
+                "name2": "user087",
+                "group": "QA05"
+            },
+            "1088@econs-ro.com": {
+                "password": "1088",
+                "number": "1088",
+                "name1": "select",
+                "name2": "user088",
+                "group": "QA05"
+            },
+            "1089@econs-ro.com": {
+                "password": "1089",
+                "number": "1089",
+                "name1": "select",
+                "name2": "user089",
+                "group": "QA05"
+            },
+            "1090@econs-ro.com": {
+                "password": "1090",
+                "number": "1090",
+                "name1": "premier",
+                "name2": "user090",
+                "group": "QA05"
+            },
+            "1091@econs-ro.com": {
+                "password": "1091",
+                "number": "1091",
+                "name1": "premier",
+                "name2": "user091",
+                "group": "QA05"
+            },
+            "1092@econs-ro.com": {
+                "password": "1092",
+                "number": "1092",
+                "name1": "premier",
+                "name2": "user092",
+                "group": "QA05"
+            },
+            "1093@econs-ro.com": {
+                "password": "1093",
+                "number": "1093",
+                "name1": "premier",
+                "name2": "user093",
+                "group": "QA05"
+            },
+            "1094@econs-ro.com": {
+                "password": "1094",
+                "number": "1094",
+                "name1": "premier",
+                "name2": "user094",
+                "group": "QA05"
+            },
+            "1095@econs-ro.com": {
+                "password": "1095",
+                "number": "1095",
+                "name1": "premier",
+                "name2": "user095",
+                "group": "QA05"
+            },
+            "1096@econs-ro.com": {
+                "password": "1096",
+                "number": "1096",
+                "name1": "premier",
+                "name2": "user096",
+                "group": "QA05"
+            },
+            "1097@econs-ro.com": {
+                "password": "1097",
+                "number": "1097",
+                "name1": "premier",
+                "name2": "user097",
+                "group": "QA05"
+            },
+            "1098@econs-ro.com": {
+                "password": "1098",
+                "number": "1098",
+                "name1": "premier",
+                "name2": "user098",
+                "group": "QA05"
+            },
+            "1099@econs-ro.com": {
+                "password": "1099",
+                "number": "1099",
+                "name1": "premier",
+                "name2": "user099",
+                "group": "QA05"
+            },
+            "1100@econs-ro.com": {
+                "password": "1100",
+                "number": "1100",
+                "name1": "office_mgr",
+                "name2": "user100",
+                "group": "QA01"
+            }
+        },
+        "office_manager": "1100@econs-ro.com",
+        "screenshot_folder": "eConsole/screenshots",
+        "default_user": {
+            "select": "1000@econs-ro.com",
+            "premier": "1010@econs-ro.com",
+            "office_mgr": "1100@econs-ro.com"
+        },
+        "portal_url": {
+            "production": "http://econsole.esihs.net",
+            "staging": "http://staging-econsole.esihs.net"
+        }
+    },
     "vqda1": {
         "accounts": {
             "2000@test3.test-eng.com": {

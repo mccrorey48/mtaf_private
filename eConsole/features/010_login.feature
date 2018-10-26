@@ -1,4 +1,4 @@
-@regression
+@regression @wip
 Feature: Log in only allowed with valid user ID and password
 
   @select
