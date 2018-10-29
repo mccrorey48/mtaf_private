@@ -7,7 +7,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import WebDriverException, TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from user_exception import UserException as Ux
+from user_exception import UserException as Ux, UserFailException as Fx
 log = mtaf_logging.get_logger('mtaf.selenium_actions')
 
 
@@ -340,7 +340,7 @@ class SeleniumActions(object):
         while True:
             elapsed_time = time() - start_time
             if elapsed_time > timeout:
-                raise Ux("%s after %.1f seconds" % (failmsg_fn(), elapsed_time))
+                raise Fx("%s after %.1f seconds" % (failmsg_fn(), elapsed_time))
             if elapsed_time > warn_time:
                 log.warn("%s after %.1f seconds" % (failmsg_fn(), elapsed_time))
             if condition_fn():
@@ -348,7 +348,7 @@ class SeleniumActions(object):
             sleep(poll_time)
 
     @Trace(log, log_level='debug')
-    def find_element_by_locator(self, locator, timeout=10, parent=None):
+    def find_element_by_locator(self, locator, timeout=10, parent=None, displayed_only=True):
         # calls find_named_elements until exactly one element is returned, and returns that element
         # or times out and returns None
         self.wait_until_page_ready()
@@ -367,6 +367,8 @@ class SeleniumActions(object):
                 elems = [elem for elem in elems if elem.text == locator['text']]
             elif 'partial text' in locator:
                 elems = [elem for elem in elems if elem.text.find(locator['partial text']) != -1]
+            if displayed_only:
+                elems = filter(lambda x: x.is_displayed(), elems)
             if len(elems) == 1:
                 return elems[0]
         return None

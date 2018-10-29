@@ -38,41 +38,41 @@ Feature: As a user I want to view and change detailed settings that control my p
     When  I swipe the screen from right to left
     Then  [prefs] the Preferences window appears
 
-  Scenario: I want to sign in to gmail and download my Personal contacts
-    Given I am not signed in to my gmail account
-    And   My account does not have two-step verification enabled
-    When  I touch "Personal"
-    Then  A submenu appears with a "Sign in with Google" option
-    When  I touch "Sign in with Google"
-    Then  A Google dialog appears with a place to enter my email address
-    When  I enter my email address
-    And   I touch "Next"
-    Then  A Google dialog appears with a place to enter my password
-    When  I enter my password
-    And   I touch "Next"
-    Then  The Google dialog disappears
-    And   The "Sign in with Google" element label changes to "Manage Accounts"
-    When  [prefs] I touch the "X" icon
-    Then  [prefs] The Preferences window disappears
-    When  I touch the "Contacts" view selector button
-    Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
-    When  I touch the "Personal" tab
-    Then  I can see my personal contacts
-
-
-  Scenario: I want to sign out of gmail and remove my Personal contacts
-    Given I am signed in to my gmail account
-    When  I touch "Personal"
-    Then  A submenu appears with a "Manage Accounts" option
-    When  I touch "Manage Accounts"
-    Then  A "Sign Out of Google Account" dialog appears
-    When  [prefs] I touch the Delete icon
-    Then  A confirmation dialog appears
-    When  I touch "OK"
-    Then  An "Account Deleted" popup appears
-    When  I touch "OK"
-    Then  The "Account Deleted" popup disappears
-    And   The "Manage Accounts" element label changes to "Sign in with Google"
+#  Scenario: I want to sign in to gmail and download my Personal contacts
+#    Given I am not signed in to my gmail account
+#    And   My account does not have two-step verification enabled
+#    When  I touch "Personal"
+#    Then  A submenu appears with a "Sign in with Google" option
+#    When  I touch "Sign in with Google"
+#    Then  A Google dialog appears with a place to enter my email address
+#    When  I enter my email address
+#    And   I touch "Next"
+#    Then  A Google dialog appears with a place to enter my password
+#    When  I enter my password
+#    And   I touch "Next"
+#    Then  The Google dialog disappears
+#    And   The "Sign in with Google" element label changes to "Manage Accounts"
+#    When  [prefs] I touch the "X" icon
+#    Then  [prefs] The Preferences window disappears
+#    When  I touch the "Contacts" view selector button
+#    Then  [contacts] I see the Personal, Coworkers, Favorites and Groups tabs
+#    When  I touch the "Personal" tab
+#    Then  I can see my personal contacts
+#
+#
+#  Scenario: I want to sign out of gmail and remove my Personal contacts
+#    Given I am signed in to my gmail account
+#    When  I touch "Personal"
+#    Then  A submenu appears with a "Manage Accounts" option
+#    When  I touch "Manage Accounts"
+#    Then  A "Sign Out of Google Account" dialog appears
+#    When  [prefs] I touch the Delete icon
+#    Then  A confirmation dialog appears
+#    When  I touch "OK"
+#    Then  An "Account Deleted" popup appears
+#    When  I touch "OK"
+#    Then  The "Account Deleted" popup disappears
+#    And   The "Manage Accounts" element label changes to "Sign in with Google"
 
   Scenario: I want to change my default Contacts tab
     When  I touch "Personal"

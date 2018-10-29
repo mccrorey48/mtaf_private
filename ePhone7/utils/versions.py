@@ -13,7 +13,8 @@ import argparse
 
 log = mtaf_logging.get_logger('mtaf.versions')
 
-__all__ = ['get_installed_versions', 'force_aosp_downgrade', 'remove_apk_upgrades', 'get_current_versions']
+__all__ = ['get_installed_versions', 'force_aosp_downgrade', 'remove_apk_upgrades', 'get_current_versions',
+           'get_downgrade_images', 'force_app_downgrade']
 
 
 @Trace(log)

@@ -1,0 +1,12 @@
+Build docker image "mtaf":
+
+    docker build -t mtaf
+
+Run run_features.py in the image:
+
+    docker run -i -t --rm mtaf python eConsole/run_features.py -f eConsole/features -p staging -u select -r regression
+    docker run -i -t --rm mtaf python eConsole/run_features.py -f eConsole/features -p staging -u select -r wip
+    docker run -i -t --rm mtaf python eConsole/run_features.py -f eConsole/features -p staging -u premier -r regression
+    docker run -i -t --rm mtaf python eConsole/run_features.py -f eConsole/features -p staging -u premier -r wip
+    docker run -i -t --rm mtaf python eConsole/run_features.py -f eConsole/features -p staging -u office_mgr -r regression
+    docker run -i -t --rm mtaf python eConsole/run_features.py -f eConsole/features -p staging -u office_mgr -r wip

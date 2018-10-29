@@ -1,7 +1,7 @@
-@regression
+@regression @wip
 Feature: Log in only allowed with valid user ID and password
 
-  @select @wip
+  @select
   Scenario: Log in with valid select user ID and password
     When I enter a valid select user ID
     And I enter a valid select password

@@ -342,33 +342,36 @@ class MyCallCallback(pj.CallCallback):
             'destroy_media': self.destroy_media,
             'delete_call': self.delete_call
         }
-        call_info = self.account_info.call.info()
-        remote_uri = re.match('("[^"]*"\s+)?<?([^>]+)', call_info.remote_uri).group(2)
-        self.account_info.state = call_info.state
-        self.account_info.media_state = call_info.media_state
-        log.debug("_on_state: %s: ci.remote_uri=%s state %s media_state %s" % (
-            call_info.uri, remote_uri, call_state_text[call_info.state], media_state_text[call_info.media_state]))
-        old_call_status = self.account_info.call_status
-        state_key = (call_info.state, call_info.media_state)
-        if state_key in new_call_settings[old_call_status]:
-            new_call_status = new_call_settings[old_call_status][state_key]['status']
-            if 'actions' in new_call_settings[old_call_status][state_key]:
-                actions = new_call_settings[old_call_status][state_key]['actions']
+        if self.account_info.call is None:
+            log.debug("_on_state: call is None: account_info=%s" % self.account_info)
+        else:
+            call_info = self.account_info.call.info()
+            remote_uri = re.match('("[^"]*"\s+)?<?([^>]+)', call_info.remote_uri).group(2)
+            self.account_info.state = call_info.state
+            self.account_info.media_state = call_info.media_state
+            log.debug("_on_state: %s: ci.remote_uri=%s state %s media_state %s" % (
+                call_info.uri, remote_uri, call_state_text[call_info.state], media_state_text[call_info.media_state]))
+            old_call_status = self.account_info.call_status
+            state_key = (call_info.state, call_info.media_state)
+            if state_key in new_call_settings[old_call_status]:
+                new_call_status = new_call_settings[old_call_status][state_key]['status']
+                if 'actions' in new_call_settings[old_call_status][state_key]:
+                    actions = new_call_settings[old_call_status][state_key]['actions']
+                else:
+                    actions = {}
             else:
+                new_call_status = self.account_info.call_status
                 actions = {}
-        else:
-            new_call_status = self.account_info.call_status
-            actions = {}
-        log.debug("_on_state: old call_status = %s, new call_status = %s" % (old_call_status, new_call_status))
-        if new_call_status == 'call' and old_call_status != 'call':
-            self.account_info.call_start_time = time()
-        self.account_info.call_status = new_call_status
-        if self.account_info.call_status == 'idle':
-            self.account_info.remote_uri = None
-        else:
-            self.account_info.remote_uri = remote_uri
-        for action in actions:
-            media_ops[action]()
+            log.debug("_on_state: old call_status = %s, new call_status = %s" % (old_call_status, new_call_status))
+            if new_call_status == 'call' and old_call_status != 'call':
+                self.account_info.call_start_time = time()
+            self.account_info.call_status = new_call_status
+            if self.account_info.call_status == 'idle':
+                self.account_info.remote_uri = None
+            else:
+                self.account_info.remote_uri = remote_uri
+            for action in actions:
+                media_ops[action]()
 
     def on_state(self):
         with mtaf_logging.msg_src_cm('on_state'):

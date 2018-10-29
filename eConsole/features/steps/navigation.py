@@ -1,5 +1,6 @@
 from behave import *
 from eConsole.views import *
+from mtaf.user_exception import UserFailException as Fx
 
 
 @step('I click the "{item_text}" menu item')
@@ -21,8 +22,10 @@ def i_navigate_to_the_manage_organizationinventory_page(context):
 def the_content_is_correct_for_the_user_scope(context, page):
     user_scope = context.config.userdata['user_scope']
     view = all_views[snake_case(page)]
-    err_msg = "Incorrect content for %s scope" % user_scope
-    assert view.has_scope_content(context.config.userdata['user_scope']), err_msg
+    try:
+        view.has_scope_content(context.config.userdata['user_scope'])
+    except Fx as e:
+        assert False, "Incorrect content for %s scope: %s" % (user_scope, e)
 
 
 @step("the Settings Menu appears")

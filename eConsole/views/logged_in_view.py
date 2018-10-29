@@ -9,9 +9,7 @@ log = logging.get_logger('mtaf.login')
 class LoggedInView(BaseView):
 
     locators = {
-        "AllowBlockNumbers": {"by": "css selector", "value": "a[href='#!/settings/blockNumbers']"},
-        "Banner": {"by": "class name", "value": "esi-header"},
-        "BannerText": {"by": "class name", "value": "esi-header-text"},
+        "Banner": {"by": "css selector", "value": "span[class='esi-header-text']"},
         "BrandImage": {"by": "id", "value": "brand-image"},
         "CallHistoryTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(3)"},
         "ContactsPullout": {"by": "id", "value": "cwContainer"},
@@ -28,7 +26,7 @@ class LoggedInView(BaseView):
         "NavTabs": {"by": "css selector", "value": ".navbar-nav .nav-item"},
         "PhonesTab": {"by": "css selector", "value": ".navbar-nav .nav-item:nth-child(5)"},
         "ProvideFeedback": {"by": "link text", "value": "Provide feedback"},
-        "SettingsDropdownItems": {"by": "css selector", "value": "a[class='dropdown-item ng-scope']"},
+        "SettingsDropdownItems": {"by": "css selector", "value": """a[ng-click="selectOnMenu('settings')"]"""},
         "SettingsTab": {"by": "id", "value": "navbarDropdown"},
         "SelectedTab": {"by": "css selector", "value": ".navbar-nav .nav-item .active"},
         "ShowContacts": {"by": "id", "value": "showContacts"},
@@ -39,7 +37,7 @@ class LoggedInView(BaseView):
     def __init__(self):
         super(LoggedInView, self).__init__()
         self.page_title = "ESI"
-        self.presence_element_names = ["ShowContacts"],
+        self.presence_element_names = ["ShowContacts"]
         self.content_scopes = {
             "BrandImage": self.all_scopes,
             "eHelp": self.all_scopes,

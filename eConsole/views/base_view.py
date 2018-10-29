@@ -3,7 +3,7 @@ import mtaf.mtaf_logging as logging
 from mtaf.decorators import Trace
 from eConsole.config.configure import cfg
 from mtaf.angular_actions import AngularActions
-from mtaf.user_exception import UserException as Ux
+from mtaf.user_exception import UserException as Ux, UserFailException as Fx
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.common.exceptions import WebDriverException, TimeoutException
@@ -86,7 +86,7 @@ class BaseView(AngularActions):
         if self.banner_texts:
             if not self.element_is_present("Banner"):
                 return False
-            elem = self.find_named_element("BannerText")
+            elem = self.find_named_element("Banner")
             texts = elem.text.split('/')
             for text in self.banner_texts:
                 if texts.pop(0).strip() != text:
@@ -102,14 +102,11 @@ class BaseView(AngularActions):
     @Trace(log)
     def has_scope_content(self, scope):
         self.wait_until_angular_ready()
-        # if len(self.content_scopes.keys()) == 0:
-        #     raise Ux("has_scope_content() not implemented here")
         for element_name in self.content_scopes.keys():
             if scope not in self.content_scopes[element_name]:
                 continue
             if not self.element_is_present(element_name):
-                return False
-        return True
+                raise Fx('element "%s" not present' % element_name)
 
 
 base_view = BaseView()

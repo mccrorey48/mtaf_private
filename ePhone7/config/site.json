@@ -357,7 +357,7 @@
                     "UserName": "David ePhone7"
                 },
                 "R2d2AltUser": {
-                    "AccountPassword": "",
+                    "AccountPassword": "2016",
                     "DomainName": "test2.test-eng.com",
                     "PhonePassword": "yafK8HPF",
                     "Proxy": "nr5.cpbx.esihs.net",
@@ -395,6 +395,7 @@
             }
         },
         "js": {
+            "SerialDev": "/dev/tty.SLAB_USBtoUART",
             "AospsHome": "/home/jsabugo/aosps",
             "ApksHome": "/home/jsabugo/apks",
             "DefaultForwardAccount": "Auto TesterF",
@@ -402,7 +403,7 @@
             "10DigitNumber" : "2147272447",
             "Users": {
                 "R2d2User": {
-                    "AccountPassword": "2012",
+                    "AccountPassword": "2013",
                     "AllContacts": [
                         "2200",
                         "2201",
@@ -428,17 +429,17 @@
                         "2206",
                         "2207"
                     ],
-                    "PhonePassword": "2012",
-                    "UserId": "2012",
-                    "UserName": "Martin Two"
+                    "PhonePassword": "2013",
+                    "UserId": "2013",
+                    "UserName": "Jessica Sabugo"
                 },
                 "R2d2AltUser": {
-                    "AccountPassword": "",
+                    "AccountPassword": "2013",
                     "DomainName": "test2.test-eng.com",
-                    "PhonePassword": "v67XkM6U",
+                    "PhonePassword": "tQo8K7hX",
                     "Proxy": "nr5.cpbx.esihs.net",
-                    "UserId": "2012b",
-                    "UserNameIncoming": "Martin Two",
+                    "UserId": "2013a",
+                    "UserNameIncoming": "Jessica Sabugo",
                     "dns_list": [
                         "10.0.50.156"
                     ],
@@ -520,7 +521,7 @@
                     "dns_list": [
                         "10.0.50.156"
                     ],
-                    "pbfile": "wav/2016.wav"
+                    "pbfile": "wav/2012.wav"
                 },
                 "Auto TesterC": {
                     "AccountPassword": "2202",
@@ -1648,7 +1649,7 @@
                 }
             }
         },
-	"sl": {
+	    "sl": {
             "AospsHome": "/home/mobile/aosps",
             "ApksHome": "/home/mobile/apks",
             "DefaultForwardAccount": "Auto TesterE",
@@ -1688,7 +1689,7 @@
                     "UserName": "Shalltear Bloodfallen"
                 },
                 "R2d2AltUser": {
-                    "AccountPassword": "",
+                    "AccountPassword": "6000",
                     "DomainName": "pm.esihs.net",
                     "PhonePassword": "hDFv8i3V",
                     "Proxy": "nr4.cpbx.esihs.net",
@@ -1697,7 +1698,7 @@
                     "dns_list": [
                         "10.0.50.156"
                     ],
-                    "pbfile": "wav/2012.wav"
+                    "pbfile": "wav/600.wav"
                 },
                 "Auto TesterE": {
                     "AccountPassword": "6001",
@@ -1709,7 +1710,7 @@
                     "dns_list": [
                         "10.0.50.156"
                     ],
-                    "pbfile": "wav/2204.wav"
+                    "pbfile": "wav/6001wav"
                 },
                 "Auto TesterF": {
                     "AccountPassword": "6002",
@@ -1721,7 +1722,7 @@
                     "dns_list": [
                         "10.0.50.156"
                     ],
-                    "pbfile": "wav/2205.wav"
+                    "pbfile": "wav/6002.wav"
                 }
             }
         }

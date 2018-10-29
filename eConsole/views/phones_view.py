@@ -7,6 +7,7 @@ log = logging.get_logger('mtaf.phones')
 class PhonesView(LoggedInView):
 
     locators = {
+        "Banner": {"by": "css selector", "value": "span[class='esi-header-text ng-binding']"},
         "DeviceStatus": {"by": "css selector", "value": "th span", "text": "Device Status"},
         "DeviceName": {"by": "css selector", "value": "th span", "text": "Device Name"},
         "DeviceType": {"by": "css selector", "value": "th span", "text": "Device Type"},

@@ -1,4 +1,4 @@
-from time import time
+from time import time, sleep
 import mtaf_logging
 from mtaf.decorators import Trace
 from selenium_actions import SeleniumActions
@@ -32,9 +32,33 @@ class AndroidActions(SeleniumActions):
     def open_appium(self, connect_timeout=10, automation_name='Appium'):
         if len(self.adb.get_devices()) == 0:
             raise Ux("no ADB device")
-        output = self.adb.run_cmd('shell dumpsys window windows')
-        package = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output).group(1)
-        activity = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)', output).group(2)
+        tries = 5
+        package = ''
+        activity =''
+        for i in range(tries):
+            log.debug("running adb shell dumpsys window windows")
+            output = self.adb.run_cmd('shell dumpsys window windows')
+            if re.match('(?ms).*mCurrentFocus=null', output):
+                log.info("mCurrentFocus is null, retrying")
+                sleep(5)
+                continue
+            m = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)([^}]+)', output)
+            if m:
+                package = m.group(1)
+                log.debug("package = %s" % package)
+            else:
+                log.info("Failed to get valid package value")
+                continue
+            m = re.match('(?ms).*mCurrentFocus=\S+\s+\S+\s+([^/]+)/([^}]+)', output)
+            if m:
+                activity = m.group(2)
+                log.debug("activity = %s" % activity)
+            else:
+                log.info("Failed to get valid activity value")
+                continue
+            break
+        else:
+            raise Ux("Failed to get valid mCurrentFocus value")
         device_name = self.adb.run_cmd('shell getprop ro.product.model').strip()
         platform_version = self.adb.run_cmd('shell getprop ro.build.version.release').strip()
         caps = {

@@ -37,7 +37,7 @@ def get_softphone(uri, password):
 
 
 passwords={}
-with open(os.path.join('drs', 'python', 'test2_tigerteam_users.csv')) as f:
+with open(os.path.join('drs', 'python', 'test2_users.csv')) as f:
     reader = csv.DictReader(f, quotechar="'")
     for row in reader:
         uri = row['aor']
