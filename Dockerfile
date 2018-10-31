@@ -8,5 +8,5 @@ RUN sudo apt-get install -y apt-utils
 RUN sudo apt-get install -y libasound2-dev
 RUN sudo apt-get install -y python-pip
 RUN sudo apt-get install -y default-jre
-COPY --chown=circleci:circleci ../.. .
+COPY --chown=circleci:circleci . .
 RUN sudo /bin/bash -c "cd /home/circleci/mtaf/package/mtaf; source build_script"

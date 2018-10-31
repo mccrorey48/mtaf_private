@@ -1,0 +1,18 @@
+Start docker server on 10.0.12.42:
+    sudo vi /etc/docker/daemon.json and insert this line into the file:
+            { "insecure-registries":["localhost:5000"] }
+    docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+Build docker image "10.0.12.42:5000/mtaf":
+(from mtaf directory)
+    docker build -t 10.0.12.42:5000/mtaf .
+    docker push 10.0.12.42:5000/mtaf
+
+Run run_features.py in the image:
+
+    docker run -i -t --rm 10.0.12.42:5000/mtaf python eConsole/run_features.py -f eConsole/features -p staging -u select -r regression
+    docker run -i -t --rm 10.0.12.42:5000/mtaf python eConsole/run_features.py -f eConsole/features -p staging -u select -r wip
+    docker run -i -t --rm 10.0.12.42:5000/mtaf python eConsole/run_features.py -f eConsole/features -p staging -u premier -r regression
+    docker run -i -t --rm 10.0.12.42:5000/mtaf python eConsole/run_features.py -f eConsole/features -p staging -u premier -r wip
+    docker run -i -t --rm 10.0.12.42:5000/mtaf python eConsole/run_features.py -f eConsole/features -p staging -u office_mgr -r regression
+    docker run -i -t --rm 10.0.12.42:5000/mtaf python eConsole/run_features.py -f eConsole/features -p staging -u office_mgr -r wip
