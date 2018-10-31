@@ -17,3 +17,5 @@ substeps.txt
 xml_1*/
 xml_0_20*/
 app_version.txt
+
+allure-report/
